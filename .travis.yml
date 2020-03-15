@@ -1,0 +1,27 @@
+language: cpp
+
+dist: bionic
+
+compiler:
+  - clang
+  - gcc
+
+matrix:
+  include:
+    - env: BUILD_TYPE=Debug   CXX_STANDARD=17
+      compiler: clang
+
+    - env: BUILD_TYPE=Debug   CXX_STANDARD=17
+      compiler: gcc
+
+    - env: BUILD_TYPE=Release CXX_STANDARD=17
+      compiler: clang
+
+    - env: BUILD_TYPE=Release CXX_STANDARD=17
+      compiler: gcc
+
+script:
+  - mkdir build
+  - cd build
+  - g++ ../temporary.cc
+  - ./a.out
