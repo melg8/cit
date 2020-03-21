@@ -1,6 +1,9 @@
 language: cpp
+dist: xenial
+sudo: required
 
-dist: bionic
+services:
+  - docker
 
 compiler:
   - clang
@@ -20,8 +23,10 @@ matrix:
     - env: BUILD_TYPE=Release CXX_STANDARD=17
       compiler: gcc
 
+before_install:
+  - docker pull melg8/denvy:latest
+  - ./test_environment.sh
+
 script:
-  - mkdir build
-  - cd build
-  - g++ ../temporary.cc
-  - ./a.out
+  - docker run -v "$(pwd)":/home/user melg8/denvy /bin/bash -c "./test_environment.sh"
+  - ./build.sh
