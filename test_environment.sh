@@ -1,6 +1,6 @@
 #!/bin/sh
 
 whoami
-ls -la
+ls -lah
 lsb_release -a
 uname -a
