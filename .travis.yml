@@ -6,6 +6,7 @@ services:
 
 env:
 - SCRIPT="./ci/tests/test_environment.sh"
+- SCRIPT="./ci/tests/git_check.sh"
 - SCRIPT="./ci/builders/gcc/build.sh"
 - SCRIPT="./ci/builders/clang/build.sh"
 
