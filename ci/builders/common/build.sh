@@ -7,5 +7,5 @@ echo "compiler: " ${COMPILER}
 
 mkdir build
 cd build
-${COMPILER} ../temporary.cc
+${COMPILER} ../sources/main.cc
 ./a.out
