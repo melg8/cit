@@ -4,11 +4,20 @@ sudo: required
 services:
   - docker
 
-env:
-- SCRIPT="./ci/tests/test_environment.sh"
-- SCRIPT="./ci/tests/git_check.sh"
-- SCRIPT="./ci/builders/gcc/build.sh"
-- SCRIPT="./ci/builders/clang/build.sh"
+jobs:
+  include:
+    - stage: "Checks"
+      name: "Environment"
+      env: SCRIPT="./ci/tests/test_environment.sh"
+    - stage: "Checks"
+      name: "Git symbols"
+      env: SCRIPT="./ci/tests/git_check.sh"
+    - stage: "Build"
+      name: "Gcc"
+      env: SCRIPT="./ci/builders/gcc/build.sh"
+    - stage: "Build"
+      name: "Clang"
+      env: SCRIPT="./ci/builders/clang/build.sh"
 
 before_install:
   - sudo chmod -R 777 "$(pwd)"
