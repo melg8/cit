@@ -1,0 +1,2 @@
+sybol->symbol
+sybols->symbols
