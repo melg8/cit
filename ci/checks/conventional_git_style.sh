@@ -1,0 +1,3 @@
+#!/bin/sh
+
+conform enforce
