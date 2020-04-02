@@ -1,0 +1,12 @@
+ls:
+  .cc: snake_case
+  .cpp: snake_case
+  .dir: snake_case
+  .json: snake_case
+  .h: snake_case
+  .md: snake_case
+  .sh: snake_case
+  .txt: snake_case
+
+ignore:
+  - .git
