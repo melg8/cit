@@ -1,10 +1,19 @@
 {
     "version": "0.1",
     "language": "en",
+    "dictionaries": ["cpp", "bash"],
+    "ignorePaths": ["ci/checks/dictionaries/spelling_corrections.txt"],
     "words": [
+        "codespell",
+        "commitlint",
+        "commitlintrc",
+        "denvy",
         "gitleaks",
         "gitlint",
-        "commitlint",
+        "mkdir",
+        "nproc",
+        "uname",
+        "whoami",
         "Melg"
     ]
 }
