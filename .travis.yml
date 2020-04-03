@@ -7,9 +7,6 @@ services:
 jobs:
   include:
     - stage: "Checks"
-      name: "Environment"
-      env: SCRIPT="./ci/checks/environment.sh"
-    - stage: "Checks"
       name: "Git symbols"
       env: SCRIPT="./ci/checks/git_symbols.sh"
     - stage: "Checks"
