@@ -11,13 +11,9 @@
         "gitleaks",
         "gitlint",
         "iname",
-        "mkdir",
-        "nproc",
         "shellcheck",
         "textlint",
         "textlintrc",
-        "uname",
-        "whoami",
         "yamllint",
         "Melg"
     ]
