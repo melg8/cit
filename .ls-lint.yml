@@ -1,3 +1,4 @@
+---
 ls:
   .cc: snake_case
   .cpp: snake_case

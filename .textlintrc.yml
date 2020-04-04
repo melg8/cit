@@ -1,9 +1,10 @@
+---
 {
   "rules": {
     "abbr-within-parentheses": true,
-     "alex": {
-         "allow": []
-     },
+    "alex": {
+      "allow": []
+    },
     "apostrophe": true,
     "date-weekday-mismatch": true,
     "diacritics": true,
@@ -12,8 +13,8 @@
     "footnote-order": true,
     "ginger": true,
     "max-comma": {
-         "max" : 7
-     },
+      "max": 7
+    },
     "max-doc-width": true,
     "no-dead-link": true,
     "no-empty-section": true,
@@ -21,7 +22,7 @@
     "no-start-duplicated-conjunction": true,
     "period-in-list-item": true,
     "stop-words": {
-         "defaultWords": true,
+      "defaultWords": true,
     },
     "terminology": true,
     "write-good": true,

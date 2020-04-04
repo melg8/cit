@@ -1,3 +1,4 @@
+---
 language: cpp
 sudo: required
 
@@ -21,6 +22,9 @@ jobs:
     - stage: "Checks"
       name: "Md files style"
       env: SCRIPT="./ci/checks/md_files_style.sh"
+    - stage: "Checks"
+      name: "Yaml files style"
+      env: SCRIPT="./ci/checks/yaml_files_style.sh"
     - stage: "Build"
       name: "Gcc"
       env: SCRIPT="./ci/builders/gcc/build.sh"

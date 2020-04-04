@@ -17,6 +17,7 @@
         "textlintrc",
         "uname",
         "whoami",
+        "yamllint",
         "Melg"
     ]
 }
