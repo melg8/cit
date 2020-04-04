@@ -3,7 +3,7 @@
 set -e
 
 COMPILER=$1
-echo "compiler: " ${COMPILER}
+echo "compiler: " "${COMPILER}"
 
 mkdir build
 cd build

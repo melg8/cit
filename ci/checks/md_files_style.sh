@@ -10,5 +10,5 @@ mdl .
 
 ignore=license.md
 
-find "$(pwd)" -name "*.md" ! -iname "${ignore}" | \
-xargs textlint
+find "$(pwd)" -name "*.md" ! -iname "${ignore}" \
+-exec textlint {} +
