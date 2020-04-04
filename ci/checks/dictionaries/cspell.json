@@ -10,8 +10,11 @@
         "denvy",
         "gitleaks",
         "gitlint",
+        "iname",
         "mkdir",
         "nproc",
+        "textlint",
+        "textlintrc",
         "uname",
         "whoami",
         "Melg"
