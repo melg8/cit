@@ -1,33 +1,19 @@
 language: cpp
-dist: xenial
 sudo: required
 
 services:
   - docker
 
-compiler:
-  - clang
-  - gcc
-
-matrix:
-  include:
-    - env: BUILD_TYPE=Debug   CXX_STANDARD=17
-      compiler: clang
-
-    - env: BUILD_TYPE=Debug   CXX_STANDARD=17
-      compiler: gcc
-
-    - env: BUILD_TYPE=Release CXX_STANDARD=17
-      compiler: clang
-
-    - env: BUILD_TYPE=Release CXX_STANDARD=17
-      compiler: gcc
+env:
+- SCRIPT="./ci/tests/test_environment.sh"
+- SCRIPT="./ci/builders/gcc/build.sh"
+- SCRIPT="./ci/builders/clang/build.sh"
 
 before_install:
-  - docker pull melg8/denvy:latest
   - sudo chmod -R 777 "$(pwd)"
-  - ./test_environment.sh
+
+install:
+  - ./ci/docker/docker_pull.sh
 
 script:
-  - docker run --privileged -v "$(pwd)":/home/user melg8/denvy /bin/bash -c "./test_environment.sh"
-  - docker run --privileged -v "$(pwd)":/home/user melg8/denvy /bin/bash -c "./build.sh"
+  - ./ci/docker/docker_run.sh ${SCRIPT}
