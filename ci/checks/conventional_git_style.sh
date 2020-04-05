@@ -6,4 +6,5 @@ commitlint -t HEAD
 gitlint --commits HEAD
 gitleaks --threads="$(nproc)" --verbose --pretty --repo-path=.
 git log --pretty="%h:%B" | \
-cspell -v --config=./ci/checks/dictionaries/cspell.json stdin
+cspell -v --config=./ci/checks/dictionaries/cspell.json stdin \
+git-cop -p
