@@ -83,6 +83,7 @@ RUN update-alternatives --install \
 RUN export GO111MODULE=on \
  && go get github.com/talos-systems/conform \
  && go get github.com/zricethezav/gitleaks/v4@latest \
+ && go get github.com/github/git-sizer \
  && cp ~/go/bin/* /usr/local/bin/
 
 RUN apt-fast -y remove golang-go \
