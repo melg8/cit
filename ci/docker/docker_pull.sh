@@ -2,4 +2,4 @@
 
 set -e
 
-docker pull melg8/denvy:latest
+docker pull melg8/denvy:0.0.1

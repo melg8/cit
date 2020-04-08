@@ -1,7 +1,9 @@
 #!/bin/sh
 
 DICTIONARY="./ci/checks/dictionaries/spelling_corrections.txt"
-SKIP=".git,./ci/checks/dictionaries/*"
+SKIP=".git,\
+./ci/checks/dictionaries/*,\
+./ci/docker/docker_files/scripts/cleanups/permissions.sh"
 
 set -e
 cspell -v --config=./ci/checks/dictionaries/cspell.json "**/*.*"
