@@ -1,24 +1,33 @@
 ---
 language: cpp
 sudo: required
+cache:
+  directories:
+    - docker_images
 
 services:
   - docker
 
 jobs:
   include:
-    - name: "All"
+    - stage: "Run checks"
+      name: "All"
       env: SCRIPT="./ci/checks/all.sh"
-    - name: "Gcc"
+    - stage: "Build"
+      name: "Gcc"
       env: SCRIPT="./ci/builders/gcc/build.sh"
-    - name: "Clang"
+    - stage: "Build"
+      name: "Clang"
       env: SCRIPT="./ci/builders/clang/build.sh"
+
+before_cache:
+  - docker save melg8/denvy:0.0.1 > docker_images/denvy.tar
 
 before_install:
   - sudo chmod -R 777 "$(pwd)"
 
 install:
-  - ./ci/docker/docker_pull.sh
+  - docker load -i docker_images/denvy.tar || true
 
 script:
   - ./ci/docker/docker_run.sh ${SCRIPT}
