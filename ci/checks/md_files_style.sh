@@ -1,10 +1,13 @@
 #!/bin/sh
 
 set -e
+
+PRESETS="/usr/local/lib/node_modules"
+
 remark . -f \
---use remark-preset-lint-consistent \
---use remark-preset-lint-markdown-style-guide \
---use remark-preset-lint-recommended
+--use "${PRESETS}"/remark-preset-lint-consistent \
+--use "${PRESETS}"/remark-preset-lint-markdown-style-guide \
+--use "${PRESETS}"/remark-preset-lint-recommended
 
 mdl .
 
