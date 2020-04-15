@@ -1,27 +1,18 @@
 ---
-language: cpp
-sudo: required
 dist: bionic
+
 services:
   - docker
 
-env:
-  - GO111MODULE=on
+language: python
+python: "3.8"
+
 
 jobs:
   include:
-    - stage: "Run checks"
-      name: "All"
-      script: ./ci/checks/all.sh
-    - stage: "Build"
-      name: "Gcc"
-      script: ./ci/builders/gcc/build.sh
-    - stage: "Build"
-      name: "Clang"
-      script: ./ci/builders/clang/build.sh
-
-before_install:
-  - sudo chmod -R 777 "$(pwd)"
-
-install:
-  - sudo ./ci/docker/docker_files/scripts/installers/install_dependencies.sh
+    - name: "yamllint native"
+      install: pip install yamllint==1.21.0
+      script: yamllint -s .
+    - name: "yamllint in docker"
+      install: docker pull melg8/yamllint:0.0.1
+      script: docker run --rm -i -v "$(pwd)":/home/user melg8/yamllint:0.0.1 "yamllint" "-s" "."
