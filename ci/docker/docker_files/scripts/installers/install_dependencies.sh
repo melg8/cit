@@ -29,20 +29,28 @@ apt-fast -y install --no-install-recommends \
     ruby-full=1:2.5.1 \
     shellcheck=0.4.6-1
 
-gem install mdl -v 0.9.0
+
+
+pip install codespell==1.16.0
+pip install gitlint==0.13.1
+pip install yamllint==1.21.0
+
+
 npm i -g npm@6.14.4
+
 npm i -g cspell
+
 npm i -g --save conventional-changelog-conventionalcommits
 npm i -g --save @commitlint/cli@next
+
 npm i -g @ls-lint/ls-lint
+
 npm i -g remark-cli
 npm i -g remark-preset-lint-consistent
 npm i -g remark-preset-lint-markdown-style-guide
 npm i -g remark-preset-lint-recommended
+
 npm i -g dockerfile_lint
-pip install codespell==1.16.0
-pip install gitlint==0.13.1
-pip install yamllint==1.21.0
 
 update-alternatives --install \
 /usr/bin/gcc gcc /usr/bin/gcc-9 60 --slave \
@@ -51,7 +59,9 @@ update-alternatives --install \
 update-alternatives --install \
     /usr/bin/clang clang /usr/bin/clang-9 60 --slave \
     /usr/bin/clang++ clang++ /usr/bin/clang++-9
-echo "55"
+
+gem install mdl -v 0.9.0
+
 curl -sSL https://rvm.io/mpapis.asc | gpg2 --import -
 curl -sSL https://rvm.io/pkuczynski.asc | gpg2 --import -
 curl -sSL https://get.rvm.io | bash -s stable
@@ -65,10 +75,7 @@ go get github.com/talos-systems/conform
 go get github.com/zricethezav/gitleaks/v4
 go get github.com/github/git-sizer
 go get github.com/jessfraz/dockfmt
-apt-fast -y remove golang-go
-apt-fast -y autoremove
-apt-fast clean
-gem cleanup all
+
 
 npm i -g textlint
 npm i -g textlint-rule-no-dead-link
