@@ -1,18 +1,25 @@
 ---
 dist: bionic
 
-services:
-  - docker
-
-language: python
-python: "3.8"
-
-
 jobs:
   include:
-    - name: "yamllint native"
+    - name: "yamllint native 2.7"
+      language: python
+      python: "2.7"
       install: pip install yamllint==1.21.0
       script: yamllint -s .
-    - name: "yamllint in docker"
+    - name: "yamllint native 3.8"
+      language: python
+      python: "3.8"
+      install: pip install yamllint==1.21.0
+      script: yamllint -s .
+    - name: "yamllint in docker generic"
+      language: generic
+      services: docker
+      install: docker pull melg8/yamllint:0.0.1
+      script: docker run --rm -i -v "$(pwd)":/home/user melg8/yamllint:0.0.1 "yamllint" "-s" "."
+    - name: "yamllint in docker minimal"
+      language: minimal
+      services: docker
       install: docker pull melg8/yamllint:0.0.1
       script: docker run --rm -i -v "$(pwd)":/home/user melg8/yamllint:0.0.1 "yamllint" "-s" "."
