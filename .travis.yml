@@ -1,25 +1,31 @@
 ---
 dist: bionic
 
+env: echo "test"
+
 jobs:
   include:
     - name: "yamllint native 2.7"
       language: python
       python: "2.7"
+      cache: pip
       install: pip install yamllint==1.21.0
       script: yamllint -s .
     - name: "yamllint native 3.8"
       language: python
       python: "3.8"
+      cache: pip
       install: pip install yamllint==1.21.0
       script: yamllint -s .
     - name: "yamllint in docker generic"
       language: generic
       services: docker
+      cache: "/var/lib/docker/"
       install: docker pull melg8/yamllint:0.0.1
       script: docker run --rm -i -v "$(pwd)":/home/user melg8/yamllint:0.0.1 "yamllint" "-s" "."
     - name: "yamllint in docker minimal"
       language: minimal
       services: docker
+      cache: "/var/lib/docker/"
       install: docker pull melg8/yamllint:0.0.1
       script: docker run --rm -i -v "$(pwd)":/home/user melg8/yamllint:0.0.1 "yamllint" "-s" "."
