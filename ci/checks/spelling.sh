@@ -1,10 +1,11 @@
 #!/bin/sh
 
-DICTIONARY="./ci/checks/dictionaries/spelling_corrections.txt"
-SKIP=".git,\
-./ci/checks/dictionaries/*,\
-./ci/docker/docker_files/scripts/cleanups/permissions.sh"
-
 set -e
+
+git log --pretty="%h:%B" | \
+cspell -v --config=./ci/checks/dictionaries/cspell.json stdin
+
+find . -path ./.git -prune -o -printf "%f\n" | \
+cspell -v --config=./ci/checks/dictionaries/cspell.json stdin
+
 cspell -v --config=./ci/checks/dictionaries/cspell.json "**/*.*"
-codespell -f -H -D=- -D="${DICTIONARY}" --skip="${SKIP}"
