@@ -10,9 +10,9 @@ jobs:
     - name: "All"
       env: SCRIPT="./ci/checks/all.sh"
     - name: "Gcc"
-      env: SCRIPT="./ci/builders/gcc/build.sh"
+      script: ./ci/builders/gcc/build.sh
     - name: "Clang"
-      env: SCRIPT="./ci/builders/clang/build.sh"
+      script: ./ci/builders/clang/build.sh
 
 before_install:
   - sudo chmod -R 777 "$(pwd)"
