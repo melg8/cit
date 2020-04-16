@@ -1,6 +1,11 @@
 ---
 dist: bionic
-language: cpp
+language:
+  - cpp
+  - node_js
+
+node_js: "10"
+
 sudo: false
 
 cache:
@@ -21,9 +26,11 @@ jobs:
 
     - name: "All"
       sudo: required
+      language: ruby
+      rvm: 2.7
       install:
         - sudo
-          ./ci/docker/docker_files/scripts/installers/install_dependencies.sh
+          ./ci/docker/docker_files/scripts/installers/checkers_dependencies.sh
       env: GO111MODULE=on
       script: ./ci/checks/all.sh
 
