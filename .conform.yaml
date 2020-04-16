@@ -24,3 +24,4 @@ policies:
         scopes:
           - policy
           - docker
+          - travis

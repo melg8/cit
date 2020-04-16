@@ -1,33 +1,42 @@
 ---
-language: cpp
-sudo: required
 dist: bionic
-services:
-  - docker
+language: cpp
+sudo: false
 
-cache: 
+cache:
   - pip
   - npm
   - bundler
   - yarn
 
-env:
-  - GO111MODULE=on
-
 jobs:
   include:
-    - stage: "Run checks"
-      name: "All"
+    - name: "Spelling by cspell"
+      language: node_js
+      node_js: "10"
+      install:
+        - npm i -g cspell
+      script:
+        - git log --pretty="%h:%B" |
+          cspell -v --config=./ci/checks/dictionaries/cspell.json stdin
+        - find . -path ./.git -prune -o -printf "%f\n" |
+          cspell -v --config=./ci/checks/dictionaries/cspell.json stdin
+        - cspell -v --config=./ci/checks/dictionaries/cspell.json "**/*.*"
+
+    - name: "All"
+      sudo: required
+      before_install: sudo chmod -R 777 "$(pwd)"
+      install:
+        - sudo ./ci/docker/docker_files/scripts/installers/install_dependencies.sh
+      env: GO111MODULE=on
       script: ./ci/checks/all.sh
-    - stage: "Build"
-      name: "Gcc"
+
+    - name: "Gcc"
       script: ./ci/builders/gcc/build.sh
-    - stage: "Build"
-      name: "Clang"
+
+    - name: "Clang"
       script: ./ci/builders/clang/build.sh
 
-before_install:
-  - sudo chmod -R 777 "$(pwd)"
 
-install:
-  - sudo ./ci/docker/docker_files/scripts/installers/install_dependencies.sh
+
+
