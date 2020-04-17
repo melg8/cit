@@ -10,8 +10,10 @@ jobs:
     - name: "All"
       env: SCRIPT="./ci/checks/all.sh"
     - name: "Gcc"
+      install: echo "nothing to install"
       script: ./ci/builders/gcc/build.sh
     - name: "Clang"
+      install: echo "nothing to install"
       script: ./ci/builders/clang/build.sh
 
 before_install:

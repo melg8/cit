@@ -1,9 +1,28 @@
-FROM ubuntu:18.04
-LABEL Name=denvy Version=0.0.1
-ARG DEBIAN_FRONTEND=noninteractive
-ENV LC_ALL C.UTF-8
+FROM ubuntu:18.04 AS hadolint_builder
+
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
-COPY scripts/ /tmp/
+
+RUN apt-get update \
+ && apt-get -y install --no-install-recommends \
+    ca-certificates=* \
+    curl=7.58.0-* \
+    git=1:2.17.* \
+ && curl -L https://get.haskellstack.org/ | sh \
+ && git clone https://github.com/hadolint/hadolint
+
+WORKDIR /hadolint
+
+RUN stack install --ghc-options="-fPIC" \
+ && curl -sSL https://github.com/upx/upx/releases/download/v3.94/upx-3.94-amd64_linux.tar.xz \
+  | tar -x --xz --strip-components 1 upx-3.94-amd64_linux/upx \
+ && ./upx --best --ultra-brute /root/.local/bin/hadolint \
+ && rm -rf ../hadolint \
+ && rm -rf /tmp/*
+
+FROM ubuntu:18.04
+LABEL Name=denvy Version=0.0.2
+ARG DEBIAN_FRONTEND=noninteractive
+SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 
 RUN apt-get -y update \
  && apt-get -y install --no-install-recommends \
@@ -18,21 +37,55 @@ RUN apt-get -y update \
     build-essential=12.4* \
     clang-9=1:9-* \
     curl=7.58.0-* \
-    gcc-9=9.2.1-* \
-    g++-9=9.2.1-* \
+    gcc-9=9.* \
+    g++-9=9.* \
     git=1:2.17.* \
     gnupg2=2.2.4* \
     golang-go=2:1.14-* \
     locales=2.27-* \
-    nodejs=8.10.0* \
-    npm=3.5.2-* \
     python-pip=9.0.1-* \
     python-setuptools=39.0.1-* \
     ruby-full=1:2.5.1 \
     shellcheck=0.4.6-1 \
- && gem install mdl -v 0.9.0 \
- && npm i -g npm@6.14.4 \
- && npm i -g cspell \
+ && update-alternatives --install \
+    /usr/bin/gcc gcc /usr/bin/gcc-9 60 --slave \
+    /usr/bin/g++ g++ /usr/bin/g++-9 \
+ && update-alternatives --install \
+    /usr/bin/clang clang /usr/bin/clang-9 60 --slave \
+    /usr/bin/clang++ clang++ /usr/bin/clang++-9 \
+ && apt-fast -y autoremove \
+ && apt-fast clean \
+ && rm -rf /var/lib/apt/lists/*
+
+RUN gem install mdl -v 0.9.0 \
+ && curl -sSL https://rvm.io/mpapis.asc | gpg2 --import - \
+ && curl -sSL https://rvm.io/pkuczynski.asc | gpg2 --import - \
+ && curl -sSL https://get.rvm.io | bash -s stable \
+ && /usr/local/rvm/bin/rvm install 2.7 \
+ && /usr/local/rvm/gems/ruby-2.7.0/wrappers/gem install git-cop -v 4.1.0 \
+ && ln -s /usr/local/rvm/gems/ruby-2.7.0/wrappers/git-cop /usr/local/bin \
+ && gem cleanup all
+
+RUN pip install codespell==1.16.0 \
+ && pip install gitlint==0.13.1 \
+ && pip install yamllint==1.21.0
+
+RUN export GO111MODULE=on \
+ && go get github.com/talos-systems/conform \
+ && go get github.com/zricethezav/gitleaks/v4 \
+ && go get github.com/github/git-sizer \
+ && go get github.com/jessfraz/dockfmt \
+ && cp ~/go/bin/* /usr/local/bin/
+
+RUN apt-fast update \
+ && apt-fast -y install --no-install-recommends \
+    nodejs=8.10.0* \
+    npm=3.5.2-* \
+ && apt-fast -y autoremove \
+ && apt-fast clean
+
+RUN npm i -g npm@6.14.4 \
+ && npm i -g cspell@4.0.56 \
  && npm i conventional-changelog-conventionalcommits \
  && npm i -g @commitlint/cli \
  && npm i -g @ls-lint/ls-lint \
@@ -40,36 +93,7 @@ RUN apt-get -y update \
  && npm i remark-preset-lint-consistent \
  && npm i remark-preset-lint-markdown-style-guide \
  && npm i remark-preset-lint-recommended \
- && npm i -g dockerfile_lint \
- && pip install codespell==1.16.0 \
- && pip install gitlint==0.13.1 \
- && pip install yamllint==1.21.0 \
- && update-alternatives --install \
-    /usr/bin/gcc gcc /usr/bin/gcc-9 60 --slave \
-    /usr/bin/g++ g++ /usr/bin/g++-9 \
- && update-alternatives --install \
-    /usr/bin/clang clang /usr/bin/clang-9 60 --slave \
-    /usr/bin/clang++ clang++ /usr/bin/clang++-9 \
- && curl -sSL https://rvm.io/mpapis.asc | gpg2 --import - \
- && curl -sSL https://rvm.io/pkuczynski.asc | gpg2 --import - \
- && curl -sSL https://get.rvm.io | bash -s stable \
- && /usr/local/rvm/bin/rvm install 2.7 \
- && /usr/local/rvm/gems/ruby-2.7.0/wrappers/gem install git-cop -v 4.1.0  \
- && ln -s /usr/local/rvm/gems/ruby-2.7.0/wrappers/git-cop /usr/local/bin \
- && export GO111MODULE=on \
- && go get github.com/talos-systems/conform \
- && go get github.com/zricethezav/gitleaks/v4 \
- && go get github.com/github/git-sizer \
- && go get github.com/jessfraz/dockfmt \
- && cp ~/go/bin/* /usr/local/bin/ \
- && /tmp/installers/install_hadolint.sh \
- && apt-fast -y remove golang-go \
- && apt-fast -y autoremove \
- && apt-fast clean \
- && gem cleanup all \
- && rm -rf /var/lib/apt/lists/* \
- && /tmp/cleanups/files.sh \
- && useradd -u 1000 -m -s /bin/bash user
+ && npm i -g dockerfile_lint
 
 RUN npm i -g textlint \
  && npm i textlint-rule-no-dead-link \
@@ -94,6 +118,12 @@ RUN npm i -g textlint \
  && npm i textlint-rule-stop-words \
  && npm i textlint-rule-en-capitalization \
  && rm -rf root/.npm
+
+COPY --from=hadolint_builder /root/.local/bin/hadolint /usr/local/bin/
+
+ENV LC_ALL C.UTF-8
+
+RUN useradd -u 1000 -m -s /bin/bash user
 
 USER user
 WORKDIR /home/user
