@@ -104,7 +104,6 @@ COPY --from=go_builder /go/bin/ /usr/local/bin/
 
 ENV LC_ALL C.UTF-8
 
-#RUN adduser -h /home/user -u 1000 -s /bin/bash user
 RUN addgroup -S appgroup \
  && adduser -S user -G appgroup
 

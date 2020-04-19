@@ -22,5 +22,6 @@ policies:
           - style
           - test
         scopes:
-          - policy
           - docker
+          - policy
+          - travis

@@ -1,26 +1,21 @@
 ---
-language: cpp
-sudo: required
-
-services:
-  - docker
-
 jobs:
   include:
-    - name: "All"
+    - name: "Lint all"
+      language: minimal
+      sudo: required
+      services: docker
+      before_install: sudo chmod -R 777 "$(pwd)"
+      install: ./ci/docker/docker_pull.sh
       env: SCRIPT="./ci/checks/all.sh"
+      script: ./ci/docker/docker_run.sh ${SCRIPT}
+
     - name: "Gcc"
+      language: cpp
       install: echo "nothing to install"
       script: ./ci/builders/gcc/build.sh
+
     - name: "Clang"
+      language: cpp
       install: echo "nothing to install"
       script: ./ci/builders/clang/build.sh
-
-before_install:
-  - sudo chmod -R 777 "$(pwd)"
-
-install:
-  - ./ci/docker/docker_pull.sh
-
-script:
-  - ./ci/docker/docker_run.sh ${SCRIPT}
