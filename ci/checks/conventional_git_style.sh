@@ -1,10 +1,10 @@
 #!/bin/sh
 
 set -e
-conform enforce
-commitlint -t HEAD
-gitlint --commits HEAD
-gitleaks --threads="$(nproc)" --verbose --pretty --repo-path=.
-git log --pretty="%h:%B" | \
+command time -v conform enforce
+command time -v commitlint -t HEAD
+command time -v gitlint --commits HEAD
+command time -v  gitleaks --threads="$(nproc)" --verbose --pretty --repo-path=.
+command time -v  git log --pretty="%h:%B" | \
 cspell -v --config=./ci/checks/dictionaries/cspell.json stdin \
-git-cop -p
+command time -v git-cop -p
