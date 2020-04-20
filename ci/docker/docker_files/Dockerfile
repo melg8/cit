@@ -56,9 +56,10 @@ RUN gem install mdl -v 0.9.0 \
 
 RUN apk add --no-cache \
     python3=3.8.2-r0 \
- && pip3 install codespell==1.16.0 \
- && pip3 install gitlint==0.13.1 \
- && pip3 install yamllint==1.21.0
+ && pip3 install --no-cache-dir \
+    codespell==1.16.0 \
+    gitlint==0.13.1 \
+    yamllint==1.21.0
 
 RUN apk add --no-cache \
     npm=12.15.0-r1 \
