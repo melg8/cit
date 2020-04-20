@@ -42,17 +42,17 @@ ARG DEBIAN_FRONTEND=noninteractive
 
 RUN apk add --no-cache \
     clang=9.0.0-r1 \
-    curl=7.67.0-r0 \
     gcc=9.2.0-r4 \
     g++=9.2.0-r4 \
-    git=2.24.2-r0 \
+    git=2.24.2-r1 \
     shellcheck=0.7.0-r1
 
 COPY --from=ruby_builder /usr/ /usr/
 
 RUN gem install mdl -v 0.9.0 \
  && gem install git-cop -v 4.1.0 \
- && gem cleanup all
+ && gem cleanup all \
+ && rm -rf /usr/local/lib/gems/2.7.0/cache/*
 
 RUN apk add --no-cache \
     python3=3.8.2-r0 \
@@ -111,5 +111,4 @@ RUN addgroup -S appgroup \
 USER user
 WORKDIR /home/user
 
-HEALTHCHECK --interval=5m --timeout=5s \
-  CMD curl -f http://localhost/ || exit 1
+HEALTHCHECK NONE
