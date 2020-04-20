@@ -12,3 +12,4 @@ ls:
 ignore:
   - .git
   - .config
+  - CMakeLists.txt

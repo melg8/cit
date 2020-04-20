@@ -1,4 +1,5 @@
 FROM ubuntu:18.04 AS hadolint_builder
+LABEL Name=melg8/hadolint_builder Version=0.0.2
 
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 
@@ -6,20 +7,24 @@ RUN apt-get update \
  && apt-get -y install --no-install-recommends \
     ca-certificates=* \
     curl=7.58.0-* \
-    git=1:2.17.* \
- && curl -L https://get.haskellstack.org/ | sh \
- && git clone https://github.com/hadolint/hadolint
+    git=1:2.17.*
+
+RUN curl -L https://get.haskellstack.org/ | sh
+
+RUN git clone https://github.com/hadolint/hadolint
 
 WORKDIR /hadolint
 
-RUN stack install --ghc-options="-fPIC" \
- && curl -sSL https://github.com/upx/upx/releases/download/v3.94/upx-3.94-amd64_linux.tar.xz \
+RUN stack install --ghc-options="-fPIC"
+
+RUN curl -sSL https://github.com/upx/upx/releases/download/v3.94/upx-3.94-amd64_linux.tar.xz \
   | tar -x --xz --strip-components 1 upx-3.94-amd64_linux/upx \
  && ./upx --best --ultra-brute /root/.local/bin/hadolint \
  && rm -rf ../hadolint \
  && rm -rf /tmp/*
 
 FROM golang:1.13-alpine AS go_builder
+LABEL Name=melg8/go_builder Version=0.0.2
 
 RUN apk update \
  && apk add --no-cache \
@@ -36,12 +41,12 @@ RUN apk update \
 
 FROM ruby:2.7.1-alpine3.11 AS ruby_builder
 
-FROM alpine:3.11.5
-LABEL Name=denvy Version=0.0.2
+FROM alpine:3.11.5 AS cit
+LABEL Name=cit Version=0.0.2
 ARG DEBIAN_FRONTEND=noninteractive
 
 RUN apk add --no-cache \
-    git=2.24.2-r1 \
+    git=2.24.3-r0 \
     shellcheck=0.7.0-r1
 
 COPY --from=ruby_builder /usr/ /usr/
@@ -106,12 +111,19 @@ RUN apk add --no-cache \
     clang=9.0.0-r1 \
     g++=9.2.0-r4
 
+RUN apk add --no-cache \
+    cmake=3.15.5-r0 \
+    make=4.2.1-r2
+
+RUN pip3 install --no-cache-dir \
+    cmake_format==0.6.10 \
+    polysquare-cmake-linter==0.0.16
+
 ENV LC_ALL C.UTF-8
 
-RUN addgroup -S appgroup \
- && adduser -S user -G appgroup
+RUN adduser -D -u 1000 user
 
 USER user
-WORKDIR /home/user
+WORKDIR /home/user/work
 
 HEALTHCHECK NONE

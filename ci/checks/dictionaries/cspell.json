@@ -8,6 +8,7 @@
         "chfn",
         "chkpwd",
         "chsh",
+        "cmake",
         "codespell",
         "commitlint",
         "commitlintrc",
@@ -30,6 +31,7 @@
         "testdata",
         "yamllint",
         "zricethezav",
+        "Cmake",
         "Melg"
     ]
 }
