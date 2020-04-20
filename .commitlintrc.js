@@ -1,6 +1,6 @@
 
 module.exports = {
-	parserPreset: 'conventional-changelog-conventionalcommits',
+	parserPreset: '/usr/lib/node_modules/conventional-changelog-conventionalcommits',
 	rules: {
 		'body-leading-blank': [2, 'always'],
 		'body-max-line-length': [2, 'always', 80],

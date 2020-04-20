@@ -19,111 +19,94 @@ RUN stack install --ghc-options="-fPIC" \
  && rm -rf ../hadolint \
  && rm -rf /tmp/*
 
-FROM ubuntu:18.04
-LABEL Name=denvy Version=0.0.2
-ARG DEBIAN_FRONTEND=noninteractive
-SHELL ["/bin/bash", "-o", "pipefail", "-c"]
+FROM golang:1.13-alpine AS go_builder
 
-RUN apt-get -y update \
- && apt-get -y install --no-install-recommends \
-    software-properties-common=0.96.24.* \
- && add-apt-repository -y ppa:apt-fast/stable \
- && apt-get -y install --no-install-recommends \
-    apt-fast=1.9.9-* \
- && add-apt-repository ppa:ubuntu-toolchain-r/test \
- && add-apt-repository ppa:longsleep/golang-backports \
- && apt-fast update \
- && apt-fast -y install --no-install-recommends \
-    build-essential=12.4* \
-    clang-9=1:9-* \
-    curl=7.58.0-* \
-    gcc-9=9.* \
-    g++-9=9.* \
-    git=1:2.17.* \
-    gnupg2=2.2.4* \
-    golang-go=2:1.14-* \
-    locales=2.27-* \
-    python-pip=9.0.1-* \
-    python-setuptools=39.0.1-* \
-    ruby-full=1:2.5.1 \
-    shellcheck=0.4.6-1 \
- && update-alternatives --install \
-    /usr/bin/gcc gcc /usr/bin/gcc-9 60 --slave \
-    /usr/bin/g++ g++ /usr/bin/g++-9 \
- && update-alternatives --install \
-    /usr/bin/clang clang /usr/bin/clang-9 60 --slave \
-    /usr/bin/clang++ clang++ /usr/bin/clang++-9 \
- && apt-fast -y autoremove \
- && apt-fast clean \
- && rm -rf /var/lib/apt/lists/*
-
-RUN gem install mdl -v 0.9.0 \
- && curl -sSL https://rvm.io/mpapis.asc | gpg2 --import - \
- && curl -sSL https://rvm.io/pkuczynski.asc | gpg2 --import - \
- && curl -sSL https://get.rvm.io | bash -s stable \
- && /usr/local/rvm/bin/rvm install 2.7 \
- && /usr/local/rvm/gems/ruby-2.7.0/wrappers/gem install git-cop -v 4.1.0 \
- && ln -s /usr/local/rvm/gems/ruby-2.7.0/wrappers/git-cop /usr/local/bin \
- && gem cleanup all
-
-RUN pip install codespell==1.16.0 \
- && pip install gitlint==0.13.1 \
- && pip install yamllint==1.21.0
-
-RUN export GO111MODULE=on \
+RUN apk update \
+ && apk add --no-cache \
+    upx=3.95-r2 \
+ && export GO111MODULE=on \
  && go get github.com/talos-systems/conform \
  && go get github.com/zricethezav/gitleaks/v4 \
  && go get github.com/github/git-sizer \
  && go get github.com/jessfraz/dockfmt \
- && cp ~/go/bin/* /usr/local/bin/
+ && upx --best --ultra-brute /go/bin/conform \
+ && upx --best --ultra-brute /go/bin/gitleaks \
+ && upx --best --ultra-brute /go/bin/git-sizer \
+ && upx --best --ultra-brute /go/bin/dockfmt
 
-RUN apt-fast update \
- && apt-fast -y install --no-install-recommends \
-    nodejs=8.10.0* \
-    npm=3.5.2-* \
- && apt-fast -y autoremove \
- && apt-fast clean
+FROM ruby:2.7.1-alpine3.11 AS ruby_builder
 
-RUN npm i -g npm@6.14.4 \
- && npm i -g cspell@4.0.56 \
- && npm i conventional-changelog-conventionalcommits \
- && npm i -g @commitlint/cli \
- && npm i -g @ls-lint/ls-lint \
- && npm i -g remark-cli \
- && npm i remark-preset-lint-consistent \
- && npm i remark-preset-lint-markdown-style-guide \
- && npm i remark-preset-lint-recommended \
- && npm i -g dockerfile_lint
+FROM alpine:3.11.5
+LABEL Name=denvy Version=0.0.2
+ARG DEBIAN_FRONTEND=noninteractive
 
-RUN npm i -g textlint \
- && npm i textlint-rule-no-dead-link \
- && npm i textlint-rule-no-start-duplicated-conjunction \
- && npm i textlint-rule-max-comma \
- && npm i textlint-rule-no-exclamation-question-mark \
- && npm i textlint-rule-no-empty-section \
- && npm i textlint-rule-date-weekday-mismatch \
- && npm i textlint-rule-terminology \
- && npm i textlint-rule-period-in-list-item \
- && npm i @textlint-rule/textlint-rule-no-invalid-control-character \
- && npm i @textlint-rule/textlint-rule-no-unmatched-pair \
- && npm i textlint-rule-footnote-order \
- && npm i textlint-rule-max-doc-width \
- && npm i textlint-rule-abbr-within-parentheses \
- && npm i textlint-rule-alex \
- && npm i textlint-rule-ginger \
- && npm i textlint-rule-write-good \
- && npm i textlint-rule-en-max-word-count \
- && npm i textlint-rule-apostrophe \
- && npm i textlint-rule-diacritics \
- && npm i textlint-rule-stop-words \
- && npm i textlint-rule-en-capitalization \
+RUN apk add --no-cache \
+    clang=9.0.0-r1 \
+    curl=7.67.0-r0 \
+    gcc=9.2.0-r4 \
+    g++=9.2.0-r4 \
+    git=2.24.2-r0 \
+    shellcheck=0.7.0-r1
+
+COPY --from=ruby_builder /usr/ /usr/
+
+RUN gem install mdl -v 0.9.0 \
+ && gem install git-cop -v 4.1.0 \
+ && gem cleanup all
+
+RUN apk add --no-cache \
+    python3=3.8.2-r0 \
+ && pip3 install codespell==1.16.0 \
+ && pip3 install gitlint==0.13.1 \
+ && pip3 install yamllint==1.21.0
+
+RUN apk add --no-cache \
+    npm=12.15.0-r1 \
+ && npm i -g --production \
+    cspell@4.0.56 \
+    conventional-changelog-conventionalcommits \
+    @commitlint/cli \
+    @ls-lint/ls-lint \
+    remark-cli \
+    remark-preset-lint-consistent \
+    remark-preset-lint-markdown-style-guide \
+    remark-preset-lint-recommended \
+    dockerfile_lint \
+    textlint \
+    textlint-rule-no-dead-link \
+    textlint-rule-no-start-duplicated-conjunction \
+    textlint-rule-max-comma \
+    textlint-rule-no-exclamation-question-mark \
+    textlint-rule-no-empty-section \
+    textlint-rule-date-weekday-mismatch \
+    textlint-rule-terminology \
+    textlint-rule-period-in-list-item \
+    @textlint-rule/textlint-rule-no-invalid-control-character \
+    @textlint-rule/textlint-rule-no-unmatched-pair \
+    textlint-rule-footnote-order \
+    textlint-rule-max-doc-width \
+    textlint-rule-abbr-within-parentheses \
+    textlint-rule-alex \
+    textlint-rule-ginger \
+    textlint-rule-write-good \
+    textlint-rule-en-max-word-count \
+    textlint-rule-apostrophe \
+    textlint-rule-diacritics \
+    textlint-rule-stop-words \
+    textlint-rule-en-capitalization \
+    modclean \
+ && modclean -r -n default:safe -D /usr/lib/node_modules \
+ && npm rm modclean \
  && rm -rf root/.npm
 
 COPY --from=hadolint_builder /root/.local/bin/hadolint /usr/local/bin/
+COPY --from=go_builder /go/bin/ /usr/local/bin/
 
 ENV LC_ALL C.UTF-8
 
-RUN useradd -u 1000 -m -s /bin/bash user
+#RUN adduser -h /home/user -u 1000 -s /bin/bash user
+RUN addgroup -S appgroup \
+ && adduser -S user -G appgroup
 
 USER user
 WORKDIR /home/user
