@@ -41,9 +41,6 @@ LABEL Name=denvy Version=0.0.2
 ARG DEBIAN_FRONTEND=noninteractive
 
 RUN apk add --no-cache \
-    clang=9.0.0-r1 \
-    gcc=9.2.0-r4 \
-    g++=9.2.0-r4 \
     git=2.24.2-r1 \
     shellcheck=0.7.0-r1
 
@@ -102,6 +99,12 @@ RUN apk add --no-cache \
 
 COPY --from=hadolint_builder /root/.local/bin/hadolint /usr/local/bin/
 COPY --from=go_builder /go/bin/ /usr/local/bin/
+
+# Only for cpp code.
+
+RUN apk add --no-cache \
+    clang=9.0.0-r1 \
+    g++=9.2.0-r4
 
 ENV LC_ALL C.UTF-8
 
