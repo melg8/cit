@@ -2,7 +2,8 @@
     "version": "0.1",
     "language": "en",
     "dictionaries": ["cpp", "bash"],
-    "ignorePaths": ["ci/checks/dictionaries/spelling_corrections.txt"],
+    "ignorePaths": ["ci/checks/dictionaries/spelling_corrections.txt",
+                    "build*"],
     "words": [
         "chage",
         "chfn",
@@ -22,6 +23,7 @@
         "gpasswd",
         "hadolint",
         "iname",
+        "includecache",
         "jessfraz",
         "moby",
         "shellcheck",

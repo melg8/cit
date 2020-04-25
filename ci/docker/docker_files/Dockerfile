@@ -94,6 +94,7 @@ RUN apk add --no-cache \
     g++=9.2.0-r4
 
 RUN apk add --no-cache \
+    ccache=3.7.6-r0 \
     cmake=3.15.5-r0 \
     make=4.2.1-r2
 
