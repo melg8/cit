@@ -3,17 +3,23 @@ FROM hadolint/hadolint:v1.17.5-alpine AS hadolint_builder
 FROM golang:1.13-alpine AS go_builder
 LABEL Name=melg8/go_builder Version=0.0.2
 
+ENV GO111MODULE on
+
 RUN apk update \
  && apk add --no-cache \
-    upx=3.95-r2 \
- && export GO111MODULE=on \
- && go get github.com/talos-systems/conform \
- && go get github.com/zricethezav/gitleaks/v4 \
- && go get github.com/github/git-sizer \
- && go get github.com/jessfraz/dockfmt \
- && upx --best --ultra-brute /go/bin/conform \
- && upx --best --ultra-brute /go/bin/gitleaks \
- && upx --best --ultra-brute /go/bin/git-sizer \
+    git=2.24.3-r0 \
+    upx=3.95-r2
+
+RUN go get github.com/talos-systems/conform \
+ && upx --best --ultra-brute /go/bin/conform
+
+RUN go get github.com/zricethezav/gitleaks/v4 \
+ && upx --best --ultra-brute /go/bin/gitleaks
+
+RUN go get github.com/github/git-sizer \
+ && upx --best --ultra-brute /go/bin/git-sizer
+
+RUN go get github.com/jessfraz/dockfmt \
  && upx --best --ultra-brute /go/bin/dockfmt
 
 FROM ruby:2.7.1-alpine3.11 AS ruby_builder

@@ -17,10 +17,12 @@ for i in "${!TARGETS[@]}"; do
 
   TARGET_WITH_CACHE=(--target "${TARGET}")
     for ((j=0; j <= i; j++)); do
-      TARGET_WITH_CACHE+=(--cache-from "${TARGETS[j]}")
+      TAGGED="${USER}"/"${TARGETS[j]}":"${VERSION}"
+      TARGET_WITH_CACHE+=(--cache-from "${TAGGED}")
     done
    COMMAND=(build
             --pull \
+            --build-arg "BUILDKIT_INLINE_CACHE=1" \
             --file "${DOCKER_FILE}" \
             "${TARGET_WITH_CACHE[@]}"
             --tag "${USER}"/"${TARGET}":"${VERSION}" \
