@@ -2,4 +2,4 @@
 
 set -e
 
-docker pull melg8/denvy:0.0.2
+docker pull melg8/cit:0.0.2

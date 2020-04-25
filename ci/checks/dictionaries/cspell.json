@@ -31,6 +31,7 @@
         "testdata",
         "yamllint",
         "zricethezav",
+        "BUILDKIT",
         "Cmake",
         "Melg"
     ]

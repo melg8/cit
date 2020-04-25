@@ -1,27 +1,4 @@
-FROM ubuntu:18.04 AS hadolint_builder
-LABEL Name=melg8/hadolint_builder Version=0.0.2
-
-SHELL ["/bin/bash", "-o", "pipefail", "-c"]
-
-RUN apt-get update \
- && apt-get -y install --no-install-recommends \
-    ca-certificates=* \
-    curl=7.58.0-* \
-    git=1:2.17.*
-
-RUN curl -L https://get.haskellstack.org/ | sh
-
-RUN git clone https://github.com/hadolint/hadolint
-
-WORKDIR /hadolint
-
-RUN stack install --ghc-options="-fPIC"
-
-RUN curl -sSL https://github.com/upx/upx/releases/download/v3.94/upx-3.94-amd64_linux.tar.xz \
-  | tar -x --xz --strip-components 1 upx-3.94-amd64_linux/upx \
- && ./upx --best --ultra-brute /root/.local/bin/hadolint \
- && rm -rf ../hadolint \
- && rm -rf /tmp/*
+FROM hadolint/hadolint:v1.17.5-alpine AS hadolint_builder
 
 FROM golang:1.13-alpine AS go_builder
 LABEL Name=melg8/go_builder Version=0.0.2
@@ -102,11 +79,10 @@ RUN apk add --no-cache \
  && npm rm modclean \
  && rm -rf root/.npm
 
-COPY --from=hadolint_builder /root/.local/bin/hadolint /usr/local/bin/
+COPY --from=hadolint_builder /bin/hadolint /usr/local/bin/hadolint
 COPY --from=go_builder /go/bin/ /usr/local/bin/
 
 # Only for cpp code.
-
 RUN apk add --no-cache \
     clang=9.0.0-r1 \
     g++=9.2.0-r4
