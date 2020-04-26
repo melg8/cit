@@ -24,6 +24,14 @@ RUN go get github.com/jessfraz/dockfmt \
 
 FROM ruby:2.7.1-alpine3.11 AS ruby_builder
 
+FROM alpine:3.11.5 AS edge_builder
+
+RUN echo "https://uk.alpinelinux.org/alpine/edge/main/" >> \
+    /etc/apk/repositories
+
+RUN apk add --no-cache \
+    clang-extra-tools=10.0.0-r1
+
 FROM alpine:3.11.5 AS cit
 LABEL Name=cit Version=0.0.2
 ARG DEBIAN_FRONTEND=noninteractive
@@ -87,6 +95,11 @@ RUN apk add --no-cache \
 
 COPY --from=hadolint_builder /bin/hadolint /usr/local/bin/hadolint
 COPY --from=go_builder /go/bin/ /usr/local/bin/
+COPY --from=edge_builder /usr/lib/libffi.so.7 /usr/lib/libffi.so.7
+COPY --from=edge_builder /usr/lib/libLLVM-10.so /usr/lib/libLLVM-10.so
+COPY --from=edge_builder /usr/lib/libclang-cpp.so.10 /usr/lib/libclang-cpp.so.10
+COPY --from=edge_builder /usr/lib/llvm10 /usr/lib/llvm10
+COPY --from=edge_builder /usr/bin/clang-tidy /usr/bin/clang-tidy
 
 # Only for cpp code.
 RUN apk add --no-cache \
