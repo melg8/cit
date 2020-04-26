@@ -10,4 +10,4 @@ mkdir -p "${DIRECTORY}"
 cd "${DIRECTORY}"
 cmake .. -D CMAKE_CXX_COMPILER="${COMPILER}"
 cmake --build . -j "$(nproc)"
-./cit
+./sources/cit

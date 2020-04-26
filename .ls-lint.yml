@@ -7,11 +7,11 @@ ls:
   .h: snake_case
   .md: snake_case
   .sh: snake_case
-  .txt: snake_case
+  .txt: regex:CMakeLists | snake_case
+  .cmake: snake_case
 
 ignore:
   - build_g++
   - build_clang++
   - .git
   - .config
-  - CMakeLists.txt
