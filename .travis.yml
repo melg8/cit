@@ -4,6 +4,8 @@ sudo: required
 services: docker
 before_install: sudo chmod -R 777 "$(pwd)"
 install: ./ci/docker/docker_pull.sh
+git:
+  depth: false
 
 jobs:
   include:
