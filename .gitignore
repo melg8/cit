@@ -33,3 +33,10 @@
 
 # Build directory
 build_*
+*-build-*
+
+# Cmake
+CMakeLists.txt.user
+
+# Ide
+*.ide*

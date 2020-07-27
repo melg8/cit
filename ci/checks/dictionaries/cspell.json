@@ -35,6 +35,9 @@
         "zricethezav",
         "BUILDKIT",
         "Cmake",
-        "Melg"
+        "Melg",
+        "Werror",
+        "Weverything",
+        "fsanitize"
     ]
 }
