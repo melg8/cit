@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/usr/bin/env sh
 
 DICTIONARY="./ci/checks/dictionaries/spelling_corrections.txt"
 SKIP=".git,\

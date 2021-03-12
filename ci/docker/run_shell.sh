@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/usr/bin/env sh
 
 set -e
 docker run --rm -it --ulimit nofile=1024 \
