@@ -2,7 +2,7 @@
 
 set -e
 
-VERSION="0.0.2"
+VERSION="0.0.3"
 TARGETS="hadolint_builder go_builder edge_builder cit"
 USER="melg8"
 

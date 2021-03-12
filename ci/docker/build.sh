@@ -4,7 +4,7 @@ set -e
 
 
 USER="melg8"
-VERSION="0.0.2"
+VERSION="0.0.3"
 TARGETS=('hadolint_builder' 'go_builder' 'edge_builder' 'cit')
 DOCKER_PATH="./ci/docker/docker_files"
 DOCKER_FILE=${DOCKER_PATH}/"Dockerfile"
