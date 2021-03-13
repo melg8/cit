@@ -2,7 +2,7 @@
 
 set -e
 
-export DOCKER_CONTENT_TRUST=1
+export DOCKER_CONTENT_TRUST=0
 DOCKER_FILE=./ci/docker/docker_files/Dockerfile
 
 dockerfile_lint -f "${DOCKER_FILE}"
