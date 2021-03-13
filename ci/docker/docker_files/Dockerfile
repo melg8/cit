@@ -7,8 +7,8 @@ ENV GO111MODULE on
 
 RUN apk update \
  && apk add --no-cache \
-    git=2.24.3-r0 \
-    upx=3.95-r2
+    git=2.26.3-r0 \
+    upx=3.96-r0
 
 RUN go get github.com/talos-systems/conform \
  && upx --best --ultra-brute /go/bin/conform
@@ -30,32 +30,31 @@ RUN echo "https://uk.alpinelinux.org/alpine/edge/main/" >> \
     /etc/apk/repositories
 
 RUN apk add --no-cache \
-    clang-extra-tools=10.0.0-r1
+    clang-extra-tools=10.0.1-r0
 
 FROM alpine:3.11.5 AS cit
 LABEL Name=cit Version=0.0.3
 ARG DEBIAN_FRONTEND=noninteractive
 
 RUN apk add --no-cache \
-    git=2.24.3-r0 \
+    git=2.24.4-r0 \
     shellcheck=0.7.0-r1
 
 COPY --from=ruby_builder /usr/ /usr/
 
 RUN gem install mdl -v 0.9.0 \
- && gem install git-cop -v 4.1.0 \
  && gem cleanup all \
  && rm -rf /usr/local/lib/gems/2.7.0/cache/*
 
 RUN apk add --no-cache \
-    python3=3.8.2-r0 \
+    python3=3.8.2-r2 \
  && pip3 install --no-cache-dir \
     codespell==1.16.0 \
     gitlint==0.13.1 \
     yamllint==1.21.0
 
 RUN apk add --no-cache \
-    npm=12.15.0-r1 \
+    npm=12.21.0-r0 \
  && npm i -g --production \
     cspell@4.0.56 \
     conventional-changelog-conventionalcommits \
@@ -104,7 +103,7 @@ COPY --from=edge_builder /usr/bin/clang-tidy /usr/bin/clang-tidy
 # Only for cpp code.
 RUN apk add --no-cache \
     clang=9.0.0-r1 \
-    g++=9.2.0-r4
+    g++=9.3.0-r0
 
 RUN apk add --no-cache \
     ccache=3.7.6-r0 \
