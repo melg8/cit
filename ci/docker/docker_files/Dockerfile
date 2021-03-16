@@ -92,13 +92,13 @@ RUN apk add --no-cache \
  && npm rm modclean \
  && rm -rf root/.npm
 
-COPY --from=hadolint_builder /bin/hadolint /usr/local/bin/hadolint
+COPY --from=hadolint_builder /bin/hadolint /usr/local/bin/
 COPY --from=go_builder /go/bin/ /usr/local/bin/
-COPY --from=edge_builder /usr/lib/libffi.so.7 /usr/lib/libffi.so.7
-COPY --from=edge_builder /usr/lib/libLLVM-10.so /usr/lib/libLLVM-10.so
-COPY --from=edge_builder /usr/lib/libclang-cpp.so.10 /usr/lib/libclang-cpp.so.10
-COPY --from=edge_builder /usr/lib/llvm10 /usr/lib/llvm10
-COPY --from=edge_builder /usr/bin/clang-tidy /usr/bin/clang-tidy
+COPY --from=edge_builder /usr/lib/libffi.so.7 /usr/lib/
+COPY --from=edge_builder /usr/lib/libLLVM-10.so /usr/lib/
+COPY --from=edge_builder /usr/lib/libclang-cpp.so.10 /usr/lib/
+COPY --from=edge_builder /usr/lib/llvm10 /usr/lib/
+COPY --from=edge_builder /usr/bin/clang-tidy /usr/bin/
 
 # Only for cpp code.
 RUN apk add --no-cache \
