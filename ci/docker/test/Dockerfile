@@ -8,10 +8,10 @@ RUN echo "i'm slow" \
  && echo "i'm finished"
 
 FROM golang:1.13-alpine AS go_builder
-LABEL Name=melg8/go_builder Version=0.0.3
+LABEL Name=melg8/go_builder Version=0.0.4
 
 FROM alpine:3.11.5 as test_nano
-LABEL Name=test/nano Version=0.0.3
+LABEL Name=test/nano Version=0.0.4
 RUN ls -la
 
 COPY --from=go_builder  /usr/local/bin/ /usr/local/bin/

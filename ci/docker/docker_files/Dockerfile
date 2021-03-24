@@ -1,7 +1,7 @@
 FROM hadolint/hadolint:v1.17.5-alpine AS hadolint_builder
 
 FROM golang:1.13-alpine AS go_builder
-LABEL Name=melg8/go_builder Version=0.0.3
+LABEL Name=melg8/go_builder Version=0.0.4
 
 ENV GO111MODULE on
 
@@ -30,10 +30,10 @@ RUN echo "https://uk.alpinelinux.org/alpine/edge/main/" >> \
     /etc/apk/repositories
 
 RUN apk add --no-cache \
-    clang-extra-tools=10.0.1-r0
+    clang-extra-tools=11.1.0-r0
 
 FROM alpine:3.11.5 AS cit
-LABEL Name=cit Version=0.0.3
+LABEL Name=cit Version=0.0.4
 ARG DEBIAN_FRONTEND=noninteractive
 
 RUN apk add --no-cache \
@@ -96,9 +96,8 @@ RUN apk add --no-cache \
 COPY --from=hadolint_builder /bin/hadolint /usr/local/bin/
 COPY --from=go_builder /go/bin/ /usr/local/bin/
 COPY --from=edge_builder /usr/lib/libffi.so.7 /usr/lib/
-COPY --from=edge_builder /usr/lib/libLLVM-10.so /usr/lib/
-COPY --from=edge_builder /usr/lib/libclang-cpp.so.10 /usr/lib/
-COPY --from=edge_builder /usr/lib/llvm10 /usr/lib/
+COPY --from=edge_builder /usr/lib/libLLVM-11.so /usr/lib/
+COPY --from=edge_builder /usr/lib/llvm11 /usr/lib/
 COPY --from=edge_builder /usr/bin/clang-tidy /usr/bin/
 
 # Only for cpp code.
