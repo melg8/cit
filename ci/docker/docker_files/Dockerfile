@@ -43,6 +43,7 @@ RUN apk add --no-cache \
 COPY --from=ruby_builder /usr/ /usr/
 
 RUN gem install mdl -v 0.9.0 \
+ && gem install git-lint -v 2.1.0 \
  && gem cleanup all \
  && rm -rf /usr/local/lib/gems/2.7.0/cache/*
 
