@@ -22,7 +22,7 @@ RUN go get github.com/github/git-sizer \
 RUN go get github.com/jessfraz/dockfmt \
  && upx --best --ultra-brute /go/bin/dockfmt
 
-FROM ruby:2.7.1-alpine3.11 AS ruby_builder
+FROM ruby:3.0.0-alpine3.13 AS ruby_builder
 
 FROM alpine:3.11.5 AS edge_builder
 
