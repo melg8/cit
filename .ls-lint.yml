@@ -1,17 +1,18 @@
 ---
 ls:
   .cc: snake_case
+  .cmake: snake_case
   .cpp: snake_case
   .dir: snake_case
-  .json: snake_case
   .h: snake_case
+  .json: snake_case
   .md: snake_case
   .sh: snake_case
   .txt: regex:CMakeLists | snake_case
-  .cmake: snake_case
 
 ignore:
-  - build_g++
-  - build_clang++
-  - .git
   - .config
+  - .git
+  - .idea
+  - build_clang++
+  - build_g++
