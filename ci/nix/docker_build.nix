@@ -9,12 +9,19 @@ in rec {
 };
  world = pkgs.dockerTools.buildLayeredImage {
     name = "world";
-    tag = "0.0.10";
-    contents = [ pvs_studio_for_free ];
-    extraCommands = ''
-          # This removes sharing of busybox and is not recommended. We do this
-          # to make the example suitable as a test case with working binaries.
-          cp -r ${pkgs.pkgsStatic.busybox}/* .
-        '';
+    tag = "0.1.1";
+    contents = [
+                 pvs_studio_for_free
+                 pkgs.codespell
+                 pkgs.nodePackages_latest.textlint
+                 pkgs.cmake-format
+                 pkgs.yamllint
+                 pkgs.git-sizer
+                 pkgs.git
+                 pkgs.mdl
+                 pkgs.nodePackages.textlint
+                 pkgs.shellcheck
+                 pkgs.hadolint
+                 ];
 };
 }
