@@ -4,6 +4,7 @@ let
     conform = pkgs.callPackage ./conform/default.nix {};
     git_leaks = pkgs.callPackage ./git_leaks/default.nix {};
     git_lint = pkgs.callPackage ./git_lint/default.nix {};
+    git_lint_py = pkgs.callPackage ./git_lint_py/default.nix {};
     mdl = pkgs.mdl.override (old: {
         bundlerApp = attrs: old.bundlerApp (attrs // {
          ruby = pkgs.ruby_2_7;
@@ -14,8 +15,8 @@ let
 in rec {
  world = pkgs.dockerTools.buildLayeredImage {
     name = "world";
-    tag = "0.1.0";
-    contents = [
+    tag = "0.1.1";
+    contents = [ # All together 815 MB
                  pvs_studio_for_free
                  pkgs.git
 
@@ -39,10 +40,11 @@ in rec {
                  pkgs.shellcheck # 45 MB
 
                  # python 3
-                 # Together 152 MB
+                 # Together 412 MB
                  pkgs.codespell # 140 MB
                  pkgs.yamllint # 140 MB
                  pkgs.cmake-format # 150 MB
+                 git_lint_py # 139 MB
                  ];
 };
 }
