@@ -5,7 +5,7 @@ buildGoPackage rec {
   version = "7.3.0";
 
   goPackagePath = "github.com/zricethezav/gitleaks";
-  goDeps = ./git_leaks_deps.nix;
+  goDeps = ./deps.nix;
 
   src = fetchFromGitHub {
     owner = "zricethezav";

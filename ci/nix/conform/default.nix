@@ -5,7 +5,7 @@ buildGoPackage rec {
   version = "0.1.0-alpha.20";
 
   goPackagePath = "github.com/talos-systems/conform";
-  goDeps = ./conform_deps.nix;
+  goDeps = ./deps.nix;
 
   src = fetchFromGitHub {
     owner = "talos-systems";
@@ -19,5 +19,3 @@ buildGoPackage rec {
     license = licenses.mpl20;
   };
 }
-# nix-shell -E "with import <nixpkgs> {}; callPackage ./conform.nix {}"
-#nix-shell -E "with import <nixpkgs> {}; let conform= callPackage ./conform.nix {}; in mkShell { buildInputs = [ conform ]; }"
