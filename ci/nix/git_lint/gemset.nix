@@ -207,6 +207,13 @@
       sha256 = "0cc0phcfa3v95pg57nniy70pdcr3195zbbcm86g56wg2nsgjss05";
       type = "gem";
     };
+    postInstall = ''
+    export COMMON_PATH="$out/lib/ruby/gems/2.7.0/gems/git-lint-1.4.0/lib/git"
+    substituteInPlace $COMMON_PATH/kit/repo.rb \
+    --replace "master" "main"
+    substituteInPlace $COMMON_PATH/lint/branches/environments/local.rb \
+    --replace "master" "main"
+    '';
     version = "1.4.0";
   };
   guard = {
