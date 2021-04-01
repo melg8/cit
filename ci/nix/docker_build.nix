@@ -15,14 +15,15 @@ let
     });
   }
   );
+  remark_lint = (pkgs.callPackage ./remark/default.nix { }).shell.nodeDependencies;
   text_lint = (pkgs.callPackage ./text_lint/default.nix { }).shell.nodeDependencies;
 in
 rec {
   world = pkgs.dockerTools.buildLayeredImage {
     name = "world";
-    tag = "0.0.13";
+    tag = "0.0.16";
     contents = [
-      # All together 947 MB
+      # All together 952 MB
       pvs_studio_for_free
       pkgs.git
 
@@ -42,7 +43,7 @@ rec {
       commit_lint # 224 MB
       cspell    # 209 MB.
       text_lint  # 247 MB.
-
+      remark_lint # 209 MB.
 
       # Haskell
       # Together 52 MB
