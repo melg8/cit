@@ -1,43 +1,38 @@
 {
     "version": "0.1",
     "language": "en",
-    "dictionaries": ["cpp", "bash"],
+    "dictionaryDefinitions": [
+        {
+            "name": "workspace",
+            "path": "./workspace_dictionary.txt",
+            "description": "Custom workspace dictionary",
+            "addWords": true,
+            "scope": "workspace"
+        },
+        {
+            "name": "nix",
+            "path": "./nix_dictionary.txt",
+            "description": "Nix dictionary",
+            "addWords": true,
+            "scope": "nix"
+        },
+        {
+            "name": "names",
+            "path": "./names_dictionary.txt",
+            "description": "Names of people and projects dictionary",
+            "addWords": true,
+            "scope": "nix"
+        }
+    ],
+    "dictionaries": ["cpp", "bash", "python", "ruby", "workspace", "nix", "names"],
     "ignorePaths": ["ci/checks/dictionaries/spelling_corrections.txt",
-                    "build*"],
-    "words": [
-        "chage",
-        "chfn",
-        "chkpwd",
-        "chsh",
-        "cmake",
-        "codespell",
-        "commitlint",
-        "commitlintrc",
-        "denvy",
-        "dockle",
-        "extrausers",
-        "gcloud",
-        "gitleaks",
-        "gitlint",
-        "golangci",
-        "gpasswd",
-        "hadolint",
-        "iname",
-        "includecache",
-        "jessfraz",
-        "moby",
-        "shellcheck",
-        "shykes",
-        "textlint",
-        "textlintrc",
-        "testdata",
-        "yamllint",
-        "zricethezav",
-        "BUILDKIT",
-        "Cmake",
-        "Melg",
-        "Werror",
-        "Weverything",
-        "fsanitize"
-    ]
+                    "*deps.nix",
+                    "*gemset.nix",
+                    "*Gemfile.lock",
+                    "*node-packages.nix",
+                    "*node-env.nix",
+                    "*package-lock.json",
+                    "*yarn_deps.nix",
+                    "*yarn.lock",
+                    "build*"]
 }
