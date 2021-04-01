@@ -13,7 +13,7 @@ RUN apk update \
 RUN go get github.com/talos-systems/conform \
  && upx --best --ultra-brute /go/bin/conform
 
-RUN go get github.com/zricethezav/gitleaks/v4 \
+RUN go get github.com/zricethezav/gitleaks/v7 \
  && upx --best --ultra-brute /go/bin/gitleaks
 
 RUN go get github.com/github/git-sizer \
