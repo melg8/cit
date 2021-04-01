@@ -19,9 +19,6 @@ RUN go get github.com/zricethezav/gitleaks/v7 \
 RUN go get github.com/github/git-sizer \
  && upx --best --ultra-brute /go/bin/git-sizer
 
-RUN go get github.com/jessfraz/dockfmt \
- && upx --best --ultra-brute /go/bin/dockfmt
-
 FROM ruby:3.0.0-alpine3.13 AS ruby_builder
 
 FROM alpine:3.11.5 AS edge_builder
@@ -52,7 +49,8 @@ RUN apk add --no-cache \
  && pip3 install --no-cache-dir \
     codespell==1.16.0 \
     gitlint==0.13.1 \
-    yamllint==1.21.0
+    yamllint==1.21.0 \
+    cmake_format==0.6.10
 
 RUN apk add --no-cache \
     npm=12.21.0-r0 \
@@ -60,12 +58,13 @@ RUN apk add --no-cache \
     cspell@4.0.56 \
     conventional-changelog-conventionalcommits \
     @commitlint/cli \
+    @commitlint/config-conventional \
+    dockerfile_lint \
     @ls-lint/ls-lint \
     remark-cli \
     remark-preset-lint-consistent \
     remark-preset-lint-markdown-style-guide \
     remark-preset-lint-recommended \
-    dockerfile_lint \
     textlint \
     textlint-rule-no-dead-link \
     textlint-rule-no-start-duplicated-conjunction \
@@ -109,10 +108,6 @@ RUN apk add --no-cache \
     ccache=3.7.6-r0 \
     cmake=3.15.5-r0 \
     make=4.2.1-r2
-
-RUN pip3 install --no-cache-dir \
-    cmake_format==0.6.10 \
-    polysquare-cmake-linter==0.0.16
 
 ENV LC_ALL C.UTF-8
 
