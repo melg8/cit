@@ -3,6 +3,7 @@ let
   pvs_studio_for_free = pkgs.callPackage ./how_to_use_pvs_studio_free.nix { };
   conform = pkgs.callPackage ./conform/default.nix { };
   commit_lint = pkgs.callPackage ./commit_lint/default.nix { };
+  cspell = (pkgs.callPackage ./cspell/default.nix { }).shell.nodeDependencies;
   git_leaks = pkgs.callPackage ./git_leaks/default.nix { };
   git_lint = pkgs.callPackage ./git_lint/default.nix { };
   git_lint_py = pkgs.callPackage ./git_lint_py/default.nix { };
@@ -18,9 +19,9 @@ in
 rec {
   world = pkgs.dockerTools.buildLayeredImage {
     name = "world";
-    tag = "0.0.11";
+    tag = "0.0.12";
     contents = [
-      # All together 910 MB
+      # All together 915 MB
       pvs_studio_for_free
       pkgs.git
 
@@ -39,6 +40,7 @@ rec {
       # Together 235 MB.
       pkgs.nodePackages.textlint # 215 MB
       commit_lint # 224 MB
+      cspell    # 209 MB.
 
 
       # Haskell
