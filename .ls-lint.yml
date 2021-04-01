@@ -5,7 +5,7 @@ ls:
   .cpp: snake_case
   .dir: snake_case
   .h: snake_case
-  .json: snake_case
+  .json: regex:package-lock | snake_case
   .md: snake_case
   .sh: snake_case
   .txt: regex:CMakeLists | snake_case
