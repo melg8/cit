@@ -2,6 +2,7 @@ let
   pkgs = import <nixpkgs> { };
   pvs_studio_for_free = pkgs.callPackage ./how_to_use_pvs_studio_free.nix { };
   conform = pkgs.callPackage ./conform/default.nix { };
+  commit_lint = pkgs.callPackage ./commit_lint/default.nix { };
   git_leaks = pkgs.callPackage ./git_leaks/default.nix { };
   git_lint = pkgs.callPackage ./git_lint/default.nix { };
   git_lint_py = pkgs.callPackage ./git_lint_py/default.nix { };
@@ -17,9 +18,9 @@ in
 rec {
   world = pkgs.dockerTools.buildLayeredImage {
     name = "world";
-    tag = "0.0.3";
+    tag = "0.0.11";
     contents = [
-      # All together 839 MB
+      # All together 910 MB
       pvs_studio_for_free
       pkgs.git
 
@@ -31,11 +32,14 @@ rec {
 
       # gem
       # Together 316 MB  (295 on ruby 2.7)
-      #mdl # ruby 2.7 261.4 MB
+      mdl # ruby 2.7 261.4 MB
       git_lint # 294 MB
 
       # npm
-      pkgs.nodePackages_latest.textlint # 259 MB
+      # Together 235 MB.
+      pkgs.nodePackages.textlint # 215 MB
+      commit_lint # 224 MB
+
 
       # Haskell
       # Together 52 MB
