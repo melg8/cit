@@ -21,7 +21,7 @@ in
 rec {
   world = pkgs.dockerTools.buildLayeredImage {
     name = "world";
-    tag = "0.0.16";
+    tag = "0.0.17";
     contents = [
       # All together 952 MB
       pvs_studio_for_free
@@ -41,8 +41,8 @@ rec {
       # npm
       # Together 271 MB.
       commit_lint # 224 MB
-      cspell    # 209 MB.
-      text_lint  # 247 MB.
+      cspell # 209 MB.
+      text_lint # 247 MB.
       remark_lint # 209 MB.
 
       # Haskell
