@@ -1,6 +1,6 @@
 let
   pkgs = import <nixpkgs> { };
-  pvs_studio_for_free = pkgs.callPackage ./how_to_use_pvs_studio_free.nix { };
+  pvs_studio_for_free = pkgs.callPackage ./pvs/how_to_use_pvs_studio_free.nix { };
   conform = pkgs.callPackage ./conform/default.nix { };
   commit_lint = pkgs.callPackage ./commit_lint/default.nix { };
   cspell = (pkgs.callPackage ./cspell/default.nix { }).shell.nodeDependencies;
