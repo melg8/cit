@@ -11,12 +11,40 @@ let
   mdl = pkgs.callPackage ./mdl/default.nix { };
   remark_lint = (pkgs.callPackage ./remark/default.nix { }).shell.nodeDependencies;
   text_lint = (pkgs.callPackage ./text_lint/default.nix { }).shell.nodeDependencies;
+
+  nonRootShadowSetup = { user, uid, gid ? uid }: with pkgs; [
+    (
+      writeTextDir "etc/shadow" ''
+        root:!x:::::::
+        ${user}:!:::::::
+      ''
+    )
+    (
+      writeTextDir "etc/passwd" ''
+        root:x:0:0::/root:${runtimeShell}
+        ${user}:x:${toString uid}:${toString gid}::/home/${user}:
+      ''
+    )
+    (
+      writeTextDir "etc/group" ''
+        root:x:0:
+        ${user}:x:${toString gid}:
+      ''
+    )
+    (
+      writeTextDir "etc/gshadow" ''
+        root:x::
+        ${user}:x::
+      ''
+    )
+  ];
 in
 rec {
   world = pkgs.dockerTools.buildLayeredImage {
     name = "world";
-    tag = "0.0.18";
+    tag = "0.0.19";
     contents = [
+      pkgs.bashInteractive
       # All together 952 MB
       pvs_studio_for_free # 2.5 MB
       pkgs.git # 397 MB
@@ -26,7 +54,7 @@ rec {
       pkgs.gcc9 # 236 MB
 
       # go
-      pkgs.git-sizer # 37 MB
+      #pkgs.git-sizer # 37 MB
       conform # 57 MB
       git_leaks # 44 MB
       ls_lint # 4.2 MB
@@ -59,6 +87,20 @@ rec {
       # Together 77 MB (+ 22 MB to total image size).
       pkgs.nix
       pkgs.nixpkgs-fmt
-    ];
+    ] ++ nonRootShadowSetup { uid = 1000; user = "user"; };
+    config = {
+      Cmd = [ "/bin/bash" ];
+      User = "user";
+      WorkingDir = "/home/user/work";
+    };
+
+    extraCommands = ''
+      # This removes sharing of busybox and is not recommended. We do this
+      # to make the example suitable as a test case with working binaries.
+      cp -r ${pkgs.pkgsStatic.busybox}/* .
+      mkdir -p usr/bin
+      ln -s /bin/env usr/bin/env
+    '';
+
   };
 }

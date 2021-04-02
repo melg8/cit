@@ -1,4 +1,4 @@
-{ lib, bundlerApp, bundlerUpdateScript, ruby_2_7}:
+{ lib, bundlerApp, bundlerUpdateScript, ruby_2_7 }:
 
 bundlerApp {
   pname = "mdl";
