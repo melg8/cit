@@ -1,7 +1,7 @@
 FROM hadolint/hadolint:v1.17.5-alpine AS hadolint_builder
 
 FROM golang:1.13-alpine AS go_builder
-LABEL Name=melg8/go_builder Version=0.0.4
+LABEL Name=melg8/go_builder Version=0.0.5
 
 ENV GO111MODULE on
 
@@ -10,16 +10,16 @@ RUN apk update \
     git=2.26.3-r0 \
     upx=3.96-r0
 
-RUN go get github.com/talos-systems/conform \
+RUN go get github.com/talos-systems/conform/ \
  && upx --best --ultra-brute /go/bin/conform
 
 RUN go get github.com/zricethezav/gitleaks/v7 \
  && upx --best --ultra-brute /go/bin/gitleaks
 
-RUN go get github.com/github/git-sizer \
+RUN go get github.com/github/git-sizer/ \
  && upx --best --ultra-brute /go/bin/git-sizer
 
-FROM ruby:3.0.0-alpine3.13 AS ruby_builder
+FROM ruby:2.7.2-alpine3.13 AS ruby_builder
 
 FROM alpine:3.11.5 AS edge_builder
 
@@ -30,7 +30,7 @@ RUN apk add --no-cache \
     clang-extra-tools=11.1.0-r0
 
 FROM alpine:3.11.5 AS cit
-LABEL Name=cit Version=0.0.4
+LABEL Name=cit Version=0.0.5
 ARG DEBIAN_FRONTEND=noninteractive
 
 RUN apk add --no-cache \
@@ -39,54 +39,59 @@ RUN apk add --no-cache \
 
 COPY --from=ruby_builder /usr/ /usr/
 
-RUN gem install mdl -v 0.9.0 \
- && gem install git-lint -v 2.1.0 \
+RUN gem install mdl -v 0.11.0 \
+ && gem install git-lint -v 1.4.0 \
+ && sed -i 's.master.origin/main.g' \
+ "/usr/local/lib/ruby/gems/2.7.0/gems/git-lint-1.4.0/lib/git/kit/repo.rb"\
+ && sed -i 's.master.origin/main.g' \
+ "/usr/local/lib/ruby/gems/2.7.0/gems/git-lint-1.4.0/lib/git\
+/lint/branches/environments/local.rb" \
  && gem cleanup all \
  && rm -rf /usr/local/lib/gems/2.7.0/cache/*
 
 RUN apk add --no-cache \
     python3=3.8.2-r2 \
  && pip3 install --no-cache-dir \
-    codespell==1.16.0 \
-    gitlint==0.13.1 \
-    yamllint==1.21.0 \
-    cmake_format==0.6.10
+    codespell==1.17.1 \
+    gitlint==0.15.0 \
+    yamllint==1.24.2 \
+    cmake_format==0.6.13
 
 RUN apk add --no-cache \
     npm=12.21.0-r0 \
  && npm i -g --production \
-    cspell@4.0.56 \
-    conventional-changelog-conventionalcommits \
-    @commitlint/cli \
-    @commitlint/config-conventional \
+    cspell@5.3.9 \
+    conventional-changelog-conventionalcommits@4.3.1 \
+    @commitlint/cli@12.0.1 \
+    @commitlint/config-conventional@12.0.1 \
     dockerfile_lint \
-    @ls-lint/ls-lint \
-    remark-cli \
-    remark-preset-lint-consistent \
-    remark-preset-lint-markdown-style-guide \
-    remark-preset-lint-recommended \
-    textlint \
-    textlint-rule-no-dead-link \
-    textlint-rule-no-start-duplicated-conjunction \
-    textlint-rule-max-comma \
-    textlint-rule-no-exclamation-question-mark \
-    textlint-rule-no-empty-section \
-    textlint-rule-date-weekday-mismatch \
-    textlint-rule-terminology \
-    textlint-rule-period-in-list-item \
-    @textlint-rule/textlint-rule-no-invalid-control-character \
-    @textlint-rule/textlint-rule-no-unmatched-pair \
-    textlint-rule-footnote-order \
-    textlint-rule-max-doc-width \
-    textlint-rule-abbr-within-parentheses \
-    textlint-rule-alex \
-    textlint-rule-ginger \
-    textlint-rule-write-good \
-    textlint-rule-en-max-word-count \
-    textlint-rule-apostrophe \
-    textlint-rule-diacritics \
-    textlint-rule-stop-words \
-    textlint-rule-en-capitalization \
+    @ls-lint/ls-lint@1.9.2 \
+    remark-cli@9.0.0 \
+    remark-preset-lint-consistent@4.0.0 \
+    remark-preset-lint-markdown-style-guide@4.0.0 \
+    remark-preset-lint-recommended@5.0.0 \
+    textlint@11.9.0 \
+    textlint-rule-no-dead-link@4.7.0 \
+    textlint-rule-no-start-duplicated-conjunction@2.0.2 \
+    textlint-rule-max-comma@1.0.4 \
+    textlint-rule-no-exclamation-question-mark@1.1.0 \
+    textlint-rule-no-empty-section@1.1.0 \
+    textlint-rule-date-weekday-mismatch@1.0.5 \
+    textlint-rule-terminology@2.1.5 \
+    textlint-rule-period-in-list-item@0.3.2 \
+    @textlint-rule/textlint-rule-no-invalid-control-character@1.2.0 \
+    @textlint-rule/textlint-rule-no-unmatched-pair@1.0.7 \
+    textlint-rule-footnote-order@1.0.3 \
+    textlint-rule-max-doc-width@1.4.0 \
+    textlint-rule-abbr-within-parentheses@1.0.2 \
+    textlint-rule-alex@3.0.0 \
+    textlint-rule-ginger@2.2.1 \
+    textlint-rule-write-good@1.6.2 \
+    textlint-rule-en-max-word-count@1.1.0 \
+    textlint-rule-apostrophe@2.0.0 \
+    textlint-rule-diacritics@1.0.0 \
+    textlint-rule-stop-words@2.0.9 \
+    textlint-rule-en-capitalization@2.0.3 \
     modclean \
  && modclean -r -n default:safe -D /usr/lib/node_modules \
  && npm rm modclean \

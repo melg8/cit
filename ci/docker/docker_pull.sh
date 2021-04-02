@@ -2,4 +2,4 @@
 
 set -e
 
-docker pull melg8/cit:0.0.4
+docker pull melg8/cit:0.0.5
