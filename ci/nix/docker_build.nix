@@ -15,11 +15,15 @@ in
 rec {
   world = pkgs.dockerTools.buildLayeredImage {
     name = "world";
-    tag = "0.0.17";
+    tag = "0.0.18";
     contents = [
       # All together 952 MB
-      pvs_studio_for_free
-      pkgs.git
+      pvs_studio_for_free # 2.5 MB
+      pkgs.git # 397 MB
+      pkgs.ccache # 33 MB
+      pkgs.cmake # 96 MB
+      pkgs.clang_9 # 1.4 GB
+      pkgs.gcc9 # 236 MB
 
       # go
       pkgs.git-sizer # 37 MB
