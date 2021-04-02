@@ -8,13 +8,7 @@ let
   git_lint = pkgs.callPackage ./git_lint/default.nix { };
   git_lint_py = pkgs.callPackage ./git_lint_py/default.nix { };
   ls_lint = pkgs.callPackage ./ls_lint/default.nix { };
-  mdl = pkgs.mdl.override (old: {
-    bundlerApp = attrs: old.bundlerApp (attrs // {
-      ruby = pkgs.ruby_2_7;
-
-    });
-  }
-  );
+  mdl = pkgs.callPackage ./mdl/default.nix { };
   remark_lint = (pkgs.callPackage ./remark/default.nix { }).shell.nodeDependencies;
   text_lint = (pkgs.callPackage ./text_lint/default.nix { }).shell.nodeDependencies;
 in

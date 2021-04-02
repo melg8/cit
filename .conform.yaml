@@ -23,5 +23,6 @@ policies:
           - test
         scopes:
           - docker
+          - nix
           - policy
           - travis
