@@ -40,7 +40,7 @@ let
   ];
 in
 rec {
-  world = pkgs.dockerTools.buildLayeredImage {
+  world = pkgs.dockerTools.buildLayeredImage rec{
     name = "world";
     tag = "0.0.19";
     contents = [
@@ -54,7 +54,7 @@ rec {
       pkgs.gcc9 # 236 MB
 
       # go
-      #pkgs.git-sizer # 37 MB
+      pkgs.git-sizer # 37 MB
       conform # 57 MB
       git_leaks # 44 MB
       ls_lint # 4.2 MB
@@ -87,6 +87,7 @@ rec {
       # Together 77 MB (+ 22 MB to total image size).
       pkgs.nix
       pkgs.nixpkgs-fmt
+      pkgs.pkgsStatic.busybox
     ] ++ nonRootShadowSetup { uid = 1000; user = "user"; };
     config = {
       Cmd = [ "/bin/bash" ];
@@ -97,7 +98,20 @@ rec {
     extraCommands = ''
       # This removes sharing of busybox and is not recommended. We do this
       # to make the example suitable as a test case with working binaries.
-      cp -r ${pkgs.pkgsStatic.busybox}/* .
+      #cp -r ${pkgs.pkgsStatic.busybox}/* .
+
+      for path in ${builtins.toString contents}; do
+              echo "Linking path: $path"
+              if [[ -e "$path/bin" ]] ; then
+              for file in $(ls $path/bin/); do
+                  if [[ ! -e bin/$file ]]; then
+                    echo "Linking file: $path/bin/$file -> bin/$file"
+                    ln -s $path/bin/$file bin/$file
+                  fi
+              done
+              fi
+            done
+
       mkdir -p usr/bin
       ln -s /bin/env usr/bin/env
     '';
