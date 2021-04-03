@@ -41,11 +41,12 @@ let
   ];
 in
 rec {
-  world = pkgs.dockerTools.buildLayeredImage rec{
-    name = "world";
-    tag = "0.0.19";
+  world = pkgs.dockerTools.buildLayeredImage rec {
+    name = "melg8/cit";
+    tag = "0.0.6";
     contents = [
       pkgs.bashInteractive
+      pkgs.gnumake
       # All together 2.3 GB
       pvs_studio_for_free # 2.5 MB
       pkgs.git # 397 MB
@@ -95,6 +96,11 @@ rec {
       Cmd = [ "/bin/bash" ];
       User = "user";
       WorkingDir = "/home/user/work";
+      Env = ["TMPDIR=tmp"
+      "BUNDLE_PATH=tmp"
+      "TMP=tmp"
+      "TEMP=tmp"
+      ];
     };
 
     extraCommands = ''
@@ -113,7 +119,8 @@ rec {
               done
               fi
             done
-
+      mkdir -p tmp
+      chmod 1777 tmp
       mkdir -p usr/bin
       ln -s /bin/env usr/bin/env
       if [[ -e lib ]] ; then

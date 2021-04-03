@@ -2,8 +2,8 @@
 
 set -e
 
-VERSION="0.0.5"
-TARGETS="hadolint_builder go_builder edge_builder cit"
+VERSION="0.0.6"
+TARGETS="cit"
 USER="melg8"
 
 export DOCKER_BUILDKIT=1
