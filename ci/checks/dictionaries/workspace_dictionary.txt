@@ -4,6 +4,7 @@ chsh
 extrausers
 gcloud
 golangci
+gshadow
 gpasswd
 iname
 includecache
