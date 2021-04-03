@@ -114,6 +114,7 @@ rec {
 
       mkdir -p usr/bin
       ln -s /bin/env usr/bin/env
+      cp -al lib usr/lib
     '';
 
   };

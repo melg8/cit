@@ -1,10 +1,13 @@
 #!/usr/bin/env sh
 
 set -e
+
+MODULES_PATH=/usr/lib/node_modules
+
 remark . -f \
---use remark-preset-lint-consistent \
---use remark-preset-lint-markdown-style-guide \
---use remark-preset-lint-recommended
+--use ${MODULES_PATH}/remark-preset-lint-consistent \
+--use ${MODULES_PATH}/remark-preset-lint-markdown-style-guide \
+--use ${MODULES_PATH}/remark-preset-lint-recommended
 
 mdl .
 
