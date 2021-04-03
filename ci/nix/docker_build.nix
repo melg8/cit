@@ -4,6 +4,7 @@ let
   conform = pkgs.callPackage ./conform/default.nix { };
   commit_lint = pkgs.callPackage ./commit_lint/default.nix { };
   cspell = (pkgs.callPackage ./cspell/default.nix { }).shell.nodeDependencies;
+  docker_file_lint = (pkgs.callPackage ./docker_file_lint/default.nix { }).shell.nodeDependencies;
   git_leaks = pkgs.callPackage ./git_leaks/default.nix { };
   git_lint = pkgs.callPackage ./git_lint/default.nix { };
   git_lint_py = pkgs.callPackage ./git_lint_py/default.nix { };
@@ -45,7 +46,7 @@ rec {
     tag = "0.0.19";
     contents = [
       pkgs.bashInteractive
-      # All together 952 MB
+      # All together 2.3 GB
       pvs_studio_for_free # 2.5 MB
       pkgs.git # 397 MB
       pkgs.ccache # 33 MB
@@ -65,11 +66,12 @@ rec {
       git_lint # 294 MB
 
       # npm
-      # Together 271 MB.
+      # Together 281 MB.
       commit_lint # 224 MB
       cspell # 209 MB.
       text_lint # 247 MB.
       remark_lint # 209 MB.
+      docker_file_lint # 209 MB.
 
       # Haskell
       # Together 52 MB
@@ -114,7 +116,9 @@ rec {
 
       mkdir -p usr/bin
       ln -s /bin/env usr/bin/env
-      cp -al lib usr/lib
+      if [[ -e lib ]] ; then
+        cp -al lib usr/lib
+      fi
     '';
 
   };
