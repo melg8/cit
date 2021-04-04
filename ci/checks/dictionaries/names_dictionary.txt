@@ -5,6 +5,7 @@ codespell
 commitlint
 commitlintrc
 dockle
+gnumake
 patternplate
 hadolint
 gitleaks
