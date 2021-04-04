@@ -1,5 +1,5 @@
 let
-  pkgs = import <nixpkgs> { };
+  pkgs = import <nixpkgs> { overlays = [ (import ./overlay.nix)]; };
   pvs_studio_for_free = pkgs.callPackage ./pvs/how_to_use_pvs_studio_free.nix { };
   conform = pkgs.callPackage ./conform/default.nix { };
   commit_lint = pkgs.callPackage ./commit_lint/default.nix { };
@@ -41,7 +41,7 @@ let
   ];
 in
 rec {
-  world = pkgs.dockerTools.buildLayeredImage rec {
+  world = pkgs.dockerTools.buildImage rec {
     name = "melg8/cit";
     tag = "0.0.6";
     contents = [
@@ -103,21 +103,28 @@ rec {
       # to make the example suitable as a test case with working binaries.
       #cp -r ${pkgs.pkgsStatic.busybox}/* .
 
+      mkdir -p usr/bin
+      ln -s /bin/env usr/bin/env
+
       for path in ${builtins.toString contents}; do
               echo "Linking path: $path"
               if [[ -e "$path/bin" ]] ; then
               for file in $(ls $path/bin/); do
                   if [[ ! -e bin/$file ]]; then
                     echo "Linking file: $path/bin/$file -> bin/$file"
-                    ln -s $path/bin/$file bin/$file
+                    if [[ -L bin/$file ]]; then
+                        ln -sfn $path/bin/$file usr/bin/$file
+                    else
+                        ln -sfn $path/bin/$file bin/$file
+                    fi
+
                   fi
               done
               fi
             done
       mkdir -p tmp
       chmod 1777 tmp
-      mkdir -p usr/bin
-      ln -s /bin/env usr/bin/env
+
       if [[ -e lib ]] ; then
         cp -al lib usr/lib
       fi

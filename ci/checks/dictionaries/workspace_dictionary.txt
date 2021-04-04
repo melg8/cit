@@ -13,3 +13,8 @@ BUILDKIT
 Werror
 Weverything
 fsanitize
+mkmf
+srcprefix
+srcdir
+nodoc
+mktmpdir
