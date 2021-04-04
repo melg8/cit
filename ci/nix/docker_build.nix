@@ -2,7 +2,7 @@ let
   pkgs = import <nixpkgs> { overlays = [ (import ./overlay.nix)]; };
   pvs_studio_for_free = pkgs.callPackage ./pvs/how_to_use_pvs_studio_free.nix { };
   conform = pkgs.callPackage ./conform/default.nix { };
-  commit_lint = pkgs.callPackage ./commit_lint/default.nix { };
+  commit_lint = (pkgs.callPackage ./commit_lint/default.nix { }).shell.nodeDependencies;
   cspell = (pkgs.callPackage ./cspell/default.nix { }).shell.nodeDependencies;
   docker_file_lint = (pkgs.callPackage ./docker_file_lint/default.nix { }).shell.nodeDependencies;
   git_leaks = pkgs.callPackage ./git_leaks/default.nix { };
