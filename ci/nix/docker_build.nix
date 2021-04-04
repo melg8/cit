@@ -96,11 +96,6 @@ rec {
       Cmd = [ "/bin/bash" ];
       User = "user";
       WorkingDir = "/home/user/work";
-      Env = ["TMPDIR=tmp"
-      "BUNDLE_PATH=tmp"
-      "TMP=tmp"
-      "TEMP=tmp"
-      ];
     };
 
     extraCommands = ''
