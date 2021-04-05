@@ -12,6 +12,7 @@ gitleaks
 gitlint
 jessfraz
 moby
+nixos
 shellcheck
 shykes
 textlint

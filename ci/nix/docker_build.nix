@@ -1,5 +1,11 @@
 let
-  pkgs = import <nixpkgs> { overlays = [ (import ./overlay.nix)]; };
+  nixpkgs = (builtins.fetchGit {
+                name = "nixos-current-2021-04-05";
+                url = "https://github.com/nixos/nixpkgs";
+                ref = "refs/heads/nixos-20.09";
+                rev = "91b77fe6942fe999b1efbe906dc98024d1917c0d";
+              });
+  pkgs = import nixpkgs { overlays = [ (import ./overlay.nix)]; };
   pvs_studio_for_free = pkgs.callPackage ./pvs/how_to_use_pvs_studio_free.nix { };
   conform = pkgs.callPackage ./conform/default.nix { };
   commit_lint = (pkgs.callPackage ./commit_lint/default.nix { }).shell.nodeDependencies;
