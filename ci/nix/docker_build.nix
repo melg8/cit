@@ -1,11 +1,11 @@
 let
   nixpkgs = (builtins.fetchGit {
-                name = "nixos-unstable-2021-04-06";
-                url = "https://github.com/nixos/nixpkgs";
-                ref = "refs/heads/nixos-unstable";
-                rev = "3d1a7716d7f1fccbd7d30ab3b2ed3db831f43bde";
-              });
-  pkgs = import nixpkgs { overlays = [ (import ./overlay.nix)]; };
+    name = "nixos-unstable-2021-04-06";
+    url = "https://github.com/nixos/nixpkgs";
+    ref = "refs/heads/nixos-unstable";
+    rev = "3d1a7716d7f1fccbd7d30ab3b2ed3db831f43bde";
+  });
+  pkgs = import nixpkgs { overlays = [ (import ./overlay.nix) ]; };
   pvs_studio_for_free = pkgs.callPackage ./pvs/how_to_use_pvs_studio_free.nix { };
   conform = pkgs.callPackage ./conform/default.nix { };
   commit_lint = (pkgs.callPackage ./commit_lint/default.nix { }).shell.nodeDependencies;
