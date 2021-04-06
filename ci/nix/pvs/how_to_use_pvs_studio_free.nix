@@ -13,7 +13,11 @@ stdenv.mkDerivation rec {
 
   depsBuildBuild = [ cmake nukeReferences ];
   buildInputs = [ glibc.static ];
+
   preConfigure = ''
+    substituteInPlace main.cpp \
+      --replace "filesystem::" "std::experimental::filesystem::"
+
     substituteInPlace CMakeLists.txt \
       --replace "/usr" "$out"
   '';
