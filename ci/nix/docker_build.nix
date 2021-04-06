@@ -1,9 +1,9 @@
 let
   nixpkgs = (builtins.fetchGit {
-                name = "nixos-current-2021-04-05";
+                name = "nixos-unstable-2021-04-06";
                 url = "https://github.com/nixos/nixpkgs";
-                ref = "refs/heads/nixos-20.09";
-                rev = "91b77fe6942fe999b1efbe906dc98024d1917c0d";
+                ref = "refs/heads/nixos-unstable";
+                rev = "3d1a7716d7f1fccbd7d30ab3b2ed3db831f43bde";
               });
   pkgs = import nixpkgs { overlays = [ (import ./overlay.nix)]; };
   pvs_studio_for_free = pkgs.callPackage ./pvs/how_to_use_pvs_studio_free.nix { };
@@ -53,13 +53,13 @@ rec {
     contents = [
       pkgs.bashInteractive
       pkgs.gnumake
-      # All together 2.3 GB
+      # All together 2.123 GB
       pvs_studio_for_free # 2.5 MB
       pkgs.git # 397 MB
       pkgs.ccache # 33 MB
       pkgs.cmake # 96 MB
-      pkgs.clang_9 # 1.4 GB
-      pkgs.gcc9 # 236 MB
+      pkgs.clang_12 # 1.4 GB
+      pkgs.gcc10 # 236 MB
 
       # go
       pkgs.git-sizer # 37 MB
