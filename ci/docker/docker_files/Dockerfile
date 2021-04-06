@@ -1,7 +1,7 @@
 FROM hadolint/hadolint:v1.17.5-alpine AS hadolint_builder
 
 FROM golang:1.13-alpine AS go_builder
-LABEL Name=melg8/go_builder Version=0.0.5
+LABEL name=melg8/go_builder version=0.0.5
 
 ENV GO111MODULE on
 
@@ -30,7 +30,8 @@ RUN apk add --no-cache \
     clang-extra-tools=11.1.0-r0
 
 FROM alpine:3.11.5 AS cit
-LABEL Name=cit Version=0.0.5
+
+LABEL name=cit version=0.0.5
 ARG DEBIAN_FRONTEND=noninteractive
 
 RUN apk add --no-cache \
