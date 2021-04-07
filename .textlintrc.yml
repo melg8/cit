@@ -11,7 +11,6 @@
     "en-capitalization": true,
     "en-max-word-count": true,
     "footnote-order": true,
-    "ginger": true,
     "max-comma": {
       "max": 7
     },
