@@ -1,10 +1,10 @@
-{ lib, bundlerApp, bundlerUpdateScript, ruby_2_7 }:
+{ lib, bundlerApp, bundlerUpdateScript, ruby_3_0 }:
 
 bundlerApp {
   pname = "mdl";
   gemdir = ./.;
   exes = [ "mdl" ];
-  ruby = ruby_2_7;
+  ruby = ruby_3_0;
 
   passthru.updateScript = bundlerUpdateScript "mdl";
 
