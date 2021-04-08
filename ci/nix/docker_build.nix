@@ -1,9 +1,9 @@
 let
   nixpkgs = (builtins.fetchGit {
-    name = "nixos-unstable-2021-04-06";
+    name = "nixos-unstable-2021-04-09";
     url = "https://github.com/nixos/nixpkgs";
     ref = "refs/heads/nixos-unstable";
-    rev = "3d1a7716d7f1fccbd7d30ab3b2ed3db831f43bde";
+    rev = "9e377a6ce42dccd9b624ae4ce8f978dc892ba0e2";
   });
   pkgs = import nixpkgs { overlays = [ (import ./overlay.nix) ]; };
   pvs_studio_for_free = pkgs.callPackage ./pvs/how_to_use_pvs_studio_free.nix { };
