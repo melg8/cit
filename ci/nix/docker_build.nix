@@ -10,7 +10,7 @@ let
   conform = pkgs.callPackage ./conform/default.nix { };
   commit_lint = (pkgs.callPackage ./commit_lint/default.nix { }).shell.nodeDependencies;
   cspell = (pkgs.callPackage ./cspell/default.nix { }).shell.nodeDependencies;
-  docker_file_lint = (pkgs.callPackage ./docker_file_lint/default.nix { }).shell.nodeDependencies;
+  docker_file_lint = pkgs.callPackage ./docker_file_lint/docker_file_lint.nix { };
   git_leaks = pkgs.callPackage ./git_leaks/default.nix { };
   git_lint = pkgs.callPackage ./git_lint/default.nix { };
   git_lint_py = pkgs.callPackage ./git_lint_py/default.nix { };

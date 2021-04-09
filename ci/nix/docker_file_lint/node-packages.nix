@@ -282,15 +282,6 @@ let
         sha512 = "Ioj5I4w18ZcHFaaisqCKdh1z+ipzN7sA2JB+h+WOlGcOMWm0FFN1dfxkgc2I4EXfhSP/mOfM3W43uFzEdz4sTw==";
       };
     };
-    "lodash-2.4.2" = {
-      name = "lodash";
-      packageName = "lodash";
-      version = "2.4.2";
-      src = fetchurl {
-        url = "https://registry.npmjs.org/lodash/-/lodash-2.4.2.tgz";
-        sha1 = "fadd834b9683073da179b3eae6d9c0d15053f73e";
-      };
-    };
     "lodash-4.17.21" = {
       name = "lodash";
       packageName = "lodash";
@@ -564,7 +555,11 @@ let
           sources."string_decoder-0.10.31"
         ];
       })
-      sources."dockerfile_lint-0.3.4"
+      (sources."dockerfile_lint-0.3.4" // {
+        dependencies = [
+          sources."lodash-4.17.21"
+        ];
+      })
       sources."dockerode-2.5.8"
       sources."end-of-stream-1.4.4"
       sources."esprima-4.0.1"
@@ -581,7 +576,6 @@ let
           sources."lodash-4.17.21"
         ];
       })
-      sources."lodash-2.4.2"
       sources."make-dir-1.3.0"
       sources."minimist-1.2.5"
       sources."mkdirp-0.5.5"
