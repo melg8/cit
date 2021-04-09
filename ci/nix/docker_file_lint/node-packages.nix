@@ -609,6 +609,10 @@ let
     production = true;
     bypassCache = true;
     reconstructLock = false;
+    preRebuild = ''
+        substituteInPlace node_modules/dockerfile_lint/lib/linter-utils.js \
+        --replace "_.contains" "_.includes"
+    '';
   };
 in
 {
