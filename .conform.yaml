@@ -22,6 +22,7 @@ policies:
           - style
           - test
         scopes:
+          - deps
           - docker
           - nix
           - policy
