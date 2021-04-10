@@ -3,7 +3,7 @@ ls:
   .cc: snake_case
   .cmake: snake_case
   .cpp: snake_case
-  .dir: snake_case
+  .dir: regex:.github | snake_case
   .h: snake_case
   .json: regex:package-lock | snake_case
   .md: snake_case

@@ -1,0 +1,50 @@
+---
+name: Checks
+# yamllint disable-line rule:truthy
+on: [push, pull_request]
+jobs:
+  build_docker:
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+      - uses: cachix/install-nix-action@v13
+        with:
+          nix_path: nixpkgs=channel:nixos-unstable
+      - run: |
+          nix build -f ./ci/nix/docker_build.nix \
+                        --enforce-determinism \
+                        --keep-failed
+          ls -la .
+          sha256sum ./result
+  lint_all:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+      - run: |
+          sudo chmod -R 777 "$(pwd)"
+          ./ci/docker/docker_run.sh ./ci/checks/all.sh
+      - uses: docker://melg8/cit:0.0.6
+  build_gcc:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+      - run: |
+          sudo chmod -R 777 "$(pwd)"
+          ./ci/docker/docker_run.sh ./ci/builders/gcc/build.sh
+      - uses: docker://melg8/cit:0.0.6
+  build_clang:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+      - run: |
+          sudo chmod -R 777 "$(pwd)"
+          ./ci/docker/docker_run.sh ./ci/builders/clang/build.sh
+      - uses: docker://melg8/cit:0.0.6
