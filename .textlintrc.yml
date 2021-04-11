@@ -15,7 +15,7 @@
       "max": 7
     },
     "max-doc-width": true,
-    "no-dead-link": true,
+    "no-dead-link": false,
     "no-empty-section": true,
     "no-exclamation-question-mark": true,
     "no-start-duplicated-conjunction": true,
