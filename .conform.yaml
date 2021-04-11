@@ -2,12 +2,16 @@
 policies:
   - type: commit
     spec:
-      headerLength: 72
+      header:
+        length: 72
+        imperative: true
+      body:
+        required: true
       dco: true
       gpg: true
-      imperative: true
+      spellcheck:
+        locale: US
       maximumOfOneCommit: false
-      requireCommitBody: true
       conventional:
         types:
           - build
