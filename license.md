@@ -1,6 +1,7 @@
 MIT License
 
-Copyright (c) 2020 melg8
+Copyright © 2020-2021, Melg Eight ([melg8](https://github.com/melg8))
+<mailto:public.melg8@gmail.com>
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
