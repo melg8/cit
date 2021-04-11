@@ -4,13 +4,16 @@ cmake
 codespell
 commitlint
 commitlintrc
+cppcheck
 dockle
+foss
 gnumake
 patternplate
 hadolint
 gitleaks
 gitlint
 jessfraz
+jscpd
 moby
 nixos
 shellcheck
