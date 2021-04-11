@@ -11,5 +11,5 @@ export DOCKER_CONTENT_TRUST=0
 
 for TARGET in ${TARGETS}
 do
-    docker push "${USER}"/"${TARGET}":"${VERSION}"
+    docker image push "${USER}"/"${TARGET}":"${VERSION}"
 done

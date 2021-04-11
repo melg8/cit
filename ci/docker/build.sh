@@ -29,5 +29,5 @@ for i in "${!TARGETS[@]}"; do
             "${TARGET_WITH_CACHE[@]}"
             --tag "${USER}"/"${TARGET}":"${VERSION}" \
             "${DOCKER_PATH}")
-   docker "${COMMAND[@]}"
+   docker image "${COMMAND[@]}"
 done
