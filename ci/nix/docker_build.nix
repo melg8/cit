@@ -5,7 +5,7 @@ let
     ref = "refs/heads/nixos-unstable";
     rev = "9e377a6ce42dccd9b624ae4ce8f978dc892ba0e2";
   });
-  pkgs = import nixpkgs { overlays = [ (import ./overlay.nix) ]; };
+  pkgs = import nixpkgs { };
   pvs_studio_for_free = pkgs.callPackage ./pvs/how_to_use_pvs_studio_free.nix { };
   conform = pkgs.callPackage ./conform/default.nix { };
   commit_lint = (pkgs.callPackage ./commit_lint/default.nix { }).shell.nodeDependencies;
