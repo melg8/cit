@@ -18,8 +18,19 @@ jobs:
                         --keep-failed
           ls -la .
           sha256sum ./result
+  lint_all_from_nix_shell:
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+      - uses: cachix/install-nix-action@v13
+        with:
+          nix_path: nixpkgs=channel:nixos-unstable
+      - run: |
+          nix-shell --run ./ci/checks/all.sh
   lint_all:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
     steps:
       - uses: actions/checkout@v2
         with:
@@ -29,7 +40,7 @@ jobs:
           ./ci/docker/docker_run.sh ./ci/checks/all.sh
       - uses: docker://melg8/cit:0.0.6
   build_gcc:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
     steps:
       - uses: actions/checkout@v2
         with:
@@ -39,7 +50,7 @@ jobs:
           ./ci/docker/docker_run.sh ./ci/builders/gcc/build.sh
       - uses: docker://melg8/cit:0.0.6
   build_clang:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
     steps:
       - uses: actions/checkout@v2
         with:
