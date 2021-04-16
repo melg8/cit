@@ -19,6 +19,7 @@ rec {
       Cmd = [ "/bin/bash" ];
       User = "user";
       WorkingDir = "/home/user/work";
+      Env = [ "NODE_PATH=/usr/lib/node_modules" ];
     };
     extraCommands = import ./docker_extra_commands.nix { inherit contents; };
   };
