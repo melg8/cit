@@ -1,0 +1,6 @@
+builtins.fetchGit {
+    name = "nixos-unstable-2021-04-09";
+    url = "https://github.com/nixos/nixpkgs";
+    ref = "refs/heads/nixos-unstable";
+    rev = "9e377a6ce42dccd9b624ae4ce8f978dc892ba0e2";
+}
