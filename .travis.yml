@@ -19,6 +19,12 @@ jobs:
               --keep-failed
         && ls -la .
         && sha256sum ./result
+    - name: "Lint all from nix shell"
+      before_install: sudo mkdir -m 0755 /nix
+        && sudo chown travis /nix
+      install: curl -L https://nixos.org/nix/install | sh
+        && . /home/travis/.nix-profile/etc/profile.d/nix.sh
+      script: nix-shell --run ./ci/checks/all.sh
     - name: "Lint all"
       env: SCRIPT="./ci/checks/all.sh"
     - name: "Gcc"
