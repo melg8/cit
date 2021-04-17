@@ -11,10 +11,15 @@ rec {
     contents = tools
       ++ nonRootShadowSetup { uid = 1000; user = "user"; };
     config = {
-      Cmd = [ "/bin/bash" ];
+      Cmd = [ "sh" ];
       User = "user";
       WorkingDir = "/home/user/work";
-      Env = [ "NODE_PATH=/usr/lib/node_modules" ];
+      Env = [
+        "NODE_PATH=/usr/lib/node_modules"
+        "NIX_PAGER=cat"
+        "USER=user"
+        "NIX_PATH=nixpkgs=${pkgs.path}"
+      ];
     };
     extraCommands = import ./docker_extra_commands.nix { inherit contents; };
   };
