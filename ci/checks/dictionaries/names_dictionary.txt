@@ -25,3 +25,5 @@ zricethezav
 Cmake
 Melg
 nixbld
+libfaketime
+faketime

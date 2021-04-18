@@ -17,13 +17,12 @@ let
   '';
 in
 rec {
-  world = pkgs.dockerTools.buildImageWithNixDb rec {
+  world = pkgs.dockerTools.buildImage rec {
     name = "melg8/cit";
     tag = "0.0.6";
     contents = with pkgs; [
       (writeTextDir "etc/passwd" passwd)
       (writeTextDir "etc/group" group)
-      nixpkgs
     ] ++ tools;
     config = {
       Cmd = [ "sh" ];
@@ -36,7 +35,11 @@ rec {
         "NIX_PATH=nixpkgs=${nixpkgs}"
       ];
     };
+
+
     extraCommands = import ./docker_extra_commands.nix {
+      inherit nixpkgs;
+      inherit pkgs;
       inherit contents;
     };
   };
