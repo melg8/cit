@@ -24,3 +24,4 @@ yamllint
 zricethezav
 Cmake
 Melg
+nixbld

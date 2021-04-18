@@ -18,3 +18,8 @@ srcprefix
 srcdir
 nodoc
 mktmpdir
+binutils
+gnupatch
+patchelf
+findutils
+diffutils

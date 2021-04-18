@@ -2,5 +2,4 @@
 
 set -e
 docker container run --rm -it --ulimit nofile=1024 \
--v "$(pwd)":/home/user/work melg8/cit:0.0.6
-# --network none
+-v "$(pwd)":/tmp/work --network none  melg8/cit:0.0.6
