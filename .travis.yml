@@ -2,7 +2,8 @@
 language: minimal
 sudo: required
 services: docker
-before_install: sudo chmod -R 777 "$(pwd)"
+before_install: sudo chmod 777 "$(pwd)"
+  && sudo chmod -R 777 "$(pwd)/.git"
 install: ./ci/docker/docker_pull.sh
 git:
   depth: false
@@ -25,6 +26,9 @@ jobs:
       install: curl -L https://nixos.org/nix/install | sh
         && . /home/travis/.nix-profile/etc/profile.d/nix.sh
       script: nix-shell --run ./ci/checks/all.sh
+    - name: "Lint all in docker from nix shell"
+      env: SCRIPT="./ci/checks/all.sh"
+      script: ./ci/docker/docker_run_nix_shell.sh ${SCRIPT}
     - name: "Lint all"
       env: SCRIPT="./ci/checks/all.sh"
     - name: "Gcc"
