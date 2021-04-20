@@ -1,19 +1,23 @@
 { nixpkgs, pkgs, contents }:
 let
-  loadNixDb = contents: let
-    contentsList = if builtins.isList contents then contents else [ contents ];
-  in with pkgs; ''
-    export NIX_REMOTE=local?root=$PWD
-    export USER=nobody
-    ${libfaketime}/bin/faketime '1980-01-01 00:00:00' \
-    ${nix}/bin/nix-store --load-db < ${closureInfo {rootPaths = contentsList;}}/registration
+  loadNixDb = contents:
+    let
+      contentsList = if builtins.isList contents then contents else [ contents ];
+    in
+    with pkgs; ''
+      export NIX_REMOTE=local?root=$PWD
+      export USER=nobody
+      ${libfaketime}/bin/faketime '1980-01-01 00:00:00' \
+      ${nix}/bin/nix-store --load-db < ${closureInfo { rootPaths = contentsList; }}/registration
 
-    mkdir -p nix/var/nix/gcroots/docker/
-    for i in ${lib.concatStringsSep " " contentsList}; do
-    ln -s $i nix/var/nix/gcroots/docker/$(basename $i)
-    done;
-  '';
-in (loadNixDb (contents ++ [nixpkgs])) + ''
+      mkdir -p nix/var/nix/gcroots/docker/
+      for i in ${lib.concatStringsSep " " contentsList}; do
+      ln -s $i nix/var/nix/gcroots/docker/$(basename $i)
+      done;
+    '';
+in
+(loadNixDb (contents ++ [ nixpkgs ])) + ''
+  mkdir -p home/user/work
   mkdir -p usr/bin
   ln -s /bin/env usr/bin/env
 
