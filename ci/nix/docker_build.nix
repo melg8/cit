@@ -4,11 +4,25 @@ let
   tools = import ./tools.nix { pkgs = pkgs; };
   nonRootShadowSetup = import ./docker_shadow_setup.nix { pkgs = pkgs; };
   inherit (pkgs.lib) concatStringsSep genList;
+  nsswitch = ''
+    passwd:    files systemd
+    group:     files systemd
+    shadow:    files
+
+    hosts:     files mymachines dns myhostname
+    networks:  files
+
+    ethers:    files
+    services:  files
+    protocols: files
+    rpc:       files
+  '';
   passwd = ''
     root:x:0:0::/root:/sh
     user:x:1000:100::/home/user:/sh
     ${concatStringsSep "\n" (genList
      (i: "nixbld${toString (i + 1)}:x:${toString (i + 30001)}:30000::/var/empty:/run/current-system/sw/bin/nologin") 32)}
+    nobody:x:65534:65534:Unprivileged account (don't use!):/var/empty:/run/current-system/sw/bin/nologin
   '';
 
   group = ''
@@ -23,6 +37,7 @@ rec {
     name = "melg8/cit";
     tag = "0.0.6";
     contents = with pkgs; [
+      (writeTextDir "etc/nsswitch.conf" nsswitch)
       (writeTextDir "etc/passwd" passwd)
       (writeTextDir "etc/group" group)
     ] ++ tools;
@@ -37,8 +52,8 @@ rec {
         "NIX_PATH=nixpkgs=${nixpkgs}"
       ];
     };
-    uid = 1000;
-    gid = 100;
+    uid = user:1000;
+    gid = users:100;
 
     extraCommands = import ./docker_extra_commands.nix {
       inherit nixpkgs;

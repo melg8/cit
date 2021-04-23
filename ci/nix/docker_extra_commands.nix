@@ -14,6 +14,17 @@ let
       for i in ${lib.concatStringsSep " " contentsList}; do
       ln -s $i nix/var/nix/gcroots/docker/$(basename $i)
       done;
+
+      # Because per-user is filled depending on host system.
+      rm -rf nix/var/nix/gcroots/per-user
+      mkdir -p nix/var/nix/gcroots/per-user/user
+
+      rm -rf nix/var/nix/profiles/per-user
+      mkdir -p nix/var/nix/profiles/per-user/user
+
+      # Because of bugged link to non existent location which differs inside
+      # of docker.
+      rm nix/var/nix/gcroots/profiles
     '';
 in
 (loadNixDb (contents ++ [ nixpkgs ])) + ''
