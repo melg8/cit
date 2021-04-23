@@ -39,18 +39,24 @@ jobs:
           ls -la /
           ls -la /nix
           ls -la /nix/store
-      - run: |
-          nix build -f ./ci/nix/docker_build.nix \
-                        --enforce-determinism \
-                        --keep-failed
-          ls -la .
-          sha256sum ./result
+      - run: ./ci/docker/build_with_nix.sh
       - run: |
           echo "investigation 4"
           whoami
           ls -la /
           ls -la /nix
           ls -la /nix/store
+  build_docker_from_docker:
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+      - run: |
+          sudo chmod 777 "$(pwd)"
+          sudo chmod -R 777 "$(pwd)/.git"
+          ./ci/docker/docker_run_with_network.sh ./ci/docker/build_with_nix.sh
+      - uses: docker://melg8/cit:0.0.6
   lint_all_from_nix_shell:
     runs-on: ubuntu-20.04
     steps:
