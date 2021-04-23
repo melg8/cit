@@ -70,7 +70,6 @@ in
   ### Add deps for docker to be hermetic.
   pkgs.gcc10 # 236 MB
 
-  pkgs.gccStdenv
   pkgs.bashInteractive
   pkgs.bashInteractive.dev
   pkgs.bashInteractive.doc

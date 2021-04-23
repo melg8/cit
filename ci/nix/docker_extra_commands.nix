@@ -7,7 +7,7 @@ let
     with pkgs; ''
       export NIX_REMOTE=local?root=$PWD
       export USER=nobody
-      ${libfaketime}/bin/faketime '1980-01-01 00:00:00' \
+      ${libfaketime}/bin/faketime -f "1970-01-01 00:00:01" \
       ${nix}/bin/nix-store --load-db < ${closureInfo { rootPaths = contentsList; }}/registration
 
       mkdir -p nix/var/nix/gcroots/docker/
