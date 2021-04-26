@@ -1,5 +1,6 @@
 ---
 language: minimal
+dist: focal
 sudo: required
 services: docker
 before_install: sudo chmod 777 "$(pwd)"
@@ -20,6 +21,9 @@ jobs:
               --keep-failed
         && ls -la .
         && sha256sum ./result
+    - name: "Build docker from docker"
+      script: |
+        ./ci/docker/docker_run_with_network.sh ./ci/docker/build_with_nix.sh
     - name: "Lint all from nix shell"
       before_install: sudo mkdir -m 0755 /nix
         && sudo chown travis /nix
