@@ -10,7 +10,7 @@ let
       ${libfaketime}/bin/faketime -f "1970-01-01 00:00:01" \
       ${nix}/bin/nix-store --load-db < ${closureInfo { rootPaths = contentsList; }}/registration
 
-      mkdir -p nix/var/nix/gcroots/docker/
+      mkdir -p nix/var/nix/gcroots/docker
       for i in ${lib.concatStringsSep " " contentsList}; do
       ln -s $i nix/var/nix/gcroots/docker/$(basename $i)
       done;

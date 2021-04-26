@@ -17,15 +17,12 @@ in
   pkgs.cacert
   pkgs.binutils
 
-
-
   # All together 2.123 GB
   pvs_studio_for_free # 2.5 MB
   pkgs.git # 397 MB
   pkgs.ccache # 33 MB
   pkgs.cmake # 96 MB
   pkgs.clang_12 # 1.4 GB
-
 
   # go
   pkgs.git-sizer # 37 MB
