@@ -16,11 +16,7 @@ jobs:
                       && sudo chown travis /nix
       install: curl -L https://nixos.org/nix/install | sh
                && . /home/travis/.nix-profile/etc/profile.d/nix.sh
-      script: nix build -f ./ci/nix/docker_build.nix
-              --enforce-determinism
-              --keep-failed
-        && ls -la .
-        && sha256sum ./result
+      script: ./ci/docker/build_with_nix.sh
     - name: "Build docker from docker"
       script: |
         ./ci/docker/docker_run_with_network.sh ./ci/docker/build_with_nix.sh
