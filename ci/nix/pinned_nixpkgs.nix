@@ -1,7 +1,7 @@
 let
-  rev = "9e377a6ce42dccd9b624ae4ce8f978dc892ba0e2";
+  rev = "85aef7706e35226d572b419971a98cf0d2f22ae6";
 in
 builtins.fetchTarball {
   url = "https://github.com/NixOS/nixpkgs/archive/${rev}.tar.gz";
-  sha256 = "1r3ll77hyqn28d9i4cf3vqd9v48fmaa1j8ps8c4fm4f8gqf4kpl1";
+  sha256 = "1s229hiq2kxki0xw8dfbs6gw0qr0wschwq4wmy1mfjrwcgpnciba";
 }
