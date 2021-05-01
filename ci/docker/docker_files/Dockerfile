@@ -8,15 +8,12 @@ ENV GO111MODULE on
 RUN apk update \
  && apk add --no-cache \
     git=2.26.3-r0 \
-    upx=3.96-r0
-
-RUN go get github.com/talos-systems/conform/ \
- && upx --best --ultra-brute /go/bin/conform
-
-RUN go get github.com/zricethezav/gitleaks/v7 \
- && upx --best --ultra-brute /go/bin/gitleaks
-
-RUN go get github.com/github/git-sizer/ \
+    upx=3.96-r0 \
+ && go get github.com/talos-systems/conform/ \
+ && upx --best --ultra-brute /go/bin/conform \
+ && go get github.com/zricethezav/gitleaks/v7 \
+ && upx --best --ultra-brute /go/bin/gitleaks \
+ && go get github.com/github/git-sizer/ \
  && upx --best --ultra-brute /go/bin/git-sizer
 
 FROM ruby:2.7.2-alpine3.13 AS ruby_builder
@@ -24,9 +21,8 @@ FROM ruby:2.7.2-alpine3.13 AS ruby_builder
 FROM alpine:3.11.5 AS edge_builder
 
 RUN echo "https://uk.alpinelinux.org/alpine/edge/main/" >> \
-    /etc/apk/repositories
-
-RUN apk add --no-cache \
+    /etc/apk/repositories \
+ && apk add --no-cache \
     clang-extra-tools=11.1.0-r0
 
 FROM alpine:3.11.5 AS cit
@@ -48,17 +44,15 @@ RUN gem install mdl -v 0.11.0 \
  "/usr/local/lib/ruby/gems/2.7.0/gems/git-lint-1.4.0/lib/git\
 /lint/branches/environments/local.rb" \
  && gem cleanup all \
- && rm -rf /usr/local/lib/gems/2.7.0/cache/*
-
-RUN apk add --no-cache \
+ && rm -rf /usr/local/lib/gems/2.7.0/cache/* \
+ && apk add --no-cache \
     python3=3.8.2-r2 \
  && pip3 install --no-cache-dir \
     codespell==1.17.1 \
     gitlint==0.15.0 \
     yamllint==1.24.2 \
-    cmake_format==0.6.13
-
-RUN apk add --no-cache \
+    cmake_format==0.6.13 \
+ && apk add --no-cache \
     npm=12.21.0-r0 \
  && npm i -g --production \
     cspell@5.3.9 \
@@ -108,9 +102,8 @@ COPY --from=edge_builder /usr/bin/clang-tidy /usr/bin/
 # Only for cpp code.
 RUN apk add --no-cache \
     clang=9.0.0-r1 \
-    g++=9.3.0-r0
-
-RUN apk add --no-cache \
+    g++=9.3.0-r0 \
+ && apk add --no-cache \
     ccache=3.7.6-r0 \
     cmake=3.15.5-r0 \
     make=4.2.1-r2
