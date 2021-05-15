@@ -3,31 +3,17 @@ let
   pkgs = import nixpkgs { };
 in
 rec {
-  bootstrap-seeds = pkgs.stdenv.mkDerivation rec  {
-    pname = "bootstrap-seeds";
-    version = "1.0.0";
-
-    src = builtins.fetchGit {
-      url = "https://github.com/oriansj/${pname}.git";
-      ref = "refs/heads/master";
-      rev = "6d3fb087efe2d7cc7938cf2aff0265c6bfc86370";
-    };
-    buildCommand = ''
-      mkdir $out
-      cp -r ${src}/* $out/
-    '';
+  bootstrap-seeds = builtins.fetchGit rec {
+    name = "bootstrap-seeds";
+    url = "https://github.com/oriansj/${name}.git";
+    ref = "refs/heads/master";
+    rev = "6d3fb087efe2d7cc7938cf2aff0265c6bfc86370";
   };
-  m2-planet = pkgs.stdenv.mkDerivation rec {
+  m2-planet = builtins.fetchGit rec {
     name = "M2-Planet";
-    src = builtins.fetchGit {
-      url = "https://github.com/oriansj/${name}.git";
-      ref = "refs/heads/master";
-      rev = "cece07145c9f175767bf8bd83599be2f22e5bff4";
-    };
-    buildCommand = ''
-      mkdir $out
-      cp -r ${src}/* $out/
-    '';
+    url = "https://github.com/oriansj/${name}.git";
+    ref = "refs/heads/master";
+    rev = "cece07145c9f175767bf8bd83599be2f22e5bff4";
   };
   stage0-posix = pkgs.stdenv.mkDerivation rec {
     name = "stage0-posix";
@@ -58,7 +44,6 @@ rec {
 
     buildCommand = ''
       mkdir $out
-      mkdir $out/bootstrap-seeds
       cp -r ${src}/* $out/
       echo "${kaem_run}" > $out/kaem.run
     '';
