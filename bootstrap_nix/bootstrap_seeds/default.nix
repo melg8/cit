@@ -13,20 +13,27 @@ rec {
     name = "M2-Planet";
     url = "https://github.com/oriansj/${name}.git";
     ref = "refs/heads/master";
-    rev = "a5bc08b23fbe74f7f7eb2842eb8468be4d031d3f"; # Release 1.7.0
+    rev = "358b6cfb96e1685891a705a0bb31eda499d57974"; # Release 1.7.0
   };
+  m2-libc =
+    builtins.fetchGit rec {
+      name = "M2libc";
+      url = "https://github.com/oriansj/${name}.git";
+      ref = "refs/heads/main";
+      rev = "dd470ed9aea3ed00ce2924daaabe49311975903a"; # Release 1.7.0
+    };
   mescc-tools = builtins.fetchGit rec {
     name = "mescc-tools";
     url = "https://github.com/oriansj/${name}.git";
     ref = "refs/heads/master";
-    rev = "5768b2a79036f34b9bd420ab4801ad7dca15dff8"; # Compatible with m2-planet 1.7.0
+    rev = "3f5b7588a20bc2225f25a31eed53a8152563955f"; # Use patched version with m2-planet 1.7.0
   };
   stage0-posix = pkgs.stdenv.mkDerivation rec {
     name = "stage0-posix";
     src = builtins.fetchGit {
       url = "https://github.com/oriansj/${name}.git";
       ref = "refs/heads/master";
-      rev = "cb1c9d585690f6ead54a22caaa508ccd86cb863d";
+      rev = "0e6d8d6d3f261b550af1768b767f66b30fd07854";
     };
     kaem_run = ''
       ${bootstrap-seeds}/POSIX/x86/hex0-seed ${bootstrap-seeds}/POSIX/x86/hex0_x86.hex0 hex0
@@ -167,24 +174,25 @@ rec {
       blood-elf-0 -f kaem.M1 -o kaem-footer.M1
 
       bin_M1 -f ${src}/x86/x86_defs.M1 \
-      -f ${src}/x86/libc-core.M1 \
-      -f kaem.M1 \
-      -f kaem-footer.M1 \
-      --LittleEndian \
-      --architecture x86 \
-      -o hold
+        -f ${src}/x86/libc-core.M1 \
+        -f kaem.M1 \
+        -f kaem-footer.M1 \
+        --LittleEndian \
+        --architecture x86 \
+        -o hold
 
+      bin_hex2 -f ${src}/x86/ELF-i386-debug.hex2 \
+        -f hold \
+        --LittleEndian \
+        --architecture x86 \
+        --BaseAddress 0x8048000 \
+        -o bin_kaem \
+        --exec_enable
 
-
-
-            catm hold1 ${src}/x86/ELF-i386-debug.hex2 hold
-            hex2-0 hold1 bin_kaem
-
-            bin_kaem --verbose --strict -f $out/kaem1.run
-
+      bin_kaem --verbose --strict -f $out/kaem1.run
     '';
     kaem_full_run = ''
-      /build/catm ""$""{out} /build/bin_M1
+      /build/catm ""$""{out} /build/bin_kaem
     '';
 
     buildCommand = ''
