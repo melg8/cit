@@ -44,7 +44,7 @@ rec {
       catm hold ${src}/x86/ELF-i386.hex2 temp1
       hex2-0 hold cc_x86
 
-      # Build M2-Planet with cc_x86
+      # Build M2-Planet with cc_x86.
       catm hold ${m2-planet}/test/common_x86/functions/file.c \
         ${m2-planet}/test/common_x86/functions/malloc.c \
         ${m2-planet}/functions/calloc.c \
@@ -71,7 +71,7 @@ rec {
       catm hold ${src}/x86/ELF-i386.hex2 temp1
       hex2-0 hold M2
 
-      # Build blood-elf-0 with M2
+      # Build blood-elf-0 with M2.
       M2 --architecture x86 \
         -f ${m2-planet}/test/common_x86/functions/exit.c \
         -f ${m2-planet}/test/common_x86/functions/file.c \
@@ -90,7 +90,7 @@ rec {
       catm hold ${src}/x86/ELF-i386.hex2 temp1
       hex2-0 hold blood-elf-0
 
-      # Build M1 from c sources
+      # Build M1 from c sources.
       M2 --architecture x86 \
          -f ${m2-planet}/test/common_x86/functions/exit.c \
          -f ${m2-planet}/test/common_x86/functions/file.c \
@@ -112,7 +112,7 @@ rec {
       catm hold ${src}/x86/ELF-i386-debug.hex2 temp1
       hex2-0 hold bin_M1
 
-      # Build hex2 from c sources
+      # Build hex2 from c sources.
       M2 --architecture x86 \
           -f ${m2-planet}/test/common_x86/functions/exit.c \
           -f ${m2-planet}/test/common_x86/functions/file.c \
@@ -127,25 +127,71 @@ rec {
           -f ${mescc-tools}/hex2_linker.c \
           --debug \
           -o hex2_linker.M1
+
       blood-elf-0 -f hex2_linker.M1 -o hex2_linker-footer.M1
+
       bin_M1 -f ${src}/x86/x86_defs.M1 \
-      	-f ${src}/x86/libc-core.M1 \
-      	-f hex2_linker.M1 \
-      	-f hex2_linker-footer.M1 \
-      	--LittleEndian \
-      	--architecture x86 \
-      	-o temp1
+        -f ${src}/x86/libc-core.M1 \
+        -f hex2_linker.M1 \
+        -f hex2_linker-footer.M1 \
+        --LittleEndian \
+        --architecture x86 \
+        -o temp1
 
       catm hold ${src}/x86/ELF-i386-debug.hex2 temp1
       hex2-0 hold bin_hex2
 
-      ${bootstrap-seeds}/POSIX/x86/hex0-seed ${bootstrap-seeds}/POSIX/x86/hex0_x86.hex0 hex0
+      # Build kaem from c sources.
+      M2 --architecture x86 \
+        -f ${m2-planet}/test/common_x86/functions/exit.c \
+        -f ${m2-planet}/test/common_x86/functions/file.c \
+        -f ${m2-planet}/functions/file_print.c \
+        -f ${m2-planet}/test/common_x86/functions/malloc.c \
+        -f ${m2-planet}/functions/calloc.c \
+        -f ${m2-planet}/functions/match.c \
+        -f ${m2-planet}/functions/in_set.c \
+        -f ${m2-planet}/functions/require.c \
+        -f ${mescc-tools}/functions/string.c \
+        -f ${m2-planet}/functions/numerate_number.c \
+        -f ${m2-planet}/test/common_x86/functions/fork.c \
+        -f ${m2-planet}/test/common_x86/functions/execve.c \
+        -f ${m2-planet}/test/common_x86/functions/chdir.c \
+        -f ${m2-planet}/test/common_x86/functions/getcwd.c \
+        -f ${mescc-tools}/Kaem/kaem.h \
+        -f ${mescc-tools}/Kaem/variable.c \
+        -f ${mescc-tools}/Kaem/kaem_globals.c \
+        -f ${mescc-tools}/Kaem/kaem.c \
+        --debug \
+        -o kaem.M1
+
+      blood-elf-0 -f kaem.M1 -o kaem-footer.M1
+
+      bin_M1 -f ${src}/x86/x86_defs.M1 \
+      -f ${src}/x86/libc-core.M1 \
+      -f kaem.M1 \
+      -f kaem-footer.M1 \
+      --LittleEndian \
+      --architecture x86 \
+      -o hold
+
+
+
+
+            catm hold1 ${src}/x86/ELF-i386-debug.hex2 hold
+            hex2-0 hold1 bin_kaem
+
+            bin_kaem --verbose --strict -f $out/kaem1.run
+
+    '';
+    kaem_full_run = ''
+      /build/catm ""$""{out} /build/bin_M1
     '';
 
     buildCommand = ''
       mkdir $out
       cp -r ${src}/* $out/
       echo "${kaem_run}" > $out/kaem.run
+      echo "${kaem_full_run}" > $out/kaem1.run
     '';
   };
   bootstrap-seeds-build = derivation rec {
