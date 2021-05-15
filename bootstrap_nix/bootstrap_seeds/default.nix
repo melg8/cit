@@ -22,6 +22,7 @@ rec {
       ref = "refs/heads/main";
       rev = "dd470ed9aea3ed00ce2924daaabe49311975903a"; # Release 1.7.0
     };
+  kaem-addition = ./kaem.c;
   mescc-tools = builtins.fetchGit rec {
     name = "mescc-tools";
     url = "https://github.com/oriansj/${name}.git";
@@ -167,7 +168,7 @@ rec {
         -f ${mescc-tools}/Kaem/kaem.h \
         -f ${mescc-tools}/Kaem/variable.c \
         -f ${mescc-tools}/Kaem/kaem_globals.c \
-        -f ${mescc-tools}/Kaem/kaem.c \
+        -f ${kaem-addition} \
         --debug \
         -o kaem.M1
 
@@ -192,9 +193,12 @@ rec {
       bin_kaem --verbose --strict -f $out/kaem1.run
     '';
     kaem_full_run = ''
-      /build/catm ""$""{out} /build/bin_kaem
+      mkdir ""$""{out}
+      cd /build
+      ./catm ""$""{out}/M1 ./bin_M1
+      ./catm ""$""{out}/hex2 ./bin_hex2
+      ./catm ""$""{out}/kaem ./bin_kaem
     '';
-
     buildCommand = ''
       mkdir $out
       cp -r ${src}/* $out/
@@ -202,13 +206,15 @@ rec {
       echo "${kaem_full_run}" > $out/kaem1.run
     '';
   };
-  bootstrap-seeds-build = derivation rec {
-    name = "bootstrap-seeds-build";
+  messcc-tools-mini = derivation rec {
+    name = "messcc-tools-mini";
     system = builtins.currentSystem;
     outputs = [ "out" ];
     srcs = stage0-posix;
     builder = "${bootstrap-seeds}/POSIX/x86/kaem-optional-seed";
     args = [ "${srcs}/kaem.run" ];
+    outputHashMode = "recursive";
+    outputHashAlgo = "sha256";
+    outputHash = "15mwgfgp18naypcg4k9f0v60x1rrgf98ypcbd8zr3j3913qn3jy5";
   };
-
 }
