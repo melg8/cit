@@ -3,8 +3,8 @@ let
   generated_kaem_scripts = import ./generate_kaem_scripts.nix { inherit sources; };
 in
 with sources; rec  {
-  mescc-tools-mini = derivation rec {
-    name = "mescc-tools-mini";
+  mes-m2-with-tools = derivation rec {
+    name = "mes-m2-with-tools";
     system = builtins.currentSystem;
     outputs = [ "out" ];
     srcs = generated_kaem_scripts.kaem_run;
