@@ -467,6 +467,25 @@ int mkdir()
     return FALSE;
 }
 
+int chmod_posix(char *pathname, int mode)
+{
+    asm("LOAD_EFFECTIVE_ADDRESS_ebx %8"
+        "LOAD_INTEGER_ebx"
+        "LOAD_EFFECTIVE_ADDRESS_ecx %4"
+        "LOAD_INTEGER_ecx"
+        "LOAD_IMMEDIATE_eax %15"
+        "INT_80");
+}
+
+int chmod_x() {
+    if(NULL == token->next) return TRUE;
+    token = token->next;
+    if(NULL == token->value) return TRUE;
+    int ret = chmod_posix(token->value, 755);
+    if(0 > ret) return TRUE;
+    return FALSE;
+}
+
 /* pwd builtin */
 int pwd()
 {
@@ -613,6 +632,12 @@ int execute()
     {
         rc = mkdir();
         if(STRICT) require(rc == FALSE, "mkdir failed!\n");
+        return 0;
+    }
+    else if(match(token->value, "chmod_x"))
+    {
+        rc = chmod_x();
+        if(STRICT) require(rc == FALSE, "chmod_x failed!\n");
         return 0;
     }
 	else if(match(token->value, "set"))
