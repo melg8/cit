@@ -30,4 +30,10 @@
     ref = "refs/heads/master";
     rev = "0e6d8d6d3f261b550af1768b767f66b30fd07854";
   };
+  mes-m2 = builtins.fetchGit rec {
+    name = "mes-m2";
+    url = "https://github.com/oriansj/${name}.git";
+    ref = "refs/heads/master";
+    rev = "00e309856c4a505b7920956e64a20e9abb9475d0";
+  };
 }
