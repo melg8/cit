@@ -61,7 +61,8 @@ char* env_lookup(char* variable)
 	while(n != NULL)
 	{
 		if(match(variable, n->var))
-		{ /* We have found the correct node */
+		{
+		    /* We have found the correct node */
 			return n->value; /* Done */
 		}
 		/* Nope, try the next */
@@ -69,6 +70,24 @@ char* env_lookup(char* variable)
 	}
 	/* We didn't find anything! */
 	return NULL;
+}
+
+void print_env()
+{
+    file_print("Env now: \n", stdout);
+    /* Start at the head */
+    struct Token* n = env;
+    /* Loop over the linked-list */
+    while(n != NULL)
+    {
+
+        file_print(n->var, stdout);
+        file_print("=", stdout);
+        file_print(n->value, stdout);
+        file_print("\n", stdout);
+        /* Nope, try the next */
+        n = n->next;
+    }
 }
 
 /* Find the full path to an executable */
@@ -614,7 +633,6 @@ int execute()
 
 	/* rc = return code */
 	int rc;
-
 	/* Actually do the execution */
 	if(is_envar(token->value) == TRUE)
 	{
@@ -979,6 +997,8 @@ int main(int argc, char** argv, char** envp)
 		file_print(" can not be opened!\n", stderr);
 		exit(EXIT_FAILURE);
 	}
+
+    print_env();
 
 	/* Run the commands */
 	run_script(script, argv);

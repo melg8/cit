@@ -161,189 +161,193 @@ rec {
     ./bin_kaem --verbose --strict -f ${kaem_full_run}
   '';
   kaem_full_run = builtins.toFile "kaem1.run" ''
-    mkdir ''${out}
     cd /build
 
     # Build blood-elf from C sources.
     ./M2 --architecture x86 \
-    	-f ${m2-planet}/test/common_x86/functions/exit.c \
-    	-f ${m2-planet}/test/common_x86/functions/file.c \
-    	-f ${m2-planet}/functions/file_print.c \
-    	-f ${mescc-tools}/functions/numerate_number.c \
-    	-f ${m2-planet}/test/common_x86/functions/malloc.c \
-    	-f ${m2-planet}/functions/calloc.c \
-    	-f ${m2-planet}/functions/match.c \
-    	-f ${m2-planet}/functions/require.c \
-    	-f ${m2-planet}/functions/in_set.c \
-    	-f ${mescc-tools}/blood-elf.c \
-    	--debug \
-    	-o blood-elf.M1
+      -f ${m2-planet}/test/common_x86/functions/exit.c \
+      -f ${m2-planet}/test/common_x86/functions/file.c \
+      -f ${m2-planet}/functions/file_print.c \
+      -f ${mescc-tools}/functions/numerate_number.c \
+      -f ${m2-planet}/test/common_x86/functions/malloc.c \
+      -f ${m2-planet}/functions/calloc.c \
+      -f ${m2-planet}/functions/match.c \
+      -f ${m2-planet}/functions/require.c \
+      -f ${m2-planet}/functions/in_set.c \
+      -f ${mescc-tools}/blood-elf.c \
+      --debug \
+      -o blood-elf.M1
 
     ./blood-elf-0 -f blood-elf.M1 -o blood-elf-footer.M1
 
     ./bin_M1 -f ${stage0-posix}/x86/x86_defs.M1 \
-    	-f ${stage0-posix}/x86/libc-core.M1 \
-    	-f blood-elf.M1 \
-    	-f blood-elf-footer.M1 \
-    	--LittleEndian \
-    	--architecture x86 \
-    	-o hold
+      -f ${stage0-posix}/x86/libc-core.M1 \
+      -f blood-elf.M1 \
+      -f blood-elf-footer.M1 \
+      --LittleEndian \
+      --architecture x86 \
+      -o hold
 
     ./bin_hex2 -f ${stage0-posix}/x86/ELF-i386-debug.hex2 \
-    	-f hold \
-    	--LittleEndian \
-    	--architecture x86 \
-    	--BaseAddress 0x8048000 \
-    	-o ./bin_blood-elf \
-    	--exec_enable
+      -f hold \
+      --LittleEndian \
+      --architecture x86 \
+      --BaseAddress 0x8048000 \
+      -o ./bin_blood-elf \
+      --exec_enable
 
     # Build get_machine from C sources.
     ./M2 --architecture x86 \
-    	-f ${m2-planet}/test/common_x86/functions/exit.c \
-    	-f ${m2-planet}/test/common_x86/functions/file.c \
-    	-f ${m2-planet}/functions/file_print.c \
-    	-f ${m2-planet}/test/common_x86/functions/malloc.c \
-    	-f ${m2-planet}/functions/calloc.c \
-    	-f ${m2-planet}/test/common_x86/functions/uname.c \
-    	-f ${m2-planet}/functions/match.c \
-    	-f ${mescc-tools}/get_machine.c \
-    	--debug \
-    	-o get_machine.M1
+      -f ${m2-planet}/test/common_x86/functions/exit.c \
+      -f ${m2-planet}/test/common_x86/functions/file.c \
+      -f ${m2-planet}/functions/file_print.c \
+      -f ${m2-planet}/test/common_x86/functions/malloc.c \
+      -f ${m2-planet}/functions/calloc.c \
+      -f ${m2-planet}/test/common_x86/functions/uname.c \
+      -f ${m2-planet}/functions/match.c \
+      -f ${mescc-tools}/get_machine.c \
+      --debug \
+      -o get_machine.M1
     
     ./bin_blood-elf -f get_machine.M1 -o get_machine-footer.M1
     
     ./bin_M1 -f ${stage0-posix}/x86/x86_defs.M1 \
-    	-f ${stage0-posix}/x86/libc-core.M1 \
-    	-f get_machine.M1 \
-    	-f get_machine-footer.M1 \
-    	--LittleEndian \
-    	--architecture x86 \
-    	-o hold
+      -f ${stage0-posix}/x86/libc-core.M1 \
+      -f get_machine.M1 \
+      -f get_machine-footer.M1 \
+      --LittleEndian \
+      --architecture x86 \
+      -o hold
     
     ./bin_hex2 -f ${stage0-posix}/x86/ELF-i386-debug.hex2 \
-    	-f hold \
-    	--LittleEndian \
-    	--architecture x86 \
-    	--BaseAddress 0x8048000 \
-    	-o ./bin_get_machine \
-    	--exec_enable
+      -f hold \
+      --LittleEndian \
+      --architecture x86 \
+      --BaseAddress 0x8048000 \
+      -o ./bin_get_machine \
+      --exec_enable
 
     # Build M2-planet from M2-planet.
     ./M2 --architecture x86 \
-    	-f ${m2-planet}/test/common_x86/functions/file.c \
-    	-f ${m2-planet}/test/common_x86/functions/malloc.c \
-    	-f ${m2-planet}/functions/calloc.c \
-    	-f ${m2-planet}/test/common_x86/functions/exit.c \
-    	-f ${m2-planet}/functions/match.c \
-    	-f ${m2-planet}/functions/in_set.c \
-    	-f ${m2-planet}/functions/numerate_number.c \
-    	-f ${m2-planet}/functions/file_print.c \
-    	-f ${m2-planet}/functions/number_pack.c \
-    	-f ${m2-planet}/functions/string.c \
-    	-f ${m2-planet}/functions/require.c \
-    	-f ${m2-planet}/functions/fixup.c \
-    	-f ${m2-planet}/cc.h \
-    	-f ${m2-planet}/cc_globals.c \
-    	-f ${m2-planet}/cc_reader.c \
-    	-f ${m2-planet}/cc_strings.c \
-    	-f ${m2-planet}/cc_types.c \
-    	-f ${m2-planet}/cc_core.c \
-    	-f ${m2-planet}/cc.c \
-    	--debug \
-    	-o M2.M1
+      -f ${m2-planet}/test/common_x86/functions/file.c \
+      -f ${m2-planet}/test/common_x86/functions/malloc.c \
+      -f ${m2-planet}/functions/calloc.c \
+      -f ${m2-planet}/test/common_x86/functions/exit.c \
+      -f ${m2-planet}/functions/match.c \
+      -f ${m2-planet}/functions/in_set.c \
+      -f ${m2-planet}/functions/numerate_number.c \
+      -f ${m2-planet}/functions/file_print.c \
+      -f ${m2-planet}/functions/number_pack.c \
+      -f ${m2-planet}/functions/string.c \
+      -f ${m2-planet}/functions/require.c \
+      -f ${m2-planet}/functions/fixup.c \
+      -f ${m2-planet}/cc.h \
+      -f ${m2-planet}/cc_globals.c \
+      -f ${m2-planet}/cc_reader.c \
+      -f ${m2-planet}/cc_strings.c \
+      -f ${m2-planet}/cc_types.c \
+      -f ${m2-planet}/cc_core.c \
+      -f ${m2-planet}/cc.c \
+      --debug \
+      -o M2.M1
     
     ./bin_blood-elf -f M2.M1 -o M2-footer.M1
     
     ./bin_M1 -f ${stage0-posix}/x86/x86_defs.M1 \
-    	-f ${stage0-posix}/x86/libc-core.M1 \
-    	-f M2.M1 \
-    	-f M2-footer.M1 \
-    	--LittleEndian \
-    	--architecture x86 \
-    	-o hold
+      -f ${stage0-posix}/x86/libc-core.M1 \
+      -f M2.M1 \
+      -f M2-footer.M1 \
+      --LittleEndian \
+      --architecture x86 \
+      -o hold
     
     ./bin_hex2 -f ${stage0-posix}/x86/ELF-i386-debug.hex2 \
-    	-f hold \
-    	--LittleEndian \
-    	--architecture x86 \
-    	--BaseAddress 0x8048000 \
-    	-o ./bin_M2-Planet \
-    	--exec_enable
+      -f hold \
+      --LittleEndian \
+      --architecture x86 \
+      --BaseAddress 0x8048000 \
+      -o ./bin_M2-Planet \
+      --exec_enable
 
     # Build Mes-m2 from M2-Planet.
     ./bin_M2-Planet --debug --architecture x86 \
-    	-f ${mes-m2}/mes.h \
-    	-f ${m2-planet}/test/common_x86/functions/file.c \
-    	-f ${m2-planet}/test/common_x86/functions/exit.c \
-    	-f ${m2-planet}/test/common_x86/functions/malloc.c \
-    	-f ${m2-planet}/functions/calloc.c \
-    	-f ${mes-m2}/mes.c \
-    	-f ${mes-m2}/mes_cell.c \
-    	-f ${mes-m2}/mes_builtins.c \
-    	-f ${mes-m2}/mes_eval.c \
-    	-f ${mes-m2}/mes_print.c \
-    	-f ${mes-m2}/mes_read.c \
-    	-f ${mes-m2}/mes_tokenize.c \
-    	-f ${mes-m2}/mes_vector.c \
-    	-f ${mes-m2}/mes_list.c \
-    	-f ${mes-m2}/mes_string.c \
-    	-f ${mes-m2}/mes_keyword.c \
-    	-f ${mes-m2}/mes_record.c \
-    	-f ${mes-m2}/mes_init.c \
-    	-f ${mes-m2}/mes_macro.c \
-    	-f ${mes-m2}/mes_posix.c \
-    	-f ${mes-m2}/functions/numerate_number.c \
-    	-f ${mes-m2}/functions/match.c \
-    	-f ${mes-m2}/functions/in_set.c \
-    	-f ${mes-m2}/functions/file_print.c \
-    	-o mes.M1
+      -f ${mes-m2}/mes.h \
+      -f ${m2-planet}/test/common_x86/functions/file.c \
+      -f ${m2-planet}/test/common_x86/functions/exit.c \
+      -f ${m2-planet}/test/common_x86/functions/malloc.c \
+      -f ${m2-planet}/functions/calloc.c \
+      -f ${mes-m2}/mes.c \
+      -f ${mes-m2}/mes_cell.c \
+      -f ${mes-m2}/mes_builtins.c \
+      -f ${mes-m2}/mes_eval.c \
+      -f ${mes-m2}/mes_print.c \
+      -f ${mes-m2}/mes_read.c \
+      -f ${mes-m2}/mes_tokenize.c \
+      -f ${mes-m2}/mes_vector.c \
+      -f ${mes-m2}/mes_list.c \
+      -f ${mes-m2}/mes_string.c \
+      -f ${mes-m2}/mes_keyword.c \
+      -f ${mes-m2}/mes_record.c \
+      -f ${mes-m2}/mes_init.c \
+      -f ${mes-m2}/mes_macro.c \
+      -f ${mes-m2}/mes_posix.c \
+      -f ${mes-m2}/functions/numerate_number.c \
+      -f ${mes-m2}/functions/match.c \
+      -f ${mes-m2}/functions/in_set.c \
+      -f ${mes-m2}/functions/file_print.c \
+      -o mes.M1
 
     ./bin_blood-elf -f mes.M1 -o mes-footer.M1
 
     ./bin_M1 -f ${m2-planet}/test/common_x86/x86_defs.M1 \
-    	-f ${m2-planet}/test/common_x86/libc-core.M1 \
-    	-f mes.M1 \
-    	-f mes-footer.M1 \
-    	--LittleEndian \
-    	--architecture x86 \
-    	-o mes.hex2
+      -f ${m2-planet}/test/common_x86/libc-core.M1 \
+      -f mes.M1 \
+      -f mes-footer.M1 \
+      --LittleEndian \
+      --architecture x86 \
+      -o mes.hex2
 
     ./bin_hex2 -f ${m2-planet}/test/common_x86/ELF-i386-debug.hex2 \
-    	-f mes.hex2 \
-    	--LittleEndian \
-    	--architecture x86 \
-    	--BaseAddress 0x8048000 \
-    	-o ./bin_mes-m2 \
-    	--exec_enable
+      -f mes.hex2 \
+      --LittleEndian \
+      --architecture x86 \
+      --BaseAddress 0x8048000 \
+      -o ./bin_mes-m2 \
+      --exec_enable
 
+    mkdir ''${out}
     ./catm ''${out}/blood-elf-0 ./blood-elf-0
     chmod_x ''${out}/blood-elf-0
 
     ./catm ''${out}/M2 ./M2
     chmod_x ''${out}/M2
 
-    ./catm ''${out}/new_kaem ./bin_kaem
-    chmod_x ''${out}/new_kaem
 
-    ./catm ''${out}/M1 ./bin_M1
-    chmod_x ''${out}/M1
+    mkdir ''${out}/bin
+    ./catm ''${out}/bin/new_kaem ./bin_kaem
+    chmod_x ''${out}/bin/new_kaem
 
-    ./catm ''${out}/hex2 ./bin_hex2
-    chmod_x ''${out}/hex2
+    ./catm ''${out}/bin/M1 ./bin_M1
+    chmod_x ''${out}/bin/M1
 
-    ./catm ''${out}/blood-elf ./bin_blood-elf
-    chmod_x ''${out}/blood-elf
+    ./catm ''${out}/bin/hex2 ./bin_hex2
+    chmod_x ''${out}/bin/hex2
 
-    ./catm ''${out}/get_machine ./bin_get_machine
-    chmod_x ''${out}/get_machine
+    ./catm ''${out}/bin/blood-elf ./bin_blood-elf
+    chmod_x ''${out}/bin/blood-elf
 
-    ./catm ''${out}/M2-Planet ./bin_M2-Planet
-    chmod_x ''${out}/M2-Planet
+    ./catm ''${out}/bin/get_machine ./bin_get_machine
+    chmod_x ''${out}/bin/get_machine
 
-    ./catm ''${out}/M2-Planet ./bin_M2-Planet
-    chmod_x ''${out}/M2-Planet
+    ./catm ''${out}/bin/M2-Planet ./bin_M2-Planet
+    chmod_x ''${out}/bin/M2-Planet
 
-    ./catm ''${out}/mes-m2 ./bin_mes-m2
-    chmod_x ''${out}/mes-m2
+    ./catm ''${out}/bin/M2-Planet ./bin_M2-Planet
+    chmod_x ''${out}/bin/M2-Planet
+
+    ./catm ''${out}/bin/mes-m2 ./bin_mes-m2
+    chmod_x ''${out}/bin/mes-m2
+
+
   '';
 }
