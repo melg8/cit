@@ -3,18 +3,8 @@ let
   generated_kaem_scripts = import ./generate_kaem_scripts.nix { inherit sources; };
   kaem_run = with sources; builtins.toFile "kaem.run" ''
     mkdir ''${out}
-    M2 --architecture x86 \
-      -f ${m2-planet}/test/common_x86/functions/exit.c \
-      -f ${m2-planet}/test/common_x86/functions/file.c \
-      -f ${m2-planet}/functions/file_print.c \
-      -f ${mescc-tools}/functions/numerate_number.c \
-      -f ${m2-planet}/test/common_x86/functions/malloc.c \
-      -f ${m2-planet}/functions/calloc.c \
-      -f ${m2-planet}/functions/match.c \
-      -f ${mescc-tools}/blood-elf.c \
-      -f ${m2-planet}/functions/require.c \
-      -f ${m2-planet}/functions/in_set.c \
-      -o blood-elf.M1
+
+
   '';
 in
 with sources;
