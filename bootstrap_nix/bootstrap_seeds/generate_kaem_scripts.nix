@@ -144,47 +144,34 @@ rec {
     ./catm hold ${stage0-posix}/x86/ELF-i386-debug.hex2 temp1
     ./hex2-0 hold bin_hex2
 
-    # Build kaem from C sources.
-    ./M2 --architecture x86 \
-      -f ${m2-planet}/test/common_x86/functions/exit.c \
-      -f ${m2-planet}/test/common_x86/functions/file.c \
-      -f ${m2-planet}/functions/file_print.c \
-      -f ${m2-planet}/test/common_x86/functions/malloc.c \
-      -f ${m2-planet}/functions/calloc.c \
-      -f ${m2-planet}/functions/match.c \
-      -f ${m2-planet}/functions/in_set.c \
-      -f ${m2-planet}/functions/require.c \
-      -f ${mescc-tools}/functions/string.c \
-      -f ${m2-planet}/functions/numerate_number.c \
-      -f ${m2-planet}/test/common_x86/functions/fork.c \
-      -f ${m2-planet}/test/common_x86/functions/execve.c \
-      -f ${m2-planet}/test/common_x86/functions/chdir.c \
-      -f ${m2-planet}/test/common_x86/functions/getcwd.c \
-      -f ${mescc-tools}/Kaem/kaem.h \
-      -f ${mescc-tools}/Kaem/variable.c \
-      -f ${mescc-tools}/Kaem/kaem_globals.c \
-      -f ${kaem-addition} \
-      --debug \
-      -o kaem.M1
-
-    ./blood-elf-0 -f kaem.M1 -o kaem-footer.M1
-
-    ./bin_M1 -f ${stage0-posix}/x86/x86_defs.M1 \
-      -f ${stage0-posix}/x86/libc-core.M1 \
-      -f kaem.M1 \
-      -f kaem-footer.M1 \
-      --LittleEndian \
-      --architecture x86 \
-      -o hold
-
-    ./bin_hex2 -f ${stage0-posix}/x86/ELF-i386-debug.hex2 \
-      -f hold \
-      --LittleEndian \
-      --architecture x86 \
-      --BaseAddress 0x8048000 \
-      -o bin_kaem \
-      --exec_enable
   '' +
+  build-with-m2
+    {
+      name = "kaem";
+      builder = "./M2";
+      elf = "./blood-elf-0";
+      sources = [
+        "${m2-planet}/test/common_x86/functions/exit.c"
+        "${m2-planet}/test/common_x86/functions/file.c"
+        "${m2-planet}/functions/file_print.c"
+        "${m2-planet}/test/common_x86/functions/malloc.c"
+        "${m2-planet}/functions/calloc.c"
+        "${m2-planet}/functions/match.c"
+        "${m2-planet}/functions/in_set.c"
+        "${m2-planet}/functions/require.c"
+        "${mescc-tools}/functions/string.c"
+        "${m2-planet}/functions/numerate_number.c"
+        "${m2-planet}/test/common_x86/functions/fork.c"
+        "${m2-planet}/test/common_x86/functions/execve.c"
+        "${m2-planet}/test/common_x86/functions/chdir.c"
+        "${m2-planet}/test/common_x86/functions/getcwd.c"
+        "${mescc-tools}/Kaem/kaem.h"
+        "${mescc-tools}/Kaem/variable.c"
+        "${mescc-tools}/Kaem/kaem_globals.c"
+        "${kaem-addition}"
+      ];
+    }
+  +
   build-with-m2
     {
       name = "blood-elf";
