@@ -481,7 +481,7 @@ int mkdir()
     if(NULL == token->next) return TRUE;
     token = token->next;
     if(NULL == token->value) return TRUE;
-    int ret = mkdir_posix(token->value, 755);
+    int ret = mkdir_posix(token->value, 511);
     if(0 > ret) return TRUE;
     return FALSE;
 }
@@ -500,7 +500,7 @@ int chmod_x() {
     if(NULL == token->next) return TRUE;
     token = token->next;
     if(NULL == token->value) return TRUE;
-    int ret = chmod_posix(token->value, 755);
+    int ret = chmod_posix(token->value, 511);
     if(0 > ret) return TRUE;
     return FALSE;
 }
