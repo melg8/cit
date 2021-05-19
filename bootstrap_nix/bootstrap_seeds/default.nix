@@ -9,6 +9,17 @@ let
 in
 with sources;
 rec  {
+  kaem-env-test-1 = derivation rec {
+    name = "kaem-env-test-1";
+    system = builtins.currentSystem;
+    outputs = [ "out" ];
+    srcs = kaem_run;
+    PATH = "${mes-m2-with-tools}:${mes-m2-with-tools}/bin:${kaem-env-test}/bin";
+    builder = "${mes-m2-with-tools}/bin/new_kaem";
+    args = [ "--verbose" "--strict" "-f" "${srcs}" ];
+    allowedReferences = [ ];
+    allowedRequisites = [ ];
+  };
   mes-m2-with-tools = derivation rec {
     name = "mes-m2-with-tools";
     system = builtins.currentSystem;
