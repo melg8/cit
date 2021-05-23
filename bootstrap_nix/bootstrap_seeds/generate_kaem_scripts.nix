@@ -266,41 +266,44 @@ rec {
     ];
   }
   + ''
-    ./bin_kaem --verbose --strict -f ${kaem_full_run}
+    ./bin_kaem --verbose --strict -f ${kaem_full_run_hook}
   '');
-  kaem_full_run = builtins.toFile "kaem1.run" ''
-    cd /build
+  kaem_full_run_hook = builtins.toFile "kaem_full_run_hook.run" ''
+    PATH=''${PATH}:''${PWD}
 
+    ./bin_kaem --verbose --strict -f ${kaem_full_run}
+  '';
+  kaem_full_run = builtins.toFile "kaem_full_run.run" ''
     mkdir ''${out}
-    ./catm ''${out}/blood-elf-0 ./blood-elf-0
+    catm ''${out}/blood-elf-0 ./blood-elf-0
     chmod_x ''${out}/blood-elf-0
 
-    ./catm ''${out}/M2 ./M2
+    catm ''${out}/M2 ./M2
     chmod_x ''${out}/M2
 
     mkdir ''${out}/bin
-    ./catm ''${out}/bin/new_kaem ./bin_kaem
+    catm ''${out}/bin/new_kaem ./bin_kaem
     chmod_x ''${out}/bin/new_kaem
 
-    ./catm ''${out}/bin/M1 ./bin_M1
+    catm ''${out}/bin/M1 ./bin_M1
     chmod_x ''${out}/bin/M1
 
-    ./catm ''${out}/bin/hex2 ./bin_hex2
+    catm ''${out}/bin/hex2 ./bin_hex2
     chmod_x ''${out}/bin/hex2
 
-    ./catm ''${out}/bin/blood-elf ./bin_blood-elf
+    catm ''${out}/bin/blood-elf ./bin_blood-elf
     chmod_x ''${out}/bin/blood-elf
 
-    ./catm ''${out}/bin/get_machine ./bin_get_machine
+    catm ''${out}/bin/get_machine ./bin_get_machine
     chmod_x ''${out}/bin/get_machine
 
-    ./catm ''${out}/bin/M2-Planet ./bin_M2-Planet
+    catm ''${out}/bin/M2-Planet ./bin_M2-Planet
     chmod_x ''${out}/bin/M2-Planet
 
-    ./catm ''${out}/bin/M2-Planet ./bin_M2-Planet
+    catm ''${out}/bin/M2-Planet ./bin_M2-Planet
     chmod_x ''${out}/bin/M2-Planet
 
-    ./catm ''${out}/bin/mes-m2 ./bin_mes-m2
+    catm ''${out}/bin/mes-m2 ./bin_mes-m2
     chmod_x ''${out}/bin/mes-m2
   '';
 }
