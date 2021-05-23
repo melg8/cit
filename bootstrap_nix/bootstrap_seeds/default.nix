@@ -61,6 +61,6 @@ rec  {
     builder = kaem-env-test-1.drvAttrs.builder;
     args = kaem-env-test-1.args;
     allowedReferences = [ ];
-    allowedRequisites = [ kaem-env-test-1 ];
+    allowedRequisites = [ kaem-env-test-1 kaem-env-test mes-m2-with-tools ];
   };
 }

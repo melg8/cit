@@ -1,11 +1,15 @@
 let
   nixpkgs = import ../../ci/nix/pinned_nixpkgs.nix;
   pkgs = import nixpkgs { };
+  sources = import ./sources.nix;
   generate_kaem_scripts = import ./generate_kaem_scripts.nix {
     sources = builtins.listToAttrs (map (x: { name = x; value = x; })
-      (builtins.attrNames (import ./sources.nix)));
+      (builtins.attrNames (sources)));
   };
   base = import ./default.nix;
+  generateEnv = import ./generate_env.nix;
+  generateEnvFromJson = import ./generate_env_from_json.nix;
+  buildInputs = import ./build_inputs_1.nix;
 in
 with pkgs; rec {
   standalone-tree = stdenv.mkDerivation rec {
@@ -54,8 +58,8 @@ with pkgs; rec {
   build-standalone-tree = stdenv.mkDerivation {
     pname = "build-standalone-tree";
     version = "0.1";
-
     srcs = [ standalone-tree ];
+
     installPhase = ''
       mkdir build_tree
       cp -r ${standalone-tree}/* build_tree/
@@ -70,35 +74,32 @@ with pkgs; rec {
     dontBuild = true;
     dontFixup = true;
   };
+  # Needs "--option sandbox false" to work because it use information from
+  # host nix-store.
+  jsonFor = drvPath: runCommand "json-for-${drvPath}-file"
+    { } ''${nix}/bin/nix show-derivation ${drvPath} --quiet > $out'';
+  buildCommandFor = drvPath: runCommand "build-command-for-${drvPath}-.kaem"
+    { } ''echo ${generateEnvFromJson (builtins.fromJSON (builtins.readFile "${jsonFor drvPath}"))} > $out'';
+  drv = base.kaem-env-test-2;
+  script = generateEnv drv;
+  generateEnvFromDrvPath = drvPath: generateEnv (builtins.readFile drvPath);
+  singleCommand = pos: drvPath:
+    if pos == 0 then ''${sources.bootstrap-seeds}/POSIX/x86/kaem-optional-seed "${buildCommandFor drvPath}''\n"''
+    else ''new_kaem --verbose --strict -f "${buildCommandFor drvPath}''\n"'';
 
-  concatStrings = builtins.concatStringsSep "";
-  mapAttrsToList = f: attrs: map (name: f name attrs.${name}) (builtins.attrNames attrs);
-  concat = attrs: concatStrings (mapAttrsToList (n: v: " \n " + n + "=" + (builtins.toString v) + "\n") attrs);
-  test-kaem-produce =
-    let
-      builder = builtins.toString base.mes-m2-with-tools.drvAttrs.builder;
-      args = builtins.toString base.mes-m2-with-tools.drvAttrs.args;
-      attributeToString = (attr_set: name: "${name}=${toString set.${name}}\n");
-      drv = base.mes-m2-with-tools;
-      drv-attrs = builtins.removeAttrs drv.drvAttrs [ "args" ] // { out = toString drv.out; };
-      env = builtins.foldl'
-        (s: name:
-          s + ''${name}="${builtins.replaceStrings [ "\n" ] [ "\\n" ] (toString drv-attrs.${name})} ''\n"'')
-        ""
-        (builtins.attrNames drv-attrs);
-    in
+  allCommands = builtins.concatStringsSep "" (lib.imap0 singleCommand (buildInputs { drv_path = drv.drvPath; }));
+
+  testKaemProduce =
+
     stdenv.mkDerivation {
       pname = "test-kaem-produce";
       version = "0.1";
-
       srcs = [ standalone-tree ];
-      installPhase = ''
+      installPhase = with pkgs; ''
         echo -----
-        echo builder: ${builder};
-        echo args: ${args};
-        echo env: ${env};
+        echo buildSteps: $buildStep
+        echo ${allCommands} > $out
         echo -----
-        echo ${env} > $out
       '';
       dontUnpack = true;
       dontPatch = true;

@@ -30,6 +30,7 @@ let
       # of docker.
       rm nix/var/nix/gcroots/profiles
     '';
+
 in
 (loadNixDb (contents ++ [ nixpkgs ])) + ''
   mkdir -p home/user/work
