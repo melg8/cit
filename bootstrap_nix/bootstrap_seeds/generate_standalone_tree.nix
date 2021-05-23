@@ -5,6 +5,7 @@ let
     sources = builtins.listToAttrs (map (x: { name = x; value = x; })
       (builtins.attrNames (import ./sources.nix)));
   };
+  base = import ./default.nix;
 in
 with pkgs; rec {
   standalone-tree = stdenv.mkDerivation rec {
@@ -49,18 +50,19 @@ with pkgs; rec {
       nuke-refs $out/kaem1.run
     '';
   };
+
   build-standalone-tree = stdenv.mkDerivation {
     pname = "build-standalone-tree";
     version = "0.1";
 
     srcs = [ standalone-tree ];
     installPhase = ''
-        mkdir build_tree
-        cp -r ${standalone-tree}/* build_tree/
-        cd build_tree
-        ./bootstrap-seeds/POSIX/x86/kaem-optional-seed ./kaem.run
-        mkdir -p $out/bin
-        cp ./kaem_full/bin/* $out/bin/
+      mkdir build_tree
+      cp -r ${standalone-tree}/* build_tree/
+      cd build_tree
+      ./bootstrap-seeds/POSIX/x86/kaem-optional-seed ./kaem.run
+      mkdir -p $out/bin
+      cp ./kaem_full/bin/* $out/bin/
     '';
     dontUnpack = true;
     dontPatch = true;
@@ -68,4 +70,40 @@ with pkgs; rec {
     dontBuild = true;
     dontFixup = true;
   };
+
+  concatStrings = builtins.concatStringsSep "";
+  mapAttrsToList = f: attrs: map (name: f name attrs.${name}) (builtins.attrNames attrs);
+  concat = attrs: concatStrings (mapAttrsToList (n: v: " \n " + n + "=" + (builtins.toString v) + "\n") attrs);
+  test-kaem-produce =
+    let
+      builder = builtins.toString base.mes-m2-with-tools.drvAttrs.builder;
+      args = builtins.toString base.mes-m2-with-tools.drvAttrs.args;
+      attributeToString = (attr_set: name: "${name}=${toString set.${name}}\n");
+      drv = base.mes-m2-with-tools;
+      drv-attrs = builtins.removeAttrs drv.drvAttrs [ "args" ] // { out = toString drv.out; };
+      env = builtins.foldl'
+        (s: name:
+          s + ''${name}="${builtins.replaceStrings [ "\n" ] [ "\\n" ] (toString drv-attrs.${name})} ''\n"'')
+        ""
+        (builtins.attrNames drv-attrs);
+    in
+    stdenv.mkDerivation {
+      pname = "test-kaem-produce";
+      version = "0.1";
+
+      srcs = [ standalone-tree ];
+      installPhase = ''
+        echo -----
+        echo builder: ${builder};
+        echo args: ${args};
+        echo env: ${env};
+        echo -----
+        echo ${env} > $out
+      '';
+      dontUnpack = true;
+      dontPatch = true;
+      dontConfigure = true;
+      dontBuild = true;
+      dontFixup = true;
+    };
 }
