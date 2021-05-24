@@ -9,9 +9,9 @@ let
   + prepare-sources sources +
   ''-o ${name}.M1
 
-    ${elf} -f ${name}.M1 -o ${name}-footer.M1
+${elf} -f ${name}.M1 -o ${name}-footer.M1
 
-    ./bin_M1 -f ${stage0-posix}/x86/x86_defs.M1 \
+./bin_M1 -f ${stage0-posix}/x86/x86_defs.M1 \
       -f ${stage0-posix}/x86/libc-core.M1 \
       -f ${name}.M1 \
       -f ${name}-footer.M1 \
@@ -19,7 +19,7 @@ let
       --architecture x86 \
       -o ${name}.hex2
 
-    ./bin_hex2 -f ${stage0-posix}/x86/ELF-i386-debug.hex2 \
+./bin_hex2 -f ${stage0-posix}/x86/ELF-i386-debug.hex2 \
       -f ${name}.hex2 \
       --LittleEndian \
       --architecture x86 \
@@ -31,7 +31,12 @@ let
 in
 with sources;
 rec {
-  kaem_run = builtins.toFile "kaem.run" (''
+  build_test = ''
+      ./asdf
+      ${bootstrap-seeds}/POSIX/x86/hex0-seed ${bootstrap-seeds}/POSIX/x86/hex0_x86.hex0 hex0
+      asdfasdfasdf
+  '';
+  build_kaem = (''
     ${bootstrap-seeds}/POSIX/x86/hex0-seed ${bootstrap-seeds}/POSIX/x86/hex0_x86.hex0 hex0
     ./hex0 ${bootstrap-seeds}/POSIX/x86/kaem-minimal.hex0 kaem-0
 
@@ -143,8 +148,8 @@ rec {
 
     ./catm hold ${stage0-posix}/x86/ELF-i386-debug.hex2 temp1
     ./hex2-0 hold bin_hex2
-
-  '' +
+  ''
+  +
   build-with-m2
     {
       name = "kaem";
@@ -170,109 +175,123 @@ rec {
         "${mescc-tools}/Kaem/kaem_globals.c"
         "${kaem-addition}"
       ];
-    }
-  +
-  build-with-m2
-    {
-      name = "blood-elf";
+    });
+  kaem_run = builtins.toFile "kaem.run" (
+    build_kaem +
+    build-with-m2
+      {
+        name = "blood-elf";
+        builder = "./M2";
+        elf = "./blood-elf-0";
+        sources = [
+          "${m2-planet}/test/common_x86/functions/exit.c"
+          "${m2-planet}/test/common_x86/functions/file.c"
+          "${m2-planet}/functions/file_print.c"
+          "${mescc-tools}/functions/numerate_number.c"
+          "${m2-planet}/test/common_x86/functions/malloc.c"
+          "${m2-planet}/functions/calloc.c"
+          "${m2-planet}/functions/match.c"
+          "${m2-planet}/functions/require.c"
+          "${m2-planet}/functions/in_set.c"
+          "${mescc-tools}/blood-elf.c"
+        ];
+      }
+    +
+    build-with-m2 {
+      name = "get_machine";
       builder = "./M2";
-      elf = "./blood-elf-0";
+      elf = "./bin_blood-elf";
       sources = [
         "${m2-planet}/test/common_x86/functions/exit.c"
         "${m2-planet}/test/common_x86/functions/file.c"
         "${m2-planet}/functions/file_print.c"
-        "${mescc-tools}/functions/numerate_number.c"
         "${m2-planet}/test/common_x86/functions/malloc.c"
         "${m2-planet}/functions/calloc.c"
+        "${m2-planet}/test/common_x86/functions/uname.c"
         "${m2-planet}/functions/match.c"
-        "${m2-planet}/functions/require.c"
-        "${m2-planet}/functions/in_set.c"
-        "${mescc-tools}/blood-elf.c"
+        "${mescc-tools}/get_machine.c"
       ];
     }
-  +
-  build-with-m2 {
-    name = "get_machine";
-    builder = "./M2";
-    elf = "./bin_blood-elf";
-    sources = [
-      "${m2-planet}/test/common_x86/functions/exit.c"
-      "${m2-planet}/test/common_x86/functions/file.c"
-      "${m2-planet}/functions/file_print.c"
-      "${m2-planet}/test/common_x86/functions/malloc.c"
-      "${m2-planet}/functions/calloc.c"
-      "${m2-planet}/test/common_x86/functions/uname.c"
-      "${m2-planet}/functions/match.c"
-      "${mescc-tools}/get_machine.c"
-    ];
-  }
-  +
-  build-with-m2 {
-    name = "M2-Planet";
-    builder = "./M2";
-    elf = "./bin_blood-elf";
-    sources = [
-      "${m2-planet}/test/common_x86/functions/file.c"
-      "${m2-planet}/test/common_x86/functions/malloc.c"
-      "${m2-planet}/functions/calloc.c"
-      "${m2-planet}/test/common_x86/functions/exit.c"
-      "${m2-planet}/functions/match.c"
-      "${m2-planet}/functions/in_set.c"
-      "${m2-planet}/functions/numerate_number.c"
-      "${m2-planet}/functions/file_print.c"
-      "${m2-planet}/functions/number_pack.c"
-      "${m2-planet}/functions/string.c"
-      "${m2-planet}/functions/require.c"
-      "${m2-planet}/functions/fixup.c"
-      "${m2-planet}/cc.h"
-      "${m2-planet}/cc_globals.c"
-      "${m2-planet}/cc_reader.c"
-      "${m2-planet}/cc_strings.c"
-      "${m2-planet}/cc_types.c"
-      "${m2-planet}/cc_core.c"
-      "${m2-planet}/cc.c"
-    ];
-  }
-  +
-  build-with-m2 {
-    name = "mes-m2";
-    builder = "./bin_M2-Planet";
-    elf = "./bin_blood-elf";
-    sources = [
-      "${mes-m2}/mes.h"
-      "${m2-planet}/test/common_x86/functions/file.c"
-      "${m2-planet}/test/common_x86/functions/exit.c"
-      "${m2-planet}/test/common_x86/functions/malloc.c"
-      "${m2-planet}/functions/calloc.c"
-      "${mes-m2}/mes.c"
-      "${mes-m2}/mes_cell.c"
-      "${mes-m2}/mes_builtins.c"
-      "${mes-m2}/mes_eval.c"
-      "${mes-m2}/mes_print.c"
-      "${mes-m2}/mes_read.c"
-      "${mes-m2}/mes_tokenize.c"
-      "${mes-m2}/mes_vector.c"
-      "${mes-m2}/mes_list.c"
-      "${mes-m2}/mes_string.c"
-      "${mes-m2}/mes_keyword.c"
-      "${mes-m2}/mes_record.c"
-      "${mes-m2}/mes_init.c"
-      "${mes-m2}/mes_macro.c"
-      "${mes-m2}/mes_posix.c"
-      "${mes-m2}/functions/numerate_number.c"
-      "${mes-m2}/functions/match.c"
-      "${mes-m2}/functions/in_set.c"
-      "${mes-m2}/functions/file_print.c"
-    ];
-  }
-  + ''
-    ./bin_kaem --verbose --strict -f ${kaem_full_run_hook}
-  '');
+    +
+    build-with-m2 {
+      name = "M2-Planet";
+      builder = "./M2";
+      elf = "./bin_blood-elf";
+      sources = [
+        "${m2-planet}/test/common_x86/functions/file.c"
+        "${m2-planet}/test/common_x86/functions/malloc.c"
+        "${m2-planet}/functions/calloc.c"
+        "${m2-planet}/test/common_x86/functions/exit.c"
+        "${m2-planet}/functions/match.c"
+        "${m2-planet}/functions/in_set.c"
+        "${m2-planet}/functions/numerate_number.c"
+        "${m2-planet}/functions/file_print.c"
+        "${m2-planet}/functions/number_pack.c"
+        "${m2-planet}/functions/string.c"
+        "${m2-planet}/functions/require.c"
+        "${m2-planet}/functions/fixup.c"
+        "${m2-planet}/cc.h"
+        "${m2-planet}/cc_globals.c"
+        "${m2-planet}/cc_reader.c"
+        "${m2-planet}/cc_strings.c"
+        "${m2-planet}/cc_types.c"
+        "${m2-planet}/cc_core.c"
+        "${m2-planet}/cc.c"
+      ];
+    }
+    +
+    build-with-m2 {
+      name = "mes-m2";
+      builder = "./bin_M2-Planet";
+      elf = "./bin_blood-elf";
+      sources = [
+        "${mes-m2}/mes.h"
+        "${m2-planet}/test/common_x86/functions/file.c"
+        "${m2-planet}/test/common_x86/functions/exit.c"
+        "${m2-planet}/test/common_x86/functions/malloc.c"
+        "${m2-planet}/functions/calloc.c"
+        "${mes-m2}/mes.c"
+        "${mes-m2}/mes_cell.c"
+        "${mes-m2}/mes_builtins.c"
+        "${mes-m2}/mes_eval.c"
+        "${mes-m2}/mes_print.c"
+        "${mes-m2}/mes_read.c"
+        "${mes-m2}/mes_tokenize.c"
+        "${mes-m2}/mes_vector.c"
+        "${mes-m2}/mes_list.c"
+        "${mes-m2}/mes_string.c"
+        "${mes-m2}/mes_keyword.c"
+        "${mes-m2}/mes_record.c"
+        "${mes-m2}/mes_init.c"
+        "${mes-m2}/mes_macro.c"
+        "${mes-m2}/mes_posix.c"
+        "${mes-m2}/functions/numerate_number.c"
+        "${mes-m2}/functions/match.c"
+        "${mes-m2}/functions/in_set.c"
+        "${mes-m2}/functions/file_print.c"
+      ];
+    }
+    + ''
+      ./bin_kaem --verbose --strict -f ${kaem_full_run_hook}
+    ''
+  );
   kaem_full_run_hook = builtins.toFile "kaem_full_run_hook.run" ''
     PATH=''${PATH}:''${PWD}
 
+    ./bin_kaem --verbose --strict -f ${kaem_env_test_1_run}
+
+    ./bin_kaem --verbose --strict -f ${kaem_env_test_2_run}
+
     ./bin_kaem --verbose --strict -f ${kaem_full_run}
   '';
+  kaem_env_test_1_run = builtins.toFile "kaem_env_test_1_run.run" ''
+    DETECT_ME_SET="TO_VALUE"
+    ${bootstrap-seeds}/POSIX/x86/hex0-seed ${bootstrap-seeds}/POSIX/x86/hex0_x86.hex0 hex0
+  '';
+  kaem_env_test_2_run = builtins.toFile "kaem_env_test_2_run.run" ''
+    ${bootstrap-seeds}/POSIX/x86/hex0-seed ${bootstrap-seeds}/POSIX/x86/hex0_x86.hex0 hex0
+  '';
+
   kaem_full_run = builtins.toFile "kaem_full_run.run" ''
     mkdir ''${out}
     catm ''${out}/blood-elf-0 ./blood-elf-0
