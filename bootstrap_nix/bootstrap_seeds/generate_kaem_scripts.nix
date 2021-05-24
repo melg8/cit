@@ -6,36 +6,31 @@ let
 
   build-with-m2 = with sources; { builder, elf, sources, name }: ''
     ${builder} --debug --architecture x86 ''
-  + prepare-sources sources +
-  ''-o ${name}.M1
+  + prepare-sources sources + ''
+    -o ${name}.M1
 
-${elf} -f ${name}.M1 -o ${name}-footer.M1
+    ${elf} -f ${name}.M1 -o ${name}-footer.M1
 
-./bin_M1 -f ${stage0-posix}/x86/x86_defs.M1 \
-      -f ${stage0-posix}/x86/libc-core.M1 \
-      -f ${name}.M1 \
-      -f ${name}-footer.M1 \
-      --LittleEndian \
-      --architecture x86 \
-      -o ${name}.hex2
+    ./bin_M1 -f ${stage0-posix}/x86/x86_defs.M1 \
+    -f ${stage0-posix}/x86/libc-core.M1 \
+    -f ${name}.M1 \
+    -f ${name}-footer.M1 \
+    --LittleEndian \
+    --architecture x86 \
+    -o ${name}.hex2
 
-./bin_hex2 -f ${stage0-posix}/x86/ELF-i386-debug.hex2 \
-      -f ${name}.hex2 \
-      --LittleEndian \
-      --architecture x86 \
-      --BaseAddress 0x8048000 \
-      -o ./bin_${name} \
-      --exec_enable
+    ./bin_hex2 -f ${stage0-posix}/x86/ELF-i386-debug.hex2 \
+    -f ${name}.hex2 \
+    --LittleEndian \
+    --architecture x86 \
+    --BaseAddress 0x8048000 \
+    -o ./bin_${name} \
+    --exec_enable
   '';
 
 in
 with sources;
 rec {
-  build_test = ''
-      ./asdf
-      ${bootstrap-seeds}/POSIX/x86/hex0-seed ${bootstrap-seeds}/POSIX/x86/hex0_x86.hex0 hex0
-      asdfasdfasdf
-  '';
   build_kaem = (''
     ${bootstrap-seeds}/POSIX/x86/hex0-seed ${bootstrap-seeds}/POSIX/x86/hex0_x86.hex0 hex0
     ./hex0 ${bootstrap-seeds}/POSIX/x86/kaem-minimal.hex0 kaem-0

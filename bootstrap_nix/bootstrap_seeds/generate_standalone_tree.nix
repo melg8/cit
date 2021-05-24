@@ -2,7 +2,7 @@ let
   nixpkgs = import ../../ci/nix/pinned_nixpkgs.nix;
   pkgs = import nixpkgs { };
   sources = import ./sources.nix;
-  generateKaemScripts = import ./generate_kaem_scripts.nix { inherit sources;};
+  generateKaemScripts = import ./generate_kaem_scripts.nix { inherit sources; };
   generate_kaem_scripts = import ./generate_kaem_scripts.nix {
     sources = builtins.listToAttrs (map (x: { name = x; value = x; })
       (builtins.attrNames (sources)));
@@ -77,25 +77,34 @@ with pkgs; rec {
   };
   # Needs "--option sandbox false" to work because it use information from
   # host nix-store.
-  drv = base.kaem-env-test-2;
+  #  drv = base.kaem-env-test-2;
+  drv = pkgs.hello;
   drvPath = builtins.unsafeDiscardStringContext drv.drvPath;
-  jsonFor = drvPath: runCommand "json-for-${drvPath}-file"
+  pathSanitized = path: lib.replaceStrings [ "?" ] [ "-" ] path;
+  jsonFor = drvPath: runCommand ''${pathSanitized drvPath}-json''
     { } ''${nix}/bin/nix show-derivation ${drvPath} --quiet > $out'';
-  buildCommandFor = drvPath: runCommand "build-command-for-${drvPath}-.kaem"
-    { } ''echo ${generateEnvFromJson (builtins.fromJSON (builtins.readFile "${jsonFor drvPath}"))} > $out'';
+
+  escapeList = [ "'" "`" ">" "#" "\\n" ];
+  buildCommandFor = drvPath: runCommand ''${pathSanitized drvPath}-build.kaem''
+    { } ''
+          cat > $out << EOL
+          ${generateEnvFromJson (builtins.fromJSON (builtins.readFile (jsonFor drvPath)))}
+          EOL
+        '';
   script = generateEnv drv;
   generateEnvFromDrvPath = drvPath: generateEnv (builtins.readFile drvPath);
-  singleCommand = drvPath: ''./bin_kaem --verbose --strict -f "${buildCommandFor drvPath}''\n"'';
-  allCommands =  builtins.concatStringsSep "" (map singleCommand (buildInputs { drv_path = drvPath; }));
+  singleCommand = drvPath: ''./bin_kaem --verbose --strict -f "${buildCommandFor drvPath}"'';
+  allCommands = builtins.concatStringsSep "\n" (map singleCommand (buildInputs { drv_path = drvPath; }));
+  result = generateKaemScripts.build_kaem + allCommands;
   testKaemProduce =
 
     stdenv.mkDerivation {
       pname = "test-kaem-produce";
       version = "0.1";
-      srcs = [sources.bootstrap-seeds];
+      srcs = [ sources.bootstrap-seeds ];
       installPhase = with pkgs; ''
         echo -----
-        echo "${generateKaemScripts.build_kaem}"${allCommands} > $out
+        echo "${result}" > $out
         echo -----
       '';
       dontUnpack = true;
