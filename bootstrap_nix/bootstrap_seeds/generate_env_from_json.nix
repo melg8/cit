@@ -8,9 +8,6 @@ let
   addToEnv = s: name: s + ''${name}="${getEnvAttr name} ''\n"'';
   env = builtins.foldl' addToEnv "" (builtins.attrNames envAttrs);
   getDrvAttr = getAttr drvAttrs;
-  builder = getDrvAttr "builder";
-  builderCall = "${builder} ${getDrvAttr "args"}";
-  firstBuilderRe = ".*kaem-optional-seed";
+  builderCall = "${getDrvAttr "builder"} ${getDrvAttr "args"}";
 in
-if builtins.isList (builtins.match firstBuilderRe builder)
-  then builderCall else env + builderCall
+env + builderCall

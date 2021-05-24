@@ -2,6 +2,7 @@ let
   nixpkgs = import ../../ci/nix/pinned_nixpkgs.nix;
   pkgs = import nixpkgs { };
   sources = import ./sources.nix;
+  generateKaemScripts = import ./generate_kaem_scripts.nix { inherit sources;};
   generate_kaem_scripts = import ./generate_kaem_scripts.nix {
     sources = builtins.listToAttrs (map (x: { name = x; value = x; })
       (builtins.attrNames (sources)));
@@ -76,29 +77,25 @@ with pkgs; rec {
   };
   # Needs "--option sandbox false" to work because it use information from
   # host nix-store.
+  drv = base.kaem-env-test-2;
+  drvPath = builtins.unsafeDiscardStringContext drv.drvPath;
   jsonFor = drvPath: runCommand "json-for-${drvPath}-file"
     { } ''${nix}/bin/nix show-derivation ${drvPath} --quiet > $out'';
   buildCommandFor = drvPath: runCommand "build-command-for-${drvPath}-.kaem"
     { } ''echo ${generateEnvFromJson (builtins.fromJSON (builtins.readFile "${jsonFor drvPath}"))} > $out'';
-  drv = base.kaem-env-test-2;
   script = generateEnv drv;
   generateEnvFromDrvPath = drvPath: generateEnv (builtins.readFile drvPath);
-  singleCommand = pos: drvPath:
-    if pos == 0 then ''${sources.bootstrap-seeds}/POSIX/x86/kaem-optional-seed "${buildCommandFor drvPath}''\n"''
-    else ''new_kaem --verbose --strict -f "${buildCommandFor drvPath}''\n"'';
-
-  allCommands = builtins.concatStringsSep "" (lib.imap0 singleCommand (buildInputs { drv_path = drv.drvPath; }));
-
+  singleCommand = drvPath: ''./bin_kaem --verbose --strict -f "${buildCommandFor drvPath}''\n"'';
+  allCommands =  builtins.concatStringsSep "" (map singleCommand (buildInputs { drv_path = drvPath; }));
   testKaemProduce =
 
     stdenv.mkDerivation {
       pname = "test-kaem-produce";
       version = "0.1";
-      srcs = [ standalone-tree ];
+      srcs = [sources.bootstrap-seeds];
       installPhase = with pkgs; ''
         echo -----
-        echo buildSteps: $buildStep
-        echo ${allCommands} > $out
+        echo "${generateKaemScripts.build_kaem}"${allCommands} > $out
         echo -----
       '';
       dontUnpack = true;
