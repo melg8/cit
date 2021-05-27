@@ -31,7 +31,7 @@ let
 in
 with sources;
 rec {
-  build_kaem = (''
+  build_kaem = binName : (''
     ${bootstrap-seeds}/POSIX/x86/hex0-seed ${bootstrap-seeds}/POSIX/x86/hex0_x86.hex0 hex0
     ./hex0 ${bootstrap-seeds}/POSIX/x86/kaem-minimal.hex0 kaem-0
 
@@ -143,11 +143,13 @@ rec {
 
     ./catm hold ${stage0-posix}/x86/ELF-i386-debug.hex2 temp1
     ./hex2-0 hold bin_hex2
+
+    ./catm HereStage1
   ''
   +
   build-with-m2
     {
-      name = "kaem";
+      name = binName;
       builder = "./M2";
       elf = "./blood-elf-0";
       sources = [
@@ -172,7 +174,7 @@ rec {
       ];
     });
   kaem_run = builtins.toFile "kaem.run" (
-    build_kaem +
+    (build_kaem "kaem")+
     build-with-m2
       {
         name = "blood-elf";
@@ -272,21 +274,8 @@ rec {
   );
   kaem_full_run_hook = builtins.toFile "kaem_full_run_hook.run" ''
     PATH=''${PATH}:''${PWD}
-
-    ./bin_kaem --verbose --strict -f ${kaem_env_test_1_run}
-
-    ./bin_kaem --verbose --strict -f ${kaem_env_test_2_run}
-
     ./bin_kaem --verbose --strict -f ${kaem_full_run}
   '';
-  kaem_env_test_1_run = builtins.toFile "kaem_env_test_1_run.run" ''
-    DETECT_ME_SET="TO_VALUE"
-    ${bootstrap-seeds}/POSIX/x86/hex0-seed ${bootstrap-seeds}/POSIX/x86/hex0_x86.hex0 hex0
-  '';
-  kaem_env_test_2_run = builtins.toFile "kaem_env_test_2_run.run" ''
-    ${bootstrap-seeds}/POSIX/x86/hex0-seed ${bootstrap-seeds}/POSIX/x86/hex0_x86.hex0 hex0
-  '';
-
   kaem_full_run = builtins.toFile "kaem_full_run.run" ''
     mkdir ''${out}
     catm ''${out}/blood-elf-0 ./blood-elf-0

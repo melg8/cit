@@ -6,7 +6,7 @@ let
   getAttr = set: name: builtins.replaceStrings [ "\n" ] [ "\\n" ]
     (toString set.${name});
   getEnvAttr = getAttr envAttrs;
-  escapeArgs = str: lib.escape ["`"] (lib.escapeShellArg str);
+  escapeArgs = str: lib.escape [ "`" ] (lib.escapeShellArg str);
   addToEnv = s: name: s + ''${name}=${escapeArgs (getEnvAttr name)}''\n'';
   env = builtins.foldl' addToEnv "" (builtins.attrNames envAttrs);
   getDrvAttr = getAttr drvAttrs;
