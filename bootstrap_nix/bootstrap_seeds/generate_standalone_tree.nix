@@ -82,35 +82,144 @@ with pkgs; rec {
   drvPath = builtins.unsafeDiscardStringContext drv.drvPath;
   pathSanitized = path: lib.replaceStrings [ "?" ] [ "-" ] path;
   jsonFor = drvPath: runCommand ''${pathSanitized drvPath}-json''
-    { } ''${nix}/bin/nix show-derivation ${drvPath} --quiet > $out'';
+    { } ''
+    export NIX_REMOTE=local?root=$PWD
+    ${nix}/bin/nix show-derivation ${drvPath} --quiet > $out
+  '';
+  copyDirectBuildDependencies = drvPath: runCommand ''DirectDeps''
+    { }
+    ''
+      export NIX_REMOTE=local?root=$PWD
+      export USER=nobody
+      echo path: ${drvPath}
+
+      mkdir -p $out
+      mkdir -p build/nix/store/
+      cp ${drvPath} build/nix/store/derivation.dr
+      ls -la build/nix/store
+
+      export NIX_STATE_DIR=$TMPDIR
+      ${nix}/bin/nix-store --init
+      ${libfaketime}/bin/faketime -f "1970-01-01 00:00:01" \
+      ${nix}/bin/nix-store --load-db < ${closureInfo { rootPaths = build/nix/store/derivation.dr; }}/registration
+
+
+      ${nix}/bin/nix-store -qR build/nix/store/derivation.drv > $out/result
+    '';
 
   escapeList = [ "'" "`" ">" "#" "\\n" ];
   buildCommandFor = drvPath: runCommand ''${pathSanitized drvPath}-build.kaem''
     { } ''
-          cat > $out << EOL
-          ${generateEnvFromJson (builtins.fromJSON (builtins.readFile (jsonFor drvPath)))}
-          EOL
-        '';
+    cat > $out << EOL
+    ${generateEnvFromJson (builtins.fromJSON (builtins.readFile (jsonFor drvPath)))}
+    EOL
+  '';
   script = generateEnv drv;
   generateEnvFromDrvPath = drvPath: generateEnv (builtins.readFile drvPath);
   singleCommand = drvPath: ''./bin_kaem --verbose --strict -f "${buildCommandFor drvPath}"'';
-  allCommands = builtins.concatStringsSep "\n" (map singleCommand (buildInputs { drv_path = drvPath; }));
-  result = generateKaemScripts.build_kaem + allCommands;
-  testKaemProduce =
+  testDependencyPath = "/nix/store/42d6drs0kdxl03l1can3p485iv4sbn4p-kaem_env_test_1_run.run";
+  testDrvPath = "/nix/store/jrl29l8aflxc0y7zqkx2c4gv04zngk69-mes-m2-with-tools.drv";
+  testDrvImported = import testDrvPath;
+  testFolderOutputs = pkgs.symlinkJoin {
+    name = "myexample";
+    runLocal = true;
+    paths = [ testDrvImported ];
+    postBuild = "echo link added";
+  };
 
-    stdenv.mkDerivation {
-      pname = "test-kaem-produce";
-      version = "0.1";
-      srcs = [ sources.bootstrap-seeds ];
-      installPhase = with pkgs; ''
-        echo -----
-        echo "${result}" > $out
-        echo -----
+
+  testPopularity = referencesByPopularity base.kaem-env-test-2.drvPath;
+  testPopularity1 = runCommand ''test-popularity-1''
+    { } ''
+    export NIX_REMOTE=local?root=$PWD
+    cat ${testPopularity} | grep "[.]drv$" | xargs ${nix}/bin/nix show-derivation --quiet >> $out
+  '';
+
+
+  testFolder = copyAllRefs base.mes-m2-with-tools;
+
+
+
+  drvPathWithoutContext = builtins.unsafeDiscardStringContext pkgs.hello.drvPath;
+
+  drvFile = builtins.readFile drvPathWithoutContext;
+  jsonForDrv = stdenv.mkDerivation {
+    pname = "jsonForDrv";
+    version = "0.1";
+    src = ./.;
+    buildInputs = [ git ];
+
+    installPhase = ''
+      export HOME=$TMP
+      export NIX_STATE_DIR=$PWD
+      export NIX_REMOTE=local?root=$PWD
+      ${nix}/bin/nix-instantiate --readonly-mode --eval --strict -E "(import $src/default.nix).mes-m2-with-tools.drvPath"
+      touch $out
+    '';
+    dontUnpack = true;
+    dontPatch = true;
+    dontConfigure = true;
+    dontBuild = true;
+    dontFixup = true;
+  };
+
+  directBuildDependencies =
+    drv_path:
+    let
+      drv_file = builtins.readFile drv_path;
+      storeDirRe = lib.replaceStrings [ "." ] [ "\\." ] builtins.storeDir;
+      storeBaseRe = "[0-9a-df-np-sv-z]{32}-[+_?=a-zA-Z0-9-][+_?=.a-zA-Z0-9-]*";
+      re = "(${storeDirRe}/${storeBaseRe})";
+      inputs = lib.concatLists (lib.filter lib.isList (builtins.split re drv_file));
+    in
+    lib.unique inputs;
+  drvPath1 = builtins.unsafeDiscardStringContext base.mes-m2-with-tools.drvPath;
+  testDirectDependencies = directBuildDependencies drvPath1;
+  testDirectDependencies1 = copyDirectBuildDependencies drvPath1;
+
+  copyAllRefs = drv:
+    let
+      drvPath = drv.drvPath;
+      pathToIgnore = drv.outPath;
+      generatedCommandFiles = map buildCommandFor (buildInputs { drv_path = drvPath; });
+      commandLine = fileName: ''./bin_initial_kaem --verbose --strict -f "${fileName}"'';
+      generatedCommands = map commandLine generatedCommandFiles;
+
+    in
+    runCommand "copy-all-refs"
+      rec  {
+        exportReferencesGraph = [ "graph" drvPath ];
+        ignoreOutputs = builtins.concatStringsSep " "
+          (map (x: (import x).outPath)
+            (buildInputs { drv_path = (import drvPath).drvPath; })) + " " +
+        builtins.concatStringsSep " "
+          (buildInputs { drv_path = drvPath; });
+        allFiles = toString generatedCommandFiles;
+      }
+      ''
+        mkdir -p $out/nix/store
+        while read path; do
+          echo "path: $path"
+          if echo $ignoreOutputs | grep -w -q $path; then
+            echo "bad path found: $path"
+          else
+            cp -r $path $out/nix/store
+          fi
+
+          read dummy
+          read nrRefs
+          for ((i = 0; i < nrRefs; i++)); do read ref; done
+        done < graph
+        echo "NOW GRAPH 1"
+
+        for file in $allFiles; do
+            cp $file $out/nix/store
+        done
+
+        echo "${generateKaemScripts.build_kaem "initial_kaem"}" > $out/init
+        echo "${builtins.concatStringsSep "\n" generatedCommands}" >> $out/init
+
+        grep -rl "/nix/store/" $out | xargs sed -i "s/\/nix\/store/\.\/nix\/store/g"
       '';
-      dontUnpack = true;
-      dontPatch = true;
-      dontConfigure = true;
-      dontBuild = true;
-      dontFixup = true;
-    };
+  testDirectDependencies2 = copyAllRefs (import drvPath1);
 }
