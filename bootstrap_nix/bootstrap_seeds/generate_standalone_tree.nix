@@ -114,11 +114,13 @@ with pkgs; rec {
     ${generateEnvFromJson (builtins.fromJSON (builtins.readFile (jsonFor drvPath)))}
     EOL
   '';
+  testJson = buildCommandFor testDrvPath;
+  testJsonFor = jsonFor testDrvPath;
   script = generateEnv drv;
   generateEnvFromDrvPath = drvPath: generateEnv (builtins.readFile drvPath);
   singleCommand = drvPath: ''./bin_kaem --verbose --strict -f "${buildCommandFor drvPath}"'';
   testDependencyPath = "/nix/store/42d6drs0kdxl03l1can3p485iv4sbn4p-kaem_env_test_1_run.run";
-  testDrvPath = "/nix/store/jrl29l8aflxc0y7zqkx2c4gv04zngk69-mes-m2-with-tools.drv";
+  testDrvPath = "/nix/store/v4f07zfi7m48vh3wp6la32ypj9lz1729-mes-m2-with-tools.drv";
   testDrvImported = import testDrvPath;
   testFolderOutputs = pkgs.symlinkJoin {
     name = "myexample";
