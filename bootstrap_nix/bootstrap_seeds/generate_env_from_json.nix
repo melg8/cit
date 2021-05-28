@@ -7,7 +7,7 @@ let
     (toString set.${name});
   getEnvAttr = getAttr envAttrs;
   escapeArgs = str: lib.escape [ "`" ] (lib.escapeShellArg str);
-  addToEnv = s: name: s + ''${name}=${escapeArgs (getEnvAttr name)}''\n'';
+  addToEnv = s: name: s + ''${name}=${getEnvAttr name}''\n'';
   env = builtins.foldl' addToEnv "" (builtins.attrNames envAttrs);
   getDrvAttr = getAttr drvAttrs;
   builder = getDrvAttr "builder";
