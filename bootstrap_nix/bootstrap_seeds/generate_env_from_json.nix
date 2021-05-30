@@ -5,7 +5,6 @@ let
   envAttrs = jsonDrv: (drvAttrs jsonDrv)."env";
   getEnvAttr = jsonDrv: getAttr (envAttrs jsonDrv);
 
-  noEnvCapture = jsonDrv: name: '''';
   advancedKaemEnv = jsonDrv: name: ''${name}=${getEnvAttr jsonDrv name}''\n'';
 
   generateEnvFromJson =
@@ -25,6 +24,6 @@ let
     env + builderCall;
 in
 {
-  generateSeedKaemEnv = generateEnvFromJson noEnvCapture;
+  generateLocalKaemEnv = generateEnvFromJson advancedKaemEnv;
   generateAdvancedKaemEnv = generateEnvFromJson advancedKaemEnv;
 }

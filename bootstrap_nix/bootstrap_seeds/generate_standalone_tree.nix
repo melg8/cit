@@ -175,9 +175,7 @@ with pkgs; rec {
   testDirectDependencies = directBuildDependencies drvPath1;
   testDirectDependencies1 = copyDirectBuildDependencies drvPath1;
 
-  commandLine = fileName: ''./bin_initial_kaem --verbose --strict -f "${fileName}"'';
-
-  useSeedKaem = scriptName: ''${sources.bootstrap-seeds}/POSIX/x86/kaem-optional-seed "${scriptName}"'';
+  useLocalKaem = scriptName: ''./bin_local_kaem --verbose --strict -f "${scriptName}"'';
   useAdvancedKaem = scriptName: ''${base.mes-m2-with-tools}/bin/new_kaem --verbose --strict -f "${scriptName}"'';
 
   copyAllRefs = drv:
@@ -187,8 +185,8 @@ with pkgs; rec {
       usageOrder = [
         {
           drvPath = base.mes-m2-with-tools.drvPath;
-          use = useSeedKaem;
-          envGen = generateEnv.generateSeedKaemEnv;
+          use = useLocalKaem;
+          envGen = generateEnv.generateLocalKaemEnv;
         }
         {
           drvPath = drvPath;
@@ -244,6 +242,7 @@ with pkgs; rec {
             cp $file $out/nix/store
         done
 
+        echo "${generateKaemScripts.build_kaem "local_kaem"}" > $out/init
         echo "${builtins.concatStringsSep "\n" generatedCommandFiles1.in_generatedCommands}" >> $out/init
 
         grep -rl "/nix/store/" $out | xargs sed -i "s/\/nix\/store/\.\/nix\/store/g"
