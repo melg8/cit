@@ -172,7 +172,7 @@ rec {
         "${customKaem}"
       ];
     });
-  kaem_run = builtins.toFile "kaem.run" (
+  kaemRun = builtins.toFile "kaem.run" (
     (build_kaem "kaem") +
     build-with-m2
       {

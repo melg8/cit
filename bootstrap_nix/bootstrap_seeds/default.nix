@@ -1,49 +1,46 @@
 let
   sources = import ./sources.nix;
-  generated_kaem_scripts = import ./generate_kaem_scripts.nix { inherit sources; };
-  kaem_run = with sources; builtins.toFile "kaem.run" ''
+  generatedKaemScripts = import ./generate_kaem_scripts.nix { inherit sources; };
+  kaemRun = with sources; builtins.toFile "kaem.run" ''
     mkdir ''${out}
   '';
 in
 with sources;
 rec  {
-  mes-m2-with-tools = derivation rec {
-    name = "mes-m2-with-tools";
+  MesM2WithTools = derivation rec {
+    name = "MesM2WithTools";
     system = builtins.currentSystem;
     outputs = [ "out" ];
-    srcs = generated_kaem_scripts.kaem_run;
+    srcs = generatedKaemScripts.kaemRun;
     builder = "${bootstrap-seeds}/POSIX/x86/kaem-optional-seed";
     args = [ "${srcs}" ];
   };
-  kaem-env-test = derivation rec {
-    name = "kaem-env-test";
+  kaemEnvTest = derivation rec {
+    name = "kaemEnvTest";
     system = builtins.currentSystem;
     outputs = [ "out" ];
-    srcs = kaem_run;
-    PATH = "${mes-m2-with-tools}:${mes-m2-with-tools}/bin";
-    builder = "${mes-m2-with-tools}/bin/new_kaem";
+    srcs = kaemRun;
+    PATH = "${MesM2WithTools}:${MesM2WithTools}/bin";
+    builder = "${MesM2WithTools}/bin/new_kaem";
     args = [ "--verbose" "--strict" "-f" "${srcs}" ];
   };
-
-  kaem-env-test-1 = derivation rec {
-    name = "kaem-env-test-1";
-    UnexpectedEnv = "somevaluetest";
+  kaemEnvTest1 = derivation rec {
+    name = "kaemEnvTest1";
     system = builtins.currentSystem;
     outputs = [ "out" ];
-    srcs = kaem_run;
-    PATH = "${mes-m2-with-tools}:${mes-m2-with-tools}/bin:${kaem-env-test}/bin";
-    builder = kaem-env-test.drvAttrs.builder;
+    srcs = kaemRun;
+    PATH = "${MesM2WithTools}:${MesM2WithTools}/bin:${kaemEnvTest}/bin";
+    builder = kaemEnvTest.drvAttrs.builder;
     args = [ "--verbose" "--strict" "-f" "${srcs}" ];
   };
-  kaem-env-test-2 = derivation rec {
-    name = "kaem-env-test-2";
-    UnexpectedEnv = "somevaluetest";
+  kaemEnvTest2 = derivation rec {
+    name = "kaemEnvTest2";
     system = builtins.currentSystem;
     outputs = [ "out" ];
-    srcs = kaem_run;
-    PATH = "${mes-m2-with-tools}:${mes-m2-with-tools}/bin:${kaem-env-test}/bin";
-    builder = kaem-env-test-1.drvAttrs.builder;
-    args = kaem-env-test-1.args;
-    allowedRequisites = [ kaem-env-test-1 kaem-env-test mes-m2-with-tools ];
+    srcs = kaemRun;
+    PATH = "${MesM2WithTools}:${MesM2WithTools}/bin:${kaemEnvTest}/bin";
+    builder = kaemEnvTest1.drvAttrs.builder;
+    args = kaemEnvTest1.args;
+    allowedRequisites = [ kaemEnvTest1 kaemEnvTest MesM2WithTools ];
   };
 }

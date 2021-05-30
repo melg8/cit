@@ -21,7 +21,7 @@ with pkgs; rec {
     EOL
   '';
   useLocalKaem = scriptName: ''./bin_local_kaem --verbose --strict -f "${scriptName}"'';
-  useAdvancedKaem = scriptName: ''${base.mes-m2-with-tools}/bin/new_kaem --verbose --strict -f "${scriptName}"'';
+  useAdvancedKaem = scriptName: ''${base.MesM2WithTools}/bin/new_kaem --verbose --strict -f "${scriptName}"'';
 
   copyAllRefs = initialRunner: initWith: drv:
     let
@@ -29,7 +29,7 @@ with pkgs; rec {
       pathToIgnore = drv.outPath;
       usageOrder = [
         {
-          drvPath = base.mes-m2-with-tools.drvPath;
+          drvPath = base.MesM2WithTools.drvPath;
           use = useLocalKaem;
           envGen = generateEnv.generateLocalKaemEnv;
         }
@@ -95,7 +95,7 @@ with pkgs; rec {
         grep -rl "/nix/store/" $out | \
         xargs sed -i "s/\/nix\/store/\.\/nix\/store/g"
       '';
-  drvPath1 = builtins.unsafeDiscardStringContext base.kaem-env-test-2.drvPath;
+  drvPath1 = builtins.unsafeDiscardStringContext base.kaemEnvTest2.drvPath;
   prepareLocalKaem = generateKaemScripts.build_kaem "local_kaem";
   initialRunner = "${sources.bootstrap-seeds}/POSIX/x86/kaem-optional-seed";
   testDirectDependencies2 = copyAllRefs initialRunner prepareLocalKaem (import drvPath1);
