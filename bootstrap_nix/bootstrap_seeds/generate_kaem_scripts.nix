@@ -1,6 +1,5 @@
 { sources }:
 let
-  kaem-addition = ./kaem.c;
   prepare-sources = list: builtins.concatStringsSep " "
     (builtins.map (x: "-f " + x) list) + " ";
 
@@ -170,7 +169,7 @@ rec {
         "${mescc-tools}/Kaem/kaem.h"
         "${mescc-tools}/Kaem/variable.c"
         "${mescc-tools}/Kaem/kaem_globals.c"
-        "${kaem-addition}"
+        "${customKaem}"
       ];
     });
   kaem_run = builtins.toFile "kaem.run" (
