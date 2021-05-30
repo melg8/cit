@@ -1,28 +1,32 @@
+{ drv_path, visited ? [ ], lib ? import <nixpkgs/lib> }:
 let
-  nixpkgs = import ../../ci/nix/pinned_nixpkgs.nix;
-  pkgs = import nixpkgs { };
-  base = import ./default.nix;
-  pkg = base.kaem-env-test-2;
+  drv_direct_dependencies =
+    drv_path:
+    let
+      drv_file = builtins.readFile drv_path;
+      storeDirRe = lib.replaceStrings [ "." ] [ "\\." ] builtins.storeDir;
+      storeBaseRe = "[0-9a-df-np-sv-z]{32}-[+_?=a-zA-Z0-9-][+_?=.a-zA-Z0-9-]*";
+      re = "(${storeDirRe}/${storeBaseRe}\\.drv)";
+      inputs = lib.concatLists (lib.filter lib.isList (builtins.split re drv_file));
+    in
+    inputs;
+
+  drv_all_dependencies = { drv_path, visited }:
+    let
+      direct_dependencies = drv_direct_dependencies drv_path;
+      minimal_path = { paths = [ drv_path ]; visited = visited ++ [ drv_path ]; };
+      just_visited = { paths = [ ]; visited = lib.unique (visited ++ [ drv_path ]); };
+      concat_outs = out1: out2: {
+        paths = out1.paths ++ out2.paths;
+        visited = lib.unique (out1.visited ++ out2.visited);
+      };
+      visit_all_childs = (out: dependency:
+        if (builtins.elem dependency out.visited) then out
+        else concat_outs out (drv_all_dependencies { drv_path = dependency; visited = out.visited; }));
+      result =
+        if (builtins.length direct_dependencies) == 0 then minimal_path
+        else concat_outs (builtins.foldl' visit_all_childs just_visited direct_dependencies) minimal_path;
+    in
+    result;
 in
-with pkgs; rec {
-  standalone-tree = stdenv.mkDerivation rec {
-    pname = "kaem_build_tree";
-    version = "0.1";
-
-    dontUnpack = true;
-    dontPatch = true;
-    dontConfigure = true;
-    dontBuild = true;
-    dontFixup = true;
-    depsBuildBuild = [ pkgs.nix ];
-
-    closureInfo = pkgs.closureInfo { rootPaths = pkg; };
-
-    installPhase = ''
-      mkdir -p $out
-      mkdir -p /nix/var
-      ${nix}/bin/nix-store --load-db < ${closureInfo}/registration
-      ${nix}/bin/nix-store -qR pkg.drvPath > $out/store_paths.txt
-    '';
-  };
-}
+(drv_all_dependencies { drv_path = drv_path; visited = visited; }).paths
