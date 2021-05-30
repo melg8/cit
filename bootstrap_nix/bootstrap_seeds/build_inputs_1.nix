@@ -1,4 +1,4 @@
-{ drv_path, lib ? import <nixpkgs/lib> }:
+{ drv_path, visited ? [ ], lib ? import <nixpkgs/lib> }:
 let
   drv_direct_dependencies =
     drv_path:
@@ -29,4 +29,4 @@ let
     in
     result;
 in
-(drv_all_dependencies { drv_path = drv_path; visited = [ ]; }).paths
+(drv_all_dependencies { drv_path = drv_path; visited = visited; }).paths

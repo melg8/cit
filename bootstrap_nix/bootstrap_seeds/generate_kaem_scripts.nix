@@ -31,7 +31,7 @@ let
 in
 with sources;
 rec {
-  build_kaem = binName : (''
+  build_kaem = binName: (''
     ${bootstrap-seeds}/POSIX/x86/hex0-seed ${bootstrap-seeds}/POSIX/x86/hex0_x86.hex0 hex0
     ./hex0 ${bootstrap-seeds}/POSIX/x86/kaem-minimal.hex0 kaem-0
 
@@ -174,7 +174,7 @@ rec {
       ];
     });
   kaem_run = builtins.toFile "kaem.run" (
-    (build_kaem "kaem")+
+    (build_kaem "kaem") +
     build-with-m2
       {
         name = "blood-elf";

@@ -8,8 +8,7 @@ let
       (builtins.attrNames (sources)));
   };
   base = import ./default.nix;
-  generateEnv = import ./generate_env.nix;
-  generateEnvFromJson = import ./generate_env_from_json.nix;
+  generateEnv = import ./generate_env_from_json.nix;
   buildInputs = import ./build_inputs_1.nix;
 in
 with pkgs; rec {
@@ -108,17 +107,14 @@ with pkgs; rec {
     '';
 
   escapeList = [ "'" "`" ">" "#" "\\n" ];
-  buildCommandFor = drvPath: runCommand ''${pathSanitized drvPath}-build.kaem''
+  buildCommandFor = genEnv: drvPath: runCommand ''${pathSanitized drvPath}-build.kaem''
     { } ''
     cat > $out << EOL
-    ${generateEnvFromJson (builtins.fromJSON (builtins.readFile (jsonFor drvPath)))}
+    ${genEnv (builtins.fromJSON (builtins.readFile (jsonFor drvPath)))}
     EOL
   '';
-  testJson = buildCommandFor testDrvPath;
-  testJsonFor = jsonFor testDrvPath;
   script = generateEnv drv;
   generateEnvFromDrvPath = drvPath: generateEnv (builtins.readFile drvPath);
-  singleCommand = drvPath: ''./bin_kaem --verbose --strict -f "${buildCommandFor drvPath}"'';
   testDependencyPath = "/nix/store/42d6drs0kdxl03l1can3p485iv4sbn4p-kaem_env_test_1_run.run";
   testDrvPath = "/nix/store/v4f07zfi7m48vh3wp6la32ypj9lz1729-mes-m2-with-tools.drv";
   testDrvImported = import testDrvPath;
@@ -175,18 +171,48 @@ with pkgs; rec {
       inputs = lib.concatLists (lib.filter lib.isList (builtins.split re drv_file));
     in
     lib.unique inputs;
-  drvPath1 = builtins.unsafeDiscardStringContext base.mes-m2-with-tools.drvPath;
+
   testDirectDependencies = directBuildDependencies drvPath1;
   testDirectDependencies1 = copyDirectBuildDependencies drvPath1;
+
+  commandLine = fileName: ''./bin_initial_kaem --verbose --strict -f "${fileName}"'';
+
+  useSeedKaem = scriptName: ''${sources.bootstrap-seeds}/POSIX/x86/kaem-optional-seed "${scriptName}"'';
+  useAdvancedKaem = scriptName: ''${base.mes-m2-with-tools}/bin/new_kaem --verbose --strict -f "${scriptName}"'';
 
   copyAllRefs = drv:
     let
       drvPath = drv.drvPath;
       pathToIgnore = drv.outPath;
-      generatedCommandFiles = map buildCommandFor (buildInputs { drv_path = drvPath; });
-      commandLine = fileName: ''./bin_initial_kaem --verbose --strict -f "${fileName}"'';
-      generatedCommands = map commandLine generatedCommandFiles;
-
+      usageOrder = [
+        {
+          drvPath = base.mes-m2-with-tools.drvPath;
+          use = useSeedKaem;
+          envGen = generateEnv.generateSeedKaemEnv;
+        }
+        {
+          drvPath = drvPath;
+          use = useAdvancedKaem;
+          envGen = generateEnv.generateAdvancedKaemEnv;
+        }
+      ];
+      handleUsageOrder =
+        { in_inputs ? [ ]
+        , in_generatedCommandFiles ? [ ]
+        , in_generatedCommands ? [ ]
+        }: { drvPath, use, envGen }:
+        let
+          inputs = buildInputs { drv_path = drvPath; visited = in_inputs; };
+          generateEnvFor = buildCommandFor envGen;
+          generatedCommandFiles = map generateEnvFor inputs;
+          generatedCommands = map use generatedCommandFiles;
+        in
+        {
+          in_inputs = in_inputs ++ inputs;
+          in_generatedCommandFiles = in_generatedCommandFiles ++ generatedCommandFiles;
+          in_generatedCommands = in_generatedCommands ++ generatedCommands;
+        };
+      generatedCommandFiles1 = builtins.foldl' handleUsageOrder { } usageOrder;
     in
     runCommand "copy-all-refs"
       rec  {
@@ -196,7 +222,7 @@ with pkgs; rec {
             (buildInputs { drv_path = (import drvPath).drvPath; })) + " " +
         builtins.concatStringsSep " "
           (buildInputs { drv_path = drvPath; });
-        allFiles = toString generatedCommandFiles;
+        allFiles = toString generatedCommandFiles1.in_generatedCommandFiles;
       }
       ''
         mkdir -p $out/nix/store
@@ -218,10 +244,10 @@ with pkgs; rec {
             cp $file $out/nix/store
         done
 
-        echo "${generateKaemScripts.build_kaem "initial_kaem"}" > $out/init
-        echo "${builtins.concatStringsSep "\n" generatedCommands}" >> $out/init
+        echo "${builtins.concatStringsSep "\n" generatedCommandFiles1.in_generatedCommands}" >> $out/init
 
         grep -rl "/nix/store/" $out | xargs sed -i "s/\/nix\/store/\.\/nix\/store/g"
       '';
+  drvPath1 = builtins.unsafeDiscardStringContext base.kaem-env-test-2.drvPath;
   testDirectDependencies2 = copyAllRefs (import drvPath1);
 }
