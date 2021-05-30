@@ -285,6 +285,9 @@ rec {
     chmod_x ''${out}/M2
 
     mkdir ''${out}/bin
+    catm ''${out}/bin/catm ./catm
+    chmod_x ''${out}/bin/catm
+
     catm ''${out}/bin/new_kaem ./bin_kaem
     chmod_x ''${out}/bin/new_kaem
 
