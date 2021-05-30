@@ -58,15 +58,16 @@ with pkgs; rec {
   build-standalone-tree = stdenv.mkDerivation {
     pname = "build-standalone-tree";
     version = "0.1";
-    srcs = [ standalone-tree ];
+    srcs = [ testDirectDependencies2 ];
 
     installPhase = ''
       mkdir build_tree
-      cp -r ${standalone-tree}/* build_tree/
+      cp -r ${testDirectDependencies2}/* build_tree/
+      chmod -R 755 build_tree/*
       cd build_tree
-      ./bootstrap-seeds/POSIX/x86/kaem-optional-seed ./kaem.run
-      mkdir -p $out/bin
-      cp ./kaem_full/bin/* $out/bin/
+      ./init
+      mkdir -p $out
+      cp -r ./ $out/
     '';
     dontUnpack = true;
     dontPatch = true;
@@ -74,6 +75,7 @@ with pkgs; rec {
     dontBuild = true;
     dontFixup = true;
   };
+
   # Needs "--option sandbox false" to work because it use information from
   # host nix-store.
   #  drv = base.kaem-env-test-2;
@@ -178,7 +180,7 @@ with pkgs; rec {
   useLocalKaem = scriptName: ''./bin_local_kaem --verbose --strict -f "${scriptName}"'';
   useAdvancedKaem = scriptName: ''${base.mes-m2-with-tools}/bin/new_kaem --verbose --strict -f "${scriptName}"'';
 
-  copyAllRefs = drv:
+  copyAllRefs = initialRunner: initWith: drv:
     let
       drvPath = drv.drvPath;
       pathToIgnore = drv.outPath;
@@ -242,11 +244,14 @@ with pkgs; rec {
             cp $file $out/nix/store
         done
 
-        echo "${generateKaemScripts.build_kaem "local_kaem"}" > $out/init
-        echo "${builtins.concatStringsSep "\n" generatedCommandFiles1.in_generatedCommands}" >> $out/init
+        cp ${initialRunner} $out/init
+        echo "${initWith}" > $out/kaem.run
+        echo "${builtins.concatStringsSep "\n" generatedCommandFiles1.in_generatedCommands}" >> $out/kaem.run
 
         grep -rl "/nix/store/" $out | xargs sed -i "s/\/nix\/store/\.\/nix\/store/g"
       '';
-  drvPath1 = builtins.unsafeDiscardStringContext base.kaem-env-test-2.drvPath;
-  testDirectDependencies2 = copyAllRefs (import drvPath1);
+  drvPath1 = builtins.unsafeDiscardStringContext base.kaem-env-test.drvPath;
+  prepareLocalKaem = generateKaemScripts.build_kaem "local_kaem";
+  initialRunner = "${sources.bootstrap-seeds}/POSIX/x86/kaem-optional-seed";
+  testDirectDependencies2 = copyAllRefs initialRunner prepareLocalKaem (import drvPath1);
 }
