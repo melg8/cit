@@ -41,4 +41,5 @@
     ref = "refs/heads/master";
     rev = "00e309856c4a505b7920956e64a20e9abb9475d0";
   };
+  customKaem = ./kaem.c;
 }
