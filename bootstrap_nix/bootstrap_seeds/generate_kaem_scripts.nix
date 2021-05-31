@@ -15,6 +15,7 @@ rec {
     , M1
     , hex2
     , defsProvider ? "${stage0-posix}/x86"
+    , outputPrefix
     }: ''
       ${builder} --debug --architecture x86 ''
     + prepare-sources sources + ''
@@ -35,11 +36,11 @@ rec {
        --LittleEndian \
        --architecture x86 \
        --BaseAddress 0x8048000 \
-       -o ./bin_${name} \
+       -o ${outputPrefix}${name} \
        --exec_enable
     '';
 
-  buildWithWhichM2 = M1: hex2:
+  buildWithWhichM2 = { M1, hex2, outputPrefix }:
     { builder
     , elf
     , sources
@@ -47,11 +48,19 @@ rec {
     , defsProvider ? "${stage0-posix}/x86"
     }:
     buildWithM2 {
-      inherit builder elf sources name defsProvider M1 hex2;
+      inherit builder elf sources name defsProvider M1 hex2 outputPrefix;
     };
 
-  buildWithLocalM2 = buildWithWhichM2 "./bin_M1" "./bin_hex2";
-  buildWithGlobalM2 = buildWithWhichM2 "M1" "hex2";
+  buildWithLocalM2 = buildWithWhichM2 {
+    M1 = "./bin_M1";
+    hex2 = "./bin_hex2";
+    outputPrefix = "./bin_";
+  };
+  buildWithGlobalM2 = buildWithWhichM2 {
+    M1 = "M1";
+    hex2 = "hex2";
+    outputPrefix = ''''${out}/bin/'';
+  };
 
   build_kaem = binName: (''
     ${bootstrap-seeds}/POSIX/x86/hex0-seed ${bootstrap-seeds}/POSIX/x86/hex0_x86.hex0 hex0
