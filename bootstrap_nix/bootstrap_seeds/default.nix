@@ -24,6 +24,7 @@ rec  {
         builtins.toFile "MesCcToolsExtra1.run"
           (''
             mkdir ''${out}
+            mkdir ''${out}/bin
           ''
           +
           buildWithGlobalM2 {
@@ -46,13 +47,7 @@ rec  {
               "${src_path}/functions/numerate_number.c"
               "${src_path}/cp.c"
             ];
-          }
-          +
-          ''
-            mkdir ''${out}/bin
-            catm ''${out}/bin/cp ./bin_cp
-            chmod_x ''${out}/bin/cp
-          '');
+          });
     in
     derivation rec {
       name = "MesCcToolsExtra";
