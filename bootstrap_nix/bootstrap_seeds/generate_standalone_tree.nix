@@ -21,7 +21,7 @@ with pkgs; rec {
     EOL
   '';
   useLocalKaem = scriptName: ''./bin_local_kaem --verbose --strict -f "${scriptName}"'';
-  useAdvancedKaem = scriptName: ''${base.MesM2WithTools}/bin/new_kaem --verbose --strict -f "${scriptName}"'';
+  useAdvancedKaem = scriptName: ''${base.MesM2WithTools}/bin/kaem --verbose --strict -f "${scriptName}"'';
 
   copyAllRefs = initialRunner: initWith: drv:
     let
@@ -95,7 +95,7 @@ with pkgs; rec {
         grep -rl "/nix/store/" $out | \
         xargs sed -i "s/\/nix\/store/\.\/nix\/store/g"
       '';
-  drvPath1 = builtins.unsafeDiscardStringContext base.kaemEnvTest2.drvPath;
+  drvPath1 = builtins.unsafeDiscardStringContext base.MesCcToolsExtra.drvPath;
   prepareLocalKaem = generateKaemScripts.build_kaem "local_kaem";
   initialRunner = "${sources.bootstrap-seeds}/POSIX/x86/kaem-optional-seed";
   testDirectDependencies2 = copyAllRefs initialRunner prepareLocalKaem (import drvPath1);

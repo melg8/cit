@@ -3,33 +3,56 @@ let
   prepare-sources = list: builtins.concatStringsSep " "
     (builtins.map (x: "-f " + x) list) + " ";
 
-  build-with-m2 = with sources; { builder, elf, sources, name }: ''
-    ${builder} --debug --architecture x86 ''
-  + prepare-sources sources + ''
-    -o ${name}.M1
-
-    ${elf} -f ${name}.M1 -o ${name}-footer.M1
-
-    ./bin_M1 -f ${stage0-posix}/x86/x86_defs.M1 \
-    -f ${stage0-posix}/x86/libc-core.M1 \
-    -f ${name}.M1 \
-    -f ${name}-footer.M1 \
-    --LittleEndian \
-    --architecture x86 \
-    -o ${name}.hex2
-
-    ./bin_hex2 -f ${stage0-posix}/x86/ELF-i386-debug.hex2 \
-    -f ${name}.hex2 \
-    --LittleEndian \
-    --architecture x86 \
-    --BaseAddress 0x8048000 \
-    -o ./bin_${name} \
-    --exec_enable
-  '';
 
 in
 with sources;
 rec {
+  buildWithM2 = with sources;
+    { builder
+    , elf
+    , sources
+    , name
+    , M1
+    , hex2
+    , defsProvider ? "${stage0-posix}/x86"
+    }: ''
+      ${builder} --debug --architecture x86 ''
+    + prepare-sources sources + ''
+      -o ${name}.M1
+
+      ${elf} -f ${name}.M1 -o ${name}-footer.M1
+
+      ${M1} -f ${defsProvider}/x86_defs.M1 \
+       -f ${defsProvider}/libc-core.M1 \
+       -f ${name}.M1 \
+       -f ${name}-footer.M1 \
+       --LittleEndian \
+       --architecture x86 \
+       -o ${name}.hex2
+
+      ${hex2} -f ${defsProvider}/ELF-i386-debug.hex2 \
+       -f ${name}.hex2 \
+       --LittleEndian \
+       --architecture x86 \
+       --BaseAddress 0x8048000 \
+       -o ./bin_${name} \
+       --exec_enable
+    '';
+
+  buildWithWhichM2 = M1: hex2:
+    { builder
+    , elf
+    , sources
+    , name
+    , defsProvider ? "${stage0-posix}/x86"
+    }:
+    buildWithM2 {
+      inherit builder elf sources name defsProvider M1 hex2;
+    };
+
+  buildWithLocalM2 = buildWithWhichM2 "./bin_M1" "./bin_hex2";
+  buildWithGlobalM2 = buildWithWhichM2 "M1" "hex2";
+
   build_kaem = binName: (''
     ${bootstrap-seeds}/POSIX/x86/hex0-seed ${bootstrap-seeds}/POSIX/x86/hex0_x86.hex0 hex0
     ./hex0 ${bootstrap-seeds}/POSIX/x86/kaem-minimal.hex0 kaem-0
@@ -146,7 +169,7 @@ rec {
     ./catm HereStage1
   ''
   +
-  build-with-m2
+  buildWithLocalM2
     {
       name = binName;
       builder = "./M2";
@@ -174,7 +197,7 @@ rec {
     });
   kaemRun = builtins.toFile "kaem.run" (
     (build_kaem "kaem") +
-    build-with-m2
+    buildWithLocalM2
       {
         name = "blood-elf";
         builder = "./M2";
@@ -193,7 +216,7 @@ rec {
         ];
       }
     +
-    build-with-m2 {
+    buildWithLocalM2 {
       name = "get_machine";
       builder = "./M2";
       elf = "./bin_blood-elf";
@@ -209,7 +232,7 @@ rec {
       ];
     }
     +
-    build-with-m2 {
+    buildWithLocalM2 {
       name = "M2-Planet";
       builder = "./M2";
       elf = "./bin_blood-elf";
@@ -236,7 +259,7 @@ rec {
       ];
     }
     +
-    build-with-m2 {
+    buildWithLocalM2 {
       name = "mes-m2";
       builder = "./bin_M2-Planet";
       elf = "./bin_blood-elf";
@@ -287,8 +310,8 @@ rec {
     catm ''${out}/bin/catm ./catm
     chmod_x ''${out}/bin/catm
 
-    catm ''${out}/bin/new_kaem ./bin_kaem
-    chmod_x ''${out}/bin/new_kaem
+    catm ''${out}/bin/kaem ./bin_kaem
+    chmod_x ''${out}/bin/kaem
 
     catm ''${out}/bin/M1 ./bin_M1
     chmod_x ''${out}/bin/M1
