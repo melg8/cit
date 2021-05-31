@@ -47,6 +47,49 @@ rec  {
               "${src_path}/functions/numerate_number.c"
               "${src_path}/cp.c"
             ];
+          }
+          +
+          buildWithGlobalM2 {
+            name = "chmod";
+            builder = "M2-Planet";
+            elf = "blood-elf";
+            defsProvider = "${m2-planet}/test/common_x86";
+            sources = [
+              "${m2-planet}/test/common_x86/functions/file.c"
+              "${m2-planet}/test/common_x86/functions/exit.c"
+              "${m2-planet}/test/common_x86/functions/malloc.c"
+              "${m2-planet}/test/common_x86/functions/getcwd.c"
+              "${m2-planet}/test/common_x86/functions/chdir.c"
+              "${src_path}/functions/string.c"
+              "${src_path}/functions/file_print.c"
+              "${src_path}/functions/match.c"
+              "${src_path}/functions/require.c"
+              "${src_path}/functions/in_set.c"
+              "${src_path}/functions/numerate_number.c"
+              "${m2-planet}/functions/calloc.c"
+              "${m2-planet}/test/common_x86/functions/stat.c"
+              "${src_path}/chmod.c"
+            ];
+          }
+          +
+          buildWithGlobalM2 {
+            name = "fletcher16";
+            builder = "M2-Planet";
+            elf = "blood-elf";
+            defsProvider = "${m2-planet}/test/common_x86";
+            sources = [
+              "${m2-planet}/test/common_x86/functions/file.c"
+              "${m2-planet}/test/common_x86/functions/exit.c"
+              "${src_path}/functions/numerate_number.c"
+              "${src_path}/functions/string.c"
+              "${src_path}/functions/file_print.c"
+              "${src_path}/functions/match.c"
+              "${src_path}/functions/require.c"
+              "${src_path}/functions/in_set.c"
+              "${m2-planet}/functions/calloc.c"
+              "${m2-planet}/test/common_x86/functions/malloc.c"
+              "${src_path}/fletcher16.c"
+            ];
           });
     in
     derivation rec {
