@@ -2,8 +2,6 @@
 let
   prepare-sources = list: builtins.concatStringsSep " "
     (builtins.map (x: "-f " + x) list) + " ";
-
-
 in
 with sources;
 rec {
@@ -11,20 +9,21 @@ rec {
     { builder
     , elf
     , sources
+    , m1Sources
     , name
     , M1
     , hex2
-    , defsProvider ? "${stage0-posix}/x86"
+    , defsProvider
+    , baseAddress
     , outputPrefix
     }: ''
       ${builder} --debug --architecture x86 ''
     + prepare-sources sources + ''
       -o ${name}.M1
-
       ${elf} -f ${name}.M1 -o ${name}-footer.M1
 
-      ${M1} -f ${defsProvider}/x86_defs.M1 \
-       -f ${defsProvider}/libc-core.M1 \
+      ${M1} ''
+    + prepare-sources m1Sources + ''
        -f ${name}.M1 \
        -f ${name}-footer.M1 \
        --LittleEndian \
@@ -35,21 +34,26 @@ rec {
        -f ${name}.hex2 \
        --LittleEndian \
        --architecture x86 \
-       --BaseAddress 0x8048000 \
+       --BaseAddress ${baseAddress} \
        -o ${outputPrefix}${name} \
        --exec_enable
     '';
-
   buildWithWhichM2 = { M1, hex2, outputPrefix }:
     { builder
     , elf
     , sources
+    , m1Sources ? [
+        "${defsProvider}/x86_defs.M1"
+        "${defsProvider}/libc-core.M1"
+      ]
     , name
     , defsProvider ? "${stage0-posix}/x86"
+    , baseAddress ? "0x8048000"
     }:
-    buildWithM2 {
-      inherit builder elf sources name defsProvider M1 hex2 outputPrefix;
-    };
+    buildWithM2
+      {
+        inherit builder elf sources m1Sources name defsProvider M1 hex2 baseAddress outputPrefix;
+      };
 
   buildWithLocalM2 = buildWithWhichM2 {
     M1 = "./bin_M1";
