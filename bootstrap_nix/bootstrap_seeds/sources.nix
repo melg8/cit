@@ -47,5 +47,11 @@
     ref = "refs/heads/master";
     rev = "8210cc9e24b5495957a074f59a353ca68a1de0a0";
   };
+  mes-wip-2_13 = builtins.fetchGit rec {
+    name = "mes";
+    url = "https://gitlab.com/janneke/${name}";
+    ref = "refs/heads/wip-m2.13";
+    rev = "2ab4c5c676cb66088b0fb8de03b40b01f07bd4e0";
+  };
   customKaem = ./kaem.c;
 }

@@ -95,7 +95,7 @@ with pkgs; rec {
         grep -rl "/nix/store/" $out | \
         xargs sed -i "s/\/nix\/store/\.\/nix\/store/g"
       '';
-  drvPath1 = builtins.unsafeDiscardStringContext base.MesCcToolsExtra.drvPath;
+  drvPath1 = builtins.unsafeDiscardStringContext base.MesWip213BuildByM2.drvPath;
   prepareLocalKaem = generateKaemScripts.build_kaem "local_kaem";
   initialRunner = "${sources.bootstrap-seeds}/POSIX/x86/kaem-optional-seed";
   testDirectDependencies2 = copyAllRefs initialRunner prepareLocalKaem (import drvPath1);
