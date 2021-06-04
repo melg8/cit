@@ -53,5 +53,18 @@
     ref = "refs/heads/wip-m2.13";
     rev = "2ab4c5c676cb66088b0fb8de03b40b01f07bd4e0";
   };
+  nyacc = builtins.fetchGit rec {
+    name = "nyacc";
+    url = "https://git.savannah.gnu.org/git/${name}.git";
+    ref = "refs/heads/rel-1.00";
+    rev = "06a0985332cfbc76e759da50d228d5aa01b4f6a9";
+  };
+
+  toybox = builtins.fetchGit rec {
+    name = "toybox";
+    url = "https://github.com/landley/${name}.git";
+    ref = "refs/heads/master";
+    rev = "70754564fab010a9219735da231dc1e1e1aa7784";
+  };
   customKaem = ./kaem.c;
 }
