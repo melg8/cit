@@ -550,21 +550,90 @@ rec  {
     };
   toyboxTools =
     let
+      buildWithMes = fileName: ''
+        mes \
+          --no-auto-compile \
+          -e main ${live-bootstrap}/sysa/mes/files/mescc.scm -- \
+          -S \
+          -I . \
+          -I ${toybox} \
+          -I ${toyboxConfig} \
+          -I ${mes-wip-2_13}/include \
+          -I ${mes-wip-2_13}/ \
+          ${fileName}
+      '';
       buildScript = with sources; with generatedKaemScripts;
         builtins.toFile "toyboxTools.run"
           (
             ''
               mkdir ''${out}
               mkdir ''${out}/bin
+
+              mkdir generated
+              catm generated/config.h ${toyboxConfig}
+              catm regex.h
+              catm byteswap.h
+              mkdir sys
+              catm sys/mount.h
+              catm sys/statfs.h
+              catm sys/swap.h
+              catm sys/sysinfo.h
+              catm pty.h
+              catm sys/xattr.h
+              catm shadow.h
+              catm utmpx.h
+              catm sys/random.h
+              catm fnmatch.h
+              catm paths.h
+              catm sched.h
+              catm sys/statvfs.h
+              catm sys/utsname.h
+              catm syslog.h
+              catm termios.h
+              catm utime.h
+
+              mkdir arpa
+              catm arpa/inet.h
+              catm netdb.h
+
+              mkdir net
+              catm net/if.h
+
+              mkdir netinet
+              catm netinet/in.h
+              catm netinet/tcp.h
+
+              catm poll.h
+
+              catm sys/socket.h
+              catm sys/un.h
+
+              catm langinfo.h
+              catm wchar.h
+              catm wctype.h
+
+
+
+              mes -c "(display 'Hello,Mes!) (newline)"
             ''
+            +
+            buildWithMes "${toybox}/toys/posix/cp.c"
           );
     in
     derivation rec {
       name = "toybox";
+      MES_STACK = 15000000;
+      MES_ARENA = 30000000;
+      MES_MAX_ARENA = 30000000;
+      MES_PREFIX = "${mes-wip-2_13}";
+      MES_SOURCE = "${mes-wip-2_13}";
+      MES_LIB = "${MesWip213BuildByM2}/lib";
+      MES_DEBUG = 0;
       system = builtins.currentSystem;
       outputs = [ "out" ];
       srcs = buildScript;
-      PATH = "${MesM2WithTools}:${MesM2WithTools}/bin";
+      PATH = "${MesM2WithTools}/bin:${MesBootstrapWip213BuildByM2}/bin";
+      GUILE_LOAD_PATH = "${nyacc}/module:${mes-wip-2_13}/mes/module:${mes-wip-2_13}/module";
       builder = "${MesM2WithTools}/bin/kaem";
       args = [ "--verbose" "--strict" "-f" "${srcs}" ];
     };
@@ -597,6 +666,4 @@ rec  {
     args = kaemEnvTest1.args;
     allowedRequisites = [ kaemEnvTest1 kaemEnvTest MesM2WithTools ];
   };
-
-
 }
