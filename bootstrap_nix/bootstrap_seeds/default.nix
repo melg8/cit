@@ -206,7 +206,6 @@ rec  {
           }
           + ''
             ''${out}/bin/mes -c "(display 'Hello,M2-mes!) (newline)"
-
           ''
           );
     in
@@ -225,6 +224,11 @@ rec  {
 
   MesWip213BuildByM2 =
     let
+      copyFile = from: to: subPath: ''
+        catm ${to}/${subPath} ${from}/${subPath}
+      '';
+      copyFiles = { from, to, subPaths }: builtins.concatStringsSep "\n"
+        (map (copyFile from to) subPaths);
       buildWithMes = file: ''
         mes \
           --no-auto-compile \
@@ -455,7 +459,77 @@ rec  {
               mkdir ''${out}/include/linux
               mkdir ''${out}/include/mes
               mkdir ''${out}/include/sys
+
+              catm ''${out}/include/mes/config.h
             ''
+            +
+            copyFiles {
+              from = mes-wip-2_13;
+              to = ''''${out}'';
+              subPaths = [
+                "include/alloca.h"
+                "include/argz.h"
+                "include/ar.h"
+                "include/assert.h"
+                "include/ctype.h"
+                "include/dirent.h"
+                "include/dirstream.h"
+                "include/dlfcn.h"
+                "include/endian.h"
+                "include/errno.h"
+                "include/fcntl.h"
+                "include/features.h"
+                "include/float.h"
+                "include/getopt.h"
+                "include/grp.h"
+                "include/inttypes.h"
+                "include/libgen.h"
+                "include/limits.h"
+                "include/locale.h"
+                "include/math.h"
+                "include/memory.h"
+                "include/pwd.h"
+                "include/setjmp.h"
+                "include/signal.h"
+                "include/stdarg.h"
+                "include/stdbool.h"
+                "include/stddef.h"
+                "include/stdint.h"
+                "include/stdio.h"
+                "include/stdlib.h"
+                "include/stdnoreturn.h"
+                "include/string.h"
+                "include/strings.h"
+                "include/termio.h"
+                "include/time.h"
+                "include/unistd.h"
+                "include/linux/syscall.h"
+                "include/linux/x86/syscall.h"
+                "include/mes/builtins.h"
+                "include/mes/cc.h"
+                "include/mes/constants.h"
+                "include/mes/lib.h"
+                "include/mes/lib-mini.h"
+                "include/mes/mes.h"
+                "include/mes/symbols.h"
+                "include/sys/cdefs.h"
+                "include/sys/dir.h"
+                "include/sys/file.h"
+                "include/sys/ioctl.h"
+                "include/sys/mman.h"
+                "include/sys/param.h"
+                "include/sys/resource.h"
+                "include/sys/select.h"
+                "include/sys/stat.h"
+                "include/sys/timeb.h"
+                "include/sys/time.h"
+                "include/sys/times.h"
+                "include/sys/types.h"
+                "include/sys/ucontext.h"
+                "include/sys/user.h"
+                "include/sys/wait.h"
+              ];
+            }
           );
     in
     derivation rec {
@@ -523,4 +597,6 @@ rec  {
     args = kaemEnvTest1.args;
     allowedRequisites = [ kaemEnvTest1 kaemEnvTest MesM2WithTools ];
   };
+
+
 }
