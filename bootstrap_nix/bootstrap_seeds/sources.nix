@@ -67,4 +67,5 @@
     rev = "70754564fab010a9219735da231dc1e1e1aa7784";
   };
   customKaem = ./kaem.c;
+  toyboxConfig = ./config.h;
 }
