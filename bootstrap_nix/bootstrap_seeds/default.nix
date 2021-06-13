@@ -15,6 +15,52 @@ rec  {
     builder = "${bootstrap-seeds}/POSIX/x86/kaem-optional-seed";
     args = [ "${srcs}" ];
   };
+  MesM2WithToolsRebuildTest =
+    let
+      buildScript = with sources; with generatedKaemScripts;
+        builtins.toFile "MesM2WithToolsRebuildTest.run"
+          (''
+            mkdir ''${out}
+            mkdir ''${out}/bin
+          ''
+          +
+          buildWithGlobalM2 {
+            name = "M2-Planet-rebuild";
+            builder = "M2-Planet";
+            elf = "blood-elf";
+            sources = [
+              "${m2-planet}/test/common_x86/functions/file.c"
+              "${m2-planet}/test/common_x86/functions/malloc.c"
+              "${m2-planet}/functions/calloc.c"
+              "${m2-planet}/test/common_x86/functions/exit.c"
+              "${m2-planet}/functions/match.c"
+              "${m2-planet}/functions/in_set.c"
+              "${m2-planet}/functions/numerate_number.c"
+              "${m2-planet}/functions/file_print.c"
+              "${m2-planet}/functions/number_pack.c"
+              "${m2-planet}/functions/string.c"
+              "${m2-planet}/functions/require.c"
+              "${m2-planet}/functions/fixup.c"
+              "${m2-planet}/cc.h"
+              "${m2-planet}/cc_globals.c"
+              "${m2-planet}/cc_reader.c"
+              "${m2-planet}/cc_strings.c"
+              "${m2-planet}/cc_types.c"
+              "${m2-planet}/cc_core.c"
+              "${m2-planet}/cc.c"
+            ];
+          }
+          );
+    in
+    derivation rec {
+      name = "MesM2WithToolsRebuildTest";
+      system = builtins.currentSystem;
+      outputs = [ "out" ];
+      srcs = buildScript;
+      PATH = "${MesM2WithTools}:${MesM2WithTools}/bin";
+      builder = "${MesM2WithTools}/bin/kaem";
+      args = [ "--verbose" "--strict" "-f" "${srcs}" ];
+    };
   MesCcToolsExtra =
     let
       src_path = "${live-bootstrap}/sysa/mescc-tools-extra/src";
@@ -631,7 +677,7 @@ rec  {
       MES_DEBUG = 0;
       system = builtins.currentSystem;
       outputs = [ "out" ];
-      srcs = buildScript;
+      srcs = kaemRun;
       PATH = "${MesM2WithTools}/bin:${MesBootstrapWip213BuildByM2}/bin";
       GUILE_LOAD_PATH = "${nyacc}/module:${mes-wip-2_13}/mes/module:${mes-wip-2_13}/module";
       builder = "${MesM2WithTools}/bin/kaem";
