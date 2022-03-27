@@ -4,7 +4,6 @@ let
   conform = pkgs.callPackage ./conform/default.nix { };
   commit_lint = (pkgs.callPackage ./commit_lint/default.nix { }).shell.nodeDependencies;
   cspell = (pkgs.callPackage ./cspell/default.nix { }).shell.nodeDependencies;
-  docker_file_lint = pkgs.callPackage ./docker_file_lint/docker_file_lint.nix { };
   git_leaks = pkgs.callPackage ./git_leaks/default.nix { };
   git_lint = pkgs.callPackage ./git_lint/default.nix { };
   git_lint_py = pkgs.callPackage ./git_lint_py/default.nix { };
@@ -41,11 +40,9 @@ in
   cspell # 209 MB.
   text_lint # 247 MB.
   remark_lint # 209 MB.
-  docker_file_lint # 209 MB.
 
   # Haskell
-  # Together 52 MB
-  pkgs.hadolint # 47 MB
+  # Together 45 MB
   pkgs.shellcheck # 45 MB
 
   # python 3
@@ -80,4 +77,5 @@ in
   pkgs.patchelf
   pkgs.findutils
   pkgs.diffutils
+  pkgs.stdenv
 ]

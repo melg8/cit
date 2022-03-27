@@ -97,10 +97,6 @@ See more in [travis](.travis.yml) or
   - [cmake-format](https://github.com/cheshirekow/cmake_format) GPLv3.0
   - [cmake-lint](https://github.com/cheshirekow/cmake_format) GPLv3.0
 
-- **docker files**
-  - [dockerfile_lint](https://github.com/projectatomic/dockerfile_lint) - MIT
-  - [hadolint](https://github.com/hadolint/hadolint) - GPLv3.0
-
 - **files and directories**
   - [ls-lint](https://github.com/loeffel-io/ls-lint) - MIT
 

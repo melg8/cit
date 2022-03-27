@@ -1,46 +1,46 @@
-{ lib, python38Packages, arrow-cpp, git }:
+{ lib, python39Packages, arrow-cpp, git }:
 let
-  sh_1_14_1 = python38Packages.sh.override (old:
+  arrow_1_2_0 = python39Packages.arrow.override (old:
     {
       buildPythonPackage = attrs: old.buildPythonPackage (attrs // {
-        version = "1.14.1";
+        version = "1.2.0";
         src = old.fetchPypi {
-          pname = "sh";
-          version = "1.14.1";
-          sha256 = "13hxgifab9ichla13qaa7sh8r0il7vs1r21js72s0n355zr9mair";
+          pname = "arrow";
+          version = "1.2.0";
+          sha256 = "0x70a057dqki2z1ny491ixbg980hg4lihc7g1zmy69g4v6xjkz0n";
         };
       }
       );
     }
   );
-  arrow_0_17_0 = python38Packages.arrow.override (old:
+  click_8_0_1 = python39Packages.click.override (old:
     {
       buildPythonPackage = attrs: old.buildPythonPackage (attrs // {
-        version = "0.17.0";
+        version = "8.0.1";
         src = old.fetchPypi {
-          pname = "arrow";
-          version = "0.17.0";
-          sha256 = "1m3fpz96w3g08i9x9cpqh3cr795y9zbj1bfnay3ccdhxv86d227z";
+          pname = "click";
+          version = "8.0.1";
+          sha256 = "0ymdyf37acq4qxh038q0xx44qgj6y2kf0jd0ivvix6qij88w214c";
         };
       }
       );
     }
   );
 in
-python38Packages.buildPythonApplication rec {
+python39Packages.buildPythonApplication rec {
   pname = "gitlint";
-  version = "0.15.0";
+  version = "0.16.0";
 
-  src = python38Packages.fetchPypi {
+  src = python39Packages.fetchPypi {
     inherit pname version;
-    sha256 = "0xkp9wpyids6b28mrpaif85g7ivfzwx2v3rr87ciia35sxkfkrxa";
+    sha256 = "0nzm6wxz3dzyz8hk07by6fzg0jy1myhmssrjyrnzdfqiwvd2pvih";
   };
 
-  propagatedBuildInputs = [ git arrow_0_17_0 python38Packages.click sh_1_14_1 ];
+  propagatedBuildInputs = [ git arrow_1_2_0 click_8_0_1 python39Packages.sh ];
 
   checkInputs = [
     git
-    sh_1_14_1
+    python39Packages.sh
   ];
 
   meta = {

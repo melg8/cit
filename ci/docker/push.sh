@@ -2,7 +2,7 @@
 
 set -e
 
-VERSION="0.0.6"
+VERSION="0.0.7"
 TARGETS="cit"
 USER="melg8"
 

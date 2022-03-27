@@ -23,7 +23,7 @@ jobs:
           sudo chmod 777 "$(pwd)"
           sudo chmod -R 777 "$(pwd)/.git"
           ./ci/docker/docker_run_with_network.sh ./ci/docker/build_with_nix.sh
-      - uses: docker://melg8/cit:0.0.6
+      - uses: docker://melg8/cit:0.0.7
   lint_all_from_nix_shell:
     runs-on: ubuntu-20.04
     steps:
@@ -48,7 +48,7 @@ jobs:
           sudo chmod 777 "$(pwd)"
           sudo chmod -R 777 "$(pwd)/.git"
           ./ci/docker/docker_run_nix_shell.sh ./ci/checks/all.sh
-      - uses: docker://melg8/cit:0.0.6
+      - uses: docker://melg8/cit:0.0.7
   lint_all_in_docker:
     runs-on: ubuntu-20.04
     steps:
@@ -59,7 +59,7 @@ jobs:
           sudo chmod 777 "$(pwd)"
           sudo chmod -R 777 "$(pwd)/.git"
           ./ci/docker/docker_run.sh ./ci/checks/all.sh
-      - uses: docker://melg8/cit:0.0.6
+      - uses: docker://melg8/cit:0.0.7
   build_gcc:
     runs-on: ubuntu-20.04
     steps:
@@ -70,7 +70,7 @@ jobs:
           sudo chmod 777 "$(pwd)"
           sudo chmod -R 777 "$(pwd)/.git"
           ./ci/docker/docker_run.sh ./ci/builders/gcc/build.sh
-      - uses: docker://melg8/cit:0.0.6
+      - uses: docker://melg8/cit:0.0.7
   build_clang:
     runs-on: ubuntu-20.04
     steps:
@@ -81,4 +81,4 @@ jobs:
           sudo chmod 777 "$(pwd)"
           sudo chmod -R 777 "$(pwd)/.git"
           ./ci/docker/docker_run.sh ./ci/builders/clang/build.sh
-      - uses: docker://melg8/cit:0.0.6
+      - uses: docker://melg8/cit:0.0.7

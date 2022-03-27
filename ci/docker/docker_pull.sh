@@ -2,4 +2,4 @@
 
 set -e
 
-docker image pull melg8/cit:0.0.6
+docker image pull melg8/cit:0.0.7
