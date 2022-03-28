@@ -7,7 +7,6 @@ let
   git_lint = pkgs.callPackage ./git_lint/default.nix { };
   git_lint_py = pkgs.callPackage ./git_lint_py/default.nix { };
   ls_lint = pkgs.callPackage ./ls_lint/default.nix { };
-  mdl = pkgs.callPackage ./mdl/default.nix { };
   remark_lint = (pkgs.callPackage ./remark/default.nix { }).shell.nodeDependencies;
   text_lint = (pkgs.callPackage ./text_lint/default.nix { }).shell.nodeDependencies;
 in
@@ -29,7 +28,7 @@ in
 
   # gem
   # Together 316 MB  (295 on ruby 2.7)
-  mdl # ruby 2.7 261.4 MB
+  pkgs.mdl # ruby 2.7 261.4 MB
   git_lint # 294 MB
 
   # npm
