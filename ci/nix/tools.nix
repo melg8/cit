@@ -4,7 +4,6 @@ let
   conform = pkgs.callPackage ./conform/default.nix { };
   commit_lint = (pkgs.callPackage ./commit_lint/default.nix { }).shell.nodeDependencies;
   cspell = (pkgs.callPackage ./cspell/default.nix { }).shell.nodeDependencies;
-  git_leaks = pkgs.callPackage ./git_leaks/default.nix { };
   git_lint = pkgs.callPackage ./git_lint/default.nix { };
   git_lint_py = pkgs.callPackage ./git_lint_py/default.nix { };
   ls_lint = pkgs.callPackage ./ls_lint/default.nix { };
@@ -25,7 +24,7 @@ in
   # go
   pkgs.git-sizer # 37 MB
   conform # 57 MB
-  git_leaks # 44 MB
+  pkgs.gitleaks
   ls_lint # 4.2 MB
 
   # gem
