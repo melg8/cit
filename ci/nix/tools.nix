@@ -2,7 +2,6 @@
 let
   pvs_studio_for_free = pkgs.callPackage ./pvs/how_to_use_pvs_studio_free.nix { };
   conform = pkgs.callPackage ./conform/default.nix { };
-  cspell = (pkgs.callPackage ./cspell/default.nix { }).shell.nodeDependencies;
   git_lint = pkgs.callPackage ./git_lint/default.nix { };
   ls_lint = pkgs.callPackage ./ls_lint/default.nix { };
   remark_lint = (pkgs.callPackage ./remark/default.nix { }).shell.nodeDependencies;
@@ -23,7 +22,7 @@ in
   conform # 57 MB
   pkgs.gitleaks
   ls_lint # 4.2 MB
-
+  
   # gem
   # Together 316 MB  (295 on ruby 2.7)
   pkgs.mdl # ruby 2.7 261.4 MB
@@ -32,7 +31,7 @@ in
   # npm
   # Together 281 MB.
   pkgs.commitlint
-  cspell # 209 MB.
+  pkgs.nodePackages.cspell
   text_lint # 247 MB.
   remark_lint # 209 MB.
 
