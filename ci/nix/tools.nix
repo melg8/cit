@@ -2,7 +2,6 @@
 let
   pvs_studio_for_free = pkgs.callPackage ./pvs/how_to_use_pvs_studio_free.nix { };
   conform = pkgs.callPackage ./conform/default.nix { };
-  commit_lint = (pkgs.callPackage ./commit_lint/default.nix { }).shell.nodeDependencies;
   cspell = (pkgs.callPackage ./cspell/default.nix { }).shell.nodeDependencies;
   git_lint = pkgs.callPackage ./git_lint/default.nix { };
   ls_lint = pkgs.callPackage ./ls_lint/default.nix { };
@@ -32,7 +31,7 @@ in
 
   # npm
   # Together 281 MB.
-  commit_lint # 224 MB
+  pkgs.commitlint
   cspell # 209 MB.
   text_lint # 247 MB.
   remark_lint # 209 MB.
