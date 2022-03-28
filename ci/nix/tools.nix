@@ -22,7 +22,7 @@ in
   conform # 57 MB
   pkgs.gitleaks
   ls_lint # 4.2 MB
-  
+
   # gem
   # Together 316 MB  (295 on ruby 2.7)
   pkgs.mdl # ruby 2.7 261.4 MB
