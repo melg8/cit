@@ -16,12 +16,11 @@ in
   pkgs.cacert
   pkgs.binutils
 
-  # All together 2.123 GB
   pvs_studio_for_free # 2.5 MB
   pkgs.git # 397 MB
   pkgs.ccache # 33 MB
   pkgs.cmake # 96 MB
-  pkgs.clang_12 # 1.4 GB
+  pkgs.clang_14
 
   # go
   pkgs.git-sizer # 37 MB
@@ -62,7 +61,7 @@ in
   pkgs.nix-tree
 
   ### Add deps for docker to be hermetic.
-  pkgs.gcc10 # 236 MB
+  pkgs.gcc11
 
   pkgs.bashInteractive
   pkgs.bashInteractive.dev
