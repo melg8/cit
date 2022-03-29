@@ -123,6 +123,11 @@ See more in [travis](.travis.yml) or
 - **yaml**
   - [yamllint](https://github.com/adrienverge/yamllint) - GPLv3.0
 
+- **nix**
+  - [nixpkgs-fmt](https://github.com/nix-community/nixpkgs-fmt) - Apache-2.0
+  - [nix-linter](https://github.com/Synthetica9/nix-linter) - BSD 3-clause
+  - [nix-shell][3] - LGPL-2.1 License
+
 ## Planned
 
 - **cpp**
@@ -130,11 +135,6 @@ See more in [travis](.travis.yml) or
   - [clang-format](https://clang.llvm.org/docs/ClangFormat.html) - NCSA
   - [clang-tidy](https://clang.llvm.org/extra/clang-tidy) - NCSA
   - [jscpd](https://github.com/kucherenko/jscpd) - MIT
-
-- **nix**
-  - [nixpkgs-fmt](https://github.com/nix-community/nixpkgs-fmt) - Apache-2.0
-  - [nix-linter](https://github.com/Synthetica9/nix-linter) - BSD 3-clause
-  - [nix-shell][3] - LGPL-2.1 License
 
 ## Credits
 

@@ -50,6 +50,7 @@ in
   # Together 77 MB (+ 22 MB to total image size).
   pkgs.nix
   pkgs.nixpkgs-fmt
+  pkgs.nix-linter
   pkgs.pkgsStatic.busybox
 
   ### For debug only.

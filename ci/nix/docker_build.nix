@@ -1,8 +1,7 @@
 let
   nixpkgs = import ./pinned_nixpkgs.nix;
   pkgs = import nixpkgs { };
-  tools = import ./tools.nix { pkgs = pkgs; };
-  nonRootShadowSetup = import ./docker_shadow_setup.nix { pkgs = pkgs; };
+  tools = import ./tools.nix { inherit pkgs; };
   inherit (pkgs.lib) concatStringsSep genList;
   nsswitch = ''
     passwd:    files systemd

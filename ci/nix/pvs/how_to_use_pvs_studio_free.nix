@@ -1,4 +1,4 @@
-{ pkgs, stdenv, lib, fetchurl, cmake, glibc, nukeReferences, ... }:
+{ stdenv, lib, fetchurl, cmake, glibc, nukeReferences, ... }:
 
 stdenv.mkDerivation rec {
   pname = "how-to-use-pvs-studio-free";
