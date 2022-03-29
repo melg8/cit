@@ -8,14 +8,16 @@ let
   text_lint = (pkgs.callPackage ./text_lint/default.nix { }).shell.nodeDependencies;
 in
 [
-  pkgs.cacert
-  pkgs.binutils
-
   pvs_studio_for_free # 2.5 MB
   pkgs.git # 397 MB
   pkgs.ccache # 33 MB
   pkgs.cmake # 96 MB
-  pkgs.clang_14
+
+  # cpp analyzers and compilers
+  pkgs.cppcheck
+  pkgs.llvmPackages_13.libclang # clang + clang-tidy + clang-format etc.
+  pkgs.clang_13
+  pkgs.gcc11
 
   # go
   pkgs.git-sizer # 37 MB
@@ -57,7 +59,8 @@ in
   pkgs.nix-tree
 
   ### Add deps for docker to be hermetic.
-  pkgs.gcc11
+  pkgs.cacert
+  pkgs.binutils
 
   pkgs.bashInteractive
   pkgs.bashInteractive.dev

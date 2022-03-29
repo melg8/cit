@@ -26,3 +26,4 @@ diffutils
 nsswitch
 myhostname
 mymachines
+libclang
