@@ -9,4 +9,8 @@ option(USE_CCACHE "Enable use of ccache" ON)
 include("${CMAKE_CURRENT_SOURCE_DIR}/cmake/ccache.cmake")
 include("${CMAKE_CURRENT_SOURCE_DIR}/cmake/recursive_directories_macro.cmake")
 
+if(ENABLE_TESTING)
+  enable_testing()
+endif()
+
 add_subdirectory(sources)

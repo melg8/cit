@@ -8,5 +8,6 @@ DIRECTORY=build_"${COMPILER}"
 
 mkdir -p "${DIRECTORY}"
 cd "${DIRECTORY}"
-cmake .. -D CMAKE_CXX_COMPILER="${COMPILER}"
+cmake .. -G Ninja -D CMAKE_CXX_COMPILER="${COMPILER}"
 cmake --build . -j "$(nproc)"
+ctest

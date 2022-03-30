@@ -1,3 +1,5 @@
+find_package(doctest REQUIRED)
+
 file (GLOB_RECURSE ALL_GLASSY_TESTS_APPLICATION_HEADERS
                    "${CMAKE_CURRENT_SOURCE_DIR}/*.h")
 
@@ -8,6 +10,6 @@ add_executable (glassy_tests
                 "${ALL_GLASSY_TESTS_APPLICATION_HEADERS}"
                 "${ALL_GLASSY_TESTS_APPLICATION_SOURCES}")
 
-target_link_libraries (glassy_tests glassy)
+target_link_libraries (glassy_tests glassy doctest::doctest)
 
 add_test (glassy_tests glassy_tests)

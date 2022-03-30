@@ -1,5 +1,2 @@
-#include <bignum.h>
-
-#include <iostream>
-
-int main() { std::cout << Sum(2, 5); }
+#define DOCTEST_CONFIG_IMPLEMENT_WITH_MAIN
+#include <doctest/doctest.h>

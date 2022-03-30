@@ -12,6 +12,7 @@ in
   pkgs.git # 397 MB
   pkgs.ccache # 33 MB
   pkgs.cmake # 96 MB
+  pkgs.ninja
 
   # cpp analyzers and compilers
   pkgs.cppcheck
@@ -20,6 +21,7 @@ in
   pkgs.clang_13
   pkgs.gcc11
   pkgs.bintools-unwrapped # Linker: ar.
+  pkgs.doctest
 
   # go
   pkgs.git-sizer # 37 MB
