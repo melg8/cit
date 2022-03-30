@@ -1,4 +1,4 @@
-option(USE_CCACHE "Enable use of ccache")
+option(USE_CCACHE "Enable use of ccache" ON)
 
 if(${USE_CCACHE})
   find_program(CCACHE_FOUND ccache)

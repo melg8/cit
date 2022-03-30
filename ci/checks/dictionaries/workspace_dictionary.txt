@@ -1,7 +1,9 @@
+bintools
 chfn
 chkpwd
 chsh
 extrausers
+endfunction
 gcloud
 golangci
 gshadow

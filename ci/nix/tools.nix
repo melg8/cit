@@ -16,8 +16,10 @@ in
   # cpp analyzers and compilers
   pkgs.cppcheck
   pkgs.llvmPackages_13.libclang # clang + clang-tidy + clang-format etc.
+
   pkgs.clang_13
   pkgs.gcc11
+  pkgs.bintools-unwrapped # Linker: ar.
 
   # go
   pkgs.git-sizer # 37 MB
