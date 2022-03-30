@@ -1,6 +1,7 @@
 { pkgs }:
 let
   pvs_studio_for_free = pkgs.callPackage ./pvs/how_to_use_pvs_studio_free.nix { };
+  gsl_lite = pkgs.callPackage ./gsl_lite/default.nix { };
   conform = pkgs.callPackage ./conform/default.nix { };
   git_lint = pkgs.callPackage ./git_lint/default.nix { };
   ls_lint = pkgs.callPackage ./ls_lint/default.nix { };
@@ -22,6 +23,7 @@ in
   pkgs.gcc11
   pkgs.bintools-unwrapped # Linker: ar.
   pkgs.doctest
+  gsl_lite
 
   # go
   pkgs.git-sizer # 37 MB

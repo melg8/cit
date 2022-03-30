@@ -1,4 +1,5 @@
 find_package(doctest REQUIRED)
+find_package(gsl-lite 0.40 REQUIRED)
 
 file (GLOB_RECURSE ALL_GLASSY_TESTS_APPLICATION_HEADERS
                    "${CMAKE_CURRENT_SOURCE_DIR}/*.h")
@@ -10,6 +11,8 @@ add_executable (glassy_tests
                 "${ALL_GLASSY_TESTS_APPLICATION_HEADERS}"
                 "${ALL_GLASSY_TESTS_APPLICATION_SOURCES}")
 
-target_link_libraries (glassy_tests glassy doctest::doctest)
+target_link_libraries (glassy_tests glassy
+                                    doctest::doctest
+                                    gsl::gsl-lite-v1)
 
 add_test (glassy_tests glassy_tests)
