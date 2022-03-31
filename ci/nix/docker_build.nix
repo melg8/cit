@@ -32,6 +32,11 @@ let
   nix_conf = ''
     experimental-features = nix-command
   '';
+  hasIncludeDir = path: pkgs.lib.pathExists (toString path + "/include");
+  contentsWithInclude = pkgs.lib.filter hasIncludeDir;
+  toStringWithInclude = single_path: toString single_path + "/include";
+  includeStrings = allContents: pkgs.lib.concatStringsSep " -isystem "
+    (map toStringWithInclude (contentsWithInclude allContents));
 in
 rec {
   world = pkgs.dockerTools.buildImage rec {
@@ -52,6 +57,8 @@ rec {
         "NIX_PAGER=cat"
         "USER=user"
         "NIX_PATH=nixpkgs=${nixpkgs}"
+        "NIX_CFLAGS_COMPILE=-isystem ${includeStrings contents}"
+        "NIX_CC_WRAPPER_TARGET_HOST_x86_64_unknown_linux_gnu=1"
       ];
     };
     uid = user:1000;

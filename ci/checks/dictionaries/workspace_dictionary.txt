@@ -9,6 +9,7 @@ golangci
 gshadow
 gpasswd
 iname
+isystem
 includecache
 testdata
 BUILDKIT

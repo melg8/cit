@@ -2,6 +2,7 @@ cmake_minimum_required(VERSION 3.15.5)
 project(cit)
 
 set(CMAKE_CXX_EXTENSIONS OFF)
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 option(ENABLE_TESTING "Enable the tests" ON)
 option(USE_CCACHE "Enable use of ccache" ON)

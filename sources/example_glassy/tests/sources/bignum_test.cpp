@@ -1,7 +1,18 @@
 #include <doctest/doctest.h>
 #include <gsl/gsl-lite.hpp>
+#include <boost/outcome.hpp>
 
 #include <bignum.h>
+
+SCENARIO("outcome") {
+  using namespace OUTCOME_V2_NAMESPACE;
+
+  GIVEN("some outcome with value") {
+    outcome<int> test{10};
+
+    THEN("it has value") { CHECK(test.has_value()); }
+  }
+}
 
 SCENARIO("gsl") {
   GIVEN("uint64_t value with small value") {
