@@ -2,7 +2,7 @@ let
   nixpkgs = import ./ci/nix/pinned_nixpkgs.nix;
   pkgs = import nixpkgs { };
 in
-pkgs.mkShell rec {
+pkgs.mkShell.override { stdenv = pkgs.gcc11Stdenv; } rec {
   buildInputs = [
     (import ./ci/nix/tools.nix { inherit pkgs; })
   ];

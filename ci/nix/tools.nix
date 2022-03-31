@@ -8,6 +8,7 @@ let
   ls_lint = pkgs.callPackage ./ls_lint/default.nix { };
   remark_lint = (pkgs.callPackage ./remark/default.nix { }).shell.nodeDependencies;
   text_lint = (pkgs.callPackage ./text_lint/default.nix { }).shell.nodeDependencies;
+  env = pkgs.overrideCC pkgs.stdenv pkgs.gcc11;
 in
 [
   pvs_studio_for_free # 2.5 MB
@@ -83,5 +84,5 @@ in
   pkgs.patchelf
   pkgs.findutils
   pkgs.diffutils
-  pkgs.stdenv
+  env
 ]
