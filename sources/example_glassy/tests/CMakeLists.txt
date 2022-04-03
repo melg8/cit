@@ -1,4 +1,6 @@
+find_package(OpenSSL 3.0.2 REQUIRED)
 find_package(doctest REQUIRED)
+find_package(outcome 2.2.3 REQUIRED)
 find_package(gsl-lite 0.40 REQUIRED)
 
 file (GLOB_RECURSE ALL_GLASSY_TESTS_APPLICATION_HEADERS
@@ -13,6 +15,9 @@ add_executable (glassy_tests
 
 target_link_libraries (glassy_tests glassy
                                     doctest::doctest
-                                    gsl::gsl-lite-v1)
+                                    gsl::gsl-lite
+                                    OpenSSL::Crypto
+                                    outcome::outcome
+                                    )
 
 add_test (glassy_tests glassy_tests)

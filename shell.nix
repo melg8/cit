@@ -3,9 +3,7 @@ let
   pkgs = import nixpkgs { };
 in
 pkgs.mkShell.override { stdenv = pkgs.gcc11Stdenv; } rec {
-  buildInputs = [
-    (import ./ci/nix/tools.nix { inherit pkgs; })
-  ];
+  buildInputs = import ./ci/nix/tools.nix { inherit pkgs; };
 
   shellHook = ''
     for input in ${builtins.toString buildInputs}; do

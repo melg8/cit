@@ -27,3 +27,4 @@ Melg
 nixbld
 libfaketime
 faketime
+conanfile

@@ -2,4 +2,4 @@
 
 set -e
 
-./ci/builders/common/build.sh g++
+./ci/builders/common/build.sh g++ gcc 11

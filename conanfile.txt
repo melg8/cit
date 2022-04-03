@@ -1,0 +1,9 @@
+[requires]
+gsl-lite/0.40.0
+outcome/2.2.3
+openssl/3.0.2
+doctest/2.4.8
+
+[generators]
+CMakeDeps
+CMakeToolchain

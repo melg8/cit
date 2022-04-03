@@ -1,8 +1,12 @@
 #include <doctest/doctest.h>
 #include <gsl/gsl-lite.hpp>
-#include <boost/outcome.hpp>
+#include <outcome.hpp>
 
 #include <bignum.h>
+
+#include <openssl/bn.h>
+
+SCENARIO("openssl") { BN_CTX_free(BN_CTX_new()); }
 
 SCENARIO("outcome") {
   using namespace OUTCOME_V2_NAMESPACE;
@@ -14,7 +18,7 @@ SCENARIO("outcome") {
   }
 }
 
-SCENARIO("gsl") {
+SCENARIO("gsl-lite") {
   GIVEN("uint64_t value with small value") {
     const uint64_t value = 42;
 
