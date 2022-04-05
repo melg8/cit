@@ -1,7 +1,6 @@
 # Cit - Control it
 
 [![Checks](https://github.com/melg8/cit/actions/workflows/checks.yml/badge.svg?branch=main)][1]
-[![Build Status "main" branch](https://travis-ci.com/melg8/cit.svg?branch=main)](https://travis-ci.com/melg8/cit)
 [![MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://github.com/melg8/cit/blob/main/license.md)
 [![built with nix](https://img.shields.io/badge/Built_With-Nix-5277C3.svg?logo=nixos&labelColor=73C3D5)][2]
 
@@ -88,8 +87,7 @@ issues and requests are welcome.
    ci/docker/build.sh
    ```
 
-See more in [travis](.travis.yml) or
-[GitHub workflows](.github/workflows/checks.yml) for basic how to use.
+See [GitHub workflows](.github/workflows/checks.yml) for basic how to use.
 
 ## Available tools
 

@@ -30,4 +30,3 @@ policies:
           - docker
           - nix
           - policy
-          - travis
