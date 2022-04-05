@@ -19,18 +19,33 @@ SCENARIO("bignum") {
     }
   }
 
+  GIVEN("default created BigNum") {
+    const auto result = BigNum::New();
+    THEN("result has value") { CHECK(result.has_value()); }
+
+    WHEN("result converting to BnUlong") {
+      const auto converted = BigNum::ToBnUlong(result.value());
+
+      THEN("converted value equal to zero") { CHECK_EQ(converted.value(), 0); }
+    }
+  }
+
   GIVEN("any BnUlong value") {
     const BnUlong value = 1;
 
     WHEN("creating Bignum from it") {
-      const auto result = BigNum::fromBnUlong(value);
+      const auto result = BigNum::FromBnUlong(value);
 
       THEN("result is not empty") { CHECK(result); }
 
-      THEN("result converted back to BnUlong equal to original value") {
-        //        const auto converted_back = BigNum::ToUlong(*result);
+      WHEN("result converted back to BnUlong ") {
+        const auto converted_back = BigNum::ToBnUlong(result.value());
 
-        //        CHECK_EQ(converted_back, value);
+        THEN("result is not empty") { CHECK(converted_back); }
+
+        THEN("converted back value equal to original value") {
+          CHECK_EQ(converted_back.value(), value);
+        }
       }
     }
   }
