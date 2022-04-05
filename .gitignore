@@ -34,6 +34,7 @@
 # Build directory
 build_*
 *-build-*
+/result
 
 # Cmake
 CMakeLists.txt.user

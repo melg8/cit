@@ -1,0 +1,21 @@
+find_package(OpenSSL 3.0.2 REQUIRED)
+find_package(doctest REQUIRED)
+find_package(outcome 2.2.3 REQUIRED)
+
+file (GLOB_RECURSE ALL_GLASSY_TESTS_APPLICATION_HEADERS
+                   "${CMAKE_CURRENT_SOURCE_DIR}/*.h")
+
+file (GLOB_RECURSE ALL_GLASSY_TESTS_APPLICATION_SOURCES
+                   "${CMAKE_CURRENT_SOURCE_DIR}/*.cpp")
+
+add_executable (glassy_mock_tests
+                "${ALL_GLASSY_TESTS_APPLICATION_HEADERS}"
+                "${ALL_GLASSY_TESTS_APPLICATION_SOURCES}")
+
+target_link_libraries (glassy_mock_tests glassy
+                                    doctest::doctest
+                                    OpenSSL::Crypto
+                                    outcome::outcome
+                                    )
+
+add_test (glassy_mock_tests glassy_mock_tests)
