@@ -2,7 +2,7 @@
 
 #include <bignum.h>
 
-SCENARIO("BigNum") {
+SCENARIO("bignum") {
   using namespace glassy;
 
   GIVEN("two values") {
@@ -33,7 +33,7 @@ SCENARIO("BigNum") {
   GIVEN("any BnUlong value") {
     const BnUlong value = 1;
 
-    WHEN("creating BigNum from it") {
+    WHEN("creating Bignum from it") {
       const auto result = BigNum::FromBnUlong(value);
 
       THEN("result is not empty") { CHECK(result); }
@@ -46,38 +46,6 @@ SCENARIO("BigNum") {
         THEN("converted back value equal to original value") {
           CHECK_EQ(converted_back.value(), value);
         }
-      }
-    }
-  }
-
-  GIVEN("BigNum created from BnUlongValue") {
-    const auto value = BigNum::FromBnUlong(4);
-
-    WHEN("converting it to dec") {
-      const auto result = BigNum::ToDec(value.value());
-
-      THEN("result is not empty") { CHECK(result); }
-
-      THEN("result value is equal to expected") {
-        const std::string expected{"4"};
-
-        CHECK_EQ(result.value().get(), expected);
-      }
-    }
-  }
-
-  GIVEN("char pointer with number value") {
-    const auto* pointer = "4";
-
-    WHEN("creating BigNum from it") {
-      const auto result = BigNum::FromDec(pointer);
-
-      THEN("result is not empty") { CHECK(result); }
-
-      THEN("result BnUlong value is equal to expected") {
-        const auto value = BigNum::ToBnUlong(result.value());
-
-        CHECK_EQ(value.value(), 4);
       }
     }
   }

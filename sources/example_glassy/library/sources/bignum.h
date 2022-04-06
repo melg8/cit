@@ -63,11 +63,20 @@ inline std::error_code make_error_code(glassy::BigNumErrc e) {
   return std::error_code{static_cast<int>(e), big_num_error_category};
 }
 
+struct OpenSslFree {
+  void operator()(char* ptr) noexcept { OPENSSL_free(ptr); }
+};
+
+using SslString = std::unique_ptr<char, OpenSslFree>;
+
 class BigNum {
  public:
   static Result<BigNum> New() noexcept;
   static Result<BigNum> FromBnUlong(BnUlong value) noexcept;
   static Result<BnUlong> ToBnUlong(const BigNum& value) noexcept;
+
+  static Result<BigNum> FromDec(const char* value) noexcept;
+  static Result<SslString> ToDec(const BigNum& value) noexcept;
 
  private:
   struct Deleter {
@@ -92,7 +101,6 @@ inline Result<BigNum> BigNum::New() noexcept {
   if (!ptr) {
     return BigNumErrc::AllocationFailure;
   }
-
   return BigNum{std::move(ptr)};
 }
 
@@ -108,6 +116,23 @@ inline Result<BnUlong> BigNum::ToBnUlong(const BigNum& value) noexcept {
   const auto result = BN_get_word(value.ptr_.get());
   if (result == std::numeric_limits<decltype(result)>::max()) {
     return BigNumErrc::TooBigForConversion;
+  }
+  return result;
+}
+
+inline Result<BigNum> BigNum::FromDec(const char* value) noexcept {
+  OUTCOME_TRY(auto result, BigNum::New());
+  auto ptr = result.ptr_.get();
+  if (BN_dec2bn(&ptr, value) == 0) {
+    return BigNumErrc::AllocationFailure;
+  }
+  return result;
+}
+
+inline Result<SslString> BigNum::ToDec(const BigNum& value) noexcept {
+  SslString result{BN_bn2dec(value.ptr_.get())};
+  if (!result.get()) {
+    return BigNumErrc::AllocationFailure;
   }
   return result;
 }

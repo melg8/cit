@@ -16,10 +16,16 @@ static auto BnGetWordFailConditionReturnValue() noexcept {
 static BN_ULONG AlwaysFailBnGetWord(const BIGNUM*) noexcept {
   return BnGetWordFailConditionReturnValue();
 }
+
+static char* AlwaysFailBnToDec(const BIGNUM*) noexcept { return nullptr; }
+
+static int AlwaysFailDecToBn(BIGNUM**, const char*) noexcept { return 0; }
 }
 
 #define BN_new MockBnNew
 #define BN_get_word AlwaysFailBnGetWord
+#define BN_bn2dec AlwaysFailBnToDec
+#define BN_dec2bn AlwaysFailDecToBn
 
 #include <bignum.h>
 
@@ -53,6 +59,23 @@ SCENARIO("bignum failures") {
       THEN("converted doesn't have value") {
         CHECK_FALSE(converted.has_value());
       }
+    }
+
+    WHEN("failed to convert to dec") {
+      const auto converted = BigNum::ToDec(result.value());
+
+      THEN("result doesn't have value") { CHECK_FALSE(converted.has_value()); }
+    }
+  }
+
+  GIVEN("char pointer with number value") {
+    should_fail_alloc = false;
+    const auto* pointer = "4";
+
+    WHEN("failed to convert BigNum from it") {
+      const auto result = BigNum::FromDec(pointer);
+
+      THEN("result doesn't have value") { CHECK_FALSE(result.has_value()); }
     }
   }
 }
