@@ -38,6 +38,11 @@ SCENARIO("BigNum") {
 
       THEN("result is not empty") { CHECK(result); }
 
+      THEN("result value has proper number of bytes") {
+        const auto number_of_bytes = result.value().NumberOfBytes();
+        CHECK_EQ(number_of_bytes, 1);
+      }
+
       WHEN("result converted back to BnUlong ") {
         const auto converted_back = BigNum::ToBnUlong(result.value());
 
@@ -78,6 +83,37 @@ SCENARIO("BigNum") {
         const auto value = BigNum::ToBnUlong(result.value());
 
         CHECK_EQ(value.value(), 4);
+      }
+    }
+  }
+
+  GIVEN("BigNum created from BnUlongValue") {
+    const auto value = BigNum::FromBnUlong(15);
+
+    WHEN("converting it to dec") {
+      const auto result = BigNum::ToHex(value.value());
+
+      THEN("result is not empty") { CHECK(result); }
+
+      THEN("result value is equal to expected") {
+        const std::string got{result.value().get()};
+        CHECK_EQ(got, "0F");
+      }
+    }
+  }
+
+  GIVEN("char pointer with hex number value") {
+    const auto* pointer = "0F";
+
+    WHEN("creating BigNum from it") {
+      const auto result = BigNum::FromHex(pointer);
+
+      THEN("result is not empty") { CHECK(result); }
+
+      THEN("result BnUlong value is equal to expected") {
+        const auto value = BigNum::ToBnUlong(result.value());
+
+        CHECK_EQ(value.value(), 15);
       }
     }
   }

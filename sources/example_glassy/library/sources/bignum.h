@@ -14,7 +14,7 @@ enum class BigNumErrc;
 
 namespace std {
 template <>
-struct std::is_error_code_enum<glassy::BigNumErrc> : true_type {};
+struct is_error_code_enum<glassy::BigNumErrc> : true_type {};
 }  // namespace std
 
 namespace glassy {
@@ -54,6 +54,7 @@ inline std::string BigNumErrorCategory::message(int ev) const {
     case BigNumErrc::TooBigForConversion:
       return "value too big to fit";
   }
+  return "unknown";
 }
 
 const BigNumErrorCategory big_num_error_category{};
@@ -68,6 +69,7 @@ struct OpenSslFree {
 };
 
 using SslString = std::unique_ptr<char, OpenSslFree>;
+using SslData = std::unique_ptr<unsigned char, OpenSslFree>;
 
 class BigNum {
  public:
@@ -77,6 +79,11 @@ class BigNum {
 
   static Result<BigNum> FromDec(const char* value) noexcept;
   static Result<SslString> ToDec(const BigNum& value) noexcept;
+
+  static Result<BigNum> FromHex(const char* value) noexcept;
+  static Result<SslString> ToHex(const BigNum& value) noexcept;
+
+  int NumberOfBytes() const;
 
  private:
   struct Deleter {
@@ -132,6 +139,25 @@ inline Result<BigNum> BigNum::FromDec(const char* value) noexcept {
 inline Result<SslString> BigNum::ToDec(const BigNum& value) noexcept {
   SslString result{BN_bn2dec(value.ptr_.get())};
   if (!result.get()) {
+    return BigNumErrc::AllocationFailure;
+  }
+  return result;
+}
+
+inline Result<SslString> BigNum::ToHex(const BigNum& value) noexcept {
+  SslString result{BN_bn2hex(value.ptr_.get())};
+  if (!result.get()) {
+    return BigNumErrc::AllocationFailure;
+  }
+  return result;
+}
+
+inline int BigNum::NumberOfBytes() const { return BN_num_bytes(ptr_.get()); }
+
+inline Result<BigNum> BigNum::FromHex(const char* value) noexcept {
+  OUTCOME_TRY(auto result, BigNum::New());
+  auto ptr = result.ptr_.get();
+  if (BN_hex2bn(&ptr, value) == 0) {
     return BigNumErrc::AllocationFailure;
   }
   return result;
