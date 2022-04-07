@@ -34,15 +34,6 @@ namespace outcome = OUTCOME_V2_NAMESPACE;
 template <typename T>
 using Result = outcome::result<T>;
 
-template <typename T, typename F>
-auto operator>>=(T&& result, F func) -> decltype(func(result.value())) {
-  using ResultType = decltype(func(result.value()));
-  if (!result.has_value()) {
-    return ResultType{result.error()};
-  }
-  return func(result.value());
-}
-
 namespace {
 struct BigNumErrorCategory : std::error_category {
   const char* name() const noexcept override;

@@ -49,26 +49,9 @@ SCENARIO("BigNum creation and conversions") {
           CHECK_EQ(std::string{BigNum::ToHex(number).value().get()}, test.hex);
           CHECK_EQ(BigNum::ToBin(number).value(), test.bin_data);
         }
-
-        const auto x = test.subcase_name + " with >>= ";
-        DOCTEST_SUBCASE(x.c_str()) {
-          const auto number = test.create();
-          CHECK_EQ(number.value().NumberOfBytes(), test.number_of_bytes);
-          CHECK_EQ((number >>= BigNum::ToBnUlong).value(), test.value);
-          CHECK_EQ(std::string{(number >>= BigNum::ToDec).value().get()},
-                   test.dec);
-          CHECK_EQ(std::string{(number >>= BigNum::ToHex).value().get()},
-                   test.hex);
-          CHECK_EQ((number >>= BigNum::ToBin).value(), test.bin_data);
-        }
         return success();
       });
 }
 
-SCENARIO("failure result value propagates") {
-  Result<BigNum> result_value{BigNumErrc::AllocationFailure};
-  const auto result = result_value >>= BigNum::ToDec;
-  CHECK_EQ(result.error(), std::error_code{BigNumErrc::AllocationFailure});
-}
 }  // namespace test
 }  // namespace glassy
