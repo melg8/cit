@@ -35,7 +35,7 @@ template <typename T>
 using Result = outcome::result<T>;
 
 template <typename T, typename F>
-decltype(auto) operator>>=(T&& result, F func) {
+auto operator>>=(T&& result, F func) -> decltype(func(result.value())) {
   using ResultType = decltype(func(result.value()));
   if (!result.has_value()) {
     return ResultType{result.error()};
