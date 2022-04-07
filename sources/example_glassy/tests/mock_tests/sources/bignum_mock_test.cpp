@@ -20,6 +20,10 @@ static BN_ULONG AlwaysFailBnGetWord(const BIGNUM*) noexcept {
 static char* AlwaysFailBnTo(const BIGNUM*) noexcept { return nullptr; }
 
 static int AlwaysFailToBn(BIGNUM**, const char*) noexcept { return 0; }
+
+static BIGNUM* AlwaysFailBinToBn(const unsigned char*, int, BIGNUM*) {
+  return nullptr;
+}
 }
 
 #define BN_new MockBnNew
@@ -28,6 +32,7 @@ static int AlwaysFailToBn(BIGNUM**, const char*) noexcept { return 0; }
 #define BN_dec2bn AlwaysFailToBn
 #define BN_bn2hex AlwaysFailBnTo
 #define BN_hex2bn AlwaysFailToBn
+#define BN_bin2bn AlwaysFailBinToBn
 
 #include <bignum.h>
 
@@ -98,6 +103,17 @@ SCENARIO("bignum failures") {
 
     WHEN("failed to convert BigNum from it") {
       const auto result = BigNum::FromHex(pointer);
+
+      THEN("result doesn't have value") { CHECK_FALSE(result.has_value()); }
+    }
+  }
+
+  GIVEN("bin value of BigNum") {
+    should_fail_alloc = false;
+    SslData value{10};
+
+    WHEN("failed to create BigNum from it") {
+      const auto result = BigNum::FromBin(value);
 
       THEN("result doesn't have value") { CHECK_FALSE(result.has_value()); }
     }

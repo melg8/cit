@@ -2,11 +2,13 @@
 #define BIGNUM_H
 
 #include <openssl/bn.h>
+#include <openssl/engine.h>
 #include <outcome.hpp>
 
 #include <limits>
 #include <memory>
 #include <system_error>
+#include <vector>
 
 namespace glassy {
 enum class BigNumErrc;
@@ -22,7 +24,8 @@ enum class BigNumErrc {
   Success = 0,  // 0 should not represent an error
   AllocationFailure = 1,
   ExpansionFailure = 2,
-  TooBigForConversion = 3
+  TooBigForConversion = 3,
+  ConversionFailure = 4
 };
 
 using BnUlong = BN_ULONG;
@@ -53,6 +56,8 @@ inline std::string BigNumErrorCategory::message(int ev) const {
       return "failed due to unnecessary expansion";
     case BigNumErrc::TooBigForConversion:
       return "value too big to fit";
+    case BigNumErrc::ConversionFailure:
+      return "failed to convert value";
   }
   return "unknown";
 }
@@ -65,11 +70,15 @@ inline std::error_code make_error_code(glassy::BigNumErrc e) {
 }
 
 struct OpenSslFree {
-  void operator()(char* ptr) noexcept { OPENSSL_free(ptr); }
+  template <typename T>
+  void operator()(T* ptr) noexcept {
+    OPENSSL_free(ptr);
+  }
 };
 
 using SslString = std::unique_ptr<char, OpenSslFree>;
-using SslData = std::unique_ptr<unsigned char, OpenSslFree>;
+using SslData = std::vector<unsigned char>;  // TODO(melg): replace with openssl
+                                             // based allocation mechanism.
 
 class BigNum {
  public:
@@ -82,6 +91,9 @@ class BigNum {
 
   static Result<BigNum> FromHex(const char* value) noexcept;
   static Result<SslString> ToHex(const BigNum& value) noexcept;
+
+  static Result<SslData> ToBin(const BigNum& value) noexcept;
+  static Result<BigNum> FromBin(const SslData& value) noexcept;
 
   int NumberOfBytes() const;
 
@@ -131,7 +143,7 @@ inline Result<BigNum> BigNum::FromDec(const char* value) noexcept {
   OUTCOME_TRY(auto result, BigNum::New());
   auto ptr = result.ptr_.get();
   if (BN_dec2bn(&ptr, value) == 0) {
-    return BigNumErrc::AllocationFailure;
+    return BigNumErrc::ConversionFailure;
   }
   return result;
 }
@@ -139,7 +151,7 @@ inline Result<BigNum> BigNum::FromDec(const char* value) noexcept {
 inline Result<SslString> BigNum::ToDec(const BigNum& value) noexcept {
   SslString result{BN_bn2dec(value.ptr_.get())};
   if (!result.get()) {
-    return BigNumErrc::AllocationFailure;
+    return BigNumErrc::ConversionFailure;
   }
   return result;
 }
@@ -147,9 +159,27 @@ inline Result<SslString> BigNum::ToDec(const BigNum& value) noexcept {
 inline Result<SslString> BigNum::ToHex(const BigNum& value) noexcept {
   SslString result{BN_bn2hex(value.ptr_.get())};
   if (!result.get()) {
-    return BigNumErrc::AllocationFailure;
+    return BigNumErrc::ConversionFailure;
   }
   return result;
+}
+
+inline Result<SslData> BigNum::ToBin(const BigNum& value) noexcept {
+  SslData result;
+  result.resize(value.NumberOfBytes());
+  if (BN_bn2bin(value.ptr_.get(), result.data()) < 0) {
+    return BigNumErrc::ConversionFailure;
+  }
+  return result;
+}
+
+inline Result<BigNum> BigNum::FromBin(const SslData& value) noexcept {
+  BIGNUM* initial_value = nullptr;
+  BigNumImpl ptr{BN_bin2bn(value.data(), value.size(), initial_value)};
+  if (!ptr) {
+    return BigNumErrc::ConversionFailure;
+  }
+  return BigNum{std::move(ptr)};
 }
 
 inline int BigNum::NumberOfBytes() const { return BN_num_bytes(ptr_.get()); }
