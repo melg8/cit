@@ -37,16 +37,16 @@ SCENARIO("BigNum") {
   }
 
   GIVEN("zero BigNum value") {
-    const auto result = BigNum::FromBnUlong(0).value();
+    const auto result = BigNum::FromBnUlong(0);
 
     THEN("converted value equal to empty data") {
-      const auto converted = BigNum::ToBin(result);
+      const auto converted = result >>= BigNum::ToBin;
       SslData empty{};
       CHECK_EQ(converted.value(), empty);
     }
 
     THEN("result value has zero bytes") {
-      const auto number_of_bytes = result.NumberOfBytes();
+      const auto number_of_bytes = result.value().NumberOfBytes();
       CHECK_EQ(number_of_bytes, 0);
     }
   }
@@ -65,7 +65,7 @@ SCENARIO("BigNum") {
       }
 
       WHEN("result converted back to BnUlong ") {
-        const auto converted_back = BigNum::ToBnUlong(result.value());
+        const auto converted_back = result >>= BigNum::ToBnUlong;
 
         THEN("result has value") { CHECK(converted_back.has_value()); }
 
@@ -75,7 +75,7 @@ SCENARIO("BigNum") {
       }
 
       WHEN("result converted to bin") {
-        const auto converted = BigNum::ToBin(result.value());
+        const auto converted = result >>= BigNum::ToBin;
 
         THEN("converted value equal to expected") {
           SslData expected{1};
@@ -87,10 +87,10 @@ SCENARIO("BigNum") {
   }
 
   GIVEN("BigNum created from BnUlongValue") {
-    const auto value = BigNum::FromBnUlong(4).value();
+    const auto value = BigNum::FromBnUlong(4);
 
     WHEN("converting it to dec") {
-      const auto result = BigNum::ToDec(value);
+      const auto result = value >>= BigNum::ToDec;
 
       THEN("result has value") { CHECK(result.has_value()); }
 
@@ -111,7 +111,7 @@ SCENARIO("BigNum") {
       THEN("result has value") { CHECK(result.has_value()); }
 
       THEN("result BnUlong value is equal to expected") {
-        const auto value = BigNum::ToBnUlong(result.value());
+        const auto value = result >>= BigNum::ToBnUlong;
 
         CHECK_EQ(value.value(), 4);
       }
@@ -119,10 +119,10 @@ SCENARIO("BigNum") {
   }
 
   GIVEN("BigNum created from BnUlongValue") {
-    const auto value = BigNum::FromBnUlong(15).value();
+    const auto value = BigNum::FromBnUlong(15);
 
     WHEN("converting it to dec") {
-      const auto result = BigNum::ToHex(value);
+      const auto result = value >>= BigNum::ToHex;
 
       THEN("result has value") { CHECK(result.has_value()); }
 
@@ -142,8 +142,7 @@ SCENARIO("BigNum") {
       THEN("result has value") { CHECK(result.has_value()); }
 
       THEN("result BnUlong value is equal to expected") {
-        const auto value = BigNum::ToBnUlong(result.value());
-
+        const auto value = result >>= BigNum::ToBnUlong;
         CHECK_EQ(value.value(), 15);
       }
     }
@@ -158,13 +157,25 @@ SCENARIO("BigNum") {
       THEN("result has value") { CHECK(result.has_value()); }
 
       THEN("result BnUlong value is equal to expected") {
-        const auto converted_value = BigNum::ToBnUlong(result.value()).value();
+        const auto converted_value = (result >>= BigNum::ToBnUlong).value();
         CHECK_EQ(converted_value, 10);
       }
 
       THEN("result value has proper number of bytes") {
         const auto number_of_bytes = result.value().NumberOfBytes();
         CHECK_EQ(number_of_bytes, 1);
+      }
+    }
+  }
+
+  GIVEN("failed value") {
+    Result<BigNum> value{BigNumErrc::AllocationFailure};
+
+    WHEN("function applied to it through >>= operator") {
+      const auto result = value >>= BigNum::ToDec;
+
+      THEN("result have same error") {
+        CHECK_EQ(result.error(), BigNumErrc::AllocationFailure);
       }
     }
   }

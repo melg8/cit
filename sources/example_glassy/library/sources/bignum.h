@@ -34,8 +34,16 @@ namespace outcome = OUTCOME_V2_NAMESPACE;
 template <typename T>
 using Result = outcome::result<T>;
 
-namespace {
+template <typename T, typename F>
+decltype(auto) operator>>=(T&& result, F func) {
+  using ResultType = decltype(func(result.value()));
+  if (!result.has_value()) {
+    return ResultType{result.error()};
+  }
+  return func(result.value());
+}
 
+namespace {
 struct BigNumErrorCategory : std::error_category {
   const char* name() const noexcept override;
   std::string message(int ev) const override;
@@ -73,7 +81,7 @@ struct OpenSslFree {
   template <typename T>
   void operator()(T* ptr) noexcept {
     OPENSSL_free(ptr);
-  }
+  }  // namespace glassy
 };
 
 using SslString = std::unique_ptr<char, OpenSslFree>;

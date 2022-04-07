@@ -8,7 +8,7 @@ set(CMAKE_INCLUDE_CURRENT_DIR ON)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 option(ENABLE_TESTING "Enable the tests" ON)
-option(USE_CCACHE "Enable use of ccache" OFF)
+option(USE_CCACHE "Enable use of ccache" ON)
 
 include("${CMAKE_CURRENT_SOURCE_DIR}/cmake/ccache.cmake")
 include("${CMAKE_CURRENT_SOURCE_DIR}/cmake/compiler_flags.cmake")
