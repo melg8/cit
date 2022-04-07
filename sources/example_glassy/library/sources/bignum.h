@@ -104,6 +104,7 @@ class BigNum {
   static Result<BigNum> FromBin(const SslData& value) noexcept;
 
   int NumberOfBytes() const;
+  int NumberOfBits() const;
 
  private:
   struct Deleter {
@@ -191,6 +192,8 @@ inline Result<BigNum> BigNum::FromBin(const SslData& value) noexcept {
 }
 
 inline int BigNum::NumberOfBytes() const { return BN_num_bytes(ptr_.get()); }
+
+inline int BigNum::NumberOfBits() const { return BN_num_bits(ptr_.get()); }
 
 inline Result<BigNum> BigNum::FromHex(const char* value) noexcept {
   OUTCOME_TRY(auto result, BigNum::New());
