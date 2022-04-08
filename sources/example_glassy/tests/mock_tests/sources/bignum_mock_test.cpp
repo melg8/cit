@@ -24,6 +24,7 @@ static int AlwaysFailToBn(BIGNUM**, const char*) noexcept { return 0; }
 static BIGNUM* AlwaysFailBinToBn(const unsigned char*, int, BIGNUM*) {
   return nullptr;
 }
+static int AlwaysFailAdd(BIGNUM*, const BIGNUM*, const BIGNUM*) { return 0; }
 }
 
 #define BN_new MockBnNew
@@ -33,6 +34,7 @@ static BIGNUM* AlwaysFailBinToBn(const unsigned char*, int, BIGNUM*) {
 #define BN_bn2hex AlwaysFailBnTo
 #define BN_hex2bn AlwaysFailToBn
 #define BN_bin2bn AlwaysFailBinToBn
+#define BN_add AlwaysFailAdd
 
 #include <bignum.h>
 
@@ -118,4 +120,16 @@ SCENARIO("bignum failures") {
       THEN("result doesn't have value") { CHECK_FALSE(result.has_value()); }
     }
   }
+
+  []() -> Result<void> {
+    DOCTEST_SUBCASE("add two BigNumb failing") {
+      should_fail_alloc = false;
+      OUTCOME_TRY(const auto first, BigNum::FromBnUlong(2));
+      OUTCOME_TRY(const auto second, BigNum::FromBnUlong(3));
+      const auto result = BigNum::Add(first, second);
+      CHECK_FALSE(result.has_value());
+    }
+    return outcome_v2::success();
+  }()
+              .value();
 }

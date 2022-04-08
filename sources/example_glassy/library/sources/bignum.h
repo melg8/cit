@@ -25,7 +25,8 @@ enum class BigNumErrc {
   AllocationFailure = 1,
   ExpansionFailure = 2,
   TooBigForConversion = 3,
-  ConversionFailure = 4
+  ConversionFailure = 4,
+  AdditionFailure = 5,
 };
 
 using BnUlong = BN_ULONG;
@@ -57,6 +58,8 @@ inline std::string BigNumErrorCategory::message(int ev) const {
       return "value too big to fit";
     case BigNumErrc::ConversionFailure:
       return "failed to convert value";
+    case BigNumErrc::AdditionFailure:
+      return "failed to add two values";
   }
   return "unknown";
 }
@@ -91,8 +94,10 @@ class BigNum {
   static Result<BigNum> FromHex(const char* value) noexcept;
   static Result<SslString> ToHex(const BigNum& value) noexcept;
 
-  static Result<SslData> ToBin(const BigNum& value) noexcept;
   static Result<BigNum> FromBin(const SslData& value) noexcept;
+  static Result<SslData> ToBin(const BigNum& value) noexcept;
+
+  static Result<BigNum> Add(const BigNum& lhs, const BigNum& rhs) noexcept;
 
   int NumberOfBytes() const;
   int NumberOfBits() const;
@@ -169,6 +174,15 @@ inline Result<SslData> BigNum::ToBin(const BigNum& value) noexcept {
   result.resize(value.NumberOfBytes());
   if (BN_bn2bin(value.ptr_.get(), result.data()) < 0) {
     return BigNumErrc::ConversionFailure;
+  }
+  return result;
+}
+
+inline Result<BigNum> BigNum::Add(const BigNum& lhs,
+                                  const BigNum& rhs) noexcept {
+  OUTCOME_TRY(auto result, BigNum::New());
+  if (BN_add(result.ptr_.get(), lhs.ptr_.get(), rhs.ptr_.get()) == 0) {
+    return BigNumErrc::AdditionFailure;
   }
   return result;
 }

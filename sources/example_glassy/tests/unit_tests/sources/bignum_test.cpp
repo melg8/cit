@@ -9,8 +9,9 @@
 
 namespace glassy {
 namespace test {
+using namespace OUTCOME_V2_NAMESPACE;
 
-SCENARIO("sum function working") { CHECK_EQ(glassy::Sum(1, 2), 3); }
+SCENARIO("sum function working") { CHECK_EQ(Sum(1, 2), 3); }
 
 struct BigNumTestData {
   std::string subcase_name{};
@@ -26,7 +27,6 @@ struct BigNumTestData {
 #define CALL(X) []() { return BigNum::X; }
 
 SCENARIO("BigNum creation and conversions") {
-  using namespace OUTCOME_V2_NAMESPACE;
   const auto tests = std::vector<BigNumTestData>{
       {"default number", CALL(New()), 0, 0, 0, "0", "0", SslData{}},
       {"from 0 number", CALL(FromBnUlong(0)), 0, 0, 0, "0", "0", SslData{}},
@@ -51,6 +51,21 @@ SCENARIO("BigNum creation and conversions") {
         }
         return success();
       });
+}
+
+SCENARIO("BigNum operations") {
+  []() -> Result<void> {
+    DOCTEST_SUBCASE("add two BigNumb together") {
+      OUTCOME_TRY(const auto first, BigNum::FromBnUlong(2));
+      OUTCOME_TRY(const auto second, BigNum::FromBnUlong(3));
+      OUTCOME_TRY(const auto added, BigNum::Add(first, second));
+      OUTCOME_TRY(const auto result, BigNum::ToBnUlong(added));
+      CHECK_EQ(result, 5);
+    }
+
+    return success();
+  }()
+              .value();
 }
 
 }  // namespace test
