@@ -29,15 +29,13 @@ struct BigNumTestData {
 SCENARIO("BigNum creation and conversions") {
   const auto tests = std::vector<BigNumTestData>{
       {"default number", CALL(New()), 0, 0, 0, "0", "0", SslData{}},
-      {"from 0 number", CALL(FromBnUlong(0)), 0, 0, 0, "0", "0", SslData{}},
-      {"from 32 number", CALL(FromBnUlong(32)), 1, 6, 32, "32", "20",
-       SslData{32}},
-      {"from dec", CALL(FromDec("15")), 1, 4, 15, "15", "0F", SslData{15}},
-      {"from hex", CALL(FromHex("0F")), 1, 4, 15, "15", "0F", SslData{15}},
-      {"from bin", CALL(FromBin(SslData{10})), 1, 4, 10, "10", "0A",
-       SslData{10}},
-      {"from 2 byte bin", CALL(FromBin(SslData{255, 10})), 2, 16, 65290,
-       "65290", "FF0A", SslData{255, 10}}};
+      {"from 0 number", CALL(New(0)), 0, 0, 0, "0", "0", SslData{}},
+      {"from 32 number", CALL(New(32)), 1, 6, 32, "32", "20", SslData{32}},
+      {"from dec", CALL(New(Dec{"15"})), 1, 4, 15, "15", "0F", SslData{15}},
+      {"from hex", CALL(New(Hex{"0F"})), 1, 4, 15, "15", "0F", SslData{15}},
+      {"from bin", CALL(New(SslData{10})), 1, 4, 10, "10", "0A", SslData{10}},
+      {"from 2 byte bin", CALL(New(SslData{255, 10})), 2, 16, 65290, "65290",
+       "FF0A", SslData{255, 10}}};
   std::for_each(
       std::begin(tests), std::end(tests), [](auto test) -> Result<void> {
         DOCTEST_SUBCASE(test.subcase_name.c_str()) {
@@ -56,8 +54,8 @@ SCENARIO("BigNum creation and conversions") {
 SCENARIO("BigNum operations") {
   []() -> Result<void> {
     DOCTEST_SUBCASE("add two BigNumb together") {
-      OUTCOME_TRY(const auto first, BigNum::FromBnUlong(2));
-      OUTCOME_TRY(const auto second, BigNum::FromBnUlong(3));
+      OUTCOME_TRY(const auto first, BigNum::New(2));
+      OUTCOME_TRY(const auto second, BigNum::New(3));
       OUTCOME_TRY(const auto added, BigNum::Add(first, second));
       OUTCOME_TRY(const auto result, BigNum::ToBnUlong(added));
       CHECK_EQ(result, 5);

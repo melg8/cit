@@ -82,19 +82,25 @@ using SslString = std::unique_ptr<char, OpenSslFree>;
 using SslData = std::vector<unsigned char>;  // TODO(melg): replace with openssl
                                              // based allocation mechanism.
 
+struct Dec {
+  const char* value{nullptr};
+};
+
+struct Hex {
+  const char* value{nullptr};
+};
+
 class BigNum {
  public:
   static Result<BigNum> New() noexcept;
-  static Result<BigNum> FromBnUlong(BnUlong value) noexcept;
+  static Result<BigNum> New(BnUlong value) noexcept;
+  static Result<BigNum> New(const Dec& dec) noexcept;
+  static Result<BigNum> New(const Hex& hex) noexcept;
+  static Result<BigNum> New(const SslData& value) noexcept;
+
   static Result<BnUlong> ToBnUlong(const BigNum& value) noexcept;
-
-  static Result<BigNum> FromDec(const char* value) noexcept;
   static Result<SslString> ToDec(const BigNum& value) noexcept;
-
-  static Result<BigNum> FromHex(const char* value) noexcept;
   static Result<SslString> ToHex(const BigNum& value) noexcept;
-
-  static Result<BigNum> FromBin(const SslData& value) noexcept;
   static Result<SslData> ToBin(const BigNum& value) noexcept;
 
   static Result<BigNum> Add(const BigNum& lhs, const BigNum& rhs) noexcept;
@@ -128,7 +134,7 @@ inline Result<BigNum> BigNum::New() noexcept {
   return BigNum{std::move(ptr)};
 }
 
-inline Result<BigNum> BigNum::FromBnUlong(BnUlong value) noexcept {
+inline Result<BigNum> BigNum::New(BnUlong value) noexcept {
   OUTCOME_TRY(auto result, BigNum::New());
   if (BN_set_word(result.ptr_.get(), value) == 0) {
     return BigNumErrc::ExpansionFailure;
@@ -144,10 +150,10 @@ inline Result<BnUlong> BigNum::ToBnUlong(const BigNum& value) noexcept {
   return result;
 }
 
-inline Result<BigNum> BigNum::FromDec(const char* value) noexcept {
+inline Result<BigNum> BigNum::New(const Dec& dec) noexcept {
   OUTCOME_TRY(auto result, BigNum::New());
   auto ptr = result.ptr_.get();
-  if (BN_dec2bn(&ptr, value) == 0) {
+  if (BN_dec2bn(&ptr, dec.value) == 0) {
     return BigNumErrc::ConversionFailure;
   }
   return result;
@@ -187,7 +193,7 @@ inline Result<BigNum> BigNum::Add(const BigNum& lhs,
   return result;
 }
 
-inline Result<BigNum> BigNum::FromBin(const SslData& value) noexcept {
+inline Result<BigNum> BigNum::New(const SslData& value) noexcept {
   BIGNUM* initial_value = nullptr;
   BigNumImpl ptr{BN_bin2bn(value.data(), value.size(), initial_value)};
   if (!ptr) {
@@ -200,10 +206,10 @@ inline int BigNum::NumberOfBytes() const { return BN_num_bytes(ptr_.get()); }
 
 inline int BigNum::NumberOfBits() const { return BN_num_bits(ptr_.get()); }
 
-inline Result<BigNum> BigNum::FromHex(const char* value) noexcept {
+inline Result<BigNum> BigNum::New(const Hex& hex) noexcept {
   OUTCOME_TRY(auto result, BigNum::New());
   auto ptr = result.ptr_.get();
-  if (BN_hex2bn(&ptr, value) == 0) {
+  if (BN_hex2bn(&ptr, hex.value) == 0) {
     return BigNumErrc::AllocationFailure;
   }
   return result;

@@ -52,7 +52,7 @@ SCENARIO("bignum failures") {
     const BnUlong value = 1;
 
     WHEN("failed to create Bignum from it because of internal error") {
-      const auto result = BigNum::FromBnUlong(value);
+      const auto result = BigNum::New(value);
 
       THEN("result doesn't have value") { CHECK_FALSE(result.has_value()); }
     }
@@ -82,7 +82,7 @@ SCENARIO("bignum failures") {
     const auto* pointer = "4";
 
     WHEN("failed to convert BigNum from it") {
-      const auto result = BigNum::FromDec(pointer);
+      const auto result = BigNum::New(Dec{pointer});
 
       THEN("result doesn't have value") { CHECK_FALSE(result.has_value()); }
     }
@@ -90,7 +90,7 @@ SCENARIO("bignum failures") {
 
   GIVEN("BigNum created from BnUlongValue") {
     should_fail_alloc = false;
-    const auto value = BigNum::FromBnUlong(15);
+    const auto value = BigNum::New(15);
 
     WHEN("converting it to dec") {
       const auto result = BigNum::ToHex(value.value());
@@ -104,7 +104,7 @@ SCENARIO("bignum failures") {
     const auto* pointer = "0F";
 
     WHEN("failed to convert BigNum from it") {
-      const auto result = BigNum::FromHex(pointer);
+      const auto result = BigNum::New(Hex{pointer});
 
       THEN("result doesn't have value") { CHECK_FALSE(result.has_value()); }
     }
@@ -115,7 +115,7 @@ SCENARIO("bignum failures") {
     SslData value{10};
 
     WHEN("failed to create BigNum from it") {
-      const auto result = BigNum::FromBin(value);
+      const auto result = BigNum::New(value);
 
       THEN("result doesn't have value") { CHECK_FALSE(result.has_value()); }
     }
@@ -124,8 +124,8 @@ SCENARIO("bignum failures") {
   []() -> Result<void> {
     DOCTEST_SUBCASE("add two BigNumb failing") {
       should_fail_alloc = false;
-      OUTCOME_TRY(const auto first, BigNum::FromBnUlong(2));
-      OUTCOME_TRY(const auto second, BigNum::FromBnUlong(3));
+      OUTCOME_TRY(const auto first, BigNum::New(2));
+      OUTCOME_TRY(const auto second, BigNum::New(3));
       const auto result = BigNum::Add(first, second);
       CHECK_FALSE(result.has_value());
     }
