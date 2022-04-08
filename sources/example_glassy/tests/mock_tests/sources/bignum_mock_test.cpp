@@ -63,7 +63,7 @@ SCENARIO("bignum failures") {
     const auto result = BigNum::New();
 
     WHEN("failed to convert to BnUlong because of internal error") {
-      const auto converted = BigNum::ToBnUlong(result.value());
+      const auto converted = result.value().ToBnUlong();
 
       THEN("converted doesn't have value") {
         CHECK_FALSE(converted.has_value());
@@ -71,7 +71,7 @@ SCENARIO("bignum failures") {
     }
 
     WHEN("failed to convert to dec") {
-      const auto converted = BigNum::ToDec(result.value());
+      const auto converted = result.value().ToDec();
 
       THEN("result doesn't have value") { CHECK_FALSE(converted.has_value()); }
     }
@@ -93,7 +93,7 @@ SCENARIO("bignum failures") {
     const auto value = BigNum::New(15);
 
     WHEN("converting it to dec") {
-      const auto result = BigNum::ToHex(value.value());
+      const auto result = value.value().ToHex();
 
       THEN("result doesn't have value") { CHECK_FALSE(result.has_value()); }
     }

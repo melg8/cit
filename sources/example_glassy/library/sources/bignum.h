@@ -98,12 +98,12 @@ class BigNum {
   static Result<BigNum> New(const Hex& hex) noexcept;
   static Result<BigNum> New(const SslData& value) noexcept;
 
-  static Result<BnUlong> ToBnUlong(const BigNum& value) noexcept;
-  static Result<SslString> ToDec(const BigNum& value) noexcept;
-  static Result<SslString> ToHex(const BigNum& value) noexcept;
-  static Result<SslData> ToBin(const BigNum& value) noexcept;
-
   static Result<BigNum> Add(const BigNum& lhs, const BigNum& rhs) noexcept;
+
+  Result<BnUlong> ToBnUlong() const noexcept;
+  Result<SslString> ToDec() const noexcept;
+  Result<SslString> ToHex() const noexcept;
+  Result<SslData> ToBin() const noexcept;
 
   int NumberOfBytes() const;
   int NumberOfBits() const;
@@ -142,8 +142,8 @@ inline Result<BigNum> BigNum::New(BnUlong value) noexcept {
   return result;
 }
 
-inline Result<BnUlong> BigNum::ToBnUlong(const BigNum& value) noexcept {
-  const auto result = BN_get_word(value.ptr_.get());
+inline Result<BnUlong> BigNum::ToBnUlong() const noexcept {
+  const auto result = BN_get_word(ptr_.get());
   if (result == std::numeric_limits<decltype(result)>::max()) {
     return BigNumErrc::TooBigForConversion;
   }
@@ -159,26 +159,26 @@ inline Result<BigNum> BigNum::New(const Dec& dec) noexcept {
   return result;
 }
 
-inline Result<SslString> BigNum::ToDec(const BigNum& value) noexcept {
-  SslString result{BN_bn2dec(value.ptr_.get())};
+inline Result<SslString> BigNum::ToDec() const noexcept {
+  SslString result{BN_bn2dec(ptr_.get())};
   if (!result.get()) {
     return BigNumErrc::ConversionFailure;
   }
   return result;
 }
 
-inline Result<SslString> BigNum::ToHex(const BigNum& value) noexcept {
-  SslString result{BN_bn2hex(value.ptr_.get())};
+inline Result<SslString> BigNum::ToHex() const noexcept {
+  SslString result{BN_bn2hex(ptr_.get())};
   if (!result.get()) {
     return BigNumErrc::ConversionFailure;
   }
   return result;
 }
 
-inline Result<SslData> BigNum::ToBin(const BigNum& value) noexcept {
+inline Result<SslData> BigNum::ToBin() const noexcept {
   SslData result;
-  result.resize(value.NumberOfBytes());
-  if (BN_bn2bin(value.ptr_.get(), result.data()) < 0) {
+  result.resize(NumberOfBytes());
+  if (BN_bn2bin(ptr_.get(), result.data()) < 0) {
     return BigNumErrc::ConversionFailure;
   }
   return result;

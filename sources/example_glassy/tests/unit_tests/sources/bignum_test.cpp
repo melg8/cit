@@ -42,10 +42,10 @@ SCENARIO("BigNum creation and conversions") {
           OUTCOME_TRY(const auto number, test.create());
           CHECK_EQ(number.NumberOfBytes(), test.number_of_bytes);
           CHECK_EQ(number.NumberOfBits(), test.number_of_bits);
-          CHECK_EQ(BigNum::ToBnUlong(number).value(), test.value);
-          CHECK_EQ(std::string{BigNum::ToDec(number).value().get()}, test.dec);
-          CHECK_EQ(std::string{BigNum::ToHex(number).value().get()}, test.hex);
-          CHECK_EQ(BigNum::ToBin(number).value(), test.bin_data);
+          CHECK_EQ(number.ToBnUlong().value(), test.value);
+          CHECK_EQ(std::string{number.ToDec().value().get()}, test.dec);
+          CHECK_EQ(std::string{number.ToHex().value().get()}, test.hex);
+          CHECK_EQ(number.ToBin().value(), test.bin_data);
         }
         return success();
       });
@@ -57,7 +57,7 @@ SCENARIO("BigNum operations") {
       OUTCOME_TRY(const auto first, BigNum::New(2));
       OUTCOME_TRY(const auto second, BigNum::New(3));
       OUTCOME_TRY(const auto added, BigNum::Add(first, second));
-      OUTCOME_TRY(const auto result, BigNum::ToBnUlong(added));
+      OUTCOME_TRY(const auto result, added.ToBnUlong());
       CHECK_EQ(result, 5);
     }
 
