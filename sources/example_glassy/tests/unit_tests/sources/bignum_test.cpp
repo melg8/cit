@@ -53,12 +53,30 @@ SCENARIO("BigNum creation and conversions") {
 
 SCENARIO("BigNum operations") {
   []() -> Result<void> {
-    DOCTEST_SUBCASE("add two BigNumb together") {
+    DOCTEST_SUBCASE("add two BigNum together") {
       OUTCOME_TRY(const auto first, BigNum::New(2));
       OUTCOME_TRY(const auto second, BigNum::New(3));
       OUTCOME_TRY(const auto added, BigNum::Add(first, second));
       OUTCOME_TRY(const auto result, added.ToBnUlong());
       CHECK_EQ(result, 5);
+    }
+
+    DOCTEST_SUBCASE("add several BigNum together") {
+      const auto maybe_result = BigNum::New(1) + BigNum::New(Dec{"15"}) +
+                                BigNum::New(Hex{"0F"}) +
+                                BigNum::New(SslData{11});
+      CHECK_EQ(maybe_result.value().ToBnUlong().value(), 42);
+
+      CHECK_EQ((BigNum::New(1).value() + BigNum::New(Dec{"15"}))
+                   .value()
+                   .ToBnUlong()
+                   .value(),
+               16);
+      CHECK_EQ((BigNum::New(1) + BigNum::New(Dec{"15"}).value())
+                   .value()
+                   .ToBnUlong()
+                   .value(),
+               16);
     }
 
     return success();
