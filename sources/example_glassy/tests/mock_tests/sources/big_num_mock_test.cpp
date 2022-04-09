@@ -36,7 +36,7 @@ static int AlwaysFailAdd(BIGNUM*, const BIGNUM*, const BIGNUM*) { return 0; }
 #define BN_bin2bn AlwaysFailBinToBn
 #define BN_add AlwaysFailAdd
 
-#include <bignum.h>
+#include <big_num.h>
 
 SCENARIO("bignum failures") {
   using namespace glassy;

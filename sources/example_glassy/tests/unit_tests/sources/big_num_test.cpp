@@ -1,7 +1,7 @@
 #include <doctest/doctest.h>
 #include <outcome.hpp>
 
-#include <bignum.h>
+#include <big_num.h>
 
 #include <algorithm>
 #include <functional>

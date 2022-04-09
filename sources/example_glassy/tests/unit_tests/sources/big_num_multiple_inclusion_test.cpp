@@ -1,6 +1,6 @@
 #include <doctest/doctest.h>
 
-#include <bignum.h>
+#include <big_num.h>
 
 SCENARIO("BigNum can be included into multiple translations units and used") {
   GIVEN("default created BigNum") {

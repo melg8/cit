@@ -1,5 +1,5 @@
-#ifndef BIGNUM_H
-#define BIGNUM_H
+#ifndef BIG_NUM_H
+#define BIG_NUM_H
 
 #include <openssl/bn.h>
 #include <openssl/engine.h>
@@ -243,4 +243,4 @@ inline int Sum(int a, int b) { return a + b; }
 
 }  // namespace glassy
 
-#endif  // BIGNUM_H
+#endif  // BIG_NUM_H
