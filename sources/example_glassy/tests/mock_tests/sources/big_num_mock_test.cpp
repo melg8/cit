@@ -5,7 +5,9 @@
 
 extern "C" {
 static bool should_fail_alloc = true;
-static BIGNUM* MockBnNew() { return should_fail_alloc ? nullptr : BN_new(); }
+static BIGNUM* MockBnNew() noexcept {
+  return should_fail_alloc ? nullptr : BN_new();
+}
 
 // For this function fail condition is represented by all 0xFF bytes
 // in result. Search for BN_MASK2 in openssl source code for reference.
@@ -38,7 +40,7 @@ static int AlwaysFailAdd(BIGNUM*, const BIGNUM*, const BIGNUM*) { return 0; }
 
 #include <big_num.h>
 
-SCENARIO("bignum failures") {
+SCENARIO("BigNum failures") {
   using namespace glassy;
   should_fail_alloc = true;
   GIVEN("creating new BigNum") {
@@ -122,7 +124,7 @@ SCENARIO("bignum failures") {
   }
 
   []() -> Result<void> {
-    DOCTEST_SUBCASE("add two BigNumb failing") {
+    SUBCASE("add two BigNumb failing") {
       should_fail_alloc = false;
       OUTCOME_TRY(const auto first, BigNum::New(2));
       OUTCOME_TRY(const auto second, BigNum::New(3));

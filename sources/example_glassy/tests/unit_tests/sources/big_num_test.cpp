@@ -38,7 +38,7 @@ SCENARIO("BigNum creation and conversions") {
        "FF0A", SslData{255, 10}}};
   std::for_each(
       std::begin(tests), std::end(tests), [](auto test) -> Result<void> {
-        DOCTEST_SUBCASE(test.subcase_name.c_str()) {
+        SUBCASE(test.subcase_name.c_str()) {
           OUTCOME_TRY(const auto number, test.create());
           CHECK_EQ(number.NumberOfBytes(), test.number_of_bytes);
           CHECK_EQ(number.NumberOfBits(), test.number_of_bits);
@@ -53,7 +53,7 @@ SCENARIO("BigNum creation and conversions") {
 
 SCENARIO("BigNum operations") {
   []() -> Result<void> {
-    DOCTEST_SUBCASE("add two BigNum together") {
+    SUBCASE("add two BigNum together") {
       OUTCOME_TRY(const auto first, BigNum::New(2));
       OUTCOME_TRY(const auto second, BigNum::New(3));
       OUTCOME_TRY(const auto added, BigNum::Add(first, second));
@@ -61,7 +61,7 @@ SCENARIO("BigNum operations") {
       CHECK_EQ(result, 5);
     }
 
-    DOCTEST_SUBCASE("add several BigNum together") {
+    SUBCASE("add several BigNum together") {
       const auto maybe_result = BigNum::New(1) + BigNum::New(Dec{"15"}) +
                                 BigNum::New(Hex{"0F"}) +
                                 BigNum::New(SslData{11});

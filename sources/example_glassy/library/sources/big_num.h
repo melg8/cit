@@ -8,6 +8,7 @@
 #include <limits>
 #include <memory>
 #include <system_error>
+#include <utility>
 #include <vector>
 
 namespace glassy {
