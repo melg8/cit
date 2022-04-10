@@ -101,6 +101,7 @@ class BigNum {
 
   static Result<BigNum> Add(const BigNum& lhs, const BigNum& rhs) noexcept;
 
+  const BIGNUM* Ptr() const noexcept;
   Result<BnUlong> ToBnUlong() const noexcept;
   Result<SslString> ToDec() const noexcept;
   Result<SslString> ToHex() const noexcept;
@@ -108,6 +109,8 @@ class BigNum {
 
   int NumberOfBytes() const;
   int NumberOfBits() const;
+
+  BIGNUM* Ptr() noexcept;
 
  private:
   struct Deleter {
@@ -137,7 +140,7 @@ inline Result<BigNum> BigNum::New() noexcept {
 
 inline Result<BigNum> BigNum::New(BnUlong value) noexcept {
   OUTCOME_TRY(auto result, BigNum::New());
-  if (BN_set_word(result.ptr_.get(), value) == 0) {
+  if (BN_set_word(result.Ptr(), value) == 0) {
     return BigNumErrc::ExpansionFailure;
   }
   return result;
@@ -153,7 +156,7 @@ inline Result<BnUlong> BigNum::ToBnUlong() const noexcept {
 
 inline Result<BigNum> BigNum::New(const Dec& dec) noexcept {
   OUTCOME_TRY(auto result, BigNum::New());
-  auto ptr = result.ptr_.get();
+  auto ptr = result.Ptr();
   if (BN_dec2bn(&ptr, dec.value) == 0) {
     return BigNumErrc::ConversionFailure;
   }
@@ -188,11 +191,15 @@ inline Result<SslData> BigNum::ToBin() const noexcept {
 inline Result<BigNum> BigNum::Add(const BigNum& lhs,
                                   const BigNum& rhs) noexcept {
   OUTCOME_TRY(auto result, BigNum::New());
-  if (BN_add(result.ptr_.get(), lhs.ptr_.get(), rhs.ptr_.get()) == 0) {
+  if (BN_add(result.Ptr(), lhs.Ptr(), rhs.Ptr()) == 0) {
     return BigNumErrc::AdditionFailure;
   }
   return result;
 }
+
+inline const BIGNUM* BigNum::Ptr() const noexcept { return ptr_.get(); }
+
+inline BIGNUM* BigNum::Ptr() noexcept { return ptr_.get(); }
 
 inline Result<BigNum> BigNum::New(const SslData& value) noexcept {
   BIGNUM* initial_value = nullptr;
@@ -209,7 +216,7 @@ inline int BigNum::NumberOfBits() const { return BN_num_bits(ptr_.get()); }
 
 inline Result<BigNum> BigNum::New(const Hex& hex) noexcept {
   OUTCOME_TRY(auto result, BigNum::New());
-  auto ptr = result.ptr_.get();
+  auto ptr = result.Ptr();
   if (BN_hex2bn(&ptr, hex.value) == 0) {
     return BigNumErrc::AllocationFailure;
   }

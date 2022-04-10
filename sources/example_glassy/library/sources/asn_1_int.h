@@ -66,7 +66,8 @@ class Asn1Int {
 
   Result<Long> ToLong() const noexcept;
 
-  ASN1_INTEGER* Ptr() const noexcept;
+  const ASN1_INTEGER* Ptr() const noexcept;
+  ASN1_INTEGER* Ptr() noexcept;
 
  private:
   struct Deleter {
@@ -111,7 +112,9 @@ inline Result<Long> Asn1Int::ToLong() const noexcept {
   return result;
 }
 
-inline ASN1_INTEGER* Asn1Int::Ptr() const noexcept { return ptr_.get(); }
+inline const ASN1_INTEGER* Asn1Int::Ptr() const noexcept { return ptr_.get(); }
+
+inline ASN1_INTEGER* Asn1Int::Ptr() noexcept { return ptr_.get(); }
 
 inline Asn1Int::Asn1Int(Asn1IntImpl ptr) noexcept : ptr_{std::move(ptr)} {}
 
