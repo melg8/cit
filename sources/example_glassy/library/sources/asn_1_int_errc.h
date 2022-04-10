@@ -20,6 +20,7 @@ enum class Asn1IntErrc {
   Success = 0,  // 0 should not represent an error
   AllocationFailure = 1,
   ConversionFailure = 2,
+  CopyFailure = 3
 };
 
 namespace {
@@ -41,6 +42,8 @@ inline std::string Asn1IntErrorCategory::message(int ev) const {
       return "allocation failed";
     case Asn1IntErrc::ConversionFailure:
       return "conversion failed";
+    case Asn1IntErrc::CopyFailure:
+      return "copy failed";
   }
   return "unknown";
 }

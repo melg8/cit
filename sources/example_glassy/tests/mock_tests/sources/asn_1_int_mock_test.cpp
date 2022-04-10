@@ -10,16 +10,23 @@ static ASN1_INTEGER* MockAsn1IntegerNew() noexcept {
   return should_fail_alloc ? nullptr : ASN1_INTEGER_new();
 }
 
-static int MockAsn1IntegerSet(ASN1_INTEGER* a, long v) {
+static int MockAsn1IntegerSet(ASN1_INTEGER* a, long v) noexcept {
   return should_fail_to_set_value ? 0 : ASN1_INTEGER_set(a, v);
 }
 
-static long AlwaysFailAsn1IntegerGet(const ASN1_INTEGER*) { return -1; }
+static long AlwaysFailAsn1IntegerGet(const ASN1_INTEGER*) noexcept {
+  return -1;
+}
+
+static ASN1_INTEGER* Asn1IntegerDup(const ASN1_INTEGER*) noexcept {
+  return nullptr;
+}
 }
 
 #define ASN1_INTEGER_new MockAsn1IntegerNew
 #define ASN1_INTEGER_set MockAsn1IntegerSet
 #define ASN1_INTEGER_get AlwaysFailAsn1IntegerGet
+#define ASN1_INTEGER_dup Asn1IntegerDup
 
 #include <asn_1_int.h>
 
@@ -51,6 +58,15 @@ SCENARIO("Asn1Int failures") {
     {
       const auto value = Asn1Int::New().value();
       const auto result = value.ToLong();
+      CHECK_FALSE(result.has_value());
+    }
+  }
+  SUBCASE("failing to copy Asn1Int value") {
+    should_fail_alloc = false;
+    should_fail_to_set_value = false;
+    {
+      const auto value = Asn1Int::New(32).value();
+      const auto result = Asn1Int::New(value);
       CHECK_FALSE(result.has_value());
     }
   }

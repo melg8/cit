@@ -19,6 +19,7 @@ using Result = outcome::result<T>;
 class Asn1Int {
  public:
   static Result<Asn1Int> New(Long value = 0) noexcept;
+  static Result<Asn1Int> New(const Asn1Int& other) noexcept;
 
   Result<Long> ToLong() const noexcept;
 
@@ -68,6 +69,14 @@ inline glassy::Result<glassy::Asn1Int> glassy::Asn1Int::New(
     return Asn1IntErrc::AllocationFailure;
   }
   return result;
+}
+
+inline Result<Asn1Int> Asn1Int::New(const Asn1Int& other) noexcept {
+  Asn1IntImpl ptr{ASN1_INTEGER_dup(other.Ptr())};
+  if (!ptr) {
+    return Asn1IntErrc::CopyFailure;
+  }
+  return Asn1Int{std::move(ptr)};
 }
 
 inline Result<Long> Asn1Int::ToLong() const noexcept {

@@ -79,5 +79,22 @@ SCENARIO("Asn1Int comparison") {
   }
 }
 
+SCENARIO("Asn1Int copy") {
+  SUBCASE("create Asn1Int copy from original value") {
+    []() -> Result<void> {
+      OUTCOME_TRY(const auto original, Asn1Int::New(32));
+      OUTCOME_TRY(const auto copy, Asn1Int::New(original));
+
+      CHECK_NE(original.Ptr(), copy.Ptr());
+      CHECK_EQ(original.ToLong().value(), copy.ToLong().value());
+      CHECK_EQ(original, copy);
+      CHECK_EQ(copy.ToLong().value(), 32);
+
+      return success();
+    }()
+                .value();
+  }
+}
+
 }  // namespace test
 }  // namespace glassy
