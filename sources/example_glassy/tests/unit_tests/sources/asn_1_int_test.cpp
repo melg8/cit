@@ -38,5 +38,46 @@ SCENARIO("Asn1Int creation and conversions") {
                 });
 }
 
+SCENARIO("Asn1Int comparison") {
+  SUBCASE("compare two Asn1Int values") {
+    []() -> Result<void> {
+      OUTCOME_TRY(const auto zero, Asn1Int::New(0));
+      OUTCOME_TRY(const auto one, Asn1Int::New(1));
+      SUBCASE("compare") {
+        CHECK_EQ(Compare(zero, zero), 0);
+        CHECK_EQ(Compare(one, one), 0);
+        CHECK_EQ(Compare(zero, one), -1);
+        CHECK_EQ(Compare(one, zero), 1);
+      }
+      SUBCASE("less") {
+        CHECK(zero < one);
+        CHECK_FALSE(one < zero);
+        CHECK_FALSE(zero < zero);
+        CHECK_FALSE(one < one);
+      }
+      SUBCASE("greater") {
+        CHECK(one > zero);
+        CHECK_FALSE(zero > one);
+        CHECK_FALSE(zero > zero);
+        CHECK_FALSE(one > one);
+      }
+      SUBCASE("equal") {
+        CHECK(zero == zero);
+        CHECK(one == one);
+        CHECK_FALSE(zero == one);
+        CHECK_FALSE(one == zero);
+      }
+      SUBCASE("not equal") {
+        CHECK(zero != one);
+        CHECK(one != zero);
+        CHECK_FALSE(zero != zero);
+        CHECK_FALSE(one != one);
+      }
+      return success();
+    }()
+                .value();
+  }
+}
+
 }  // namespace test
 }  // namespace glassy

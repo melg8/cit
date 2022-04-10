@@ -66,6 +66,8 @@ class Asn1Int {
 
   Result<Long> ToLong() const noexcept;
 
+  ASN1_INTEGER* Ptr() const noexcept;
+
  private:
   struct Deleter {
     void operator()(ASN1_INTEGER* number) noexcept;
@@ -95,21 +97,43 @@ inline Result<Asn1Int> Asn1Int::NewUninitialized() noexcept {
 inline glassy::Result<glassy::Asn1Int> glassy::Asn1Int::New(
     Long value) noexcept {
   OUTCOME_TRY(auto result, Asn1Int::NewUninitialized());
-  if (ASN1_INTEGER_set(result.ptr_.get(), value) == 0) {
+  if (ASN1_INTEGER_set(result.Ptr(), value) == 0) {
     return Asn1IntErrc::AllocationFailure;
   }
   return result;
 }
 
 inline Result<Long> Asn1Int::ToLong() const noexcept {
-  const auto result = ASN1_INTEGER_get(ptr_.get());
+  const auto result = ASN1_INTEGER_get(Ptr());
   if (result == -1) {
     return Asn1IntErrc::ConversionFailure;
   }
   return result;
 }
 
+inline ASN1_INTEGER* Asn1Int::Ptr() const noexcept { return ptr_.get(); }
+
 inline Asn1Int::Asn1Int(Asn1IntImpl ptr) noexcept : ptr_{std::move(ptr)} {}
+
+inline int Compare(const Asn1Int& lhs, const Asn1Int& rhs) noexcept {
+  return ASN1_INTEGER_cmp(lhs.Ptr(), rhs.Ptr());
+}
+
+inline bool operator<(const Asn1Int& lhs, const Asn1Int& rhs) noexcept {
+  return Compare(lhs, rhs) < 0;
+}
+
+inline bool operator>(const Asn1Int& lhs, const Asn1Int& rhs) noexcept {
+  return Compare(lhs, rhs) > 0;
+}
+
+inline bool operator==(const Asn1Int& lhs, const Asn1Int& rhs) noexcept {
+  return Compare(lhs, rhs) == 0;
+}
+
+inline bool operator!=(const Asn1Int& lhs, const Asn1Int& rhs) noexcept {
+  return Compare(lhs, rhs) != 0;
+}
 
 }  // namespace glassy
 
