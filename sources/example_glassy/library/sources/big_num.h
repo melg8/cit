@@ -84,11 +84,11 @@ using SslData = std::vector<unsigned char>;  // TODO(melg): replace with openssl
                                              // based allocation mechanism.
 
 struct Dec {
-  const char* value{nullptr};
+  const char* const value{nullptr};
 };
 
 struct Hex {
-  const char* value{nullptr};
+  const char* const value{nullptr};
 };
 
 class BigNum {
@@ -123,6 +123,17 @@ class BigNum {
 
   BigNumImpl ptr_{};
 };
+
+Result<BigNum> operator+(const BigNum& lhs, const BigNum& rhs) noexcept;
+
+Result<BigNum> operator+(Result<BigNum>&& maybe_lhs,
+                         Result<BigNum>&& maybe_rhs) noexcept;
+
+Result<BigNum> operator+(const BigNum& lhs,
+                         Result<BigNum>&& maybe_rhs) noexcept;
+
+Result<BigNum> operator+(Result<BigNum>&& maybe_lhs,
+                         const BigNum& rhs) noexcept;
 
 inline void glassy::BigNum::Deleter::operator()(BIGNUM* number) noexcept {
   BN_free(number);
@@ -223,26 +234,25 @@ inline Result<BigNum> BigNum::New(const Hex& hex) noexcept {
   return result;
 }
 
-static inline Result<BigNum> operator+(const BigNum& lhs,
-                                       const BigNum& rhs) noexcept {
+inline Result<BigNum> operator+(const BigNum& lhs, const BigNum& rhs) noexcept {
   return BigNum::Add(lhs, rhs);
 }
 
-static inline Result<BigNum> operator+(Result<BigNum>&& maybe_lhs,
-                                       Result<BigNum>&& maybe_rhs) noexcept {
+inline Result<BigNum> operator+(Result<BigNum>&& maybe_lhs,
+                                Result<BigNum>&& maybe_rhs) noexcept {
   OUTCOME_TRY(auto&& lhs, std::move(maybe_lhs));
   OUTCOME_TRY(auto&& rhs, std::move(maybe_rhs));
   return lhs + rhs;
 }
 
-static inline Result<BigNum> operator+(const BigNum& lhs,
-                                       Result<BigNum>&& maybe_rhs) noexcept {
+inline Result<BigNum> operator+(const BigNum& lhs,
+                                Result<BigNum>&& maybe_rhs) noexcept {
   OUTCOME_TRY(auto&& rhs, std::move(maybe_rhs));
   return lhs + rhs;
 }
 
-static inline Result<BigNum> operator+(Result<BigNum>&& maybe_lhs,
-                                       const BigNum& rhs) noexcept {
+inline Result<BigNum> operator+(Result<BigNum>&& maybe_lhs,
+                                const BigNum& rhs) noexcept {
   OUTCOME_TRY(auto&& lhs, std::move(maybe_lhs));
   return lhs + rhs;
 }

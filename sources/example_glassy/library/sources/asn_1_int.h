@@ -83,6 +83,16 @@ class Asn1Int {
   Asn1IntImpl ptr_{};
 };
 
+int Compare(const Asn1Int& lhs, const Asn1Int& rhs) noexcept;
+
+bool operator<(const Asn1Int& lhs, const Asn1Int& rhs) noexcept;
+
+bool operator>(const Asn1Int& lhs, const Asn1Int& rhs) noexcept;
+
+bool operator==(const Asn1Int& lhs, const Asn1Int& rhs) noexcept;
+
+bool operator!=(const Asn1Int& lhs, const Asn1Int& rhs) noexcept;
+
 inline void Asn1Int::Deleter::operator()(ASN1_INTEGER* number) noexcept {
   ASN1_INTEGER_free(number);
 }
