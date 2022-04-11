@@ -16,19 +16,16 @@ static Result<BigNum> FromAsn1Int(const Asn1Int& value) noexcept;
 static Result<Asn1Int> FromBigNum(const BigNum& value) noexcept;
 
 inline Result<BigNum> FromAsn1Int(const Asn1Int& value) noexcept {
-  OUTCOME_TRY(auto result, BigNum::New());
-
-  if (ASN1_INTEGER_to_BN(value.Ptr(), result.Ptr()) == nullptr) {
+  auto result = BigNum::Own(ASN1_INTEGER_to_BN(value.Ptr(), nullptr));
+  if (result.has_error()) {
     return BigNumErrc::ConversionFailure;
   }
   return result;
 }
 
 inline Result<Asn1Int> FromBigNum(const BigNum& value) noexcept {
-  OUTCOME_TRY(auto result,
-              Asn1Int::New());  // TODO(melg): add uninitialized variant here.
-
-  if (BN_to_ASN1_INTEGER(value.Ptr(), result.Ptr()) == nullptr) {
+  auto result = Asn1Int::Own(BN_to_ASN1_INTEGER(value.Ptr(), nullptr));
+  if (result.has_error()) {
     return Asn1IntErrc::ConversionFailure;
   }
   return result;
