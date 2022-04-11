@@ -30,8 +30,10 @@ static ASN1_INTEGER* Asn1IntegerDup(const ASN1_INTEGER*) noexcept {
 
 #include <asn_1_int.h>
 
+namespace glassy {
+namespace test {
+
 SCENARIO("Asn1Int failures") {
-  using namespace glassy;
   SUBCASE("failing to create Asn1Int due to allocation failure") {
     should_fail_alloc = true;
     {
@@ -71,3 +73,6 @@ SCENARIO("Asn1Int failures") {
     }
   }
 }
+
+}  // namespace test
+}  // namespace glassy

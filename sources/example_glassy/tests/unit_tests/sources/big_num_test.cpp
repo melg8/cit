@@ -9,6 +9,7 @@
 
 namespace glassy {
 namespace test {
+
 using namespace OUTCOME_V2_NAMESPACE;
 
 SCENARIO("sum function working") { CHECK_EQ(Sum(1, 2), 3); }

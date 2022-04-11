@@ -35,7 +35,6 @@ inline const char* BigNumErrorCategory::name() const noexcept {
 }
 
 inline std::string BigNumErrorCategory::message(int ev) const {
-  using namespace glassy;
   switch (static_cast<BigNumErrc>(ev)) {
     case BigNumErrc::Success:
       return "successful";

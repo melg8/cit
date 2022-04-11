@@ -40,8 +40,10 @@ static int AlwaysFailAdd(BIGNUM*, const BIGNUM*, const BIGNUM*) { return 0; }
 
 #include <big_num.h>
 
+namespace glassy {
+namespace test {
+
 SCENARIO("BigNum failures") {
-  using namespace glassy;
   should_fail_alloc = true;
   GIVEN("creating new BigNum") {
     const auto result = BigNum::New();
@@ -135,3 +137,6 @@ SCENARIO("BigNum failures") {
   }()
               .value();
 }
+
+}  // namespace test
+}  // namespace glassy

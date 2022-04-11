@@ -3,6 +3,9 @@
 #include <gsl/gsl-lite.hpp>
 #include <outcome.hpp>
 
+namespace glassy {
+namespace test {
+
 SCENARIO("openssl") { BN_CTX_free(BN_CTX_new()); }
 using namespace OUTCOME_V2_NAMESPACE;
 
@@ -40,3 +43,6 @@ SCENARIO("gsl-lite") {
     }
   }
 }
+
+}  // namespace test
+}  // namespace glassy

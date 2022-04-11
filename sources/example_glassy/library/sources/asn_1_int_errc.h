@@ -34,7 +34,6 @@ inline const char* Asn1IntErrorCategory::name() const noexcept {
 }
 
 inline std::string Asn1IntErrorCategory::message(int ev) const {
-  using namespace glassy;
   switch (static_cast<Asn1IntErrc>(ev)) {
     case Asn1IntErrc::Success:
       return "successful";

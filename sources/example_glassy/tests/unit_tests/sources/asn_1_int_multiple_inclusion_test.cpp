@@ -2,6 +2,9 @@
 
 #include <doctest/doctest.h>
 
+namespace glassy {
+namespace test {
+
 SCENARIO("Asn1Int can be included into multiple translations units and used") {
   GIVEN("default created Asn1Int") {
     const auto result = glassy::Asn1Int::New();
@@ -9,3 +12,6 @@ SCENARIO("Asn1Int can be included into multiple translations units and used") {
     THEN("result has value") { CHECK(result.has_value()); }
   }
 }
+
+}  // namespace test
+}  // namespace glassy
