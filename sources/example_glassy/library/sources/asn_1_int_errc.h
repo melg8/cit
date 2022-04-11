@@ -19,8 +19,9 @@ namespace glassy {
 enum class Asn1IntErrc {
   Success = 0,  // 0 should not represent an error
   AllocationFailure = 1,
-  ConversionFailure = 2,
-  CopyFailure = 3
+  NullPointerFailure = 2,
+  ConversionFailure = 3,
+  CopyFailure = 4
 };
 
 namespace {
@@ -39,6 +40,8 @@ inline std::string Asn1IntErrorCategory::message(int ev) const {
       return "successful";
     case Asn1IntErrc::AllocationFailure:
       return "allocation failed";
+    case Asn1IntErrc::NullPointerFailure:
+      return "got null pointer for creation of Asn1Int";
     case Asn1IntErrc::ConversionFailure:
       return "conversion failed";
     case Asn1IntErrc::CopyFailure:

@@ -21,6 +21,8 @@ class Asn1Int {
   static Result<Asn1Int> New(Long value = 0) noexcept;
   static Result<Asn1Int> New(const Asn1Int& other) noexcept;
 
+  static Result<Asn1Int> Own(ASN1_INTEGER* ptr) noexcept;
+
   Result<Long> ToLong() const noexcept;
 
   const ASN1_INTEGER* Ptr() const noexcept;
@@ -77,6 +79,13 @@ inline Result<Asn1Int> Asn1Int::New(const Asn1Int& other) noexcept {
     return Asn1IntErrc::CopyFailure;
   }
   return Asn1Int{std::move(ptr)};
+}
+
+inline Result<Asn1Int> Asn1Int::Own(ASN1_INTEGER* ptr) noexcept {
+  if (!ptr) {
+    return Asn1IntErrc::NullPointerFailure;
+  }
+  return Asn1Int{Asn1IntImpl{ptr}};
 }
 
 inline Result<Long> Asn1Int::ToLong() const noexcept {

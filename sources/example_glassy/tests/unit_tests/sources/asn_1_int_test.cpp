@@ -79,6 +79,16 @@ SCENARIO("Asn1Int comparison") {
   }
 }
 
+SCENARIO("Asn1Int creation from pointer") {
+  SUBCASE("creation from valid pointer should succeed") {
+    CHECK(Asn1Int::Own(ASN1_INTEGER_new()).has_value());
+  }
+
+  SUBCASE("creation from nullptr should fail") {
+    CHECK_FALSE(Asn1Int::Own(nullptr).has_value());
+  }
+}
+
 SCENARIO("Asn1Int copy") {
   SUBCASE("create Asn1Int copy from original value") {
     []() -> Result<void> {
