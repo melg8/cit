@@ -1,7 +1,7 @@
+#include <asn_1_int.h>
+
 #include <doctest/doctest.h>
 #include <outcome.hpp>
-
-#include <asn_1_int.h>
 
 #include <algorithm>
 #include <functional>
@@ -23,8 +23,8 @@ struct Asn1IntTestData {
 SCENARIO("Asn1Int creation and conversions") {
   const auto tests = std::vector<Asn1IntTestData>{
       {"default number", CALL(New()), 0},
-      {"default number", CALL(New(0)), 0},
-      {"default number", CALL(New(32)), 32},
+      {"number 0", CALL(New(0)), 0},
+      {"number 32", CALL(New(32)), 32},
   };
 
   std::for_each(std::begin(tests), std::end(tests),

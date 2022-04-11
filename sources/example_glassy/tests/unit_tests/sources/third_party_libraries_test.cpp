@@ -1,8 +1,7 @@
 #include <doctest/doctest.h>
+#include <openssl/bn.h>
 #include <gsl/gsl-lite.hpp>
 #include <outcome.hpp>
-
-#include <openssl/bn.h>
 
 SCENARIO("openssl") { BN_CTX_free(BN_CTX_new()); }
 using namespace OUTCOME_V2_NAMESPACE;

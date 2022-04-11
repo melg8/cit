@@ -1,6 +1,6 @@
-#include <doctest/doctest.h>
-
 #include <asn_1_int.h>
+
+#include <doctest/doctest.h>
 
 SCENARIO("Asn1Int can be included into multiple translations units and used") {
   GIVEN("default created Asn1Int") {
