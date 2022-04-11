@@ -28,7 +28,7 @@ SCENARIO("numeric conversions failure") {
     const auto result = convert::FromAsn1Int(value.value());
     CHECK_FALSE(result.has_value());
   }
-  SUBCASE("failing to create Asn1Int from BigNum ") {
+  SUBCASE("failing to create Asn1Int from BigNum") {
     const auto value = BigNum::New(32);
     const auto result = convert::FromBigNum(value.value());
     CHECK_FALSE(result.has_value());

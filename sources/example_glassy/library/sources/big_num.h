@@ -5,6 +5,7 @@
 
 #include <openssl/bn.h>
 #include <openssl/engine.h>
+#include <gsl/gsl-lite.hpp>
 #include <outcome.hpp>
 
 #include <limits>
@@ -30,6 +31,7 @@ struct OpenSslFree {
 using SslString = std::unique_ptr<char, OpenSslFree>;
 using SslData = std::vector<unsigned char>;  // TODO(melg): replace with openssl
                                              // based allocation mechanism.
+using SslSpan = gsl::span<const unsigned char>;
 
 struct Dec {
   const char* const value{nullptr};
@@ -45,7 +47,7 @@ class BigNum {
   static Result<BigNum> New(BnUlong value) noexcept;
   static Result<BigNum> New(const Dec& dec) noexcept;
   static Result<BigNum> New(const Hex& hex) noexcept;
-  static Result<BigNum> New(const SslData& value) noexcept;
+  static Result<BigNum> New(const SslSpan& span) noexcept;
   static Result<BigNum> Own(BIGNUM* ptr) noexcept;
 
   static Result<BigNum> Add(const BigNum& lhs, const BigNum& rhs) noexcept;
@@ -168,9 +170,9 @@ inline const BIGNUM* BigNum::Ptr() const noexcept { return ptr_.get(); }
 
 inline BIGNUM* BigNum::Ptr() noexcept { return ptr_.get(); }
 
-inline Result<BigNum> BigNum::New(const SslData& value) noexcept {
+inline Result<BigNum> BigNum::New(const SslSpan& span) noexcept {
   BIGNUM* initial_value = nullptr;
-  BigNumImpl ptr{BN_bin2bn(value.data(), value.size(), initial_value)};
+  BigNumImpl ptr{BN_bin2bn(span.data(), span.size(), initial_value)};
   if (!ptr) {
     return BigNumErrc::ConversionFailure;
   }
