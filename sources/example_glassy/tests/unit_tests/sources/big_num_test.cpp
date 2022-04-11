@@ -29,6 +29,8 @@ struct BigNumTestData {
 
 SCENARIO("BigNum creation and conversions") {
   const auto tests = std::vector<BigNumTestData>{
+      {"default number from pointer", CALL(Own(BN_new())), 0, 0, 0, "0", "0",
+       SslData{}},
       {"default number", CALL(New()), 0, 0, 0, "0", "0", SslData{}},
       {"from 0 number", CALL(New(0)), 0, 0, 0, "0", "0", SslData{}},
       {"from 32 number", CALL(New(32)), 1, 6, 32, "32", "20", SslData{32}},
@@ -83,6 +85,12 @@ SCENARIO("BigNum operations") {
     return success();
   }()
               .value();
+}
+
+SCENARIO("BigNum creation") {
+  SUBCASE("creation from nullptr should fail") {
+    CHECK_FALSE(BigNum::Own(nullptr).has_value());
+  }
 }
 
 }  // namespace test

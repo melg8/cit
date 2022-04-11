@@ -18,10 +18,11 @@ namespace glassy {
 enum class BigNumErrc {
   Success = 0,  // 0 should not represent an error
   AllocationFailure = 1,
-  ExpansionFailure = 2,
-  TooBigForConversion = 3,
-  ConversionFailure = 4,
-  AdditionFailure = 5,
+  NullPointerFailure = 2,
+  ExpansionFailure = 3,
+  TooBigForConversion = 4,
+  ConversionFailure = 5,
+  AdditionFailure = 6,
 };
 
 namespace {
@@ -40,6 +41,8 @@ inline std::string BigNumErrorCategory::message(int ev) const {
       return "successful";
     case BigNumErrc::AllocationFailure:
       return "allocation failed";
+    case BigNumErrc::NullPointerFailure:
+      return "got null pointer for creation of BigNum";
     case BigNumErrc::ExpansionFailure:
       return "failed due to unnecessary expansion";
     case BigNumErrc::TooBigForConversion:

@@ -46,6 +46,7 @@ class BigNum {
   static Result<BigNum> New(const Dec& dec) noexcept;
   static Result<BigNum> New(const Hex& hex) noexcept;
   static Result<BigNum> New(const SslData& value) noexcept;
+  static Result<BigNum> Own(BIGNUM* ptr) noexcept;
 
   static Result<BigNum> Add(const BigNum& lhs, const BigNum& rhs) noexcept;
 
@@ -95,6 +96,13 @@ inline Result<BigNum> BigNum::New() noexcept {
     return BigNumErrc::AllocationFailure;
   }
   return BigNum{std::move(ptr)};
+}
+
+inline Result<BigNum> BigNum::Own(BIGNUM* ptr) noexcept {
+  if (!ptr) {
+    return BigNumErrc::NullPointerFailure;
+  }
+  return BigNum{BigNumImpl{ptr}};
 }
 
 inline Result<BigNum> BigNum::New(BnUlong value) noexcept {
