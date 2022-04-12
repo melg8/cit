@@ -25,7 +25,7 @@ struct OpenSslFree {
   template <typename T>
   void operator()(T* ptr) noexcept {
     OPENSSL_free(ptr);
-  }  // namespace glassy
+  }
 };
 
 using SslString = std::unique_ptr<char, OpenSslFree>;
