@@ -87,6 +87,47 @@ SCENARIO("BigNum operations") {
               .value();
 }
 
+SCENARIO("BigNum comparison") {
+  SUBCASE("compare two BigNum values") {
+    []() -> Result<void> {
+      OUTCOME_TRY(const auto zero, BigNum::New(0));
+      OUTCOME_TRY(const auto one, BigNum::New(1));
+      SUBCASE("compare") {
+        CHECK_EQ(Compare(zero, zero), 0);
+        CHECK_EQ(Compare(one, one), 0);
+        CHECK_EQ(Compare(zero, one), -1);
+        CHECK_EQ(Compare(one, zero), 1);
+      }
+      SUBCASE("less") {
+        CHECK(zero < one);
+        CHECK_FALSE(one < zero);
+        CHECK_FALSE(zero < zero);
+        CHECK_FALSE(one < one);
+      }
+      SUBCASE("greater") {
+        CHECK(one > zero);
+        CHECK_FALSE(zero > one);
+        CHECK_FALSE(zero > zero);
+        CHECK_FALSE(one > one);
+      }
+      SUBCASE("equal") {
+        CHECK(zero == zero);
+        CHECK(one == one);
+        CHECK_FALSE(zero == one);
+        CHECK_FALSE(one == zero);
+      }
+      SUBCASE("not equal") {
+        CHECK(zero != one);
+        CHECK(one != zero);
+        CHECK_FALSE(zero != zero);
+        CHECK_FALSE(one != one);
+      }
+      return success();
+    }()
+                .value();
+  }
+}
+
 SCENARIO("BigNum creation") {
   SUBCASE("creation from nullptr should fail") {
     CHECK_FALSE(BigNum::Own(nullptr).has_value());

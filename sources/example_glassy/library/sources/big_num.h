@@ -86,6 +86,26 @@ Result<BigNum> operator+(const BigNum& lhs,
 Result<BigNum> operator+(Result<BigNum>&& maybe_lhs,
                          const BigNum& rhs) noexcept;
 
+inline int Compare(const BigNum& lhs, const BigNum& rhs) noexcept {
+  return BN_cmp(lhs.Ptr(), rhs.Ptr());
+}
+
+inline bool operator<(const BigNum& lhs, const BigNum& rhs) noexcept {
+  return Compare(lhs, rhs) < 0;
+}
+
+inline bool operator>(const BigNum& lhs, const BigNum& rhs) noexcept {
+  return Compare(lhs, rhs) > 0;
+}
+
+inline bool operator==(const BigNum& lhs, const BigNum& rhs) noexcept {
+  return Compare(lhs, rhs) == 0;
+}
+
+inline bool operator!=(const BigNum& lhs, const BigNum& rhs) noexcept {
+  return Compare(lhs, rhs) != 0;
+}
+
 inline void glassy::BigNum::Deleter::operator()(BIGNUM* number) noexcept {
   BN_free(number);
 }
