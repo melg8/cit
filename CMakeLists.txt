@@ -9,6 +9,7 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 option(ENABLE_TESTING "Enable the tests" ON)
 option(USE_CCACHE "Enable use of ccache" ON)
+option(ENABLE_COVERAGE "Enable profiling and coverage report analysis" ON)
 
 include("${CMAKE_CURRENT_SOURCE_DIR}/cmake/ccache.cmake")
 include("${CMAKE_CURRENT_SOURCE_DIR}/cmake/compiler_flags.cmake")

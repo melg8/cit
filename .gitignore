@@ -42,3 +42,7 @@ CMakeLists.txt.user
 
 # Ide
 *.ide*
+
+# Coverage
+*coverage
+*.info

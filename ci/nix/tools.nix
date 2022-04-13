@@ -14,6 +14,7 @@ in
   pkgs.ccache # 33 MB
   pkgs.cmake # 96 MB
   pkgs.ninja
+  pkgs.lcov
 
   # cpp analyzers and compilers
   pkgs.cppcheck

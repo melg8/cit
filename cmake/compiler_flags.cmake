@@ -7,6 +7,10 @@ function(add_compiler_flags flags)
   endforeach()
 endfunction()
 
+if(${ENABLE_COVERAGE})
+  add_compiler_flags(--coverage)
+endif()
+
 if(CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
   add_compiler_flags(-fsanitize=address,undefined)
   add_compiler_flags(-Werror)
