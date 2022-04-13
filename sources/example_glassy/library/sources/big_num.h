@@ -86,6 +86,8 @@ Result<BigNum> operator+(const BigNum& lhs,
 Result<BigNum> operator+(Result<BigNum>&& maybe_lhs,
                          const BigNum& rhs) noexcept;
 
+Result<void> operator+=(BigNum& lhs, const BigNum& rhs) noexcept;
+
 inline int Compare(const BigNum& lhs, const BigNum& rhs) noexcept {
   return BN_cmp(lhs.Ptr(), rhs.Ptr());
 }
@@ -233,6 +235,55 @@ inline Result<BigNum> operator+(Result<BigNum>&& maybe_lhs,
                                 const BigNum& rhs) noexcept {
   OUTCOME_TRY(auto&& lhs, std::move(maybe_lhs));
   return lhs + rhs;
+}
+
+inline Result<void> operator+=(BigNum& lhs, const BigNum& rhs) noexcept {
+  if (BN_add(lhs.Ptr(), lhs.Ptr(), rhs.Ptr()) == 0) {
+    return outcome::failure(BigNumErrc::AdditionFailure);
+  }
+  return outcome::success();
+}
+
+inline Result<void> operator+=(BigNum& lhs,
+                               const Result<BigNum>& maybe_rhs) noexcept {
+  if (maybe_rhs.has_error()) {
+    return maybe_rhs.error();
+  }
+  auto& rhs = maybe_rhs.value();
+  if (BN_add(lhs.Ptr(), lhs.Ptr(), rhs.Ptr()) == 0) {
+    return outcome::failure(BigNumErrc::AdditionFailure);
+  }
+  return outcome::success();
+}
+
+inline Result<void> operator+=(Result<BigNum>& maybe_lhs,
+                               const BigNum& rhs) noexcept {
+  if (maybe_lhs.has_error()) {
+    return maybe_lhs.error();
+  }
+
+  auto& lhs = maybe_lhs.value();
+  if (BN_add(lhs.Ptr(), lhs.Ptr(), rhs.Ptr()) == 0) {
+    return outcome::failure(BigNumErrc::AdditionFailure);
+  }
+  return outcome::success();
+}
+
+inline Result<void> operator+=(Result<BigNum>& maybe_lhs,
+                               const Result<BigNum>& maybe_rhs) noexcept {
+  if (maybe_lhs.has_error()) {
+    return maybe_lhs.error();
+  }
+  auto& lhs = maybe_lhs.value();
+
+  if (maybe_rhs.has_error()) {
+    return maybe_rhs.error();
+  }
+  auto& rhs = maybe_rhs.value();
+  if (BN_add(lhs.Ptr(), lhs.Ptr(), rhs.Ptr()) == 0) {
+    return outcome::failure(BigNumErrc::AdditionFailure);
+  }
+  return outcome::success();
 }
 
 inline int Sum(int a, int b) { return a + b; }

@@ -64,6 +64,58 @@ SCENARIO("BigNum operations") {
       CHECK_EQ(result, 5);
     }
 
+    SUBCASE("add assign BigNum& to const BigNum&") {
+      OUTCOME_TRY(auto first, BigNum::New(2));
+      OUTCOME_TRY(const auto second, BigNum::New(3));
+      OUTCOME_TRYV(first += second);
+
+      OUTCOME_TRY(const auto result1, first.ToBnUlong());
+      CHECK_EQ(result1, 5);
+    }
+
+    SUBCASE("add assign BigNum& to const Result<BigNum>&") {
+      OUTCOME_TRY(auto first, BigNum::New(2));
+      const auto second = BigNum::New(3);
+      OUTCOME_TRYV(first += second);
+
+      OUTCOME_TRY(const auto result1, first.ToBnUlong());
+      CHECK_EQ(result1, 5);
+    }
+
+    SUBCASE("add assign BigNum& to Result<BigNum>&&") {
+      OUTCOME_TRY(auto first, BigNum::New(2));
+      OUTCOME_TRYV(first += BigNum::New(3) + BigNum::New(1));
+
+      OUTCOME_TRY(const auto result1, first.ToBnUlong());
+      CHECK_EQ(result1, 6);
+    }
+
+    SUBCASE("add assign Result<BigNum>& to const BigNum&") {
+      auto first = BigNum::New(2);
+      OUTCOME_TRY(const auto second, BigNum::New(3));
+      OUTCOME_TRYV(first += second);
+
+      OUTCOME_TRY(const auto result1, first.value().ToBnUlong());
+      CHECK_EQ(result1, 5);
+    }
+
+    SUBCASE("add assign Result<BigNum>& to const Result<BigNum>&") {
+      auto first = BigNum::New(2);
+      const auto second = BigNum::New(3);
+      OUTCOME_TRYV(first += second);
+
+      OUTCOME_TRY(const auto result1, first.value().ToBnUlong());
+      CHECK_EQ(result1, 5);
+    }
+
+    SUBCASE("add assign Result<BigNum>& to Result<BigNum>&&") {
+      auto first = BigNum::New(2);
+      OUTCOME_TRYV(first += BigNum::New(3));
+
+      OUTCOME_TRY(const auto result1, first.value().ToBnUlong());
+      CHECK_EQ(result1, 5);
+    }
+
     SUBCASE("add several BigNum together") {
       const auto maybe_result = BigNum::New(1) + BigNum::New(Dec{"15"}) +
                                 BigNum::New(Hex{"0F"}) +
