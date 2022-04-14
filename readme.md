@@ -1,8 +1,9 @@
 # Cit - Control it
 
 [![Checks](https://github.com/melg8/cit/actions/workflows/checks.yml/badge.svg?branch=main)][1]
+[![codecov](https://codecov.io/gh/melg8/cit/branch/main/graph/badge.svg?token=S3LWXOZDEJ)][2]
 [![MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://github.com/melg8/cit/blob/main/license.md)
-[![built with nix](https://img.shields.io/badge/Built_With-Nix-5277C3.svg?logo=nixos&labelColor=73C3D5)][2]
+[![built with nix](https://img.shields.io/badge/Built_With-Nix-5277C3.svg?logo=nixos&labelColor=73C3D5)][3]
 
 Control your c++ code using this continuous integration template.
 
@@ -124,7 +125,7 @@ See [GitHub workflows](.github/workflows/checks.yml) for basic how to use.
 - **nix**
   - [nixpkgs-fmt](https://github.com/nix-community/nixpkgs-fmt) - Apache-2.0
   - [nix-linter](https://github.com/Synthetica9/nix-linter) - BSD 3-clause
-  - [nix-shell][3] - LGPL-2.1 License
+  - [nix-shell][4] - LGPL-2.1 License
 
 ## Planned
 
@@ -144,5 +145,6 @@ Big thanks to contributors. You can see contributors in [credits](credits.md).
 See [license](license.md) for more information.
 
 [1]: https://github.com/melg8/cit/actions/workflows/checks.yml
-[2]: https://builtwithnix.org
-[3]: https://nixos.org/manual/nix/unstable/command-ref/nix-shell.html
+[2]: https://codecov.io/gh/melg8/cit
+[3]: https://builtwithnix.org
+[4]: https://nixos.org/manual/nix/unstable/command-ref/nix-shell.html

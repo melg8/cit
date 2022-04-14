@@ -31,3 +31,4 @@ conanfile
 lcov
 grcov
 genhtml
+codecov
