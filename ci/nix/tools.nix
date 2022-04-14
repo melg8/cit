@@ -21,6 +21,7 @@ in
   pkgs.llvmPackages_13.libclang # clang + clang-tidy + clang-format etc.
 
   pkgs.clang_13
+  pkgs.gcc11.cc
   pkgs.gcc11
   pkgs.conan
   pkgs.bintools-unwrapped # Linker: ar.
