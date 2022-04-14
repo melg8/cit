@@ -15,14 +15,15 @@ in
   pkgs.cmake # 96 MB
   pkgs.ninja
   pkgs.lcov
+  pkgs.grcov
 
   # cpp analyzers and compilers
   pkgs.cppcheck
   pkgs.llvmPackages_13.libclang # clang + clang-tidy + clang-format etc.
 
   pkgs.clang_13
-  pkgs.gcc11.cc
-  pkgs.gcc11
+  pkgs.gcc11.cc # For gcov tool.
+  pkgs.gcc11 # Must be after gcc11.cc to provide right links in docker.
   pkgs.conan
   pkgs.bintools-unwrapped # Linker: ar.
 

@@ -29,4 +29,5 @@ libfaketime
 faketime
 conanfile
 lcov
+grcov
 genhtml
