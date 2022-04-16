@@ -32,3 +32,4 @@ lcov
 grcov
 genhtml
 codecov
+ctest

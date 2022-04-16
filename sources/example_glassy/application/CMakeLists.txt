@@ -9,3 +9,5 @@ add_executable (glassy_application
                 "${ALL_GLASSY_APPLICATION_SOURCES}")
 
 target_link_libraries (glassy_application glassy)
+
+add_test (glassy_application glassy_application)
