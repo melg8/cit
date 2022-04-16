@@ -40,6 +40,7 @@ jobs:
       - uses: docker://melg8/cit:0.0.7
   lint_all_from_nix_shell:
     runs-on: ubuntu-20.04
+    needs: build_docker
     steps:
       - uses: actions/checkout@v2
         with:
@@ -58,6 +59,7 @@ jobs:
           nix-shell --run ./ci/checks/all.sh
   lint_all_in_docker_from_nix_shell:
     runs-on: ubuntu-20.04
+    needs: build_docker
     steps:
       - uses: actions/checkout@v2
         with:
@@ -79,6 +81,7 @@ jobs:
       - uses: docker://melg8/cit:0.0.7
   lint_all_in_docker:
     runs-on: ubuntu-20.04
+    needs: build_docker
     steps:
       - uses: actions/checkout@v2
         with:
@@ -90,6 +93,7 @@ jobs:
       - uses: docker://melg8/cit:0.0.7
   build_gcc:
     runs-on: ubuntu-20.04
+    needs: build_docker
     steps:
       - uses: actions/checkout@v2
         with:
@@ -109,6 +113,7 @@ jobs:
           verbose: true
   build_clang:
     runs-on: ubuntu-20.04
+    needs: build_docker
     steps:
       - uses: actions/checkout@v2
         with:
