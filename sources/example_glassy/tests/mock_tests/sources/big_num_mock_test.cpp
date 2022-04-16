@@ -27,6 +27,8 @@ static BIGNUM* AlwaysFailBinToBn(const unsigned char*, int, BIGNUM*) {
   return nullptr;
 }
 static int AlwaysFailAdd(BIGNUM*, const BIGNUM*, const BIGNUM*) { return 0; }
+
+static int AlwaysFailBnToBin(const BIGNUM*, unsigned char*) { return -1; }
 }
 
 #define BN_new MockBnNew
@@ -37,6 +39,7 @@ static int AlwaysFailAdd(BIGNUM*, const BIGNUM*, const BIGNUM*) { return 0; }
 #define BN_hex2bn AlwaysFailToBn
 #define BN_bin2bn AlwaysFailBinToBn
 #define BN_add AlwaysFailAdd
+#define BN_bn2bin AlwaysFailBnToBin
 
 #include <big_num.h>
 
@@ -98,6 +101,17 @@ SCENARIO("BigNum failures") {
 
     WHEN("converting it to dec") {
       const auto result = value.value().ToHex();
+
+      THEN("result doesn't have value") { CHECK_FALSE(result.has_value()); }
+    }
+  }
+
+  GIVEN("BigNum created from BnUlongValue") {
+    should_fail_alloc = false;
+    const auto value = BigNum::New(15);
+
+    WHEN("converting it to bin") {
+      const auto result = value.value().ToBin();
 
       THEN("result doesn't have value") { CHECK_FALSE(result.has_value()); }
     }
