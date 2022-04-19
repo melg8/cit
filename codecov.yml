@@ -1,0 +1,14 @@
+---
+coverage:
+  precision: 1
+  round: nearest
+  range: "60...90"
+  status:
+    project:
+      default:
+        threshold: 1%
+    patch:
+      default:
+        target: 90%
+codecov:
+  branch: develop
