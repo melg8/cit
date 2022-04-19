@@ -4,5 +4,6 @@ set -e
 
 ./ci/formatters/cmake_format.sh
 ./ci/formatters/nix_format.sh
+./ci/formatters/clang_format.sh
 
 echo "all formatters applied"
