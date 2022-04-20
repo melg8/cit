@@ -21,7 +21,7 @@ struct Asn1IntTestData {
 #define CALL(X) []() { return Asn1Int::X; }
 
 SCENARIO("Asn1Int creation and conversions") {
-  const auto tests = std::vector<Asn1IntTestData>{
+  auto tests = std::vector<Asn1IntTestData>{
       {"default number", CALL(New()), 0},
       {"number 0", CALL(New(0)), 0},
       {"number 32", CALL(New(32)), 32},

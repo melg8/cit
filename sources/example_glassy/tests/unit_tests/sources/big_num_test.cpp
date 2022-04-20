@@ -28,7 +28,7 @@ struct BigNumTestData {
 #define CALL(X) []() { return BigNum::X; }
 
 SCENARIO("BigNum creation and conversions") {
-  const auto tests = std::vector<BigNumTestData>{
+  auto tests = std::vector<BigNumTestData>{
       {"default number from pointer", CALL(Own(BN_new())), 0, 0, 0, "0", "0",
        SslData{}},
       {"default number", CALL(New()), 0, 0, 0, "0", "0", SslData{}},

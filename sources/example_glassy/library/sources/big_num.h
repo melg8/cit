@@ -23,7 +23,7 @@ using Result = outcome::result<T>;
 
 struct OpenSslFree {
   template <typename T>
-  void operator()(T* ptr) noexcept {
+  void operator()(T* ptr) const noexcept {
     OPENSSL_free(ptr);
   }
 };

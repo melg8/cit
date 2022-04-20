@@ -4,3 +4,29 @@ set -e
 
 find ./sources -name "*.h" -exec clang-format --dry-run --Werror {} +
 find ./sources -name "*.cpp" -exec clang-format --dry-run --Werror {} +
+
+./ci/builders/common/cmake_setup.sh g++ gcc 11
+
+DIRECTORY="./build_gcc"
+cd "${DIRECTORY}"
+
+cmake .. -G Ninja \
+-DCMAKE_CXX_COMPILER=g++ \
+-DCMAKE_TOOLCHAIN_FILE="conan_toolchain.cmake"
+
+cd ..
+
+cppcheck \
+--cppcheck-build-dir="${DIRECTORY}" \
+--project="${DIRECTORY}"/compile_commands.json \
+--library=./.config/cppcheck/doctest.cfg \
+--suppress=*:/home/user/.conan/data/* \
+--suppress=*:/nix/store/* \
+--error-exitcode=1 \
+--enable=all \
+--inline-suppr \
+--inconclusive \
+--suppress=unusedFunction \
+--suppress=unusedStructMember \
+--suppress=unmatchedSuppression \
+--suppress=missingIncludeSystem

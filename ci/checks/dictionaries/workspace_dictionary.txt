@@ -68,3 +68,5 @@ fvar
 fstrict
 Qunused
 TRYV
+suppr
+DCMAKE

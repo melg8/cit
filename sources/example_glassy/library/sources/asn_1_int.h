@@ -30,7 +30,7 @@ class Asn1Int {
 
  private:
   struct Deleter {
-    void operator()(ASN1_INTEGER* number) noexcept;
+    void operator()(ASN1_INTEGER* number) const noexcept;
   };
 
   using Asn1IntImpl = std::unique_ptr<ASN1_INTEGER, Deleter>;
@@ -52,7 +52,7 @@ bool operator==(const Asn1Int& lhs, const Asn1Int& rhs) noexcept;
 
 bool operator!=(const Asn1Int& lhs, const Asn1Int& rhs) noexcept;
 
-inline void Asn1Int::Deleter::operator()(ASN1_INTEGER* number) noexcept {
+inline void Asn1Int::Deleter::operator()(ASN1_INTEGER* number) const noexcept {
   ASN1_INTEGER_free(number);
 }
 

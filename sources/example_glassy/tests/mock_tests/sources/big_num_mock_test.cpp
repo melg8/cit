@@ -86,10 +86,8 @@ SCENARIO("BigNum failures") {
 
   GIVEN("char pointer with number value") {
     should_fail_alloc = false;
-    const auto* pointer = "4";
-
     WHEN("failed to convert BigNum from it") {
-      const auto result = BigNum::New(Dec{pointer});
+      const auto result = BigNum::New(Dec{"4"});
 
       THEN("result doesn't have value") { CHECK_FALSE(result.has_value()); }
     }
@@ -119,10 +117,8 @@ SCENARIO("BigNum failures") {
 
   GIVEN("char pointer with number value") {
     should_fail_alloc = false;
-    const auto* pointer = "0F";
-
     WHEN("failed to convert BigNum from it") {
-      const auto result = BigNum::New(Hex{pointer});
+      const auto result = BigNum::New(Hex{"0F"});
 
       THEN("result doesn't have value") { CHECK_FALSE(result.has_value()); }
     }
