@@ -16,7 +16,7 @@ struct is_error_code_enum<glassy::BigNumErrc> : true_type {};
 
 namespace glassy {
 enum class BigNumErrc {
-  Success = 0,  // 0 should not represent an error
+  Success = 0,  // Zero should not represent an error.
   AllocationFailure = 1,
   NullPointerFailure = 2,
   ExpansionFailure = 3,

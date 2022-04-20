@@ -15,6 +15,7 @@ ls:
 ignore:
   - .config
   - .git
+  - .gitconfig
   - .idea
   - build_clang++
   - build_g++
