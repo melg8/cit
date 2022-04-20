@@ -1,0 +1,26 @@
+---
+path_classifiers:
+  test:
+    - "*/tests/**/*"
+extraction:
+  cpp:
+    prepare:
+      packages:
+        - g++-11
+        - ccache
+      script:
+        - python3 -m pip install --upgrade pip setuptools
+        - python3 -m pip install conan
+        - python3 -m pip install cmake
+        - source ~/.profile
+        - conan remote update conancenter https://center.conan.io False
+    configure:
+      command:
+        - mkdir build_gcc && cd build_gcc
+        - conan install .. -s compiler="gcc" -s compiler.version="11"
+    index:
+      build_command: |
+        cd build_gcc && \
+        cmake .. -DCMAKE_CXX_COMPILER="g++" \
+        -DCMAKE_TOOLCHAIN_FILE="conan_toolchain.cmake" && \
+        cmake --build . -j"$(nproc)"
