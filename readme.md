@@ -2,6 +2,7 @@
 
 [![Checks](https://github.com/melg8/cit/actions/workflows/checks.yml/badge.svg?branch=main)][1]
 [![codecov](https://codecov.io/gh/melg8/cit/branch/main/graph/badge.svg?token=S3LWXOZDEJ)][2]
+[![Language grade: C/C++](https://img.shields.io/lgtm/grade/cpp/g/melg8/cit.svg?logo=lgtm&logoWidth=18)][5]
 [![MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://github.com/melg8/cit/blob/main/license.md)
 [![built with nix](https://img.shields.io/badge/Built_With-Nix-5277C3.svg?logo=nixos&labelColor=73C3D5)][3]
 
@@ -148,3 +149,4 @@ See [license](license.md) for more information.
 [2]: https://codecov.io/gh/melg8/cit
 [3]: https://builtwithnix.org
 [4]: https://nixos.org/manual/nix/unstable/command-ref/nix-shell.html
+[5]: https://lgtm.com/projects/g/melg8/cit/context:cpp
