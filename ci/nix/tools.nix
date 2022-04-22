@@ -19,7 +19,8 @@ in
 
   # cpp analyzers and compilers
   pkgs.cppcheck
-  pkgs.llvmPackages_13.libclang # clang + clang-tidy + clang-format etc.
+  pkgs.clang-tools
+  pkgs.llvmPackages_13.libcxx
 
   pkgs.clang_13
   pkgs.gcc11.cc # For gcov tool.

@@ -17,11 +17,11 @@ struct is_error_code_enum<glassy::Asn1IntErrc> : true_type {};
 namespace glassy {
 
 enum class Asn1IntErrc {
-  Success = 0,  // 0 should not represent an error
-  AllocationFailure = 1,
-  NullPointerFailure = 2,
-  ConversionFailure = 3,
-  CopyFailure = 4
+  kSuccess = 0,  // 0 should not represent an error
+  kAllocationFailure = 1,
+  kNullPointerFailure = 2,
+  kConversionFailure = 3,
+  kCopyFailure = 4
 };
 
 namespace {
@@ -36,23 +36,25 @@ inline const char* Asn1IntErrorCategory::name() const noexcept {
 
 inline std::string Asn1IntErrorCategory::message(int ev) const {
   switch (static_cast<Asn1IntErrc>(ev)) {
-    case Asn1IntErrc::Success:
+    case Asn1IntErrc::kSuccess:
       return "successful";
-    case Asn1IntErrc::AllocationFailure:
+    case Asn1IntErrc::kAllocationFailure:
       return "allocation failed";
-    case Asn1IntErrc::NullPointerFailure:
+    case Asn1IntErrc::kNullPointerFailure:
       return "got null pointer for creation of Asn1Int";
-    case Asn1IntErrc::ConversionFailure:
+    case Asn1IntErrc::kConversionFailure:
       return "conversion failed";
-    case Asn1IntErrc::CopyFailure:
+    case Asn1IntErrc::kCopyFailure:
       return "copy failed";
   }
   return "unknown";
 }
 
+// NOLINTNEXTLINE
 const Asn1IntErrorCategory asn_1_int_error_category{};
 }  // namespace
 
+// NOLINTNEXTLINE
 inline std::error_code make_error_code(glassy::Asn1IntErrc e) {
   return std::error_code{static_cast<int>(e), asn_1_int_error_category};
 }

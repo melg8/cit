@@ -16,13 +16,13 @@ struct is_error_code_enum<glassy::BigNumErrc> : true_type {};
 
 namespace glassy {
 enum class BigNumErrc {
-  Success = 0,  // Zero should not represent an error.
-  AllocationFailure = 1,
-  NullPointerFailure = 2,
-  ExpansionFailure = 3,
-  TooBigForConversion = 4,
-  ConversionFailure = 5,
-  AdditionFailure = 6,
+  kSuccess = 0,  // Zero should not represent an error.
+  kAllocationFailure = 1,
+  kNullPointerFailure = 2,
+  kExpansionFailure = 3,
+  kTooBigForConversion = 4,
+  kConversionFailure = 5,
+  kAdditionFailure = 6,
 };
 
 namespace {
@@ -37,27 +37,29 @@ inline const char* BigNumErrorCategory::name() const noexcept {
 
 inline std::string BigNumErrorCategory::message(int ev) const {
   switch (static_cast<BigNumErrc>(ev)) {
-    case BigNumErrc::Success:
+    case BigNumErrc::kSuccess:
       return "successful";
-    case BigNumErrc::AllocationFailure:
+    case BigNumErrc::kAllocationFailure:
       return "allocation failed";
-    case BigNumErrc::NullPointerFailure:
+    case BigNumErrc::kNullPointerFailure:
       return "got null pointer for creation of BigNum";
-    case BigNumErrc::ExpansionFailure:
+    case BigNumErrc::kExpansionFailure:
       return "failed due to unnecessary expansion";
-    case BigNumErrc::TooBigForConversion:
+    case BigNumErrc::kTooBigForConversion:
       return "value too big to fit";
-    case BigNumErrc::ConversionFailure:
+    case BigNumErrc::kConversionFailure:
       return "failed to convert value";
-    case BigNumErrc::AdditionFailure:
+    case BigNumErrc::kAdditionFailure:
       return "failed to add two values";
   }
   return "unknown";
 }
 
+// NOLINTNEXTLINE
 const BigNumErrorCategory big_num_error_category{};
 }  // namespace
 
+// NOLINTNEXTLINE
 inline std::error_code make_error_code(glassy::BigNumErrc e) {
   return std::error_code{static_cast<int>(e), big_num_error_category};
 }

@@ -34,11 +34,11 @@ using SslData = std::vector<unsigned char>;  // TODO(melg): replace with openssl
 using SslSpan = gsl::span<const unsigned char>;
 
 struct Dec {
-  const char* const value{nullptr};
+  const char* const value{nullptr};  // NOLINT
 };
 
 struct Hex {
-  const char* const value{nullptr};
+  const char* const value{nullptr};  // NOLINT
 };
 
 class BigNum {
@@ -117,14 +117,14 @@ inline BigNum::BigNum(BigNumImpl ptr) noexcept : ptr_{std::move(ptr)} {}
 inline Result<BigNum> BigNum::New() noexcept {
   BigNumImpl ptr{BN_new()};
   if (!ptr) {
-    return BigNumErrc::AllocationFailure;
+    return BigNumErrc::kAllocationFailure;
   }
   return BigNum{std::move(ptr)};
 }
 
 inline Result<BigNum> BigNum::Own(BIGNUM* ptr) noexcept {
   if (!ptr) {
-    return BigNumErrc::NullPointerFailure;
+    return BigNumErrc::kNullPointerFailure;
   }
   return BigNum{BigNumImpl{ptr}};
 }
@@ -132,7 +132,7 @@ inline Result<BigNum> BigNum::Own(BIGNUM* ptr) noexcept {
 inline Result<BigNum> BigNum::New(BnUlong value) noexcept {
   OUTCOME_TRY(auto result, BigNum::New());
   if (BN_set_word(result.Ptr(), value) == 0) {
-    return BigNumErrc::ExpansionFailure;
+    return BigNumErrc::kExpansionFailure;
   }
   return result;
 }
@@ -140,16 +140,16 @@ inline Result<BigNum> BigNum::New(BnUlong value) noexcept {
 inline Result<BnUlong> BigNum::ToBnUlong() const noexcept {
   const auto result = BN_get_word(ptr_.get());
   if (result == std::numeric_limits<decltype(result)>::max()) {
-    return BigNumErrc::TooBigForConversion;
+    return BigNumErrc::kTooBigForConversion;
   }
   return result;
 }
 
 inline Result<BigNum> BigNum::New(const Dec& dec) noexcept {
   OUTCOME_TRY(auto result, BigNum::New());
-  auto ptr = result.Ptr();
+  auto* ptr = result.Ptr();
   if (BN_dec2bn(&ptr, dec.value) == 0) {
-    return BigNumErrc::ConversionFailure;
+    return BigNumErrc::kConversionFailure;
   }
   return result;
 }
@@ -157,7 +157,7 @@ inline Result<BigNum> BigNum::New(const Dec& dec) noexcept {
 inline Result<SslString> BigNum::ToDec() const noexcept {
   SslString result{BN_bn2dec(ptr_.get())};
   if (!result.get()) {
-    return BigNumErrc::ConversionFailure;
+    return BigNumErrc::kConversionFailure;
   }
   return result;
 }
@@ -165,7 +165,7 @@ inline Result<SslString> BigNum::ToDec() const noexcept {
 inline Result<SslString> BigNum::ToHex() const noexcept {
   SslString result{BN_bn2hex(ptr_.get())};
   if (!result.get()) {
-    return BigNumErrc::ConversionFailure;
+    return BigNumErrc::kConversionFailure;
   }
   return result;
 }
@@ -174,7 +174,7 @@ inline Result<SslData> BigNum::ToBin() const noexcept {
   SslData result;
   result.resize(NumberOfBytes());
   if (BN_bn2bin(ptr_.get(), result.data()) < 0) {
-    return BigNumErrc::ConversionFailure;
+    return BigNumErrc::kConversionFailure;
   }
   return result;
 }
@@ -183,7 +183,7 @@ inline Result<BigNum> BigNum::Add(const BigNum& lhs,
                                   const BigNum& rhs) noexcept {
   OUTCOME_TRY(auto result, BigNum::New());
   if (BN_add(result.Ptr(), lhs.Ptr(), rhs.Ptr()) == 0) {
-    return BigNumErrc::AdditionFailure;
+    return BigNumErrc::kAdditionFailure;
   }
   return result;
 }
@@ -196,7 +196,7 @@ inline Result<BigNum> BigNum::New(const SslSpan& span) noexcept {
   BIGNUM* initial_value = nullptr;
   BigNumImpl ptr{BN_bin2bn(span.data(), span.size(), initial_value)};
   if (!ptr) {
-    return BigNumErrc::ConversionFailure;
+    return BigNumErrc::kConversionFailure;
   }
   return BigNum{std::move(ptr)};
 }
@@ -207,9 +207,9 @@ inline int BigNum::NumberOfBits() const { return BN_num_bits(ptr_.get()); }
 
 inline Result<BigNum> BigNum::New(const Hex& hex) noexcept {
   OUTCOME_TRY(auto result, BigNum::New());
-  auto ptr = result.Ptr();
+  auto* ptr = result.Ptr();
   if (BN_hex2bn(&ptr, hex.value) == 0) {
-    return BigNumErrc::AllocationFailure;
+    return BigNumErrc::kAllocationFailure;
   }
   return result;
 }
@@ -239,7 +239,7 @@ inline Result<BigNum> operator+(Result<BigNum>&& maybe_lhs,
 
 inline Result<void> operator+=(BigNum& lhs, const BigNum& rhs) noexcept {
   if (BN_add(lhs.Ptr(), lhs.Ptr(), rhs.Ptr()) == 0) {
-    return outcome::failure(BigNumErrc::AdditionFailure);
+    return outcome::failure(BigNumErrc::kAdditionFailure);
   }
   return outcome::success();
 }
@@ -249,9 +249,9 @@ inline Result<void> operator+=(BigNum& lhs,
   if (maybe_rhs.has_error()) {
     return maybe_rhs.error();
   }
-  auto& rhs = maybe_rhs.value();
+  const auto& rhs = maybe_rhs.value();
   if (BN_add(lhs.Ptr(), lhs.Ptr(), rhs.Ptr()) == 0) {
-    return outcome::failure(BigNumErrc::AdditionFailure);
+    return outcome::failure(BigNumErrc::kAdditionFailure);
   }
   return outcome::success();
 }
@@ -264,7 +264,7 @@ inline Result<void> operator+=(Result<BigNum>& maybe_lhs,
 
   auto& lhs = maybe_lhs.value();
   if (BN_add(lhs.Ptr(), lhs.Ptr(), rhs.Ptr()) == 0) {
-    return outcome::failure(BigNumErrc::AdditionFailure);
+    return outcome::failure(BigNumErrc::kAdditionFailure);
   }
   return outcome::success();
 }
@@ -279,9 +279,9 @@ inline Result<void> operator+=(Result<BigNum>& maybe_lhs,
   if (maybe_rhs.has_error()) {
     return maybe_rhs.error();
   }
-  auto& rhs = maybe_rhs.value();
+  const auto& rhs = maybe_rhs.value();
   if (BN_add(lhs.Ptr(), lhs.Ptr(), rhs.Ptr()) == 0) {
-    return outcome::failure(BigNumErrc::AdditionFailure);
+    return outcome::failure(BigNumErrc::kAdditionFailure);
   }
   return outcome::success();
 }

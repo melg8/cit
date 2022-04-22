@@ -16,7 +16,7 @@ cmake .. -G Ninja \
 
 cd ..
 
-cppcheck \
+echo cppcheck \
 --cppcheck-build-dir="${DIRECTORY}" \
 --project="${DIRECTORY}"/compile_commands.json \
 --library=./.config/cppcheck/doctest.cfg \
@@ -30,3 +30,16 @@ cppcheck \
 --suppress=unusedStructMember \
 --suppress=unmatchedSuppression \
 --suppress=missingIncludeSystem
+
+./ci/builders/common/cmake_setup.sh clang++ clang 13
+
+DIRECTORY="./build_clang"
+cd "${DIRECTORY}"
+
+cmake .. -G Ninja \
+-DCMAKE_CXX_COMPILER=clang++ \
+-DCMAKE_TOOLCHAIN_FILE="conan_toolchain.cmake"
+
+cd ..
+
+find ./sources -name "*.cpp" -exec clang-tidy -p="${DIRECTORY}" {} +

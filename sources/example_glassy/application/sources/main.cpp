@@ -2,4 +2,4 @@
 
 #include <iostream>
 
-int main() { std::cout << glassy::Sum(2, 5); }
+int main() { std::cout << glassy::Sum(2, 2); }

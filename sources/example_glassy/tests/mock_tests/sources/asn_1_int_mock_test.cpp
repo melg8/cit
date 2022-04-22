@@ -3,8 +3,8 @@
 #include <openssl/asn1.h>
 
 extern "C" {
-static bool should_fail_alloc = true;
-static bool should_fail_to_set_value = true;
+static bool should_fail_alloc = true;         // NOLINT
+static bool should_fail_to_set_value = true;  // NOLINT
 
 static ASN1_INTEGER* MockAsn1IntegerNew() noexcept {
   return should_fail_alloc ? nullptr : ASN1_INTEGER_new();

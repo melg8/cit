@@ -18,7 +18,7 @@ static Result<Asn1Int> FromBigNum(const BigNum& value) noexcept;
 inline Result<BigNum> FromAsn1Int(const Asn1Int& value) noexcept {
   auto result = BigNum::Own(ASN1_INTEGER_to_BN(value.Ptr(), nullptr));
   if (result.has_error()) {
-    return BigNumErrc::ConversionFailure;
+    return BigNumErrc::kConversionFailure;
   }
   return result;
 }
@@ -26,7 +26,7 @@ inline Result<BigNum> FromAsn1Int(const Asn1Int& value) noexcept {
 inline Result<Asn1Int> FromBigNum(const BigNum& value) noexcept {
   auto result = Asn1Int::Own(BN_to_ASN1_INTEGER(value.Ptr(), nullptr));
   if (result.has_error()) {
-    return Asn1IntErrc::ConversionFailure;
+    return Asn1IntErrc::kConversionFailure;
   }
   return result;
 }

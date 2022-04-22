@@ -10,7 +10,7 @@
 
 namespace glassy {
 
-using Long = long;
+using Long = long;  // NOLINT
 namespace outcome = OUTCOME_V2_NAMESPACE;
 
 template <typename T>
@@ -59,7 +59,7 @@ inline void Asn1Int::Deleter::operator()(ASN1_INTEGER* number) const noexcept {
 inline Result<Asn1Int> Asn1Int::NewUninitialized() noexcept {
   Asn1IntImpl ptr{ASN1_INTEGER_new()};
   if (!ptr) {
-    return Asn1IntErrc::AllocationFailure;
+    return Asn1IntErrc::kAllocationFailure;
   }
   return Asn1Int{std::move(ptr)};
 }
@@ -68,7 +68,7 @@ inline glassy::Result<glassy::Asn1Int> glassy::Asn1Int::New(
     Long value) noexcept {
   OUTCOME_TRY(auto result, Asn1Int::NewUninitialized());
   if (ASN1_INTEGER_set(result.Ptr(), value) == 0) {
-    return Asn1IntErrc::AllocationFailure;
+    return Asn1IntErrc::kAllocationFailure;
   }
   return result;
 }
@@ -76,14 +76,14 @@ inline glassy::Result<glassy::Asn1Int> glassy::Asn1Int::New(
 inline Result<Asn1Int> Asn1Int::New(const Asn1Int& other) noexcept {
   Asn1IntImpl ptr{ASN1_INTEGER_dup(other.Ptr())};
   if (!ptr) {
-    return Asn1IntErrc::CopyFailure;
+    return Asn1IntErrc::kCopyFailure;
   }
   return Asn1Int{std::move(ptr)};
 }
 
 inline Result<Asn1Int> Asn1Int::Own(ASN1_INTEGER* ptr) noexcept {
   if (!ptr) {
-    return Asn1IntErrc::NullPointerFailure;
+    return Asn1IntErrc::kNullPointerFailure;
   }
   return Asn1Int{Asn1IntImpl{ptr}};
 }
@@ -91,7 +91,7 @@ inline Result<Asn1Int> Asn1Int::Own(ASN1_INTEGER* ptr) noexcept {
 inline Result<Long> Asn1Int::ToLong() const noexcept {
   const auto result = ASN1_INTEGER_get(Ptr());
   if (result == -1) {
-    return Asn1IntErrc::ConversionFailure;
+    return Asn1IntErrc::kConversionFailure;
   }
   return result;
 }
