@@ -8,7 +8,14 @@ Checks: '
  ,-readability-named-parameter,
  ,-llvm*,
  ,-modernize-use-trailing-return-type,
- ,-ignore-this-check,
+ ,-only-for-tests-ignore-below,
+ ,-cert-err58-cpp,
+ ,-cppcoreguidelines-macro-usage,
+ ,-cppcoreguidelines-avoid-magic-numbers,
+ ,-cppcoreguidelines-avoid-non-const-global-variables,
+ ,-readability-magic-numbers,
+ ,-readability-function-cognitive-complexity,
+ ,-google-runtime-int,
  '
 WarningsAsErrors:    '*'
 CheckOptions:

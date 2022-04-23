@@ -25,7 +25,7 @@ enum class BigNumErrc {
   kAdditionFailure = 6,
 };
 
-namespace {
+namespace detail {
 struct BigNumErrorCategory : std::error_category {
   const char* name() const noexcept override;
   std::string message(int ev) const override;
@@ -57,11 +57,11 @@ inline std::string BigNumErrorCategory::message(int ev) const {
 
 // NOLINTNEXTLINE
 const BigNumErrorCategory big_num_error_category{};
-}  // namespace
+}  // namespace detail
 
 // NOLINTNEXTLINE
 inline std::error_code make_error_code(glassy::BigNumErrc e) {
-  return std::error_code{static_cast<int>(e), big_num_error_category};
+  return std::error_code{static_cast<int>(e), detail::big_num_error_category};
 }
 
 }  // namespace glassy

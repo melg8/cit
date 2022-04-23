@@ -24,7 +24,7 @@ enum class Asn1IntErrc {
   kCopyFailure = 4
 };
 
-namespace {
+namespace detail {
 struct Asn1IntErrorCategory : std::error_category {
   const char* name() const noexcept override;
   std::string message(int ev) const override;
@@ -52,11 +52,11 @@ inline std::string Asn1IntErrorCategory::message(int ev) const {
 
 // NOLINTNEXTLINE
 const Asn1IntErrorCategory asn_1_int_error_category{};
-}  // namespace
+}  // namespace detail
 
 // NOLINTNEXTLINE
 inline std::error_code make_error_code(glassy::Asn1IntErrc e) {
-  return std::error_code{static_cast<int>(e), asn_1_int_error_category};
+  return std::error_code{static_cast<int>(e), detail::asn_1_int_error_category};
 }
 
 }  // namespace glassy

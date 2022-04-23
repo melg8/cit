@@ -6,7 +6,11 @@ let
   ls_lint = pkgs.callPackage ./ls_lint/default.nix { };
   remark_lint = (pkgs.callPackage ./remark/default.nix { }).shell.nodeDependencies;
   text_lint = (pkgs.callPackage ./text_lint/default.nix { }).shell.nodeDependencies;
-  env = pkgs.overrideCC pkgs.stdenv pkgs.gcc11;
+  run_clang_tidy_script = pkgs.runCommand
+    "run_clang_tidy"
+    { }
+    "mkdir -p $out/bin
+    cp -r ${pkgs.clang_13.cc}/bin/run-clang-tidy $out/bin/run-clang-tidy";
 in
 [
   pvs_studio_for_free # 2.5 MB
@@ -17,16 +21,16 @@ in
   pkgs.lcov
   pkgs.grcov
 
-  # cpp analyzers and compilers
+  # cpp analyzers and compilers.
   pkgs.cppcheck
-  pkgs.clang-tools
-  pkgs.llvmPackages_13.libcxx
-
-  pkgs.clang_13
   pkgs.gcc11.cc # For gcov tool.
   pkgs.gcc11 # Must be after gcc11.cc to provide right links in docker.
-  pkgs.conan
   pkgs.bintools-unwrapped # Linker: ar.
+
+  pkgs.clang-tools
+  "${run_clang_tidy_script}"
+  pkgs.clang_13 # Must be after gcc to provide right links in docker.
+  pkgs.conan
 
   # go
   pkgs.git-sizer # 37 MB
@@ -52,6 +56,7 @@ in
 
   # python 3
   # Together 412 MB
+  pkgs.python39Full
   pkgs.codespell # 140 MB
   pkgs.yamllint # 140 MB
   pkgs.cmake-format # 150 MB
@@ -84,5 +89,4 @@ in
   pkgs.patchelf
   pkgs.findutils
   pkgs.diffutils
-  env
 ]

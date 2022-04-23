@@ -16,7 +16,7 @@ cmake .. -G Ninja \
 
 cd ..
 
-echo cppcheck \
+cppcheck \
 --cppcheck-build-dir="${DIRECTORY}" \
 --project="${DIRECTORY}"/compile_commands.json \
 --library=./.config/cppcheck/doctest.cfg \
@@ -42,4 +42,6 @@ cmake .. -G Ninja \
 
 cd ..
 
-find ./sources -name "*.cpp" -exec clang-tidy -p="${DIRECTORY}" {} +
+find ./sources -name "*.cpp" -exec \
+run-clang-tidy -header-filter='^(u(i[^_]|[^i])|[^u])+$' -j"$(nproc --all)" \
+-p="${DIRECTORY}" {} +

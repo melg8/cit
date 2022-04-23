@@ -4,7 +4,7 @@
 #include <limits>
 
 extern "C" {
-static bool should_fail_alloc = true;  // NOLINT
+static bool should_fail_alloc = true;
 static BIGNUM* MockBnNew() noexcept {
   return should_fail_alloc ? nullptr : BN_new();
 }

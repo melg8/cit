@@ -194,7 +194,9 @@ inline BIGNUM* BigNum::Ptr() noexcept { return ptr_.get(); }
 
 inline Result<BigNum> BigNum::New(const SslSpan& span) noexcept {
   BIGNUM* initial_value = nullptr;
-  BigNumImpl ptr{BN_bin2bn(span.data(), span.size(), initial_value)};
+  BigNumImpl ptr{
+      // TODO(melg): replace narrow with optional cast.
+      BN_bin2bn(span.data(), gsl::narrow<int>(span.size()), initial_value)};
   if (!ptr) {
     return BigNumErrc::kConversionFailure;
   }
@@ -247,9 +249,9 @@ inline Result<void> operator+=(BigNum& lhs, const BigNum& rhs) noexcept {
 inline Result<void> operator+=(BigNum& lhs,
                                const Result<BigNum>& maybe_rhs) noexcept {
   if (maybe_rhs.has_error()) {
-    return maybe_rhs.error();
+    return maybe_rhs.assume_error();
   }
-  const auto& rhs = maybe_rhs.value();
+  const auto& rhs = maybe_rhs.assume_value();
   if (BN_add(lhs.Ptr(), lhs.Ptr(), rhs.Ptr()) == 0) {
     return outcome::failure(BigNumErrc::kAdditionFailure);
   }
@@ -259,10 +261,10 @@ inline Result<void> operator+=(BigNum& lhs,
 inline Result<void> operator+=(Result<BigNum>& maybe_lhs,
                                const BigNum& rhs) noexcept {
   if (maybe_lhs.has_error()) {
-    return maybe_lhs.error();
+    return maybe_lhs.assume_error();
   }
 
-  auto& lhs = maybe_lhs.value();
+  auto& lhs = maybe_lhs.assume_value();
   if (BN_add(lhs.Ptr(), lhs.Ptr(), rhs.Ptr()) == 0) {
     return outcome::failure(BigNumErrc::kAdditionFailure);
   }
@@ -272,14 +274,14 @@ inline Result<void> operator+=(Result<BigNum>& maybe_lhs,
 inline Result<void> operator+=(Result<BigNum>& maybe_lhs,
                                const Result<BigNum>& maybe_rhs) noexcept {
   if (maybe_lhs.has_error()) {
-    return maybe_lhs.error();
+    return maybe_lhs.assume_error();
   }
-  auto& lhs = maybe_lhs.value();
+  auto& lhs = maybe_lhs.assume_value();
 
   if (maybe_rhs.has_error()) {
-    return maybe_rhs.error();
+    return maybe_rhs.assume_error();
   }
-  const auto& rhs = maybe_rhs.value();
+  const auto& rhs = maybe_rhs.assume_value();
   if (BN_add(lhs.Ptr(), lhs.Ptr(), rhs.Ptr()) == 0) {
     return outcome::failure(BigNumErrc::kAdditionFailure);
   }

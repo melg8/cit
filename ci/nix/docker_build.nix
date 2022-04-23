@@ -37,6 +37,12 @@ let
   toStringWithInclude = single_path: toString single_path + "/include";
   includeStrings = allContents: pkgs.lib.concatStringsSep " -isystem "
     (map toStringWithInclude (contentsWithInclude allContents));
+  hasBinDir = path: pkgs.lib.pathExists (toString path + "/bin");
+  contentsWithBin = pkgs.lib.filter hasBinDir;
+  toStringWithBin = single_path: toString single_path + "/bin";
+  binStrings = allContents: pkgs.lib.concatStringsSep ":"
+    (map toStringWithBin (contentsWithBin allContents));
+
 in
 rec {
   world = pkgs.dockerTools.buildImage rec {
@@ -55,6 +61,7 @@ rec {
       Env = [
         "NODE_PATH=/usr/lib/node_modules"
         "NIX_PAGER=cat"
+        "PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:${binStrings contents}"
         "USER=user"
         "NIX_PATH=nixpkgs=${nixpkgs}"
         "NIX_CFLAGS_COMPILE=-isystem ${includeStrings contents}"

@@ -3,13 +3,10 @@
 #include <gsl/gsl-lite.hpp>
 #include <outcome.hpp>
 
-// NOLINTNEXTLINE
-#define MY_SCENARIO(X) SCENARIO(X)
-
 namespace glassy {
 namespace test {
 
-MY_SCENARIO("openssl") { BN_CTX_free(BN_CTX_new()); }
+SCENARIO("openssl") { BN_CTX_free(BN_CTX_new()); }
 using namespace OUTCOME_V2_NAMESPACE;
 
 static result<int> operator+(result<int> lhs, int rhs) noexcept {
@@ -17,7 +14,7 @@ static result<int> operator+(result<int> lhs, int rhs) noexcept {
   return result + rhs;
 }
 
-MY_SCENARIO("outcome") {
+SCENARIO("outcome") {
   GIVEN("some outcome with value") {
     result<int> test{1};
 
@@ -31,7 +28,7 @@ MY_SCENARIO("outcome") {
   }
 }
 
-MY_SCENARIO("gsl-lite") {
+SCENARIO("gsl-lite") {
   GIVEN("uint64_t value with small value") {
     const uint64_t value = 42;
 
