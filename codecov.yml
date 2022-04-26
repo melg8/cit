@@ -7,8 +7,5 @@ coverage:
     project:
       default:
         threshold: 1%
-    patch:
-      default:
-        target: 90%
 codecov:
   branch: develop
