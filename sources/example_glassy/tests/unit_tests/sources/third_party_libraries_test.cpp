@@ -6,17 +6,19 @@
 namespace glassy {
 namespace test {
 
-SCENARIO("openssl") { BN_CTX_free(BN_CTX_new()); }
-using namespace OUTCOME_V2_NAMESPACE;
+namespace outcome = OUTCOME_V2_NAMESPACE;
 
-static result<int> operator+(result<int> lhs, int rhs) noexcept {
+SCENARIO("openssl") { BN_CTX_free(BN_CTX_new()); }
+
+static outcome::result<int> operator+(outcome::result<int> lhs,
+                                      int rhs) noexcept {
   OUTCOME_TRY(auto result, lhs);
   return result + rhs;
 }
 
 SCENARIO("outcome") {
   GIVEN("some outcome with value") {
-    result<int> test{1};
+    outcome::result<int> test{1};
 
     WHEN("add outcome value to integer values") {
       const auto result = test + 5 + 10;

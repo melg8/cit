@@ -10,7 +10,7 @@
 namespace glassy {
 namespace test {
 
-using namespace OUTCOME_V2_NAMESPACE;
+namespace outcome = OUTCOME_V2_NAMESPACE;
 
 SCENARIO("sum function working") { CHECK_EQ(Sum(1, 2), 3); }
 
@@ -50,7 +50,7 @@ SCENARIO("BigNum creation and conversions") {
           CHECK_EQ(std::string{number.ToHex().value().get()}, test.hex);
           CHECK_EQ(number.ToBin().value(), test.bin_data);
         }
-        return success();
+        return outcome::success();
       });
 }
 
@@ -134,7 +134,7 @@ SCENARIO("BigNum operations") {
                16);
     }
 
-    return success();
+    return outcome::success();
   }()
               .value();
 }
@@ -174,7 +174,7 @@ SCENARIO("BigNum comparison") {
         CHECK_FALSE(zero != zero);
         CHECK_FALSE(one != one);
       }
-      return success();
+      return outcome::success();
     }()
                 .value();
   }

@@ -5,6 +5,9 @@ set -e
 find ./sources -name "*.h" -exec clang-format --dry-run --Werror {} +
 find ./sources -name "*.cpp" -exec clang-format --dry-run --Werror {} +
 
+ # Disabled checks of cpplint:
+ # build/c++11 - to allow system_error usage.
+ # runtime/references - to allow += operator overload with reference.
 cpplint \
 --recursive \
 --linelength=80 \
@@ -12,7 +15,6 @@ cpplint \
 --filter=\
 -build/c++11,\
 -build/header_guard,\
--build/namespaces,\
 -legal/copyright,\
 -runtime/references \
 --root=./sources \

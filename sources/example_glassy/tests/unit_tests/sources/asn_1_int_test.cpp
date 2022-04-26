@@ -10,7 +10,7 @@
 namespace glassy {
 namespace test {
 
-using namespace OUTCOME_V2_NAMESPACE;
+namespace outcome = OUTCOME_V2_NAMESPACE;
 
 struct Asn1IntTestData {
   std::string subcase_name{};
@@ -34,7 +34,7 @@ SCENARIO("Asn1Int creation and conversions") {
                     CHECK_EQ(number.ToLong().value(), test.value);
                   }
 
-                  return success();
+                  return outcome::success();
                 });
 }
 
@@ -73,7 +73,7 @@ SCENARIO("Asn1Int comparison") {
         CHECK_FALSE(zero != zero);
         CHECK_FALSE(one != one);
       }
-      return success();
+      return outcome::success();
     }()
                 .value();
   }
@@ -100,7 +100,7 @@ SCENARIO("Asn1Int copy") {
       CHECK_EQ(original, copy);
       CHECK_EQ(copy.ToLong().value(), 32);
 
-      return success();
+      return outcome::success();
     }()
                 .value();
   }

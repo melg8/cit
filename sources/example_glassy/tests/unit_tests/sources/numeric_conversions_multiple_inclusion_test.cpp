@@ -7,8 +7,6 @@
 namespace glassy {
 namespace test {
 
-using namespace OUTCOME_V2_NAMESPACE;
-
 SCENARIO("Asn1Int conversion to BigNum") {
   const auto value = Asn1Int::New(32);
   const auto converted = convert::FromAsn1Int(value.value());

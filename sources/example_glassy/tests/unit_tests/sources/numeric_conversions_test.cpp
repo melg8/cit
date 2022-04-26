@@ -8,7 +8,7 @@
 namespace glassy {
 namespace test {
 
-using namespace OUTCOME_V2_NAMESPACE;
+namespace outcome = OUTCOME_V2_NAMESPACE;
 
 SCENARIO("Asn1Int conversions to/from BigNum") {
   []() -> Result<void> {
@@ -23,7 +23,7 @@ SCENARIO("Asn1Int conversions to/from BigNum") {
       CHECK_EQ(converted.ToLong().value(), 32);
     }
 
-    return success();
+    return outcome::success();
   }()
               .value();
 }
