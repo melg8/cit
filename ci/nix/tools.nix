@@ -26,6 +26,7 @@ in
   pkgs.gcc11.cc # For gcov tool.
   pkgs.gcc11 # Must be after gcc11.cc to provide right links in docker.
   pkgs.bintools-unwrapped # Linker: ar.
+  pkgs.cpplint
 
   pkgs.clang-tools
   "${run_clang_tidy_script}"

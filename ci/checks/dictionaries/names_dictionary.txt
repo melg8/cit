@@ -34,3 +34,4 @@ genhtml
 codecov
 ctest
 libcxx
+cpplint

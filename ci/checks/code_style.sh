@@ -5,6 +5,23 @@ set -e
 find ./sources -name "*.h" -exec clang-format --dry-run --Werror {} +
 find ./sources -name "*.cpp" -exec clang-format --dry-run --Werror {} +
 
+cpplint \
+--recursive \
+--linelength=80 \
+--includeorder=standardcfirst \
+--filter=\
+-build/c++11,\
+-build/header_guard,\
+-build/include,\
+-build/include_order,\
+-build/include_what_you_use,\
+-build/namespaces,\
+-legal/copyright,\
+-runtime/int,\
+-runtime/references \
+--root=./sources \
+./sources
+
 ./ci/builders/common/cmake_setup.sh g++ gcc 11
 
 DIRECTORY="./build_gcc"

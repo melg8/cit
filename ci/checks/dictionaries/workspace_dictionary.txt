@@ -72,3 +72,6 @@ suppr
 DCMAKE
 NOLINTNEXTLINE
 NOLINT
+linelength
+includeorder
+standardcfirst
