@@ -1,6 +1,7 @@
 #ifndef ASN_1_INT_ERRC_H
 #define ASN_1_INT_ERRC_H
 
+#include <string>
 #include <system_error>
 
 #include <outcome.hpp>

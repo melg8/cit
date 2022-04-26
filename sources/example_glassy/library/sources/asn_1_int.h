@@ -2,6 +2,7 @@
 #define ASN_1_INT_H
 
 #include <memory>
+#include <utility>
 
 #include <asn_1_int_errc.h>
 

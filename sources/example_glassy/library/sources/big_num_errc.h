@@ -1,6 +1,7 @@
 #ifndef BIG_NUM_ERRC_H
 #define BIG_NUM_ERRC_H
 
+#include <string>
 #include <system_error>
 
 #include <outcome.hpp>
