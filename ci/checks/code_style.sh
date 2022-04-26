@@ -17,7 +17,6 @@ cpplint \
 -build/include_what_you_use,\
 -build/namespaces,\
 -legal/copyright,\
--runtime/int,\
 -runtime/references \
 --root=./sources \
 ./sources

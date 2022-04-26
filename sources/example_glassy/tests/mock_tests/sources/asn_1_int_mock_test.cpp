@@ -10,10 +10,12 @@ static ASN1_INTEGER* MockAsn1IntegerNew() noexcept {
   return should_fail_alloc ? nullptr : ASN1_INTEGER_new();
 }
 
+// NOLINTNEXTLINE
 static int MockAsn1IntegerSet(ASN1_INTEGER* a, long v) noexcept {
   return should_fail_to_set_value ? 0 : ASN1_INTEGER_set(a, v);
 }
 
+// NOLINTNEXTLINE
 static long AlwaysFailAsn1IntegerGet(const ASN1_INTEGER*) noexcept {
   return -1;
 }
