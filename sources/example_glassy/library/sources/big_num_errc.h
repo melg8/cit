@@ -1,9 +1,9 @@
 #ifndef BIG_NUM_ERRC_H
 #define BIG_NUM_ERRC_H
 
-#include <outcome.hpp>
-
 #include <system_error>
+
+#include <outcome.hpp>
 
 namespace glassy {
 enum class BigNumErrc;

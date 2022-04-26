@@ -1,7 +1,8 @@
+#include <limits>
+
 #include <doctest/doctest.h>
 
 #include <openssl/bn.h>
-#include <limits>
 
 extern "C" {
 static bool should_fail_alloc = true;

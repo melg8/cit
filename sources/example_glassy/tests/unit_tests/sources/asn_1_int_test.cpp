@@ -1,11 +1,11 @@
+#include <algorithm>
+#include <functional>
+#include <vector>
+
 #include <asn_1_int.h>
 
 #include <doctest/doctest.h>
 #include <outcome.hpp>
-
-#include <algorithm>
-#include <functional>
-#include <vector>
 
 namespace glassy {
 namespace test {

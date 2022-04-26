@@ -1,11 +1,11 @@
+#include <algorithm>
+#include <functional>
+#include <vector>
+
 #include <big_num.h>
 
 #include <doctest/doctest.h>
 #include <outcome.hpp>
-
-#include <algorithm>
-#include <functional>
-#include <vector>
 
 namespace glassy {
 namespace test {

@@ -12,8 +12,6 @@ cpplint \
 --filter=\
 -build/c++11,\
 -build/header_guard,\
--build/include,\
--build/include_order,\
 -build/include_what_you_use,\
 -build/namespaces,\
 -legal/copyright,\

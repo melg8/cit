@@ -1,12 +1,12 @@
 #ifndef ASN_1_INT_H
 #define ASN_1_INT_H
 
+#include <memory>
+
 #include <asn_1_int_errc.h>
 
 #include <openssl/asn1.h>
 #include <outcome.hpp>
-
-#include <memory>
 
 namespace glassy {
 

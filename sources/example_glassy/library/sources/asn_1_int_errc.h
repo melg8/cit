@@ -1,9 +1,9 @@
 #ifndef ASN_1_INT_ERRC_H
 #define ASN_1_INT_ERRC_H
 
-#include <outcome.hpp>
-
 #include <system_error>
+
+#include <outcome.hpp>
 
 namespace glassy {
 enum class Asn1IntErrc;

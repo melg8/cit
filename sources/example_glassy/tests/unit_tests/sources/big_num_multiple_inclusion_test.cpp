@@ -1,6 +1,6 @@
-#include <big_num.h>
-
 #include <doctest/doctest.h>
+
+#include <big_num.h>
 
 namespace glassy {
 namespace test {

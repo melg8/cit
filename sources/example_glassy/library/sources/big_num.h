@@ -1,17 +1,17 @@
 #ifndef BIG_NUM_H
 #define BIG_NUM_H
 
+#include <limits>
+#include <memory>
+#include <utility>
+#include <vector>
+
 #include <big_num_errc.h>
 
 #include <openssl/bn.h>
 #include <openssl/engine.h>
 #include <gsl/gsl-lite.hpp>
 #include <outcome.hpp>
-
-#include <limits>
-#include <memory>
-#include <utility>
-#include <vector>
 
 namespace glassy {
 
