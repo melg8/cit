@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: © 2022 Melg Eight <public.melg8@gmail.com>
+//
+// SPDX-License-Identifier: MIT
+
 #include <doctest/doctest.h>
 #include <openssl/bn.h>
 #include <gsl/gsl-lite.hpp>

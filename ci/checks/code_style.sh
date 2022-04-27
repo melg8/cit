@@ -8,6 +8,8 @@ find ./sources -name "*.cpp" -exec clang-format --dry-run --Werror {} +
  # Disabled checks of cpplint:
  # build/c++11 - to allow system_error usage.
  # runtime/references - to allow += operator overload with reference.
+ # build/header_guard - to allow easy move of headers between folders without
+ # changes in header guards.
 cpplint \
 --recursive \
 --linelength=80 \
@@ -15,7 +17,6 @@ cpplint \
 --filter=\
 -build/c++11,\
 -build/header_guard,\
--legal/copyright,\
 -runtime/references \
 --root=./sources \
 ./sources

@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: © 2022 Melg Eight <public.melg8@gmail.com>
+//
+// SPDX-License-Identifier: MIT
+
 #ifndef BIG_NUM_H
 #define BIG_NUM_H
 
