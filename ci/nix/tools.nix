@@ -62,6 +62,7 @@ in
   pkgs.yamllint # 140 MB
   pkgs.cmake-format # 150 MB
   pkgs.gitlint
+  pkgs.reuse
 
   # Potentially later.
   # Together 77 MB (+ 22 MB to total image size).
