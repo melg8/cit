@@ -1,7 +1,12 @@
 #!/usr/bin/env sh
 
+# SPDX-FileCopyrightText: © 2022 Melg Eight <public.melg8@gmail.com>
+#
+# SPDX-License-Identifier: MIT
+
 set -e
 
+command time -v ./ci/checks/licenses.sh
 command time -v ./ci/checks/yaml_files_style.sh
 command time -v ./ci/checks/md_files_style.sh
 command time -v ./ci/checks/spelling.sh

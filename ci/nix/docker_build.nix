@@ -1,3 +1,7 @@
+# SPDX-FileCopyrightText: © 2022 Melg Eight <public.melg8@gmail.com>
+#
+# SPDX-License-Identifier: MIT
+
 let
   nixpkgs = import ./pinned_nixpkgs.nix;
   pkgs = import nixpkgs { };

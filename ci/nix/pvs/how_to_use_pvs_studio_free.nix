@@ -1,3 +1,7 @@
+# SPDX-FileCopyrightText: © 2022 Melg Eight <public.melg8@gmail.com>
+#
+# SPDX-License-Identifier: MIT
+
 { stdenv, lib, fetchurl, cmake, glibc, nukeReferences, ... }:
 
 stdenv.mkDerivation rec {

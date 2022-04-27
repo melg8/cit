@@ -1,3 +1,7 @@
+# SPDX-FileCopyrightText: © 2022 Melg Eight <public.melg8@gmail.com>
+#
+# SPDX-License-Identifier: MIT
+
 cmake_minimum_required(VERSION 3.15.5)
 project(cit)
 

@@ -1,3 +1,7 @@
+# SPDX-FileCopyrightText: © 2022 Melg Eight <public.melg8@gmail.com>
+#
+# SPDX-License-Identifier: MIT
+
 file (GLOB_RECURSE ALL_GLASSY_APPLICATION_HEADERS
                    "${CMAKE_CURRENT_SOURCE_DIR}/*.h")
 

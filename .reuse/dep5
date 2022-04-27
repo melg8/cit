@@ -1,0 +1,26 @@
+Format: https://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
+Upstream-Name: cit
+Upstream-Contact: Melg Eight <public.melg8@gmail.com>
+Source: https://github.com/melg8/cit
+
+# Sample paragraph, commented out:
+#
+# Files: src/*
+# Copyright: $YEAR $NAME <$CONTACT>
+# License: ...
+
+Files: ci/checks/dictionaries/*
+Copyright: © 2022 Melg Eight <public.melg8@gmail.com>
+License: MIT
+
+Files: ci/nix/remark/*
+Copyright: © 2022 Melg Eight <public.melg8@gmail.com>
+License: MIT
+
+Files: ci/nix/text_lint/*
+Copyright: © 2022 Melg Eight <public.melg8@gmail.com>
+License: MIT
+
+Files: ci/nix/git_lint/*
+Copyright: © 2022 Melg Eight <public.melg8@gmail.com>
+License: MIT

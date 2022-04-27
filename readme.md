@@ -1,3 +1,9 @@
+<!--
+SPDX-FileCopyrightText: © 2022 Melg Eight <public.melg8@gmail.com>
+
+SPDX-License-Identifier: MIT
+-->
+
 # Cit - Control it
 
 [![Checks](https://github.com/melg8/cit/actions/workflows/checks.yml/badge.svg?branch=main)][1]

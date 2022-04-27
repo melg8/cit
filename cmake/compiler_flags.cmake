@@ -1,3 +1,7 @@
+# SPDX-FileCopyrightText: © 2022 Melg Eight <public.melg8@gmail.com>
+#
+# SPDX-License-Identifier: MIT
+
 # Add new cxx flags to existing cxx flags.
 function(add_compiler_flags flags)
   foreach(flag ${flags})

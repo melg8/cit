@@ -1,3 +1,7 @@
+# SPDX-FileCopyrightText: © 2022 Melg Eight <public.melg8@gmail.com>
+#
+# SPDX-License-Identifier: MIT
+
 find_package(OpenSSL 3.0.2 REQUIRED)
 find_package(doctest REQUIRED)
 find_package(outcome 2.2.3 REQUIRED)

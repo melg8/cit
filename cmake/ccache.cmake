@@ -1,3 +1,7 @@
+# SPDX-FileCopyrightText: © 2022 Melg Eight <public.melg8@gmail.com>
+#
+# SPDX-License-Identifier: MIT
+
 if(${USE_CCACHE})
   find_program(CCACHE_FOUND ccache)
   if(CCACHE_FOUND)

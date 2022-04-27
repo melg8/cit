@@ -1,3 +1,7 @@
+# SPDX-FileCopyrightText: © 2022 Melg Eight <public.melg8@gmail.com>
+#
+# SPDX-License-Identifier: MIT
+
 # Fills return_list variable with all .h* files from current dir recursively.
 function(header_directories return_list)
   file(GLOB_RECURSE NEW_LIST "*.h*")

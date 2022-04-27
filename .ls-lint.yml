@@ -1,3 +1,7 @@
+# SPDX-FileCopyrightText: © 2022 Melg Eight <public.melg8@gmail.com>
+#
+# SPDX-License-Identifier: MIT
+
 ---
 ls:
   .cc: snake_case
@@ -17,5 +21,8 @@ ignore:
   - .git
   - .gitconfig
   - .idea
+  - .reuse
+  - LICENSES
+  - build
   - build_clang++
   - build_g++
