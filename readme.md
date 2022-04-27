@@ -89,22 +89,15 @@ issues and requests are welcome.
    ci/docker/docker_pull.sh
    ```
 
-1. Deprecated: you can build old version of docker image using docker file:
-
-   ``` bash
-   ci/docker/build.sh
-   ```
-
-See [GitHub workflows](.github/workflows/checks.yml) for basic how to use.
+See [GitHub workflows](.github/workflows/checks.yml) for usage details.
 
 ## Available tools
 
-- **cmake**
-  - [cmake-format](https://github.com/cheshirekow/cmake_format) GPLv3.0
-  - [cmake-lint](https://github.com/cheshirekow/cmake_format) GPLv3.0
-
-- **files and directories**
-  - [ls-lint](https://github.com/loeffel-io/ls-lint) - MIT
+- **online services**
+  - [GitHub actions][6] - check/build/run tests
+  - [Codecov][7] - verify code coverage of tests
+  - [lgtm](https://lgtm.com/) - build and analyze source code
+  - [dependabot][8] - check dependencies
 
 - **git**
   - [git](https://github.com/git/git) - GPLv2,LGPLv2.1
@@ -115,32 +108,101 @@ See [GitHub workflows](.github/workflows/checks.yml) for basic how to use.
   - [git-lint](https://github.com/bkuhlmann/git-lint) - Apache 2.0
   - [gitleaks](https://github.com/zricethezav/gitleaks) - MIT
 
-- **md files**
-  - [remark](https://github.com/remarkjs/remark) - MIT
-  - [textlint](https://github.com/textlint/textlint) - MIT
+- **licenses**
+  - [reuse](https://github.com/fsfe/reuse-tool) - Apache-2.0
 
-- **shell**
-  - [shellcheck](https://github.com/koalaman/shellcheck) - GPLv3.0
+- **files and directories**
+  - [ls-lint](https://github.com/loeffel-io/ls-lint) - MIT
 
 - **spelling**
   - [cspell](https://github.com/streetsidesoftware/cspell) - MIT
   - [codespell](https://github.com/codespell-project/codespell) - GPLv.2.0
 
-- **yaml**
-  - [yamllint](https://github.com/adrienverge/yamllint) - GPLv3.0
+- **cpp static analysis**
+  - [clang](https://clang.llvm.org/) - warnings as errors checks - Apache 2.0
+  - [clang-format](https://clang.llvm.org/docs/ClangFormat.html) - NCSA
+  - [clang-tidy](https://clang.llvm.org/extra/clang-tidy) - NCSA
+  - [cppcheck](https://github.com/danmar/cppcheck) - GPLv3.0
+  - [cpplint](https://github.com/cpplint/cpplint) - BSD 3-clause
+  - [gcc](https://gcc.gnu.org/) - warnings as errors checks - GPLv3.0
+
+- **cpp dynamic analysis**
+  - [clang](https://clang.llvm.org/) - sanitizers - Apache 2.0
+  - [gcc](https://gcc.gnu.org/) - sanitizers - GPLv3.0
+  - [grcov](https://github.com/mozilla/grcov) - code coverage - MPL-2.0
+
+- **cpp examples of library usage**
+  - [doctest](https://github.com/doctest/doctest) - MIT
+  - [outcome](https://github.com/ned14/outcome) - Apache-2.0
+
+- **cmake**
+  - [cmake-format](https://github.com/cheshirekow/cmake_format) GPLv3.0
+  - [cmake-lint](https://github.com/cheshirekow/cmake_format) GPLv3.0
+
+- **shell**
+  - [shellcheck](https://github.com/koalaman/shellcheck) - GPLv3.0
 
 - **nix**
   - [nixpkgs-fmt](https://github.com/nix-community/nixpkgs-fmt) - Apache-2.0
   - [nix-linter](https://github.com/Synthetica9/nix-linter) - BSD 3-clause
   - [nix-shell][4] - LGPL-2.1 License
 
+- **md files**
+  - [remark](https://github.com/remarkjs/remark) - MIT
+  - [textlint](https://github.com/textlint/textlint) - MIT
+
+- **yaml**
+  - [yamllint](https://github.com/adrienverge/yamllint) - GPLv3.0
+
 ## Planned
 
-- **cpp**
-  - [cppcheck](https://github.com/danmar/cppcheck) - GPLv3.0
-  - [clang-format](https://clang.llvm.org/docs/ClangFormat.html) - NCSA
-  - [clang-tidy](https://clang.llvm.org/extra/clang-tidy) - NCSA
+- **cpp tools**
   - [jscpd](https://github.com/kucherenko/jscpd) - MIT
+  - [valgrind](https://valgrind.org/) - GPLv2.0
+  - [libFuzzer](https://llvm.org/docs/LibFuzzer.html) - NCSA
+  - [doxygen](https://github.com/doxygen/doxygen) - GPLv2.0
+  - [standardese](https://github.com/standardese/standardese) - MIT
+  - [mull](https://github.com/mull-project/mull) - Apache-2.0
+  - [mutate_cpp](https://github.com/nlohmann/mutate_cpp) - MIT
+  - [rapidcheck](https://github.com/emil-e/rapidcheck) - BSD-2-Clause
+
+- **cpp compilers**
+  - [msvc](https://docs.microsoft.com/en-us/cpp/?view=msvc-170) - Microsoft EULA
+  - [MinGW](https://www.mingw-w64.org/) - GNU GPL
+
+- **ci environments**
+  - MacOS
+  - Windows
+
+- **examples of library usage**
+  - [qt6](https://www.qt.io/product/qt6)
+  - [openssl](https://github.com/openssl/openssl) - Apache-2.0
+  - [gsl-lite](https://github.com/gsl-lite/gsl-lite) - MIT
+
+- **gui testing**
+  - [SikuliX1](https://github.com/RaiMan/SikuliX1) - MIT
+
+- **reproducible builds testing**
+  - [sha256sum](https://github.com/coreutils/coreutils) - GPL-3.0
+
+- **unified console commands**
+  - [just](https://github.com/casey/just) - CC0 1.0 Universal
+  - [husky](https://github.com/typicode/husky) - MIT
+
+- **approval testing**
+  - [ApprovalTests.cpp][9] - Apache-2.0
+
+- **microbenchmarking**
+
+- **compile time benchmarking**
+
+- **wiki about project**
+
+- **logo and illustrations**
+
+- **stable release versions and tags**
+
+- **roadmap**
 
 ## Credits
 
@@ -156,3 +218,7 @@ See [license](license.md) for more information.
 [3]: https://builtwithnix.org
 [4]: https://nixos.org/manual/nix/unstable/command-ref/nix-shell.html
 [5]: https://lgtm.com/projects/g/melg8/cit/context:cpp
+[6]: https://github.com/melg8/cit/actions
+[7]: https://app.codecov.io/gh/melg8/cit
+[8]: https://github.com/dependabot/dependabot-core
+[9]: https://github.com/approvals/ApprovalTests.cpp

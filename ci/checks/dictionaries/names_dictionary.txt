@@ -35,3 +35,7 @@ codecov
 ctest
 libcxx
 cpplint
+valgrind
+standardese
+rapidcheck
+Sikuli
