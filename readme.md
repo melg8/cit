@@ -19,11 +19,11 @@ Control your c++ code using this continuous integration template.
 It aggregates linters, static and dynamic analysis tools in single,
 ready to use template.
 
-## Main goals
+## Main goals of project
 
 - Explore capabilities of automatic tools and their impact on development
 
-- Give unified access to linters and analysis tools
+- Give users of project unified access to linters and analysis tools
 
 - Showcase techniques of testing different properties of codebase
 
