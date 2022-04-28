@@ -42,8 +42,6 @@ inline const char* BigNumErrorCategory::name() const noexcept {
 
 inline std::string BigNumErrorCategory::message(int ev) const {
   switch (static_cast<BigNumErrc>(ev)) {
-    case BigNumErrc::kSuccess:
-      return "successful";
     case BigNumErrc::kAllocationFailure:
       return "allocation failed";
     case BigNumErrc::kNullPointerFailure:
@@ -56,8 +54,10 @@ inline std::string BigNumErrorCategory::message(int ev) const {
       return "failed to convert value";
     case BigNumErrc::kAdditionFailure:
       return "failed to add two values";
+    case BigNumErrc::kSuccess:
+      break;
   }
-  return "unknown";
+  return "successful";
 }
 
 // NOLINTNEXTLINE

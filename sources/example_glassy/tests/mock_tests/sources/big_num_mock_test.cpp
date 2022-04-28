@@ -10,8 +10,17 @@
 
 extern "C" {
 static bool should_fail_alloc = true;
+static bool should_fail_one_time_set_word = false;
 static BIGNUM* MockBnNew() noexcept {
   return should_fail_alloc ? nullptr : BN_new();
+}
+
+static int BnSetWord(BIGNUM* a, BN_ULONG w) noexcept {
+  if (should_fail_one_time_set_word) {
+    should_fail_one_time_set_word = false;
+    return 0;
+  }
+  return BN_set_word(a, w);
 }
 
 // For this function fail condition is represented by all 0xFF bytes
@@ -45,6 +54,7 @@ static int AlwaysFailBnToBin(const BIGNUM*, unsigned char*) { return -1; }
 #define BN_bin2bn AlwaysFailBinToBn
 #define BN_add AlwaysFailAdd
 #define BN_bn2bin AlwaysFailBnToBin
+#define BN_set_word BnSetWord
 
 #include <big_num.h>
 
@@ -64,6 +74,18 @@ SCENARIO("BigNum failures") {
     const BnUlong value = 1;
 
     WHEN("failed to create Bignum from it because of internal error") {
+      const auto result = BigNum::New(value);
+
+      THEN("result doesn't have value") { CHECK_FALSE(result.has_value()); }
+    }
+  }
+
+  GIVEN("any BnUlong value") {
+    should_fail_alloc = false;
+    const BnUlong value = 1;
+
+    WHEN("failed to create Bignum from it because of expansion error") {
+      should_fail_one_time_set_word = true;
       const auto result = BigNum::New(value);
 
       THEN("result doesn't have value") { CHECK_FALSE(result.has_value()); }
@@ -141,12 +163,68 @@ SCENARIO("BigNum failures") {
   }
 
   []() -> Result<void> {
-    SUBCASE("add two BigNumb failing") {
+    SUBCASE("add two BigNum failing") {
       should_fail_alloc = false;
       OUTCOME_TRY(const auto first, BigNum::New(2));
       OUTCOME_TRY(const auto second, BigNum::New(3));
       const auto result = BigNum::Add(first, second);
       CHECK_FALSE(result.has_value());
+    }
+
+    SUBCASE("BigNum += BigNum failing") {
+      should_fail_alloc = false;
+
+      OUTCOME_TRY(auto value, BigNum::New(2));
+      OUTCOME_TRY(const auto second_value, BigNum::New(3));
+      CHECK_FALSE((value += second_value).has_value());
+      OUTCOME_TRY(const auto result, BigNum::New(2));
+      CHECK_EQ(value, result);
+    }
+
+    SUBCASE("BigNum += Result<BigNum> failing") {
+      should_fail_alloc = false;
+
+      OUTCOME_TRY(auto value, BigNum::New(2));
+      CHECK_FALSE((value += BigNum::New(3)).has_value());
+      OUTCOME_TRY(const auto result, BigNum::New(2));
+      CHECK_EQ(value, result);
+    }
+
+    SUBCASE("Result<BigNum> += BigNum") {
+      should_fail_alloc = false;
+
+      auto value = BigNum::New(2);
+      OUTCOME_TRY(const auto second_value, BigNum::New(3));
+      CHECK_FALSE((value += second_value).has_value());
+      OUTCOME_TRY(const auto result, BigNum::New(2));
+      CHECK_EQ(value.value(), result);
+    }
+
+    SUBCASE("Result<BigNum> += Result<BigNum>") {
+      should_fail_alloc = false;
+
+      auto value = BigNum::New(2);
+      CHECK_FALSE((value += BigNum::New(3)).has_value());
+      OUTCOME_TRY(const auto result, BigNum::New(2));
+      CHECK_EQ(value.value(), result);
+    }
+
+    SUBCASE("!Result<BigNum> += Result<BigNum>") {
+      should_fail_alloc = false;
+
+      Result<BigNum> value = BigNumErrc::kAllocationFailure;
+      CHECK_FALSE((value += BigNum::New(3)).has_value());
+      CHECK_FALSE(value.has_value());
+    }
+
+    SUBCASE("Result<BigNum> += !Result<BigNum>") {
+      should_fail_alloc = false;
+
+      auto value = BigNum::New(2);
+      Result<BigNum> second_value = BigNumErrc::kAllocationFailure;
+      CHECK_FALSE((value += second_value).has_value());
+      OUTCOME_TRY(const auto result, BigNum::New(2));
+      CHECK_EQ(value.value(), result);
     }
     return outcome_v2::success();
   }()

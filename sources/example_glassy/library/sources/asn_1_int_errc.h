@@ -41,8 +41,6 @@ inline const char* Asn1IntErrorCategory::name() const noexcept {
 
 inline std::string Asn1IntErrorCategory::message(int ev) const {
   switch (static_cast<Asn1IntErrc>(ev)) {
-    case Asn1IntErrc::kSuccess:
-      return "successful";
     case Asn1IntErrc::kAllocationFailure:
       return "allocation failed";
     case Asn1IntErrc::kNullPointerFailure:
@@ -51,8 +49,10 @@ inline std::string Asn1IntErrorCategory::message(int ev) const {
       return "conversion failed";
     case Asn1IntErrc::kCopyFailure:
       return "copy failed";
+    case Asn1IntErrc::kSuccess:
+      break;
   }
-  return "unknown";
+  return "successful";
 }
 
 // NOLINTNEXTLINE
