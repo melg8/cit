@@ -39,3 +39,4 @@ valgrind
 standardese
 rapidcheck
 Sikuli
+clazy

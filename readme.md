@@ -166,6 +166,8 @@ See [GitHub workflows](.github/workflows/checks.yml) for usage details.
   - [mull](https://github.com/mull-project/mull) - Apache-2.0
   - [mutate_cpp](https://github.com/nlohmann/mutate_cpp) - MIT
   - [rapidcheck](https://github.com/emil-e/rapidcheck) - BSD-2-Clause
+  - [clazy](https://github.com/KDE/clazy) - LGPLv2
+  - [pvs studio](https://pvs-studio.com/en/pvs-studio/)
 
 - **cpp compilers**
   - [msvc](https://docs.microsoft.com/en-us/cpp/?view=msvc-170) - Microsoft EULA
