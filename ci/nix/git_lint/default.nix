@@ -1,10 +1,10 @@
-{ lib, bundlerApp, bundlerUpdateScript, ruby_3_0 }:
+{ lib, bundlerApp, bundlerUpdateScript, ruby_3_1 }:
 
 bundlerApp {
   pname = "git-lint";
   gemdir = ./.;
   exes = [ "git-lint" ];
-  ruby = ruby_3_0;
+  ruby = ruby_3_1;
 
   passthru.updateScript = bundlerUpdateScript "git-lint";
 
