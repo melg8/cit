@@ -7,7 +7,7 @@ SPDX-License-Identifier: MIT
 # Cit - Control it
 
 [![Checks](https://github.com/melg8/cit/actions/workflows/checks.yml/badge.svg?branch=main)][1]
-[![codecov](https://codecov.io/gh/melg8/cit/branch/main/graph/badge.svg?token=S3LWXOZDEJ)][2]
+[![codecov](https://codecov.io/gh/melg8/cit/branch/develop/graph/badge.svg?token=S3LWXOZDEJ)][2]
 [![Language grade: C/C++](https://img.shields.io/lgtm/grade/cpp/g/melg8/cit.svg?logo=lgtm&logoWidth=18)][5]
 [![REUSE status](https://api.reuse.software/badge/github.com/melg8/cit)][10]
 [![MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://github.com/melg8/cit/blob/main/license.md)
