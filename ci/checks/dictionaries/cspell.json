@@ -22,9 +22,16 @@
             "description": "Names of people and projects dictionary",
             "addWords": true,
             "scope": "nix"
+        },
+        {
+            "name": "si",
+            "path": "./si_dictionary.txt",
+            "description": "si dictionary",
+            "addWords": true,
+            "scope": "nix"
         }
     ],
-    "dictionaries": ["cpp", "bash", "python", "ruby", "workspace", "nix", "names"],
+    "dictionaries": ["cpp", "bash", "python", "ruby", "workspace", "nix", "names", "si"],
     "ignorePaths": ["ci/checks/dictionaries/spelling_corrections.txt",
                     "*deps.nix",
                     "*gemset.nix",
@@ -34,5 +41,6 @@
                     "*package-lock.json",
                     "*yarn_deps.nix",
                     "*yarn.lock",
-                    "build*"]
+                    "build*",
+                    "*.xcf"]
 }
