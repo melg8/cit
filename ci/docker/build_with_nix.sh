@@ -6,9 +6,6 @@
 
 set -e
 
-nix build -f ./ci/nix/docker_build.nix \
-             --enforce-determinism \
-             --keep-failed
+nix build -f ./ci/nix/docker_build_2.nix
 
-ls -la .
-sha256sum ./result
+docker load < ./result

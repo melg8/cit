@@ -6,5 +6,9 @@
 
 set -e
 
-docker container run --rm -it --ulimit nofile=1024 \
--v "$(pwd)":/home/user/work melg8/cit:0.0.7
+nix build -f ./ci/nix/docker_build_2.nix
+
+docker load < ./result
+
+docker container run --rm -it -v "$(pwd)":/home/user/work nix:latest reuse lint | \
+not grep "can't start new thread" && echo "PASSED!" || echo "FAILED!"
