@@ -1,8 +1,8 @@
-pkgs
+cctools
+fetchgit
+fetchurl
+gcroots
 nixpkgs
+pkgs
 stdenv
 utillinux
-cctools
-fetchurl
-fetchgit
-gcroots
