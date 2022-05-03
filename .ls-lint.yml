@@ -22,7 +22,8 @@ ignore:
   - .gitconfig
   - .idea
   - .reuse
+  - .vscode
   - LICENSES
   - build
-  - build_clang++
-  - build_g++
+  - build_clang
+  - build_gcc

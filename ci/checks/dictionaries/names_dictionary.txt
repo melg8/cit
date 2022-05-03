@@ -40,3 +40,8 @@ standardese
 rapidcheck
 Sikuli
 clazy
+dorny
+cachix
+IWYU
+setuptools
+conancenter

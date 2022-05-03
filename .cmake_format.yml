@@ -3,7 +3,7 @@
 # SPDX-License-Identifier: MIT
 
 ---
-_help_parse: Options affecting listfile parsing
+_help_parse: Options affecting list file parsing
 parse:
   _help_additional_commands:
     - Specify structure for custom cmake functions
@@ -89,7 +89,7 @@ format:
   always_wrap: []
   _help_enable_sort:
     - If true, the argument lists which are known to be sortable
-    - will be sorted lexicographicall
+    - will be sorted lexicographical
   enable_sort: true
   _help_autosort:
     - If true, the parsers may infer whether or not an argument
@@ -97,7 +97,7 @@ format:
   autosort: false
   _help_require_valid_layout:
     - By default, if cmake-format cannot successfully fit
-    - everything into the desired linewidth it will apply the
+    - everything into the desired line width it will apply the
     - last, most aggressive attempt that it made. If this flag is
     - True, however, cmake-format will print error, exit with non-
     - zero status code, and write-out nothing
@@ -117,7 +117,7 @@ markup:
   enum_char: .
   _help_first_comment_is_literal:
     - If comment markup is enabled, don't reflow the first comment
-    - block in each listfile. Use this to preserve formatting of
+    - block in each list file. Use this to preserve formatting of
     - your copyright/license statements.
   first_comment_is_literal: false
   _help_literal_comment_pattern:
@@ -177,7 +177,7 @@ lint:
   local_var_pattern: '[a-z][a-z0-9_]+'
   _help_private_var_pattern:
     - regular expression pattern describing valid names for
-    - privatedirectory variables
+    - private directory variables
   private_var_pattern: _[0-9a-z_]+
   _help_public_var_pattern:
     - regular expression pattern describing valid names for public

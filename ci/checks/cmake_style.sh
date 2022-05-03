@@ -6,13 +6,18 @@
 
 set -e
 
-ARGUMENTS="-c=./.cmake_format.yml CMakeLists.txt ./**/CMakeLists.txt ./**/*.cmake"
+ARGUMENTS="-c=./.cmake_format.yml"
 
-# shellcheck disable=SC2086
-cmake-lint ${ARGUMENTS}
+apply_to_files() {
+    find . -type d \
+    \( -path ./build_gcc -o -path ./build_clang -o -path ./build \) -prune \
+    -o \( -name "*.cmake" -o -name "CMakeLists.txt" \) -print \
+    -exec "$@" {} +
+}
 
-# shellcheck disable=SC2086
-cmake-format --check ${ARGUMENTS} ||
+apply_to_files cmake-lint ${ARGUMENTS}
+
+apply_to_files cmake-format --check ${ARGUMENTS} ||
 (echo "Failure: please run cmake-format." && exit 1)
 
 echo "Cmake style passed."

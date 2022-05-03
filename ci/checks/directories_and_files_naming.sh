@@ -6,6 +6,17 @@
 
 set -e
 
+apply_to_file_names() {
+    find . -type d \
+    \( \
+    -path ./.git -o \
+    -path ./build -o \
+    -path ./build_gcc -o \
+    -path ./build_clang \) \
+    -prune -o -print \
+    | "$@"
+}
+
 ls-lint
-find . -path ./.git -prune -o -print | \
-cspell -v --config=./ci/checks/dictionaries/cspell.json stdin
+
+apply_to_file_names cspell -v --config=./ci/checks/dictionaries/cspell.json stdin

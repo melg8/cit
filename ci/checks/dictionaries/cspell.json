@@ -34,5 +34,6 @@
                     "*package-lock.json",
                     "*yarn_deps.nix",
                     "*yarn.lock",
+                    "*CMakeLists.txt.user",
                     "build*"]
 }
