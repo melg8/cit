@@ -167,6 +167,7 @@ See [GitHub workflows](.github/workflows/checks.yml) for usage details.
   - [mutate_cpp](https://github.com/nlohmann/mutate_cpp) - MIT
   - [rapidcheck](https://github.com/emil-e/rapidcheck) - BSD-2-Clause
   - [clazy](https://github.com/KDE/clazy) - LGPLv2
+  - [infer](https://github.com/facebook/infer) - MIT
   - [pvs studio](https://pvs-studio.com/en/pvs-studio/)
 
 - **cpp compilers**
