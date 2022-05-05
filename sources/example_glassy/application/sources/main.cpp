@@ -1,7 +1,4 @@
-#include <atomic>
-#include <memory>
-
-typedef uint_least8_t message_id_t;
+typedef int message_id_t;
 
 class imessage {
  public:
@@ -11,8 +8,7 @@ class imessage {
 template <message_id_t ID_, typename TParent = imessage>
 class message : public TParent {};
 
-typedef std::atomic<int> atomic_int;
-typedef std::atomic<int32_t> atomic_int32_t;
+typedef int atomic_int;
 
 class ireference_counter {
  public:
@@ -82,6 +78,9 @@ struct Message1 : public message<MessageId1> {
 int main() {
   Message1 message1;
   reference_counted_message<Message1, atomic_int> temp(message1);
-  const ireference_counted_message& rcmessage = temp;
-  rcmessage.~ireference_counted_message();
+  // This:
+  temp.~reference_counted_message<Message1, atomic_int>();
+  // or this:
+  //  const ireference_counted_message& rcmessage = temp;
+  //  rcmessage.~ireference_counted_message();
 }
