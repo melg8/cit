@@ -78,9 +78,6 @@ struct Message1 : public message<MessageId1> {
 int main() {
   Message1 message1;
   reference_counted_message<Message1, atomic_int> temp(message1);
-  // This:
-  temp.~reference_counted_message<Message1, atomic_int>();
-  // or this:
-  //  const ireference_counted_message& rcmessage = temp;
-  //  rcmessage.~ireference_counted_message();
+  const ireference_counted_message& rcmessage = temp;
+  rcmessage.~ireference_counted_message();
 }
