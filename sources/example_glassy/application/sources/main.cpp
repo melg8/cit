@@ -5,29 +5,7 @@
 
 namespace etl {
 
-template <typename T>
-class successor {
- public:
-  typedef T successor_type;
-
-  successor() : p_successor(nullptr) {}
-
-  successor(successor_type& s) : p_successor(&s) {}
-
-  void set_successor(successor_type& s) { p_successor = &s; }
-
-  successor_type& get_successor() const { return *p_successor; }
-
-  bool has_successor() const { return (p_successor != nullptr); }
-
- private:
-  successor_type* p_successor;
-};
-}  // namespace etl
-
-namespace etl {
-
-class imemory_block_allocator : public successor<imemory_block_allocator> {
+class imemory_block_allocator {
  public:
   imemory_block_allocator() {}
 
