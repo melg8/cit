@@ -1,7 +1,5 @@
-#include <algorithm>
 #include <atomic>
 #include <memory>
-#include <type_traits>
 
 typedef uint_least8_t message_id_t;
 
