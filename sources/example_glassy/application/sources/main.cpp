@@ -5979,9 +5979,6 @@ class reference_counter<void> : public ireference_counter {
 class ireference_counted_object {
  public:
   virtual ~ireference_counted_object() {}
-  [[nodiscard]] virtual ireference_counter& get_reference_counter() = 0;
-  [[nodiscard]] virtual const ireference_counter& get_reference_counter()
-      const = 0;
 };
 
 template <typename TObject, typename TCounter>
@@ -5990,22 +5987,7 @@ class reference_counted_object : public etl::ireference_counted_object {
   typedef TObject value_type;
   typedef TCounter counter_type;
 
-  reference_counted_object() {}
-
   reference_counted_object(const TObject& object_) : object(object_) {}
-
-  [[nodiscard]] value_type& get_object() { return object; }
-
-  [[nodiscard]] const value_type& get_object() const { return object; }
-
-  [[nodiscard]] virtual ireference_counter& get_reference_counter() override {
-    return reference_counter;
-  }
-
-  [[nodiscard]] virtual const ireference_counter& get_reference_counter()
-      const override {
-    return reference_counter;
-  }
 
  private:
   reference_counted_object(const reference_counted_object&) = delete;
@@ -6015,10 +5997,6 @@ class reference_counted_object : public etl::ireference_counted_object {
   etl::reference_counter<TCounter> reference_counter;
 };
 
-template <typename TObject>
-using atomic_counted_object =
-    etl::reference_counted_object<TObject, etl::atomic_int32_t>;
-
 }  // namespace etl
 
 namespace etl {
@@ -6026,8 +6004,6 @@ namespace etl {
 class ireference_counted_message {
  public:
   virtual ~ireference_counted_message() {}
-  [[nodiscard]] virtual etl::imessage& get_message() = 0;
-  [[nodiscard]] virtual const etl::imessage& get_message() const = 0;
 };
 
 template <typename TMessage, typename TCounter>
@@ -6036,20 +6012,9 @@ class reference_counted_message : public etl::ireference_counted_message {
   typedef TMessage message_type;
   typedef TCounter counter_type;
 
-  reference_counted_message(etl::ireference_counted_message_pool& owner_)
-      : owner(owner_) {}
-
   reference_counted_message(const TMessage& msg_,
                             etl::ireference_counted_message_pool& owner_)
       : rc_object(msg_), owner(owner_) {}
-
-  [[nodiscard]] virtual TMessage& get_message() override {
-    return rc_object.get_object();
-  }
-
-  [[nodiscard]] virtual const TMessage& get_message() const override {
-    return rc_object.get_object();
-  }
 
  private:
   etl::reference_counted_object<TMessage, TCounter> rc_object;
