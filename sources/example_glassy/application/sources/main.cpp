@@ -5929,30 +5929,12 @@ namespace etl {
 class ireference_counter {
  public:
   virtual ~ireference_counter() {}
-  virtual void set_reference_count(int32_t value) = 0;
-  virtual void increment_reference_count() = 0;
-  [[nodiscard]] virtual int32_t decrement_reference_count() = 0;
-  [[nodiscard]] virtual int32_t get_reference_count() const = 0;
 };
 
 template <typename TCounter>
 class reference_counter : public ireference_counter {
  public:
   reference_counter() : reference_count(0) {}
-
-  virtual void set_reference_count(int32_t value) override {
-    reference_count = value;
-  }
-
-  virtual void increment_reference_count() override { ++reference_count; }
-
-  [[nodiscard]] virtual int32_t decrement_reference_count() override {
-    return int32_t(--reference_count);
-  }
-
-  [[nodiscard]] virtual int32_t get_reference_count() const override {
-    return int32_t(reference_count);
-  }
 
  private:
   TCounter reference_count;
@@ -5962,18 +5944,6 @@ template <>
 class reference_counter<void> : public ireference_counter {
  public:
   reference_counter() {}
-
-  virtual void set_reference_count(int32_t) override {}
-
-  virtual void increment_reference_count() override {}
-
-  [[nodiscard]] virtual int32_t decrement_reference_count() override {
-    return int32_t(1);
-  }
-
-  [[nodiscard]] virtual int32_t get_reference_count() const override {
-    return int32_t(1);
-  }
 };
 
 class ireference_counted_object {
