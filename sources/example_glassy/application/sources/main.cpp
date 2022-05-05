@@ -37,35 +37,6 @@ class imemory_block_allocator : public successor<imemory_block_allocator> {
 
   virtual ~imemory_block_allocator() {}
 
-  void* allocate(size_t required_size, size_t required_alignment) {
-    void* p = allocate_block(required_size, required_alignment);
-
-    if (p == nullptr) {
-      if (has_successor()) {
-        return get_successor().allocate(required_size, required_alignment);
-      }
-    }
-
-    return p;
-  }
-
-  bool release(const void* const p) {
-    bool was_released = release_block(p);
-
-    if (!was_released) {
-      if (has_successor()) {
-        was_released = get_successor().release(p);
-      }
-    }
-
-    return was_released;
-  }
-
- protected:
-  virtual void* allocate_block(size_t required_size,
-                               size_t required_alignment) = 0;
-  virtual bool release_block(const void* const) = 0;
-
  private:
   imemory_block_allocator(const etl::imemory_block_allocator&) = delete;
   imemory_block_allocator& operator=(const imemory_block_allocator&) = delete;
@@ -5177,95 +5148,10 @@ class ipool {
 
 namespace etl {
 
-template <const size_t VTypeSize, const size_t VAlignment, const size_t VSize>
-class generic_pool : public etl::ipool {
- public:
-  static constexpr size_t SIZE = VSize;
-  static constexpr size_t ALIGNMENT = VAlignment;
-  static constexpr size_t TYPE_SIZE = VTypeSize;
-
-  generic_pool()
-      : etl::ipool(reinterpret_cast<char*>(&buffer[0]), Element_Size, VSize) {}
-
-  template <typename U>
-  U* allocate() {
-    static_assert(etl::alignment_of<U>::value <= VAlignment,
-                  "Type has incompatible alignment");
-    static_assert(sizeof(U) <= VTypeSize, "Type too large for pool");
-    return ipool::allocate<U>();
-  }
-  template <typename U, typename... Args>
-  U* create(Args&&... args) {
-    static_assert(etl::alignment_of<U>::value <= VAlignment,
-                  "Type has incompatible alignment");
-    static_assert(sizeof(U) <= VTypeSize, "Type too large for pool");
-    return ipool::create<U>(etl::forward<Args>(args)...);
-  }
-
-  template <typename U>
-  void destroy(const U* const p_object) {
-    static_assert(etl::alignment_of<U>::value <= VAlignment,
-                  "Type has incompatible alignment");
-    static_assert(sizeof(U) <= VTypeSize, "Type too large for pool");
-    p_object->~U();
-    ipool::release(p_object);
-  }
-
- private:
-  union Element {
-    char* next;
-    char value[VTypeSize];
-    typename etl::type_with_alignment<VAlignment>::type dummy;
-  };
-
-  typename etl::aligned_storage<sizeof(Element),
-                                etl::alignment_of<Element>::value>::type
-      buffer[VSize];
-
-  static constexpr uint32_t Element_Size = sizeof(Element);
-
-  generic_pool(const generic_pool&) = delete;
-  generic_pool& operator=(const generic_pool&) = delete;
-};
-
-}  // namespace etl
-
-namespace etl {
-
 template <size_t VBlock_Size, size_t VAlignment, size_t VSize>
 class fixed_sized_memory_block_allocator : public imemory_block_allocator {
  public:
-  static constexpr size_t Block_Size = VBlock_Size;
-  static constexpr size_t Alignment = VAlignment;
-  static constexpr size_t Size = VSize;
-
   fixed_sized_memory_block_allocator() {}
-
- private:
-  struct block {
-    char data[Block_Size];
-  };
-
-  virtual void* allocate_block(size_t required_size,
-                               size_t required_alignment) override {
-    if ((required_alignment <= Alignment) && (required_size <= Block_Size) &&
-        !pool.full()) {
-      return pool.template allocate<block>();
-    } else {
-      return nullptr;
-    }
-  }
-
-  virtual bool release_block(const void* const pblock) override {
-    if (pool.is_in_pool(pblock)) {
-      pool.release(static_cast<const block* const>(pblock));
-      return true;
-    } else {
-      return false;
-    }
-  }
-
-  etl::generic_pool<Block_Size, Alignment, Size> pool;
 };
 }  // namespace etl
 
