@@ -1111,9 +1111,18 @@ inline bool operator>=(const pair<T1, T2>& a, const pair<T1, T2>& b) {
   return !(a < b);
 }
 
-template <typename T, typename U = T>
+template <typename T>
+T exchange(T& object, const T& new_value) {
+  T old_value = object;
+  object = new_value;
+  return old_value;
+}
+
+template <typename T, typename U>
 T exchange(T& object, const U& new_value) {
-  return std::exchange(object, new_value);
+  T old_value = object;
+  object = new_value;
+  return old_value;
 }
 
 template <typename T>
@@ -5364,7 +5373,6 @@ class ireference_counted_message;
 class ireference_counted_message_pool {
  public:
   virtual ~ireference_counted_message_pool() {}
-  virtual void release(const etl::ireference_counted_message& msg) = 0;
 
  protected:
   virtual void lock() {}
@@ -5939,13 +5947,6 @@ class reference_counter : public ireference_counter {
   virtual void increment_reference_count() override { ++reference_count; }
 
   [[nodiscard]] virtual int32_t decrement_reference_count() override {
-    (static_cast<bool>(reference_count > 0)
-         ? void(0)
-         : __assert_fail("reference_count > 0",
-                         "/home/user/work/other/etl/test/../include/etl/"
-                         "reference_counted_object.h",
-                         90, __extension__ __PRETTY_FUNCTION__));
-
     return int32_t(--reference_count);
   }
 
@@ -6030,7 +6031,6 @@ class ireference_counted_message {
   [[nodiscard]] virtual etl::ireference_counter& get_reference_counter() = 0;
   [[nodiscard]] virtual const etl::ireference_counter& get_reference_counter()
       const = 0;
-  virtual void release() = 0;
 };
 
 template <typename TMessage, typename TCounter>
@@ -6067,8 +6067,6 @@ class reference_counted_message : public etl::ireference_counted_message {
     return rc_object.get_reference_counter();
   }
 
-  virtual void release() override { owner.release(*this); }
-
  private:
   etl::reference_counted_object<TMessage, TCounter> rc_object;
   etl::ireference_counted_message_pool& owner;
@@ -6102,8 +6100,6 @@ class persistent_message : public etl::ireference_counted_message {
       const override {
     return rc_object.get_reference_counter();
   }
-
-  virtual void release() override {}
 
  private:
   etl::reference_counted_object<TMessage, void> rc_object;
@@ -6537,53 +6533,6 @@ class reference_counted_message_pool
     return p;
   }
 
-  template <typename TMessage>
-  etl::reference_counted_message<TMessage, TCounter>* allocate() {
-    static_assert((etl::is_base_of<etl::imessage, TMessage>::value),
-                  "Not a message type");
-
-    typedef etl::reference_counted_message<TMessage, TCounter> rcm_t;
-    typedef rcm_t* prcm_t;
-
-    prcm_t p = nullptr;
-
-    lock();
-    p = static_cast<prcm_t>(memory_block_allocator.allocate(
-        sizeof(rcm_t), etl::alignment_of<rcm_t>::value));
-    unlock();
-
-    if (p != nullptr) {
-      ::new (p) rcm_t(*this);
-    }
-
-    {
-      if (!((p != nullptr))) {
-        throw(((etl::reference_counted_message_pool_allocation_failure(
-            "/home/user/work/other/etl/test/../include/etl/"
-            "reference_counted_message_pool.h",
-            152))));
-      }
-    }
-
-    return p;
-  }
-
-  void release(const etl::ireference_counted_message& rcmessage) override {
-    rcmessage.~ireference_counted_message();
-    lock();
-    bool released = memory_block_allocator.release(&rcmessage);
-    unlock();
-
-    {
-      if (!(released)) {
-        throw(((etl::reference_counted_message_pool_release_failure(
-            "/home/user/work/other/etl/test/../include/etl/"
-            "reference_counted_message_pool.h",
-            167))));
-      }
-    }
-  }
-
   template <typename TMessage1, typename... TMessages>
   struct pool_message_parameters {
    private:
@@ -6609,9 +6558,6 @@ class reference_counted_message_pool
   template <typename TMessage1>
   struct pool_message_parameters<TMessage1> {
    public:
-    static_assert((etl::is_base_of<etl::imessage, TMessage1>::value),
-                  "TMessage not derived from etl::imessage");
-
     static constexpr size_t max_size =
         sizeof(etl::reference_counted_message<TMessage1, TCounter>);
 
@@ -6631,97 +6577,6 @@ class reference_counted_message_pool
 using atomic_counted_message_pool =
     reference_counted_message_pool<etl::atomic_int>;
 
-}  // namespace etl
-
-namespace etl {
-class shared_message {
- public:
-  template <typename TPool, typename TMessage>
-  shared_message(TPool& owner, const TMessage& message) {
-    static_assert(
-        (etl::is_base_of<etl::ireference_counted_message_pool, TPool>::value),
-        "TPool not derived from etl::ireference_counted_message_pool");
-    static_assert((etl::is_base_of<etl::imessage, TMessage>::value),
-                  "TMessage not derived from etl::imessage");
-
-    p_rcmessage = owner.allocate(message);
-
-    if (p_rcmessage != nullptr) {
-      p_rcmessage->get_reference_counter().set_reference_count(1U);
-    }
-  }
-
-  shared_message(etl::ireference_counted_message& rcm) {
-    p_rcmessage = &rcm;
-
-    p_rcmessage->get_reference_counter().set_reference_count(1U);
-  }
-
-  shared_message(const etl::shared_message& other)
-      : p_rcmessage(other.p_rcmessage) {
-    p_rcmessage->get_reference_counter().increment_reference_count();
-  }
-
-  shared_message(etl::shared_message&& other)
-      : p_rcmessage(etl::move(other.p_rcmessage)) {
-    other.p_rcmessage = nullptr;
-  }
-
-  shared_message& operator=(const etl::shared_message& other) {
-    if (&other != this) {
-      if (p_rcmessage->get_reference_counter().decrement_reference_count() ==
-          0U) {
-        p_rcmessage->release();
-      }
-
-      p_rcmessage = other.p_rcmessage;
-      p_rcmessage->get_reference_counter().increment_reference_count();
-    }
-
-    return *this;
-  }
-
-  shared_message& operator=(etl::shared_message&& other) {
-    if (&other != this) {
-      if (p_rcmessage->get_reference_counter().decrement_reference_count() ==
-          0U) {
-        p_rcmessage->release();
-      }
-
-      p_rcmessage = etl::move(other.p_rcmessage);
-      other.p_rcmessage = nullptr;
-    }
-
-    return *this;
-  }
-
-  ~shared_message() {
-    if ((p_rcmessage != nullptr) &&
-        (p_rcmessage->get_reference_counter().decrement_reference_count() ==
-         0U)) {
-      p_rcmessage->release();
-    }
-  }
-
-  [[nodiscard]] etl::imessage& get_message() {
-    return p_rcmessage->get_message();
-  }
-
-  [[nodiscard]] const etl::imessage& get_message() const {
-    return p_rcmessage->get_message();
-  }
-
-  [[nodiscard]] uint32_t get_reference_count() const {
-    return p_rcmessage->get_reference_counter().get_reference_count();
-  }
-
-  [[nodiscard]] bool is_valid() const { return p_rcmessage != nullptr; }
-
- private:
-  shared_message() = delete;
-
-  etl::ireference_counted_message* p_rcmessage;
-};
 }  // namespace etl
 
 constexpr etl::message_id_t MessageId1 = 1U;
