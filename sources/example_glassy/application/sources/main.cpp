@@ -5228,57 +5228,6 @@ class generic_pool : public etl::ipool {
   generic_pool& operator=(const generic_pool&) = delete;
 };
 
-template <const size_t VTypeSize, const size_t VAlignment>
-class generic_pool_ext : public etl::ipool {
- private:
-  union element_internal {
-    char* next;
-    char value[VTypeSize];
-    typename etl::type_with_alignment<VAlignment>::type dummy;
-  };
-
-  static const size_t ELEMENT_INTERNAL_SIZE = sizeof(element_internal);
-
- public:
-  static constexpr size_t ALIGNMENT = VAlignment;
-  static constexpr size_t TYPE_SIZE = VTypeSize;
-
-  typedef typename etl::aligned_storage<
-      sizeof(element_internal),
-      etl::alignment_of<element_internal>::value>::type element;
-
-  generic_pool_ext(element* buffer, size_t size)
-      : etl::ipool(
-            reinterpret_cast<char*>(&buffer[0]), ELEMENT_INTERNAL_SIZE, size) {}
-
-  template <typename U>
-  U* allocate() {
-    static_assert(etl::alignment_of<U>::value <= VAlignment,
-                  "Type has incompatible alignment");
-    static_assert(sizeof(U) <= VTypeSize, "Type too large for pool");
-    return ipool::allocate<U>();
-  }
-  template <typename U, typename... Args>
-  U* create(Args&&... args) {
-    static_assert(etl::alignment_of<U>::value <= VAlignment,
-                  "Type has incompatible alignment");
-    static_assert(sizeof(U) <= VTypeSize, "Type too large for pool");
-    return ipool::create<U>(etl::forward<Args>(args)...);
-  }
-
-  template <typename U>
-  void destroy(const U* const p_object) {
-    static_assert(etl::alignment_of<U>::value <= VAlignment,
-                  "Type has incompatible alignment");
-    static_assert(sizeof(U) <= VTypeSize, "Type too large for pool");
-    p_object->~U();
-    ipool::release(p_object);
-  }
-
- private:
-  generic_pool_ext(const generic_pool_ext&) = delete;
-  generic_pool_ext& operator=(const generic_pool_ext&) = delete;
-};
 }  // namespace etl
 
 namespace etl {
@@ -5291,10 +5240,6 @@ class fixed_sized_memory_block_allocator : public imemory_block_allocator {
   static constexpr size_t Size = VSize;
 
   fixed_sized_memory_block_allocator() {}
-
-  bool is_owner_of(const void* const pblock) const {
-    return pool.is_in_pool(pblock);
-  }
 
  private:
   struct block {
@@ -5328,43 +5273,15 @@ namespace etl {
 
 typedef uint_least8_t message_id_t;
 
-typedef uint_least8_t message_router_id_t;
-}  // namespace etl
-
-namespace etl {
-
-class message_exception : public etl::exception {
- public:
-  message_exception(string_type reason_,
-                    string_type file_name_,
-                    numeric_type line_number_)
-      : exception(reason_, file_name_, line_number_) {}
-};
-
-class unhandled_message_exception : public etl::message_exception {
- public:
-  unhandled_message_exception(string_type file_name_, numeric_type line_number_)
-      : message_exception(("message:unknown"), file_name_, line_number_) {}
-};
-
 class imessage {
  public:
   virtual ~imessage() {}
-
-  [[nodiscard]] virtual etl::message_id_t get_message_id() const noexcept = 0;
 };
 
 template <etl::message_id_t ID_, typename TParent = etl::imessage>
 class message : public TParent {
-  static_assert((etl::is_base_of<etl::imessage, TParent>::value),
-                "TParent is not derived from etl::imessage");
-
  public:
   enum { ID = ID_ };
-
-  [[nodiscard]] etl::message_id_t get_message_id() const noexcept override {
-    return ID;
-  }
 };
 }  // namespace etl
 
