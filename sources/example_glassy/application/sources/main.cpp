@@ -34,6 +34,8 @@ class imemory_block_allocator : public successor<imemory_block_allocator> {
  public:
   imemory_block_allocator() {}
 
+  virtual ~imemory_block_allocator() {}
+
   void* allocate(size_t required_size, size_t required_alignment) {
     void* p = allocate_block(required_size, required_alignment);
 
@@ -1179,7 +1181,7 @@ inline constexpr in_place_t in_place{};
 
 template <typename T>
 struct in_place_type_t {
-  explicit constexpr in_place_type_t(){};
+  explicit constexpr in_place_type_t() {}
 };
 
 template <typename T>
@@ -4931,8 +4933,8 @@ mem_char(TPointer sb, TPointer se, T value) noexcept {
              sizeof(typename etl::iterator_traits<TPointer>::value_type) *
                  static_cast<size_t>(se - sb));
 
-  return (result == 0U) ? reinterpret_cast<char*>(se)
-                        : reinterpret_cast<char*>(result);
+  return (result == nullptr) ? reinterpret_cast<char*>(se)
+                             : reinterpret_cast<char*>(result);
 }
 template <typename TPointer, typename T>
 [[nodiscard]] typename etl::enable_if<
@@ -4945,8 +4947,8 @@ mem_char(TPointer sb, TPointer se, T value) noexcept {
              sizeof(typename etl::iterator_traits<TPointer>::value_type) *
                  static_cast<size_t>(se - sb));
 
-  return (result == 0U) ? reinterpret_cast<const char*>(se)
-                        : reinterpret_cast<const char*>(result);
+  return (result == nullptr) ? reinterpret_cast<const char*>(se)
+                             : reinterpret_cast<const char*>(result);
 }
 template <typename TPointer, typename T>
 [[nodiscard]] typename etl::enable_if<
@@ -4958,8 +4960,8 @@ mem_char(TPointer sb, size_t n, T value) noexcept {
       memchr(reinterpret_cast<void*>(sb), static_cast<char>(value),
              sizeof(typename etl::iterator_traits<TPointer>::value_type) * n);
 
-  return (result == 0U) ? reinterpret_cast<char*>(sb + n)
-                        : reinterpret_cast<char*>(result);
+  return (result == nullptr) ? reinterpret_cast<char*>(sb + n)
+                             : reinterpret_cast<char*>(result);
 }
 template <typename TPointer, typename T>
 [[nodiscard]] typename etl::enable_if<
@@ -4971,8 +4973,8 @@ mem_char(TPointer sb, size_t n, T value) noexcept {
       memchr(reinterpret_cast<const void*>(sb), static_cast<char>(value),
              sizeof(typename etl::iterator_traits<TPointer>::value_type) * n);
 
-  return (result == 0U) ? reinterpret_cast<const char*>(sb + n)
-                        : reinterpret_cast<const char*>(result);
+  return (result == nullptr) ? reinterpret_cast<const char*>(sb + n)
+                             : reinterpret_cast<const char*>(result);
 }
 }  // namespace etl
 
@@ -5016,7 +5018,7 @@ class ipool {
           throw(((etl::pool_element_size(
               "/home/user/work/other/etl/test/../include/etl/ipool.h", 117))));
         }
-      };
+      }
     }
 
     return reinterpret_cast<T*>(allocate_item());
@@ -5040,7 +5042,7 @@ class ipool {
           throw(((etl::pool_element_size(
               "/home/user/work/other/etl/test/../include/etl/ipool.h", 226))));
         }
-      };
+      }
     }
 
     p_object->~T();
@@ -5110,7 +5112,7 @@ class ipool {
           throw(((pool_no_allocation(
               "/home/user/work/other/etl/test/../include/etl/ipool.h", 369))));
         }
-      };
+      }
     }
 
     return p_value;
@@ -5122,7 +5124,7 @@ class ipool {
         throw(((pool_object_not_in_pool(
             "/home/user/work/other/etl/test/../include/etl/ipool.h", 381))));
       }
-    };
+    }
 
     if (p_next != nullptr) {
       *(uintptr_t*)p_value = reinterpret_cast<uintptr_t>(p_next);
@@ -5516,16 +5518,6 @@ namespace etl {
 
 typedef std::memory_order memory_order;
 
-static constexpr etl::memory_order memory_order_relaxed =
-    std::memory_order_relaxed;
-static constexpr etl::memory_order memory_order_consume =
-    std::memory_order_consume;
-static constexpr etl::memory_order memory_order_acquire =
-    std::memory_order_acquire;
-static constexpr etl::memory_order memory_order_release =
-    std::memory_order_release;
-static constexpr etl::memory_order memory_order_acq_rel =
-    std::memory_order_acq_rel;
 static constexpr etl::memory_order memory_order_seq_cst =
     std::memory_order_seq_cst;
 
@@ -5928,7 +5920,7 @@ namespace etl {
 
 class ireference_counter {
  public:
-  virtual ~ireference_counter(){};
+  virtual ~ireference_counter() {}
   virtual void set_reference_count(int32_t value) = 0;
   virtual void increment_reference_count() = 0;
   [[nodiscard]] virtual int32_t decrement_reference_count() = 0;
@@ -6540,7 +6532,7 @@ class reference_counted_message_pool
             "reference_counted_message_pool.h",
             125))));
       }
-    };
+    }
 
     return p;
   }
@@ -6571,12 +6563,12 @@ class reference_counted_message_pool
             "reference_counted_message_pool.h",
             152))));
       }
-    };
+    }
 
     return p;
   }
 
-  void release(const etl::ireference_counted_message& rcmessage) {
+  void release(const etl::ireference_counted_message& rcmessage) override {
     rcmessage.~ireference_counted_message();
     lock();
     bool released = memory_block_allocator.release(&rcmessage);
@@ -6589,7 +6581,7 @@ class reference_counted_message_pool
             "reference_counted_message_pool.h",
             167))));
       }
-    };
+    }
   }
 
   template <typename TMessage1, typename... TMessages>
@@ -6738,13 +6730,15 @@ constexpr etl::message_id_t MessageId2 = 2U;
 struct Message1 : public etl::message<MessageId1> {
   Message1(int i_) : i(i_) {}
 
-  ~Message1() {}
+  Message1(const Message1& oth) { i = oth.i; }
+
+  ~Message1() override {}
 
   int i;
 };
 
 struct Message2 : public etl::message<MessageId2> {
-  ~Message2() {}
+  ~Message2() override {}
 };
 
 int main() {
@@ -6767,5 +6761,5 @@ int main() {
   etl::reference_counted_message<Message1, etl::atomic_int> temp(message1,
                                                                  message_pool);
   const etl::ireference_counted_message& rcmessage = temp;
-  temp.~reference_counted_message<Message1, etl::atomic_int>();
+  rcmessage.~ireference_counted_message();
 }
