@@ -7,54 +7,6 @@
 #include <type_traits>
 
 namespace etl {
-namespace traits {
-
-static constexpr bool using_builtin_is_assignable = (1 == 1);
-static constexpr bool using_builtin_is_constructible = (1 == 1);
-static constexpr bool using_builtin_is_trivially_constructible = ((1 | 1) == 1);
-static constexpr bool using_builtin_is_trivially_destructible = ((1 | 0) == 1);
-static constexpr bool using_builtin_is_trivially_copyable = ((1 | 1) == 1);
-}  // namespace traits
-}  // namespace etl
-namespace etl {
-namespace traits {
-
-static constexpr bool using_stl = (1 == 1);
-static constexpr bool using_stlport = (0 == 1);
-static constexpr bool using_cpp11 = ((1 == 1) == 1);
-static constexpr bool using_cpp14 = ((1 == 1) == 1);
-static constexpr bool using_cpp17 = (((201703L >= 201703L) == 1) == 1);
-static constexpr bool using_cpp20 = (((201703L >= 202002L) == 1) == 1);
-static constexpr bool using_cpp23 = ((0 == 1) == 1);
-static constexpr bool using_exceptions = (1 == 1);
-static constexpr bool using_gcc_compiler = (1 == 1);
-static constexpr bool using_microsoft_compiler = (0 == 1);
-static constexpr bool using_arm5_compiler = (0 == 1);
-static constexpr bool using_arm6_compiler = (0 == 1);
-static constexpr bool using_arm7_compiler = (0 == 1);
-static constexpr bool using_clang_compiler = (0 == 1);
-static constexpr bool using_green_hills_compiler = (0 == 1);
-static constexpr bool using_iar_compiler = (0 == 1);
-static constexpr bool using_intel_compiler = (0 == 1);
-static constexpr bool using_texas_instruments_compiler = (0 == 1);
-static constexpr bool using_generic_compiler = (0 == 1);
-static constexpr bool has_8bit_types = (1 == 1);
-static constexpr bool has_64bit_types = (1 == 1);
-static constexpr bool has_atomic = (1 == 1);
-static constexpr bool has_nullptr = (1 == 1);
-static constexpr bool has_large_char = (0 == 1);
-static constexpr bool has_string_truncation_checks = (1 == 1);
-static constexpr bool has_error_on_string_truncation = (0 == 1);
-static constexpr bool has_string_clear_after_use = (1 == 1);
-static constexpr bool has_istring_repair = (1 == 1);
-static constexpr bool has_ivector_repair = (1 == 1);
-static constexpr bool has_mutable_array_view = (1 == 1);
-static constexpr bool has_ideque_repair = (1 == 1);
-static constexpr bool is_debug_build = (1 == 1);
-static constexpr long cplusplus = 201703L;
-}  // namespace traits
-}  // namespace etl
-namespace etl {
 
 template <typename T>
 class successor {
