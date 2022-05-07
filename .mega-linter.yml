@@ -1,12 +1,8 @@
-# Configuration file for MegaLinter
-# See all available variables at https://megalinter.github.io/configuration/ and in linters documentation
+# yaml-language-server: $schema=https://megalinter.github.io/latest/json-schemas/configuration.html
 
-APPLY_FIXES: all # all, none, or list of linter keys
-# ENABLE: # If you use ENABLE variable, all other languages/formats/tooling-formats will be disabled by default
-# ENABLE_LINTERS: # If you use ENABLE_LINTERS variable, all other linters will be disabled by default
-# DISABLE:
-  # - COPYPASTE # Uncomment to disable checks of excessive copy-pastes
-  # - SPELL # Uncomment to disable checks of spelling mistakes
+APPLY_FIXES: none # all, none, or list of linter keys
+ENABLE_LINTERS: SPELL_CSPELL,BASH_SHELLCHECK
 SHOW_ELAPSED_TIME: true
-FILEIO_REPORTER: true
-# DISABLE_ERRORS: true # Uncomment if you want MegaLinter to detect errors but not block CI to pass
+FILEIO_REPORTER: false
+PRINT_ALPACA: false
+SPELL_CSPELL_CONFIG_FILE: ci/checks/dictionaries/cspell.json

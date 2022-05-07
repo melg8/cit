@@ -1,0 +1,6 @@
+pytablewriter==0.64.2
+giturlparse==0.10.0
+multiprocessing-logging==0.3.1
+mdx-truly-sane-lists==1.2
+pychalk==2.0.1
+webpreview==1.6.0

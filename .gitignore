@@ -41,6 +41,9 @@ build_*
 *-build-*
 /result
 
+# Reports directory
+*report
+
 # Cmake
 CMakeLists.txt.user
 

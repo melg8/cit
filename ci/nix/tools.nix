@@ -10,6 +10,7 @@ let
   ls_lint = pkgs.callPackage ./ls_lint/default.nix { };
   remark_lint = (pkgs.callPackage ./remark/default.nix { }).shell.nodeDependencies;
   text_lint = (pkgs.callPackage ./text_lint/default.nix { }).shell.nodeDependencies;
+  mega_linter = pkgs.callPackage ./mega_linter/default.nix { };
   run_clang_tidy_script = pkgs.runCommand
     "run_clang_tidy"
     { }
@@ -67,6 +68,7 @@ in
   pkgs.cmake-format # 150 MB
   pkgs.gitlint
   pkgs.reuse
+  mega_linter
 
   # Potentially later.
   # Together 77 MB (+ 22 MB to total image size).
