@@ -49,14 +49,7 @@ packages.buildPythonApplication rec {
   ];
 
   postInstall = ''
-    echo "Im here!"
-    ls -la .
-    echo "target!"
-
     mkdir $out/lib/python3.9/site-packages/megalinter/descriptors
     cp -r descriptors $out/lib/python3.9/site-packages/megalinter
-    ls -la $out/lib/python3.9/site-packages/megalinter/descriptors
   '';
-
-
 }

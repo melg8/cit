@@ -70,3 +70,4 @@ hhhzxk
 kyiyk
 sbcc
 dateutil
+PYTHONPATH
