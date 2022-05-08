@@ -37,7 +37,7 @@
 
 # Build directory
 *build
-build_*
+/build_*
 *-build-*
 /result
 

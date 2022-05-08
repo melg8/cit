@@ -1,8 +1,15 @@
 # yaml-language-server: $schema=https://megalinter.github.io/latest/json-schemas/configuration.html
 
 APPLY_FIXES: none # all, none, or list of linter keys
-ENABLE_LINTERS: SPELL_CSPELL,BASH_SHELLCHECK
+ENABLE_LINTERS: SPELL_CSPELL,BASH_SHELLCHECK,CPP_CPPLINT
 SHOW_ELAPSED_TIME: true
 FILEIO_REPORTER: false
 PRINT_ALPACA: false
 SPELL_CSPELL_CONFIG_FILE: ci/checks/dictionaries/cspell.json
+SPELL_CSPELL_FILE_EXTENSIONS: "*"
+CPP_CPPLINT_ARGUMENTS: >
+  --recursive
+  --linelength=80
+  --includeorder=standardcfirst
+  --filter=-build/c++11,-build/header_guard,-runtime/references
+  --root=./sources
