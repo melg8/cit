@@ -1,23 +1,43 @@
-APPLY_FIXES: none # all, none, or list of linter keys
+# SPDX-FileCopyrightText: © 2022 Melg Eight <public.melg8@gmail.com>
+#
+# SPDX-License-Identifier: MIT
+
+---
+APPLY_FIXES: none  # all, none, or list of linter keys.
 ENABLE_LINTERS: [
   GIT_GIT_DIFF,
   SPELL_CSPELL,
   BASH_SHELLCHECK,
-  CPP_CPPLINT
-  ]
+  CPP_CPPLINT,
+  YAML_YAMLLINT
+]
 
+# Policies.
+# Disable check of generated .mega-linter.yml:
+FILTER_REGEX_EXCLUDE: '(\.github/workflows)'
+FAIL_IF_MISSING_LINTER_IN_FLAVOR: true
+FAIL_IF_UPDATED_SOURCES: true
+
+# Reports style.
 SHOW_ELAPSED_TIME: true
-FILEIO_REPORTER: false
-PRINT_ALPACA: false
+FILEIO_REPORTER: false  # Enable only if runner has internet connection.
+PRINT_ALPACA: false  # Don't print logo.
+LOG_LEVEL: INFO  # INFO - statistics output.
+                 # DEBUG - commands with arguments.
+                 # ERROR - error only output.
 
-# SPELL_CSPELL
+
+# SPELL_CSPELL.
 SPELL_CSPELL_CONFIG_FILE: ci/checks/dictionaries/cspell.json
 SPELL_CSPELL_FILE_EXTENSIONS: "*"
 
-# CPP_CPPLINT
+# CPP_CPPLINT.
 CPP_CPPLINT_ARGUMENTS: >
   --recursive
   --linelength=80
   --includeorder=standardcfirst
   --filter=-build/c++11,-build/header_guard,-runtime/references
   --root=./sources
+
+# YAML_YAMLLINT.
+YAML_YAMLLINT_FILTER_REGEX_EXCLUDE: '(workflows/\.mega-linter\.yml)'
