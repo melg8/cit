@@ -1,0 +1,99 @@
+# SPDX-FileCopyrightText: © 2022 Melg Eight <public.melg8@gmail.com>
+#
+# SPDX-License-Identifier: MIT
+
+diff --git a/MegaLinter.py b/MegaLinter.py
+index 57c3dc22d..ab9e36e6a 100644
+--- a/MegaLinter.py
++++ b/MegaLinter.py
+@@ -646,7 +646,7 @@ class Megalinter:
+             config.delete()
+             self.check_updated_sources_failure()
+         else:
+-            logging.error(c.red("❌ Error(s) have been found during linting"))
++            logging.error(c.red("⛔ Error(s) have been found during linting"))
+             logging.warning(
+                 "To disable linters or customize their checks, you can use a .mega-linter.yml file "
+                 "at the root of your repository"
+@@ -665,7 +665,7 @@ class Megalinter:
+         if self.has_updated_sources > 0 and self.fail_if_updated_sources is True:
+             logging.error(
+                 c.red(
+-                    "❌ Sources has been updated by linter auto-fixes, and FAIL_IF_UPDATED_SOURCES has been set to true"
++                    "⛔ Sources has been updated by linter auto-fixes, and FAIL_IF_UPDATED_SOURCES has been set to true"
+                 )
+             )
+             sys.exit(1)
+diff --git a/reporters/ConsoleLinterReporter.py b/reporters/ConsoleLinterReporter.py
+index b263a4ecd..567645db4 100644
+--- a/reporters/ConsoleLinterReporter.py
++++ b/reporters/ConsoleLinterReporter.py
+@@ -100,9 +100,9 @@ class ConsoleLinterReporter(Reporter):
+             )
+         elif self.master.return_code != 0 and self.master.status != "success":
+             logging.error(
+-                c.red(f"❌ {base_phrase}: Found {total_errors} error(s) - ({elapse})")
++                c.red(f"⛔ {base_phrase}: Found {total_errors} error(s) - ({elapse})")
+             )
+         else:
+             logging.error(
+-                f"❌ There is a MegaLinter issue, please report it: {self.master.return_code} / {self.master.status}"
++                f"⛔ There is a MegaLinter issue, please report it: {self.master.return_code} / {self.master.status}"
+             )
+diff --git a/reporters/ConsoleReporter.py b/reporters/ConsoleReporter.py
+index b1f22a6ad..95c97e392 100644
+--- a/reporters/ConsoleReporter.py
++++ b/reporters/ConsoleReporter.py
+@@ -72,7 +72,7 @@ class ConsoleReporter(Reporter):
+                     if linter.status == "success" and linter.return_code == 0
+                     else "◬"
+                     if linter.status != "success" and linter.return_code == 0
+-                    else "❌"
++                    else "⛔"
+                 )
+                 errors = str(linter.total_number_errors)
+                 if linter.cli_lint_mode == "project":
+diff --git a/reporters/TextReporter.py b/reporters/TextReporter.py
+index 90b4578cb..672f5ac29 100644
+--- a/reporters/TextReporter.py
++++ b/reporters/TextReporter.py
+@@ -57,7 +57,7 @@ class TextReporter(Reporter):
+         if self.master.cli_lint_mode == "file":
+             for file_result in self.master.files_lint_results:
+                 status = (
+-                    "✅ [SUCCESS]" if file_result["status_code"] == 0 else "❌ [ERROR]"
++                    "✅ [SUCCESS]" if file_result["status_code"] == 0 else "⛔ [ERROR]"
+                 )
+                 if file_result["file"] is not None:
+                     file_nm = utils.normalize_log_string(file_result["file"])
+@@ -76,7 +76,7 @@ class TextReporter(Reporter):
+         # Bulk output as linter has run all project or files in one call
+         elif self.master.cli_lint_mode in ["project", "list_of_files"]:
+             workspace_nm = utils.normalize_log_string(self.master.workspace)
+-            status = "✅ [SUCCESS]" if self.master.status == "success" else "❌ [ERROR]"
++            status = "✅ [SUCCESS]" if self.master.status == "success" else "⛔ [ERROR]"
+             text_report_lines += [f"{status} for workspace {workspace_nm}"]
+             if self.report_type == "detailed" or self.master.status != "success":
+                 text_report_lines += [f"Linter raw log:\n{self.master.stdout}"]
+diff --git a/utils_reporter.py b/utils_reporter.py
+index 72229ddbe..3d0187949 100644
+--- a/utils_reporter.py
++++ b/utils_reporter.py
+@@ -27,7 +27,7 @@ def build_markdown_summary(reporter_self, action_run_url):
+                 if linter.status == "success" and linter.return_code == 0
+                 else ":warning:"
+                 if linter.status != "success" and linter.return_code == 0
+-                else "❌"
++                else "⛔"
+             )
+             first_col = f"{status} {linter.descriptor_id}"
+             lang_lower = linter.descriptor_id.lower()
+@@ -72,7 +72,7 @@ def build_markdown_summary(reporter_self, action_run_url):
+         and reporter_self.master.status == "success"
+         else ":warning:"
+         if reporter_self.master.status == "warning"
+-        else "❌"
++        else "⛔"
+     )
+     status_with_href = (
+         status

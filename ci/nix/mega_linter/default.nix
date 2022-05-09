@@ -34,6 +34,9 @@ packages.buildPythonApplication rec {
 
     # Add cit flavor description to flavor factory.
     ./patches/flavor_factory.patch
+
+    # Use fire icon when error occurs.
+    ./patches/icons.patch
   ];
 
   pythonPath = with packages; [ setuptools ];
