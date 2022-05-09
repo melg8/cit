@@ -61,7 +61,7 @@ jobs:
       - if: steps.filter.outputs.ci_nix == 'true'
         run: |
           nix-shell --run ./ci/checks/all.sh
-  lint_all_in_docker_from_nix_shell:
+  lint_all_from_nix_shell_v2:
     runs-on: ubuntu-20.04
     needs: build_docker
     steps:
@@ -79,9 +79,44 @@ jobs:
           nix_path: nixpkgs=channel:nixos-unstable
       - if: steps.filter.outputs.ci_nix == 'true'
         run: |
+          nix-shell --run ./ci/checks/check_all.sh
+  lint_all_in_docker_from_nix_shell:
+    runs-on: ubuntu-20.04
+    needs: build_docker
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+      - uses: dorny/paths-filter@v2
+        id: filter
+        with:
+          filters: |
+            ci_nix:
+              - 'ci/nix/**'
+      - if: steps.filter.outputs.ci_nix == 'true'
+        run: |
           sudo chmod 777 "$(pwd)"
           sudo chmod -R 777 "$(pwd)/.git"
           ./ci/docker/docker_run_nix_shell.sh ./ci/checks/all.sh
+      - uses: docker://melg8/cit:0.0.7
+  lint_all_in_docker_from_nix_shell_v2:
+    runs-on: ubuntu-20.04
+    needs: build_docker
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+      - uses: dorny/paths-filter@v2
+        id: filter
+        with:
+          filters: |
+            ci_nix:
+              - 'ci/nix/**'
+      - if: steps.filter.outputs.ci_nix == 'true'
+        run: |
+          sudo chmod 777 "$(pwd)"
+          sudo chmod -R 777 "$(pwd)/.git"
+          ./ci/docker/docker_run_nix_shell.sh ./ci/checks/check_all.sh
       - uses: docker://melg8/cit:0.0.7
   lint_all_in_docker:
     runs-on: ubuntu-20.04

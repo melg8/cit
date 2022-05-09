@@ -16,5 +16,4 @@ stdenv.mkDerivation rec {
     rm ./default.nix
     cp -R ./ $out
   '';
-
 }
