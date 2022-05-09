@@ -9,13 +9,6 @@ set -e
 DEFAULT_WORKSPACE="$(pwd)"
 export DEFAULT_WORKSPACE
 
-if [ -z "${PYTHONPATH}" ]; then
-env PYTHONPATH="$(find /nix/store \
-                -name 'site-packages' \
-                -exec echo {} + | sed -e 's/ /:/g')" \
-python -m megalinter.run
-else
-python -m megalinter.run
-fi
+megalinter
 
 echo "All checks are passed."

@@ -1,9 +1,8 @@
-{ lib, callPackage, python39, python39Packages, fetchFromGitHub }:
+{ lib, callPackage, runtimeShell,  python39, python39Packages, fetchFromGitHub }:
 let
   packages = python39Packages;
   packageOverrides = callPackage ./python-packages.nix { };
   python = python39.override { inherit packageOverrides; };
-  python_with_packages = python.withPackages (ps: [ ps.pytablewriter ]);
 in
 packages.buildPythonApplication rec {
   pname = "mega_linter";
@@ -24,6 +23,8 @@ packages.buildPythonApplication rec {
       "package_dir = {'megalinter': '.'},
        install_requires=["
   '';
+
+  pythonPath = with packages; [ setuptools ];
 
   propagatedBuildInputs = with packages; [
     pytest-cov
@@ -51,5 +52,12 @@ packages.buildPythonApplication rec {
   postInstall = ''
     mkdir $out/lib/python3.9/site-packages/megalinter/descriptors
     cp -r descriptors $out/lib/python3.9/site-packages/megalinter
+
+    mkdir -p $out/bin
+    cat << EOF > $out/bin/megalinter
+    #!${runtimeShell}
+    PYTHONPATH="$PYTHONPATH" exec ${python}/bin/python -m megalinter.run "$@"
+    EOF
+    chmod +x $out/bin/megalinter
   '';
 }
