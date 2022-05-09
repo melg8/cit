@@ -3,7 +3,7 @@
 # SPDX-License-Identifier: MIT
 
 ---
-APPLY_FIXES: none  # all, none, or list of linter keys.
+APPLY_FIXES: none # all, none, or list of linter keys.
 
 #  ENABLE_LINTERS: [
 #    GIT_GIT_DIFF,
@@ -14,24 +14,24 @@ APPLY_FIXES: none  # all, none, or list of linter keys.
 #  ]
 
 # Linters that are not supported by cit but enabled for all megalinter images.
-DISABLE_LINTERS: [
-  BASH_EXEC,
-  BASH_SHFMT,
-  C_CPPLINT,
-  COPYPASTE_JSCPD,
-  CREDENTIALS_SECRETLINT,
-  JAVASCRIPT_STANDARD,
-  JSON_JSONLINT,
-  JSON_ESLINT_PLUGIN_JSONC,
-  JSON_V8R,
-  JSON_PRETTIER,
-  MARKDOWN_MARKDOWNLINT,
-  MARKDOWN_MARKDOWN_LINK_CHECK,
-  MARKDOWN_MARKDOWN_TABLE_FORMATTER,
-  SPELL_MISSPELL,
-  YAML_PRETTIER,
-  YAML_V8R
-]
+DISABLE_LINTERS:
+  [
+    BASH_EXEC,
+    BASH_SHFMT,
+    C_CPPLINT,
+    COPYPASTE_JSCPD,
+    CREDENTIALS_SECRETLINT,
+    JAVASCRIPT_STANDARD,
+    JSON_JSONLINT,
+    JSON_ESLINT_PLUGIN_JSONC,
+    JSON_V8R,
+    JSON_PRETTIER,
+    MARKDOWN_MARKDOWNLINT,
+    MARKDOWN_MARKDOWN_LINK_CHECK,
+    MARKDOWN_MARKDOWN_TABLE_FORMATTER,
+    SPELL_MISSPELL,
+    YAML_V8R,
+  ]
 
 # Policies.
 # Disable check of generated .mega-linter.yml:
@@ -41,8 +41,8 @@ FAIL_IF_UPDATED_SOURCES: true
 
 # Reports style.
 SHOW_ELAPSED_TIME: true
-FILEIO_REPORTER: false  # Enable only if runner has internet connection.
-PRINT_ALPACA: false  # Don't print logo.
+FILEIO_REPORTER: false # Enable only if runner has internet connection.
+PRINT_ALPACA: false # Don't print logo.
 
 # INFO - statistics output.
 # DEBUG - commands with arguments.
@@ -60,6 +60,3 @@ CPP_CPPLINT_ARGUMENTS: >
   --includeorder=standardcfirst
   --filter=-build/c++11,-build/header_guard,-runtime/references
   --root=./sources
-
-# YAML_YAMLLINT.
-YAML_YAMLLINT_FILTER_REGEX_EXCLUDE: '(workflows/\.mega-linter\.yml)'

@@ -13,9 +13,9 @@ parse:
         - BAR
         - BAZ
       kwargs:
-        HEADERS: '*'
-        SOURCES: '*'
-        DEPENDS: '*'
+        HEADERS: "*"
+        SOURCES: "*"
+        DEPENDS: "*"
   _help_vartags:
     - Specify variable tags.
   vartags: []
@@ -56,9 +56,9 @@ format:
   dangle_parens: false
   _help_dangle_align:
     - If the trailing parenthesis must be 'dangled' on its on
-    - 'line, then align it to this reference: `prefix`: the start'
-    - 'of the statement,  `prefix-indent`: the start of the'
-    - 'statement, plus one indentation  level, `child`: align to'
+    - "line, then align it to this reference: `prefix`: the start"
+    - "of the statement,  `prefix-indent`: the start of the"
+    - "statement, plus one indentation  level, `child`: align to"
     - the column of the arguments
   dangle_align: prefix
   _help_min_prefix_chars:
@@ -110,7 +110,7 @@ _help_markup: Options affecting comment reflow and formatting.
 markup:
   _help_bullet_char:
     - What character to use for bulleted lists
-  bullet_char: '*'
+  bullet_char: "*"
   _help_enum_char:
     - What character to use as punctuation after numerals in an
     - enumerated list
@@ -137,7 +137,7 @@ markup:
     - If a comment line matches starts with this pattern then it
     - is explicitly a trailing comment for the preceding
     - argument. Default is '#<'
-  explicit_trailing_pattern: '#<'
+  explicit_trailing_pattern: "#<"
   _help_hashruler_min_length:
     - If a comment line starts with at least this many consecutive
     - hash characters, then don't lstrip() them off. This allows
@@ -159,14 +159,14 @@ lint:
   disabled_codes: []
   _help_function_pattern:
     - regular expression pattern describing valid function names
-  function_pattern: '[0-9a-z_]+'
+  function_pattern: "[0-9a-z_]+"
   _help_macro_pattern:
     - regular expression pattern describing valid macro names
-  macro_pattern: '[0-9A-Z_]+'
+  macro_pattern: "[0-9A-Z_]+"
   _help_global_var_pattern:
     - regular expression pattern describing valid names for
     - variables with global (cache) scope
-  global_var_pattern: '[A-Z][0-9A-Z_]+'
+  global_var_pattern: "[A-Z][0-9A-Z_]+"
   _help_internal_var_pattern:
     - regular expression pattern describing valid names for
     - variables with global scope (but internal semantic)
@@ -174,7 +174,7 @@ lint:
   _help_local_var_pattern:
     - regular expression pattern describing valid names for
     - variables with local scope
-  local_var_pattern: '[a-z][a-z0-9_]+'
+  local_var_pattern: "[a-z][a-z0-9_]+"
   _help_private_var_pattern:
     - regular expression pattern describing valid names for
     - private directory variables
@@ -182,15 +182,15 @@ lint:
   _help_public_var_pattern:
     - regular expression pattern describing valid names for public
     - directory variables
-  public_var_pattern: '[A-Z][0-9A-Z_]+'
+  public_var_pattern: "[A-Z][0-9A-Z_]+"
   _help_argument_var_pattern:
     - regular expression pattern describing valid names for
     - function/macro arguments and loop variables.
-  argument_var_pattern: '[a-z][a-z0-9_]+'
+  argument_var_pattern: "[a-z][a-z0-9_]+"
   _help_keyword_pattern:
     - regular expression pattern describing valid names for
     - keywords used in functions or macros
-  keyword_pattern: '[A-Z][0-9A-Z_]+'
+  keyword_pattern: "[A-Z][0-9A-Z_]+"
   _help_max_conditionals_custom_parser:
     - In the heuristic for C0201, how many conditionals to match
     - within a loop in before considering the loop a parser.

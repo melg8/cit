@@ -4,32 +4,27 @@
 
 ---
 {
-  "rules": {
-    "abbr-within-parentheses": true,
-    "alex": {
-      "allow": []
+  "rules":
+    {
+      "abbr-within-parentheses": true,
+      "alex": { "allow": [] },
+      "apostrophe": true,
+      "date-weekday-mismatch": true,
+      "diacritics": true,
+      "en-capitalization": true,
+      "en-max-word-count": true,
+      "footnote-order": true,
+      "max-comma": { "max": 7 },
+      "max-doc-width": true,
+      "no-dead-link": false,
+      "no-empty-section": true,
+      "no-exclamation-question-mark": true,
+      "no-start-duplicated-conjunction": true,
+      "period-in-list-item": true,
+      "stop-words": { "defaultWords": true },
+      "terminology": true,
+      "write-good": true,
+      "@textlint-rule/textlint-rule-no-invalid-control-character": true,
+      "@textlint-rule/textlint-rule-no-unmatched-pair": true,
     },
-    "apostrophe": true,
-    "date-weekday-mismatch": true,
-    "diacritics": true,
-    "en-capitalization": true,
-    "en-max-word-count": true,
-    "footnote-order": true,
-    "max-comma": {
-      "max": 7
-    },
-    "max-doc-width": true,
-    "no-dead-link": false,
-    "no-empty-section": true,
-    "no-exclamation-question-mark": true,
-    "no-start-duplicated-conjunction": true,
-    "period-in-list-item": true,
-    "stop-words": {
-      "defaultWords": true,
-    },
-    "terminology": true,
-    "write-good": true,
-    "@textlint-rule/textlint-rule-no-invalid-control-character": true,
-    "@textlint-rule/textlint-rule-no-unmatched-pair": true,
-  }
 }

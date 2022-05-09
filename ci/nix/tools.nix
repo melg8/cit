@@ -53,6 +53,7 @@ in
   # Together 281 MB.
   pkgs.commitlint
   pkgs.nodePackages.cspell
+  pkgs.nodePackages.prettier
   text_lint # 247 MB.
   remark_lint # 209 MB.
 
