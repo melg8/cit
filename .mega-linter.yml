@@ -16,7 +16,6 @@ APPLY_FIXES: none # all, none, or list of linter keys.
 # Linters that are not supported by cit but enabled for all megalinter images.
 DISABLE_LINTERS:
   [
-    BASH_EXEC,
     BASH_SHFMT,
     C_CPPLINT,
     COPYPASTE_JSCPD,
@@ -48,6 +47,9 @@ PRINT_ALPACA: false # Don't print logo.
 # DEBUG - commands with arguments.
 # ERROR - error only output.
 LOG_LEVEL: INFO
+
+# BASH_EXEC.
+ERROR_ON_MISSING_EXEC_BIT: true
 
 # SPELL_CSPELL.
 SPELL_CSPELL_CONFIG_FILE: ci/checks/dictionaries/cspell.json
