@@ -95,6 +95,18 @@ jobs:
           sudo chmod -R 777 "$(pwd)/.git"
           ./ci/docker/docker_run.sh ./ci/checks/all.sh
       - uses: docker://melg8/cit:0.0.7
+  lint_all_in_docker_v2:
+    runs-on: ubuntu-20.04
+    needs: build_docker
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+      - run: |
+          sudo chmod 777 "$(pwd)"
+          sudo chmod -R 777 "$(pwd)/.git"
+          ./ci/docker/docker_run.sh ./ci/checks/check_all.sh
+      - uses: docker://melg8/cit:0.0.7
   build_gcc:
     runs-on: ubuntu-20.04
     needs: build_docker
