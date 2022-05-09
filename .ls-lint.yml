@@ -14,7 +14,8 @@ ls:
   .sh: snake_case
   .patch: snake_case
   .txt: regex:CMakeLists | snake_case
-  .nix: regex:node-env | regex:node-packages | snake_case
+  .nix: >
+    regex:node-env | regex:node-packages | regex:python-packages | snake_case
 
 ignore:
   - .config

@@ -1,0 +1,16 @@
+# SPDX-FileCopyrightText: © 2022 Melg Eight <public.melg8@gmail.com>
+#
+# SPDX-License-Identifier: MIT
+
+diff --git a/flavor_factory.py b/flavor_factory.py
+index 2976adb2e..9f659bb5a 100644
+--- a/flavor_factory.py
++++ b/flavor_factory.py
+@@ -41,6 +41,7 @@ def list_flavor_linters(flavor_id):
+ def list_megalinter_flavors():
+     flavors = {
+         "all": {"label": "MegaLinter for any type of project"},
++        "cit": {"label": "Control it! Comprehensive solution for C++ project"},
+         "ci_light": {
+             "label": "Optimized for CI items (Dockerfile, Jenkinsfile, JSON/YAML schemas, XML)"
+         },

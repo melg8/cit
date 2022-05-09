@@ -9,6 +9,9 @@ set -e
 DEFAULT_WORKSPACE="$(pwd)"
 export DEFAULT_WORKSPACE
 
-megalinter
+MEGALINTER_FLAVOR=cit
+export MEGALINTER_FLAVOR
+
+megalinter --flavor
 
 echo "All checks are passed."

@@ -1,0 +1,26 @@
+# SPDX-FileCopyrightText: © 2022 Melg Eight <public.melg8@gmail.com>
+#
+# SPDX-License-Identifier: MIT
+
+diff --git a/descriptors/all_flavors.json b/descriptors/all_flavors.json
+index 6acc1d037..677123018 100644
+--- a/descriptors/all_flavors.json
++++ b/descriptors/all_flavors.json
+@@ -1,4 +1,17 @@
+ {
++    "cit": {
++        "descriptors": [
++            "GIT"
++        ],
++        "label": "Control it! Comprehensive solution for C++ projects",
++        "linters": [
++            "GIT_GIT_DIFF",
++            "SPELL_CSPELL",
++            "BASH_SHELLCHECK",
++            "CPP_CPPLINT",
++            "YAML_YAMLLINT"
++        ]
++    },
+     "ci_light": {
+         "descriptors": [
+             "GIT"

@@ -94,3 +94,5 @@ standardcfirst
 suppr
 testdata
 vartags
+JSONLINT
+MARKDOWNLINT

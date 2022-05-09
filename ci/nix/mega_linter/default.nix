@@ -1,8 +1,13 @@
-{ lib, callPackage, runtimeShell,  python39, python39Packages, fetchFromGitHub }:
+# SPDX-FileCopyrightText: © 2022 Melg Eight <public.melg8@gmail.com>
+#
+# SPDX-License-Identifier: MIT
+
+{ callPackage, runtimeShell, python39, python39Packages, fetchFromGitHub }:
 let
   packages = python39Packages;
   packageOverrides = callPackage ./python-packages.nix { };
   python = python39.override { inherit packageOverrides; };
+  custom_linters = callPackage ./custom_linters/default.nix { };
 in
 packages.buildPythonApplication rec {
   pname = "mega_linter";
@@ -17,12 +22,19 @@ packages.buildPythonApplication rec {
   sourceRoot = "source/megalinter";
   doCheck = false;
 
-  postPatch = ''
-    substituteInPlace setup.py --replace \
-      "install_requires=[" \
-      "package_dir = {'megalinter': '.'},
-       install_requires=["
-  '';
+  patches = [
+    # Make possible to build from megalinter subdirectory.
+    ./patches/setup.patch
+
+    # Add cit flavor.
+    ./patches/all_flavors.patch
+
+    # Add cit flavor to schema.
+    ./patches/json_schema.patch
+
+    # Add cit flavor description to flavor factory.
+    ./patches/flavor_factory.patch
+  ];
 
   pythonPath = with packages; [ setuptools ];
 
@@ -40,8 +52,10 @@ packages.buildPythonApplication rec {
     jsonpickle
     pytest
     markdown
-    python.pkgs.pytablewriter
     terminaltables
+
+    # Not packaged by nixpkgs.
+    python.pkgs.pytablewriter
     python.pkgs.giturlparse
     python.pkgs.multiprocessing-logging
     python.pkgs.mdx-truly-sane-lists
@@ -50,9 +64,14 @@ packages.buildPythonApplication rec {
   ];
 
   postInstall = ''
+    # Install default descriptors.
     mkdir $out/lib/python3.9/site-packages/megalinter/descriptors
     cp -r descriptors $out/lib/python3.9/site-packages/megalinter
 
+    # Copy custom descriptors.
+    cp -r ${custom_linters}/* $out/lib/python3.9/site-packages/megalinter
+
+    # Enable usage of megalinter as executable script form bin.
     mkdir -p $out/bin
     cat << EOF > $out/bin/megalinter
     #!${runtimeShell}

@@ -71,3 +71,5 @@ kyiyk
 sbcc
 dateutil
 PYTHONPATH
+Jenkinsfile
+gitpython

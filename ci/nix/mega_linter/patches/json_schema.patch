@@ -1,0 +1,16 @@
+# SPDX-FileCopyrightText: © 2022 Melg Eight <public.melg8@gmail.com>
+#
+# SPDX-License-Identifier: MIT
+
+diff --git a/descriptors/schemas/megalinter-descriptor.jsonschema.json b/descriptors/schemas/megalinter-descriptor.jsonschema.json
+index 7a8e57169..47e08364f 100644
+--- a/descriptors/schemas/megalinter-descriptor.jsonschema.json
++++ b/descriptors/schemas/megalinter-descriptor.jsonschema.json
+@@ -41,6 +41,7 @@
+       "enum": [
+         "all_flavors",
+         "all",
++        "cit",
+         "ci_light",
+         "dart",
+         "documentation",
