@@ -1,0 +1,27 @@
+# SPDX-FileCopyrightText: © 2022 Melg Eight <public.melg8@gmail.com>
+#
+# SPDX-License-Identifier: MIT
+
+---
+descriptor_id: LICENSE
+descriptor_label: "license"
+descriptor_type: other
+descriptor_flavors:
+  - cit
+lint_all_files: true
+linters:
+  # REUSE
+  - linter_name: reuse
+    linter_url: https://github.com/fsfe/reuse-tool
+    linter_rules_url: https://reuse.software/spec/
+    cli_lint_mode: project
+    linter_text: reuse linter checks for compliance to REUSE 3.0 spec
+    cli_help_arg_name: "--help"
+    cli_executable: reuse
+    cli_lint_extra_args:
+      - "lint"
+    examples:
+      - "reuse lint"
+    install:
+      pip:
+        - reuse
