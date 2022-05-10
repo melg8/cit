@@ -6,7 +6,7 @@ diff --git a/descriptors/all_flavors.json b/descriptors/all_flavors.json
 index 6acc1d037..677123018 100644
 --- a/descriptors/all_flavors.json
 +++ b/descriptors/all_flavors.json
-@@ -1,4 +1,23 @@
+@@ -1,4 +1,24 @@
  {
 +    "cit": {
 +        "descriptors": [
@@ -24,7 +24,8 @@ index 6acc1d037..677123018 100644
 +            "YAML_PRETTIER",
 +            "YAML_YAMLLINT",
 +            "MARKDOWN_REMARK_LINT",
-+            "MARKDOWN_MDL"
++            "MARKDOWN_MDL",
++            "MARKDOWN_TEXTLINT"
 +        ]
 +    },
      "ci_light": {

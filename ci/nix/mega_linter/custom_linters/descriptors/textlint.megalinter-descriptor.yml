@@ -1,0 +1,50 @@
+# SPDX-FileCopyrightText: © 2022 Melg Eight <public.melg8@gmail.com>
+#
+# SPDX-License-Identifier: MIT
+
+---
+descriptor_id: MARKDOWN
+descriptor_label: "markdown"
+descriptor_type: format
+descriptor_flavors:
+  - cit
+file_extensions:
+  - ".md"
+linters:
+  # MARKDOWN_TEXTLINT
+  - linter_name: textlint
+    is_formatter: false
+    linter_url: https://github.com/textlint/textlint
+    linter_rules_url:
+      - https://github.com/textlint/textlint/wiki/Collection-of-textlint-rule
+    cli_lint_mode: list_of_files
+    cli_help_arg_name: "--help"
+    cli_config_arg_name: "--config"
+    cli_lint_extra_args:
+      - "--experimental"
+      - "--parallel"
+    examples:
+      - "textlint readme.md"
+    install:
+      npm:
+        - textlint@12.1.1
+        - "@textlint-rule/textlint-rule-no-invalid-control-character@2.0.0"
+        - "@textlint-rule/textlint-rule-no-unmatched-pair@1.0.8"
+        - "textlint-rule-abbr-within-parentheses@1.0.2"
+        - "textlint-rule-alex@3.0.0"
+        - "textlint-rule-apostrophe@2.0.0"
+        - "textlint-rule-date-weekday-mismatch@1.0.6"
+        - "textlint-rule-diacritics@1.0.0"
+        - "textlint-rule-en-capitalization@2.0.3"
+        - "textlint-rule-en-max-word-count@1.1.0"
+        - "textlint-rule-footnote-order@1.0.3"
+        - "textlint-rule-max-comma@2.0.2"
+        - "textlint-rule-max-doc-width@1.4.0"
+        - "textlint-rule-no-dead-link@4.8.0"
+        - "textlint-rule-no-empty-section@1.1.0"
+        - "textlint-rule-no-exclamation-question-mark@1.1.0"
+        - "textlint-rule-no-start-duplicated-conjunction@2.0.2"
+        - "textlint-rule-period-in-list-item@0.3.2"
+        - "textlint-rule-stop-words@2.0.9"
+        - "textlint-rule-terminology@2.1.5"
+        - "textlint-rule-write-good@2.0.0"
