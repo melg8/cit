@@ -11,6 +11,7 @@ APPLY_FIXES: all # all, none, or list of linter keys.
 # Linters that are not supported by cit but enabled for all megalinter images.
 DISABLE_LINTERS:
   [
+    ACTION_ACTIONLINT,
     C_CPPLINT,
     COPYPASTE_JSCPD,
     CREDENTIALS_SECRETLINT,
@@ -27,8 +28,6 @@ DISABLE_LINTERS:
   ]
 
 # Policies.
-# Disable check of generated .mega-linter.yml:
-FILTER_REGEX_EXCLUDE: '(\.github/workflows)'
 FAIL_IF_MISSING_LINTER_IN_FLAVOR: true
 FAIL_IF_UPDATED_SOURCES: true
 FORMATTERS_DISABLE_ERRORS: false

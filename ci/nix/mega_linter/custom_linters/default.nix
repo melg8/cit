@@ -3,7 +3,6 @@
 # SPDX-License-Identifier: MIT
 
 { stdenv }:
-
 stdenv.mkDerivation rec {
   pname = "mega_linter_custom_files";
   version = "0.0.7";
