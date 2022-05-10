@@ -6,7 +6,7 @@
 
 set -e
 
-remark . -r rc.yaml -f
+remark . -o --rc-path rc.yaml --frail
 
 mdl .
 

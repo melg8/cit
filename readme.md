@@ -8,10 +8,10 @@ SPDX-License-Identifier: MIT
 
 [![Checks](https://github.com/melg8/cit/actions/workflows/checks.yml/badge.svg?branch=main)][1]
 [![codecov](https://codecov.io/gh/melg8/cit/branch/develop/graph/badge.svg?token=S3LWXOZDEJ)][2]
-[![Language grade: C/C++](https://img.shields.io/lgtm/grade/cpp/g/melg8/cit.svg?logo=lgtm&logoWidth=18)][5]
+[![Language grade: C/C++](https://img.shields.io/lgtm/grade/cpp/g/melg8/cit.svg?logo=lgtm\&logoWidth=18)][5]
 [![REUSE status](https://api.reuse.software/badge/github.com/melg8/cit)][10]
 [![MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://github.com/melg8/cit/blob/main/license.md)
-[![built with nix](https://img.shields.io/badge/Built_With-Nix-5277C3.svg?logo=nixos&labelColor=73C3D5)][3]
+[![built with nix](https://img.shields.io/badge/Built_With-Nix-5277C3.svg?logo=nixos\&labelColor=73C3D5)][3]
 
 Control your c++ code using this continuous integration template.
 
@@ -28,8 +28,8 @@ ready to use template.
 - Showcase techniques of testing different properties of codebase
 
 - Provide reproducible builds and environments through
-    [**docker**](https://www.docker.com/) and
-    [**nix**](https://github.com/nix-community/awesome-nix)
+  [**docker**](https://www.docker.com/) and
+  [**nix**](https://github.com/nix-community/awesome-nix)
 
 - Encourage responsible attitude towards the development of quality software
 
@@ -46,47 +46,47 @@ issues and requests are welcome.
 1. [Nix](https://github.com/nixos/nix) used to reproducibly build
    tar archive with docker image containing all linters:
 
-   ``` bash
+   ```bash
    nix build -f ci/nix/docker_build.nix --enforce-determinism --repeat 1 --keep-failed
    ```
 
 1. You can check that produced result has same hash sum as result
    produced by ci:
 
-   ``` bash
+   ```bash
    sha256sum result
    ```
 
 1. Docker image than loaded from result:
 
-   ``` bash
+   ```bash
    docker load < result
    ```
 
 1. To run all linters checks run inside that container use docker_run.sh script
    with all.sh script as argument:
 
-   ``` bash
+   ```bash
    ci/docker/docker_run.sh ci/checks/all.sh
    ```
 
 1. To run more specific checks use docker_run.sh script with name of
    script from ci/checks:
 
-   ``` bash
+   ```bash
    ci/docker/docker_run.sh ci/checks/md_files_style.sh
    ```
 
 1. To run interactive shell inside docker image:
 
-   ``` bash
+   ```bash
    ci/docker/run_shell.sh
    ```
 
 1. If you don’t want to build docker image, you can load prepared docker
    image from docker hub:
 
-   ``` bash
+   ```bash
    ci/docker/docker_pull.sh
    ```
 
@@ -218,12 +218,21 @@ Big thanks to contributors. You can see contributors in [credits](credits.md).
 See [license](license.md) for more information.
 
 [1]: https://github.com/melg8/cit/actions/workflows/checks.yml
+
 [2]: https://codecov.io/gh/melg8/cit
+
 [3]: https://builtwithnix.org
+
 [4]: https://nixos.org/manual/nix/unstable/command-ref/nix-shell.html
+
 [5]: https://lgtm.com/projects/g/melg8/cit/context:cpp
+
 [6]: https://github.com/melg8/cit/actions
+
 [7]: https://app.codecov.io/gh/melg8/cit
+
 [8]: https://github.com/dependabot/dependabot-core
+
 [9]: https://github.com/approvals/ApprovalTests.cpp
+
 [10]: https://api.reuse.software/info/github.com/melg8/cit

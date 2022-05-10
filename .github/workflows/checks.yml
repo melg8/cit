@@ -40,6 +40,7 @@ jobs:
         run: |
           sudo chmod 777 "$(pwd)"
           sudo chmod -R 777 "$(pwd)/.git"
+          sudo chown -R 1000:100 "$(pwd)"
           ./ci/docker/docker_run_with_network.sh ./ci/docker/build_with_nix.sh
       - uses: docker://melg8/cit:0.0.7
   lint_all_from_nix_shell:
@@ -97,6 +98,7 @@ jobs:
         run: |
           sudo chmod 777 "$(pwd)"
           sudo chmod -R 777 "$(pwd)/.git"
+          sudo chown -R 1000:100 "$(pwd)"
           ./ci/docker/docker_run_nix_shell.sh ./ci/checks/all.sh
       - uses: docker://melg8/cit:0.0.7
   lint_all_in_docker_from_nix_shell_v2:
@@ -116,6 +118,7 @@ jobs:
         run: |
           sudo chmod 777 "$(pwd)"
           sudo chmod -R 777 "$(pwd)/.git"
+          sudo chown -R 1000:100 "$(pwd)"
           ./ci/docker/docker_run_nix_shell.sh ./ci/checks/check_all.sh
       - uses: docker://melg8/cit:0.0.7
   lint_all_in_docker:
@@ -128,6 +131,7 @@ jobs:
       - run: |
           sudo chmod 777 "$(pwd)"
           sudo chmod -R 777 "$(pwd)/.git"
+          sudo chown -R 1000:100 "$(pwd)"
           ./ci/docker/docker_run.sh ./ci/checks/all.sh
       - uses: docker://melg8/cit:0.0.7
   lint_all_in_docker_v2:
@@ -140,6 +144,7 @@ jobs:
       - run: |
           sudo chmod 777 "$(pwd)"
           sudo chmod -R 777 "$(pwd)/.git"
+          sudo chown -R 1000:100 "$(pwd)"
           ./ci/docker/docker_run.sh ./ci/checks/check_all.sh
       - uses: docker://melg8/cit:0.0.7
   build_gcc:
@@ -153,6 +158,7 @@ jobs:
       - run: |
           sudo chmod 777 "$(pwd)"
           sudo chmod -R 777 "$(pwd)/.git"
+          sudo chown -R 1000:100 "$(pwd)"
           ./ci/docker/docker_run.sh ./ci/builders/gcc/build.sh
       - uses: codecov/codecov-action@v2
         with:
@@ -173,6 +179,7 @@ jobs:
       - run: |
           sudo chmod 777 "$(pwd)"
           sudo chmod -R 777 "$(pwd)/.git"
+          sudo chown -R 1000:100 "$(pwd)"
           ./ci/docker/docker_run.sh ./ci/builders/clang/build.sh
       - uses: codecov/codecov-action@v2
         with:

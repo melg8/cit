@@ -3,10 +3,10 @@
 # SPDX-License-Identifier: MIT
 
 ---
-APPLY_FIXES: none # all, none, or list of linter keys.
+APPLY_FIXES: all # all, none, or list of linter keys.
 
 # Example for key: GIT_GIT_DIFF uncomment to run only that linter.
-# ENABLE_LINTERS: [ MARKDOWN_REMARK_LINT ]
+# ENABLE_LINTERS: [MARKDOWN_REMARK_LINT]
 
 # Linters that are not supported by cit but enabled for all megalinter images.
 DISABLE_LINTERS:
@@ -31,6 +31,7 @@ DISABLE_LINTERS:
 FILTER_REGEX_EXCLUDE: '(\.github/workflows)'
 FAIL_IF_MISSING_LINTER_IN_FLAVOR: true
 FAIL_IF_UPDATED_SOURCES: true
+FORMATTERS_DISABLE_ERRORS: false
 
 # Reports style.
 SHOW_ELAPSED_TIME: true
@@ -40,7 +41,7 @@ PRINT_ALPACA: false # Don't print logo.
 # DEBUG - verbose output of command calls with respective arguments.
 # INFO - moderate output with linting statistics.
 # ERROR - minimum output only in case of error.
-LOG_LEVEL: INFO
+LOG_LEVEL: DEBUG
 
 # MARKDOWN_REMARK_LINT
 MARKDOWN_DEFAULT_STYLE: "remark-lint"
@@ -48,12 +49,6 @@ MARKDOWN_REMARK_LINT_CONFIG_FILE: "rc.yaml"
 
 # BASH_EXEC.
 ERROR_ON_MISSING_EXEC_BIT: true
-
-# BASH_SHFMT.
-BASH_SHFMT_DISABLE_ERRORS: false
-
-# YAML_PRETTIER.
-YAML_PRETTIER_DISABLE_ERRORS: false
 
 # YAML_YAMLLINT.
 YAML_YAMLLINT_ARGUMENTS: "-s" # Strict.
