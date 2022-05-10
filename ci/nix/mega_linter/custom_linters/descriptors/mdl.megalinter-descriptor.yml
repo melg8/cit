@@ -1,0 +1,29 @@
+# SPDX-FileCopyrightText: © 2022 Melg Eight <public.melg8@gmail.com>
+#
+# SPDX-License-Identifier: MIT
+
+---
+descriptor_id: MARKDOWN
+descriptor_label: "markdown"
+descriptor_type: format
+descriptor_flavors:
+  - cit
+file_extensions:
+  - ".md"
+linters:
+  # MARKDOWN_MDL
+  - linter_name: mdl
+    is_formatter: false
+    linter_url: https://github.com/markdownlint/markdownlint
+    linter_rules_url:
+      - https://github.com/markdownlint/markdownlint/blob/master/docs/RULES.md
+    cli_lint_mode: list_of_files
+    cli_help_arg_name: "--help"
+    cli_config_arg_name: "--config"
+    examples:
+      - "mdl readme.md"
+    install:
+      dockerfile:
+        - RUN git clone https://github.com/markdownlint/markdownlint
+        - cd markdownlint
+        - rake install
