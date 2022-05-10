@@ -5,13 +5,8 @@
 ---
 APPLY_FIXES: none # all, none, or list of linter keys.
 
-#  ENABLE_LINTERS: [
-#    GIT_GIT_DIFF,
-#    SPELL_CSPELL,
-#    BASH_SHELLCHECK,
-#    CPP_CPPLINT,
-#    YAML_YAMLLINT
-#  ]
+# Example for key: GIT_GIT_DIFF uncomment to run only that linter.
+# ENABLE_LINTERS: [ GIT_GIT_DIFF ]
 
 # Linters that are not supported by cit but enabled for all megalinter images.
 DISABLE_LINTERS:
@@ -55,6 +50,9 @@ BASH_SHFMT_DISABLE_ERRORS: false
 
 # YAML_PRETTIER.
 YAML_PRETTIER_DISABLE_ERRORS: false
+
+# YAML_YAMLLINT.
+YAML_YAMLLINT_ARGUMENTS: "-s" # Strict.
 
 # SPELL_CSPELL.
 SPELL_CSPELL_CONFIG_FILE: ci/checks/dictionaries/cspell.json
