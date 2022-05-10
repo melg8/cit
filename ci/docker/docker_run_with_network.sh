@@ -10,5 +10,5 @@ COMMAND=$*
 echo "command with args: " "${COMMAND}"
 
 docker container run --rm --ulimit nofile=1024 \
--v "$(pwd)":/home/user/work \
-melg8/cit:0.0.7 "${COMMAND}"
+	-v "$(pwd)":/home/user/work \
+	melg8/cit:0.0.7 "${COMMAND}"

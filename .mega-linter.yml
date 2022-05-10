@@ -16,7 +16,6 @@ APPLY_FIXES: none # all, none, or list of linter keys.
 # Linters that are not supported by cit but enabled for all megalinter images.
 DISABLE_LINTERS:
   [
-    BASH_SHFMT,
     C_CPPLINT,
     COPYPASTE_JSCPD,
     CREDENTIALS_SECRETLINT,
@@ -43,13 +42,16 @@ SHOW_ELAPSED_TIME: true
 FILEIO_REPORTER: false # Enable only if runner has internet connection.
 PRINT_ALPACA: false # Don't print logo.
 
-# INFO - statistics output.
-# DEBUG - commands with arguments.
-# ERROR - error only output.
+# DEBUG - verbose output of command calls with respective arguments.
+# INFO - moderate output with linting statistics.
+# ERROR - minimum output only in case of error.
 LOG_LEVEL: INFO
 
 # BASH_EXEC.
 ERROR_ON_MISSING_EXEC_BIT: true
+
+# BASH_SHFMT.
+BASH_SHFMT_DISABLE_ERRORS: false
 
 # SPELL_CSPELL.
 SPELL_CSPELL_CONFIG_FILE: ci/checks/dictionaries/cspell.json

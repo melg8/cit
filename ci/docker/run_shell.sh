@@ -7,4 +7,4 @@
 set -e
 
 docker container run --rm -it --ulimit nofile=1024 \
--v "$(pwd)":/home/user/work melg8/cit:0.0.7
+	-v "$(pwd)":/home/user/work melg8/cit:0.0.7

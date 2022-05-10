@@ -16,5 +16,5 @@ mkdir -p "${DIRECTORY}"
 cd "${DIRECTORY}"
 
 conan install .. \
--s compiler="${CONAN_COMPILER}" \
--s compiler.version="${CONAN_COMPILER_VERSION}"
+	-s compiler="${CONAN_COMPILER}" \
+	-s compiler.version="${CONAN_COMPILER_VERSION}"

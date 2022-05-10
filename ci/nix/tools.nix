@@ -42,8 +42,9 @@ in
 
   # go
   pkgs.git-sizer # 37 MB
-  conform # 57 MB
   pkgs.gitleaks
+  pkgs.shfmt
+  conform # 57 MB
   ls_lint # 4.2 MB
 
   # gem

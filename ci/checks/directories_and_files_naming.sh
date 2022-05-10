@@ -7,14 +7,14 @@
 set -e
 
 apply_to_file_names() {
-    find . -type d \
-    \( \
-    -path ./.git -o \
-    -path ./build -o \
-    -path ./build_gcc -o \
-    -path ./build_clang \) \
-    -prune -o -print \
-    | "$@"
+	find . -type d \
+		\( \
+		-path ./.git -o \
+		-path ./build -o \
+		-path ./build_gcc -o \
+		-path ./build_clang \) \
+		-prune -o -print |
+		"$@"
 }
 
 ls-lint

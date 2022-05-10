@@ -13,7 +13,6 @@ USER="melg8"
 export DOCKER_BUILDKIT=1
 export DOCKER_CONTENT_TRUST=0
 
-for TARGET in ${TARGETS}
-do
-    docker image push "${USER}"/"${TARGET}":"${VERSION}"
+for TARGET in ${TARGETS}; do
+	docker image push "${USER}"/"${TARGET}":"${VERSION}"
 done

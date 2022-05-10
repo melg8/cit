@@ -7,8 +7,8 @@
 set -e
 
 nix build -f ./ci/nix/docker_build.nix \
-             --enforce-determinism \
-             --keep-failed
+	--enforce-determinism \
+	--keep-failed
 
 ls -la .
 sha256sum ./result
