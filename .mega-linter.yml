@@ -6,7 +6,7 @@
 APPLY_FIXES: all # all, none, or list of linter keys.
 
 # Example for key: GIT_GIT_DIFF uncomment to run only that linter.
-# ENABLE_LINTERS: [GIT_COMMITLINT]
+# ENABLE_LINTERS: [GIT_GIT_SPELL]
 
 # Linters that are not supported by cit but enabled for all megalinter images.
 DISABLE_LINTERS:
@@ -45,6 +45,9 @@ LOG_LEVEL: INFO
 # GIT_COMMITLINT
 GIT_COMMITLINT_ARGUMENTS: >
   --to HEAD
+
+# GIT_SPELL
+GIT_GIT_SPELL_CONFIG_FILE: ci/checks/dictionaries/cspell.json
 
 # MARKDOWN_REMARK_LINT
 MARKDOWN_DEFAULT_STYLE: "remark-lint"

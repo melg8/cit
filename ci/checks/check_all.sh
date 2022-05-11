@@ -12,6 +12,6 @@ export DEFAULT_WORKSPACE
 MEGALINTER_FLAVOR=cit
 export MEGALINTER_FLAVOR
 
-megalinter --flavor
+command time megalinter --flavor
 
 echo "All checks are passed."
