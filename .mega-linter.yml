@@ -6,7 +6,7 @@
 APPLY_FIXES: all # all, none, or list of linter keys.
 
 # Example for key: GIT_GIT_DIFF uncomment to run only that linter.
-# ENABLE_LINTERS: [GIT_GIT_SIZER]
+# ENABLE_LINTERS: [GIT_COMMITLINT]
 
 # Linters that are not supported by cit but enabled for all megalinter images.
 DISABLE_LINTERS:
@@ -41,6 +41,10 @@ PRINT_ALPACA: false # Don't print logo.
 # INFO - moderate output with linting statistics.
 # ERROR - minimum output only in case of error.
 LOG_LEVEL: INFO
+
+# GIT_COMMITLINT
+GIT_COMMITLINT_ARGUMENTS: >
+  --to HEAD
 
 # MARKDOWN_REMARK_LINT
 MARKDOWN_DEFAULT_STYLE: "remark-lint"
