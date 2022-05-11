@@ -6,7 +6,7 @@
 APPLY_FIXES: all # all, none, or list of linter keys.
 
 # Example for key: GIT_GIT_DIFF uncomment to run only that linter.
-# ENABLE_LINTERS: [GIT_GIT_SPELL]
+# ENABLE_LINTERS: [GIT_GIT_LINT]
 
 # Linters that are not supported by cit but enabled for all megalinter images.
 DISABLE_LINTERS:

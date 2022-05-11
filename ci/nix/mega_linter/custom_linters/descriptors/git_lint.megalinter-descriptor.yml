@@ -1,0 +1,31 @@
+# SPDX-FileCopyrightText: © 2022 Melg Eight <public.melg8@gmail.com>
+#
+# SPDX-License-Identifier: MIT
+
+---
+descriptor_id: GIT
+descriptor_type: other
+descriptor_flavors:
+  - cit
+linters:
+  # GIT_LINT
+  - linter_name: git-lint
+    lint_all_files: true
+    name: GIT_GIT_LINT
+    linter_text: A command line interface for linting Git commits.
+    linter_repo: https://github.com/bkuhlmann/git-lint
+    cli_executable: git-lint
+    cli_lint_mode: project
+    cli_help_arg_name: "--help"
+    cli_version_arg_name: "--version"
+    cli_config_arg_name: "--config"
+    config_file_name: "configuration.yml"
+    cli_lint_errors_count: regex_sum
+    cli_lint_errors_regex: "([0-9]+) issues detected"
+    cli_lint_extra_args:
+      - "--analyze"
+    examples:
+      - "git-lint --analyze"
+    install:
+      dockerfile:
+        - RUN echo "is not implemented"
