@@ -20,6 +20,7 @@ linters:
     cli_lint_mode: list_of_files
     cli_help_arg_name: "--help"
     cli_config_arg_name: "--config"
+    cli_version_arg_name: "--version"
     examples:
       - "mdl readme.md"
     install:

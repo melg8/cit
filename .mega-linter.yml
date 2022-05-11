@@ -6,7 +6,7 @@
 APPLY_FIXES: all # all, none, or list of linter keys.
 
 # Example for key: GIT_GIT_DIFF uncomment to run only that linter.
-# ENABLE_LINTERS: [MARKDOWN_REMARK_LINT]
+# ENABLE_LINTERS: [SPELL_CODESPELL]
 
 # Linters that are not supported by cit but enabled for all megalinter images.
 DISABLE_LINTERS:
@@ -40,7 +40,7 @@ PRINT_ALPACA: false # Don't print logo.
 # DEBUG - verbose output of command calls with respective arguments.
 # INFO - moderate output with linting statistics.
 # ERROR - minimum output only in case of error.
-LOG_LEVEL: DEBUG
+LOG_LEVEL: INFO
 
 # MARKDOWN_REMARK_LINT
 MARKDOWN_DEFAULT_STYLE: "remark-lint"
@@ -58,6 +58,11 @@ YAML_YAMLLINT_ARGUMENTS: "-s" # Strict.
 # SPELL_CSPELL.
 SPELL_CSPELL_CONFIG_FILE: ci/checks/dictionaries/cspell.json
 SPELL_CSPELL_FILE_EXTENSIONS: "*"
+
+# # SPELL_CODESPELL.
+# SPELL_CODESPELL_ARGUMENTS: >
+#   -D=-
+#   -D=./ci/checks/dictionaries/spelling_corrections.txt
 
 # CPP_CPPLINT.
 CPP_CPPLINT_ARGUMENTS: >

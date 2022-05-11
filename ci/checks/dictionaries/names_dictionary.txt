@@ -73,3 +73,4 @@ dateutil
 PYTHONPATH
 Jenkinsfile
 gitpython
+codespellrc
