@@ -13,6 +13,7 @@ let
   mega_linter = pkgs.callPackage ./mega_linter/default.nix { };
   bash_exec = pkgs.callPackage ./bash_exec/default.nix { };
   git_spell = pkgs.callPackage ./git_spell/default.nix { };
+  ls_spell = pkgs.callPackage ./ls_spell/default.nix { };
   run_clang_tidy_script = pkgs.runCommand
     "run_clang_tidy"
     { }
@@ -23,6 +24,7 @@ in
   # Scripts.
   bash_exec
   git_spell
+  ls_spell
 
   pvs_studio_for_free # 2.5 MB
   pkgs.git # 397 MB

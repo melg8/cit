@@ -1,0 +1,27 @@
+# SPDX-FileCopyrightText: © 2022 Melg Eight <public.melg8@gmail.com>
+#
+# SPDX-License-Identifier: MIT
+
+---
+descriptor_id: LS
+descriptor_label: "ls"
+descriptor_type: other
+descriptor_flavors:
+  - cit
+file_extensions:
+  - "*"
+linters:
+  # LS_SPELL
+  - linter_name: ls-spell
+    cli_lint_mode: list_of_files
+    linter_text: Check spelling of your files and directories
+    cli_executable: ls-spell
+    cli_executable_help: cspell
+    cli_executable_version: cspell
+    cli_help_arg_name: "--help"
+    cli_config_arg_name: "--config"
+    examples:
+      - "ls-spell readme.md"
+    install:
+      dockerfile:
+        - RUN echo "is not implemented"
