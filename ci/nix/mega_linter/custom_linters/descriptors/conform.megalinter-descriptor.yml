@@ -1,0 +1,30 @@
+# SPDX-FileCopyrightText: © 2022 Melg Eight <public.melg8@gmail.com>
+#
+# SPDX-License-Identifier: MIT
+
+---
+descriptor_id: GIT
+descriptor_type: other
+descriptor_flavors:
+  - cit
+install:
+  dockerfile:
+    - RUN echo "is not implemented"
+linters:
+  # CONFORM
+  - linter_name: conform
+    lint_all_files: true
+    linter_text: Policy enforcement for your pipelines.
+    linter_repo: https://github.com/siderolabs/conform
+    cli_config_arg_name: ""
+    config_file_name: ".conform.yaml"
+    cli_executable: conform
+    cli_lint_mode: project
+    cli_help_arg_name: "enforce --help"
+    cli_version_arg_name: ""
+    cli_lint_errors_count: regex_count
+    cli_lint_errors_regex: "FAILED"
+    cli_lint_extra_args:
+      - "enforce"
+    examples:
+      - "conform enforce"

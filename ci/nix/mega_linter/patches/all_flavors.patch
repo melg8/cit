@@ -6,7 +6,7 @@ diff --git a/descriptors/all_flavors.json b/descriptors/all_flavors.json
 index 6acc1d037..677123018 100644
 --- a/descriptors/all_flavors.json
 +++ b/descriptors/all_flavors.json
-@@ -1,4 +1,26 @@
+@@ -1,4 +1,27 @@
  {
 +    "cit": {
 +        "descriptors": [
@@ -19,6 +19,7 @@ index 6acc1d037..677123018 100644
 +            "BASH_SHFMT",
 +            "GIT_GIT_DIFF",
 +            "GIT_GIT_SIZER",
++            "GIT_CONFORM",
 +            "SPELL_CSPELL",
 +            "SPELL_CODESPELL",
 +            "LICENSE_REUSE",
