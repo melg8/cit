@@ -24,6 +24,7 @@ linters:
     cli_version_arg_name: ""
     cli_lint_errors_count: regex_count
     cli_lint_errors_regex: "FAILED"
+    linter_version_cache: "0.1.0"
     cli_lint_extra_args:
       - "enforce"
     examples:
