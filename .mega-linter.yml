@@ -6,7 +6,7 @@
 APPLY_FIXES: all # all, none, or list of linter keys.
 
 # Example for key: GIT_GIT_DIFF uncomment to run only that linter.
-# ENABLE_LINTERS: [NIX_NIX_LINTER]
+# ENABLE_LINTERS: [CPP_CLANG_FORMAT]
 
 # DEBUG - verbose output of command calls with respective arguments.
 # INFO - moderate output with linting statistics.
