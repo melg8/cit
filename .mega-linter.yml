@@ -6,7 +6,7 @@
 APPLY_FIXES: all # all, none, or list of linter keys.
 
 # Example for key: GIT_GIT_DIFF uncomment to run only that linter.
-# ENABLE_LINTERS: [BASH_SHFMT]
+# ENABLE_LINTERS: [CMAKE_CMAKE_LINT]
 
 # Linters that are not supported by cit but enabled for all megalinter images.
 DISABLE_LINTERS:
@@ -40,7 +40,7 @@ PRINT_ALPACA: false # Don't print logo.
 # DEBUG - verbose output of command calls with respective arguments.
 # INFO - moderate output with linting statistics.
 # ERROR - minimum output only in case of error.
-LOG_LEVEL: DEBUG
+LOG_LEVEL: INFO
 
 # GIT_DIFF
 GIT_GIT_DIFF_ARGUMENTS: >
