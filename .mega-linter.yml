@@ -6,7 +6,12 @@
 APPLY_FIXES: all # all, none, or list of linter keys.
 
 # Example for key: GIT_GIT_DIFF uncomment to run only that linter.
-# ENABLE_LINTERS: [NIX_NIXPKGS_FMT_WRAPPER]
+# ENABLE_LINTERS: [NIX_NIX_LINTER]
+
+# DEBUG - verbose output of command calls with respective arguments.
+# INFO - moderate output with linting statistics.
+# ERROR - minimum output only in case of error.
+LOG_LEVEL: INFO
 
 # Linters that are not supported by cit but enabled for all megalinter images.
 DISABLE_LINTERS:
@@ -37,18 +42,11 @@ SHOW_ELAPSED_TIME: true
 FILEIO_REPORTER: false # Enable only if runner has internet connection.
 PRINT_ALPACA: false # Don't print logo.
 
-# DEBUG - verbose output of command calls with respective arguments.
-# INFO - moderate output with linting statistics.
-# ERROR - minimum output only in case of error.
-LOG_LEVEL: INFO
-
 # GIT_DIFF
-GIT_GIT_DIFF_ARGUMENTS: >
-  HEAD^
+GIT_GIT_DIFF_ARGUMENTS: HEAD^
 
 # GIT_COMMITLINT
-GIT_COMMITLINT_ARGUMENTS: >
-  --to HEAD
+GIT_COMMITLINT_ARGUMENTS: --to HEAD
 
 # GIT_SPELL
 GIT_GIT_SPELL_CONFIG_FILE: ci/checks/dictionaries/cspell.json
@@ -72,6 +70,9 @@ YAML_YAMLLINT_ARGUMENTS: "-s" # Strict.
 # SPELL_CSPELL.
 SPELL_CSPELL_CONFIG_FILE: ci/checks/dictionaries/cspell.json
 SPELL_CSPELL_FILE_EXTENSIONS: "*"
+
+# NIX_LINTER
+NIX_NIX_LINTER_FILTER_REGEX_EXCLUDE: "node-env.nix|node-packages.nix"
 
 # # SPELL_CODESPELL.
 # SPELL_CODESPELL_ARGUMENTS: >

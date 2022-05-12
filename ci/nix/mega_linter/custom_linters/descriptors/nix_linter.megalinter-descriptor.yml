@@ -11,20 +11,18 @@ descriptor_flavors:
 file_extensions:
   - ".nix"
 linters:
-  # NIXPKGS_FMT
-  - linter_name: nixpkgs-fmt-wrapper
-    cli_executable: nixpkgs-fmt-wrapper
-    is_formatter: true
-    linter_url: https://github.com/nix-community/nixpkgs-fmt
+  # NIX_LINTER
+  - linter_name: nix-linter
+    cli_executable: nix-linter
+    is_formatter: false
+    linter_url: https://github.com/Synthetica9/nix-linter
     cli_lint_mode: list_of_files
     cli_help_arg_name: "--help"
     cli_version_arg_name: "--version"
-    cli_lint_extra_args: "--check"
-    cli_lint_fix_remove_args: "--check"
-    cli_lint_fix_arg_name: "   "
-    linter_version_cache: "1.2.0"
+    cli_lint_errors_count: regex_count
+    cli_lint_errors_regex: " at "
     examples:
-      - "nixpkgs-fmt-wrapper --check default.nix"
+      - "nix-linter default.nix"
     install:
       dockerfile:
         - RUN echo "is not implemented"
