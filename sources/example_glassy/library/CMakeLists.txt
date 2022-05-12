@@ -14,6 +14,8 @@ add_library(glassy STATIC "${ALL_KEY_NOTES_LIB_HEADERS}"
 
 header_directories(ALL_LIB_INCLUDE_DIRECTORIES)
 
+header_directories(ALL_LIB_INCLUDE_DIRECTORIES)
+
 target_include_directories(glassy PUBLIC "${ALL_LIB_INCLUDE_DIRECTORIES}")
 
 target_link_libraries(glassy OpenSSL::Crypto outcome::outcome gsl::gsl-lite)
