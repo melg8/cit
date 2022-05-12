@@ -14,6 +14,7 @@ let
   bash_exec = pkgs.callPackage ./bash_exec/default.nix { };
   git_spell = pkgs.callPackage ./git_spell/default.nix { };
   ls_spell = pkgs.callPackage ./ls_spell/default.nix { };
+  nixpkgs_fmt_wrapper = pkgs.callPackage ./nixpkgs_fmt_wrapper/default.nix { };
   run_clang_tidy_script = pkgs.runCommand
     "run_clang_tidy"
     { }
@@ -25,6 +26,7 @@ in
   bash_exec
   git_spell
   ls_spell
+  nixpkgs_fmt_wrapper
 
   pvs_studio_for_free # 2.5 MB
   pkgs.git # 397 MB

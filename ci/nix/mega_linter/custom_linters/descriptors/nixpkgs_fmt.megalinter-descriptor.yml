@@ -1,0 +1,30 @@
+# SPDX-FileCopyrightText: © 2022 Melg Eight <public.melg8@gmail.com>
+#
+# SPDX-License-Identifier: MIT
+
+---
+descriptor_id: NIX
+descriptor_label: "nix"
+descriptor_type: format
+descriptor_flavors:
+  - cit
+file_extensions:
+  - ".nix"
+linters:
+  # NIXPKGS_FMT
+  - linter_name: nixpkgs-fmt-wrapper
+    cli_executable: nixpkgs-fmt-wrapper
+    is_formatter: true
+    linter_url: https://github.com/nix-community/nixpkgs-fmt
+    cli_lint_mode: list_of_files
+    cli_help_arg_name: "--help"
+    cli_version_arg_name: "--version"
+    cli_lint_extra_args: "--check"
+    cli_lint_fix_remove_args: "--check"
+    cli_lint_fix_arg_name: "   "
+    linter_version_cache: "1.2.0"
+    examples:
+      - "nixpkgs-fmt-wrapper --check default.nix"
+    install:
+      dockerfile:
+        - RUN echo "is not implemented"
