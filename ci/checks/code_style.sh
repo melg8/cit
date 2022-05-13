@@ -48,13 +48,10 @@ cppcheck \
 ./ci/builders/common/cmake_setup.sh clang++ clang 13
 
 DIRECTORY="./build_clang"
-cd "${DIRECTORY}"
 
-cmake .. -G Ninja \
+cmake -B "${DIRECTORY}" -G Ninja \
 	-DCMAKE_CXX_COMPILER=clang++ \
 	-DCMAKE_TOOLCHAIN_FILE="conan_toolchain.cmake"
-
-cd ..
 
 find ./sources -name "*.cpp" -exec \
 	run-clang-tidy -header-filter='^(u(i[^_]|[^i])|[^u])+$' -j"$(nproc --all)" \
