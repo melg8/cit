@@ -6,7 +6,7 @@
 APPLY_FIXES: all # all, none, or list of linter keys.
 
 # Example for key: GIT_GIT_DIFF uncomment to run only that linter.
-# ENABLE_LINTERS: [CPP_CLANG_FORMAT]
+# ENABLE_LINTERS: [CPP_CPPCHECK]
 
 # DEBUG - verbose output of command calls with respective arguments.
 # INFO - moderate output with linting statistics.
@@ -89,3 +89,25 @@ CPP_CPPLINT_ARGUMENTS: >
   --includeorder=standardcfirst
   --filter=-build/c++11,-build/header_guard,-runtime/references
   --root=./sources
+
+# CPP_CPPCHECK
+CPP_CPPCHECK_PRE_COMMANDS:
+  - command: ./ci/builders/common/cmake_setup.sh g++ gcc 11;
+      cmake -B build_gcc -G Ninja
+      -DCMAKE_CXX_COMPILER=g++
+      -DCMAKE_TOOLCHAIN_FILE="conan_toolchain.cmake";
+    cwd: "root"
+    continue_if_failed: false
+
+CPP_CPPCHECK_ARGUMENTS: >
+  --cppcheck-build-dir=build_gcc
+  --project=build_gcc/compile_commands.json
+  --library=./.config/cppcheck/doctest.cfg
+  --error-exitcode=1
+  --enable=all
+  --inline-suppr
+  --inconclusive
+  --suppress=unusedFunction
+  --suppress=unusedStructMember
+  --suppress=unmatchedSuppression
+  --suppress=missingIncludeSystem

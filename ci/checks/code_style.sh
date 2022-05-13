@@ -25,13 +25,10 @@ cpplint \
 ./ci/builders/common/cmake_setup.sh g++ gcc 11
 
 DIRECTORY="./build_gcc"
-cd "${DIRECTORY}"
 
-cmake .. -G Ninja \
+cmake -B "${DIRECTORY}" -G Ninja \
 	-DCMAKE_CXX_COMPILER=g++ \
 	-DCMAKE_TOOLCHAIN_FILE="conan_toolchain.cmake"
-
-cd ..
 
 cppcheck \
 	--cppcheck-build-dir="${DIRECTORY}" \

@@ -37,6 +37,9 @@ packages.buildPythonApplication rec {
 
     # Use fire icon when error occurs.
     ./patches/icons.patch
+
+    # Make compatible with nixos. Search for bash.
+    ./patches/bin_bash.patch
   ];
 
   pythonPath = with packages; [ setuptools ];

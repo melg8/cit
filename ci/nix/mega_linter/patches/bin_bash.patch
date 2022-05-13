@@ -1,0 +1,45 @@
+# SPDX-FileCopyrightText: © 2022 Melg Eight <public.melg8@gmail.com>
+#
+# SPDX-License-Identifier: MIT
+
+diff --git a/Linter.py b/Linter.py
+index f0c427139..5f635d1c8 100644
+--- a/Linter.py
++++ b/Linter.py
+@@ -671,9 +671,7 @@ class Linter:
+                 shell=True,
+                 cwd=cwd,
+                 env=subprocess_env,
+-                executable=shutil.which("bash")
+-                if sys.platform == "win32"
+-                else "/bin/bash",
++                executable=shutil.which("bash"),
+             )
+         else:
+             # Use full executable path if we are on Windows
+diff --git a/plugin_factory.py b/plugin_factory.py
+index 80f1abcbe..74a61effa 100644
+--- a/plugin_factory.py
++++ b/plugin_factory.py
+@@ -90,7 +90,7 @@ def process_install(install):
+             stdout=subprocess.PIPE,
+             stderr=subprocess.STDOUT,
+             shell=True,
+-            executable=shutil.which("bash") if sys.platform == "win32" else "/bin/bash",
++            executable=shutil.which("bash"),
+         )
+         return_code = process.returncode
+         stdout = utils.decode_utf8(process.stdout)
+diff --git a/pre_post_factory.py b/pre_post_factory.py
+index e0f5b2852..ae9253e91 100644
+--- a/pre_post_factory.py
++++ b/pre_post_factory.py
+@@ -67,7 +67,7 @@ def run_command(command_info, log_key, mega_linter):
+         stderr=subprocess.STDOUT,
+         shell=True,
+         cwd=os.path.realpath(cwd),
+-        executable=shutil.which("bash") if sys.platform == "win32" else "/bin/bash",
++        executable=shutil.which("bash"),
+     )
+     return_code = process.returncode
+     return_stdout = utils.decode_utf8(process.stdout)
