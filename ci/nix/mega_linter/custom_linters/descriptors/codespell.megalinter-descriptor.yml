@@ -23,6 +23,8 @@ linters:
     cli_config_arg_name: "--config"
     cli_lint_extra_args:
       - "--check-filenames"
+    cli_lint_errors_count: regex_count
+    cli_lint_errors_regex: "==>"
     examples:
       - "codespell readme.md"
     install:

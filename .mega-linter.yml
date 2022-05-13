@@ -74,10 +74,10 @@ SPELL_CSPELL_FILE_EXTENSIONS: "*"
 # NIX_LINTER
 NIX_NIX_LINTER_FILTER_REGEX_EXCLUDE: "node-env.nix|node-packages.nix"
 
-# # SPELL_CODESPELL.
-# SPELL_CODESPELL_ARGUMENTS: >
-#   -D=-
-#   -D=./ci/checks/dictionaries/spelling_corrections.txt
+# SPELL_CODESPELL.
+SPELL_CODESPELL_ARGUMENTS: >
+  -D=-
+  -D=ci/checks/dictionaries/spelling_corrections.txt
 
 # CMAKE_FORMAT
 CMAKE_CMAKE_FORMAT_DISABLE_ERRORS: true
