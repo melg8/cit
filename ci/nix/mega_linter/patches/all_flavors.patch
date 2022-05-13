@@ -6,7 +6,7 @@ diff --git a/descriptors/all_flavors.json b/descriptors/all_flavors.json
 index 6acc1d037..677123018 100644
 --- a/descriptors/all_flavors.json
 +++ b/descriptors/all_flavors.json
-@@ -1,4 +1,39 @@
+@@ -1,4 +1,40 @@
  {
 +    "cit": {
 +        "descriptors": [
@@ -33,6 +33,7 @@ index 6acc1d037..677123018 100644
 +            "LICENSE_REUSE",
 +            "LS_LS_SPELL",
 +            "LS_LS_LINT",
++            "CPP_CLANG_TIDY",
 +            "CPP_CPPCHECK",
 +            "CPP_CPPLINT",
 +            "CPP_CLANG_FORMAT",

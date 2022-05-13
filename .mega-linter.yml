@@ -6,7 +6,7 @@
 APPLY_FIXES: all # all, none, or list of linter keys.
 
 # Example for key: GIT_GIT_DIFF uncomment to run only that linter.
-# ENABLE_LINTERS: [CPP_CPPCHECK]
+# ENABLE_LINTERS: [CPP_CLANG_TIDY]
 
 # DEBUG - verbose output of command calls with respective arguments.
 # INFO - moderate output with linting statistics.
@@ -92,7 +92,9 @@ CPP_CPPLINT_ARGUMENTS: >
 
 # CPP_CPPCHECK
 CPP_CPPCHECK_PRE_COMMANDS:
-  - command: ./ci/builders/common/cmake_setup.sh g++ gcc 11;
+  - command: >
+      rm -rf ./build_gcc/*;
+      ./ci/builders/common/cmake_setup.sh g++ gcc 11;
       cmake -B build_gcc -G Ninja
       -DCMAKE_CXX_COMPILER=g++
       -DCMAKE_TOOLCHAIN_FILE="conan_toolchain.cmake";
@@ -111,3 +113,18 @@ CPP_CPPCHECK_ARGUMENTS: >
   --suppress=unusedStructMember
   --suppress=unmatchedSuppression
   --suppress=missingIncludeSystem
+
+# CLANG_TIDY
+CPP_CLANG_TIDY_PRE_COMMANDS:
+  - command: >
+      rm -rf ./build_clang/*;
+      ./ci/builders/common/cmake_setup.sh clang++ clang 13;
+      cmake -B build_clang -G Ninja
+      -DCMAKE_CXX_COMPILER=clang++
+      -DCMAKE_TOOLCHAIN_FILE="conan_toolchain.cmake";
+    cwd: "root"
+    continue_if_failed: false
+
+CPP_CLANG_TIDY_ARGUMENTS: >
+  -header-filter='^(u(i[^_]|[^i])|[^u])+$'
+  -p=build_clang
