@@ -21,6 +21,7 @@ linters:
     cli_version_arg_name: "--version"
     cli_lint_errors_count: regex_count
     cli_lint_errors_regex: " at "
+    linter_version_cache: "0.2.0.4"
     examples:
       - "nix-linter default.nix"
     install:

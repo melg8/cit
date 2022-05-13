@@ -71,6 +71,7 @@ rec {
         "NIX_CFLAGS_COMPILE=-isystem ${includeStrings contents}"
         "NIX_CC_WRAPPER_TARGET_HOST_x86_64_unknown_linux_gnu=1"
         "LANG=C.UTF-8"
+        "MEGALINTER_FLAVOR=cit"
       ];
     };
     uid = user:1000;
