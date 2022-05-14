@@ -12,12 +12,16 @@ extraction:
       packages:
         - g++-11
         - ccache
+        - ninja-build
       script:
+        - mkdir ~/.conan && \
+        - cd /usr/local/share/ca-certificates/semmle-cache-ca
+        - cat ./semmle-cache-ca.crt >> ~/.conan/cacert.pem
+        - cd /opt/src
         - python3 -m pip install --upgrade pip setuptools
         - python3 -m pip install conan
         - python3 -m pip install cmake
         - source ~/.profile
-        - conan remote update conancenter https://center.conan.io False
     configure:
       command:
         - mkdir build_gcc && cd build_gcc
@@ -25,6 +29,8 @@ extraction:
     index:
       build_command: |
         cd build_gcc && \
-        cmake .. -DCMAKE_CXX_COMPILER="g++" \
-        -DCMAKE_TOOLCHAIN_FILE="conan_toolchain.cmake" && \
+        cmake .. -G Ninja \
+        -DCMAKE_BUILD_TYPE=Release \
+        -DCMAKE_CXX_COMPILER="g++" \
+        -DCMAKE_TOOLCHAIN_FILE="conan_toolchain.cmake"
         cmake --build . -j"$(nproc)"
