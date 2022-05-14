@@ -17,7 +17,7 @@ packages.buildPythonApplication rec {
     owner = "megalinter";
     repo = "megalinter";
     rev = "v${version}";
-    sha256 = "1ndm9qwwji9haxvj84b314afcvjg6ssykdhjsrgldylr74rsgii8";
+    sha256 = "sha256:1ndm9qwwji9haxvj84b314afcvjg6ssykdhjsrgldylr74rsgii8";
   };
   sourceRoot = "source/megalinter";
   doCheck = false;

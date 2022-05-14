@@ -12,12 +12,12 @@ buildGoModule rec {
     owner = "talos-systems";
     repo = pname;
     rev = "refs/tags/v${version}";
-    sha256 = "0v11z6xr16lp4wb68g4nn318arfkray8sjwbcc0q2gka1a5a01as";
+    sha256 = "sha256:0v11z6xr16lp4wb68g4nn318arfkray8sjwbcc0q2gka1a5a01as";
   };
 
   nativeBuildInputs = [ git ];
 
-  vendorSha256 = "18ggj4wskbprwmky5smfspabba0y9c3xginp890kiqhas3p2sa1s";
+  vendorSha256 = "sha256:18ggj4wskbprwmky5smfspabba0y9c3xginp890kiqhas3p2sa1s";
 
   meta = with lib; {
     description = "Policy enforcement for your pipelines.";

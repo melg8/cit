@@ -10,7 +10,7 @@ stdenv.mkDerivation rec {
 
   src = fetchurl {
     url = "https://github.com/viva64/${pname}/archive/${version}.tar.gz";
-    sha256 = "1a282msilc5pnxcbjkpc579mdrim6dcnwy58kxadjbyciyg3ry4v";
+    sha256 = "sha256:1a282msilc5pnxcbjkpc579mdrim6dcnwy58kxadjbyciyg3ry4v";
   };
 
   cmakeFlags = [ "-DPVS_STUDIO_SHARED=OFF" ];
