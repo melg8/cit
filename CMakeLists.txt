@@ -2,7 +2,7 @@
 #
 # SPDX-License-Identifier: MIT
 
-cmake_minimum_required(VERSION 3.15.5)
+cmake_minimum_required(VERSION 3.22.2)
 project(cit)
 
 set(CMAKE_CXX_STANDARD 14)

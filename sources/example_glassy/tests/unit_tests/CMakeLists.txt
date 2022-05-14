@@ -16,7 +16,9 @@ file(GLOB_RECURSE ALL_GLASSY_TESTS_APPLICATION_SOURCES
 add_executable(glassy_tests "${ALL_GLASSY_TESTS_APPLICATION_HEADERS}"
                             "${ALL_GLASSY_TESTS_APPLICATION_SOURCES}")
 
-target_link_libraries(glassy_tests glassy doctest::doctest gsl::gsl-lite
-                      OpenSSL::Crypto outcome::outcome)
+target_link_libraries(glassy_tests PUBLIC glassy doctest::doctest gsl::gsl-lite
+                                          OpenSSL::Crypto outcome::outcome)
+
+target_include_directories(glassy_tests PUBLIC "${OUTCOME_INCLUDE_DIR}")
 
 add_test(glassy_tests glassy_tests)

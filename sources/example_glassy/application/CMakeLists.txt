@@ -11,6 +11,6 @@ file(GLOB_RECURSE ALL_GLASSY_APPLICATION_SOURCES
 add_executable(glassy_application "${ALL_GLASSY_APPLICATION_HEADERS}"
                                   "${ALL_GLASSY_APPLICATION_SOURCES}")
 
-target_link_libraries(glassy_application glassy)
+target_link_libraries(glassy_application PUBLIC glassy)
 
 add_test(glassy_application glassy_application)
