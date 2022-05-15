@@ -33,6 +33,9 @@ let
 in
 (loadNixDb (contents ++ [ nixpkgs ])) + ''
   mkdir -p home/user/work
+  touch home/user/.bashrc
+  echo "source <(just --completions=bash)" > home/user/.bashrc
+
   mkdir -p usr/bin
   ln -s /bin/env usr/bin/env
 

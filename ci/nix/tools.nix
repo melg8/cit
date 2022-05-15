@@ -96,6 +96,7 @@ in
   pkgs.cacert
   pkgs.binutils
 
+  pkgs.just
   pkgs.bashInteractive
   pkgs.bashInteractive.dev
   pkgs.bashInteractive.doc

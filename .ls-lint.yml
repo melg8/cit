@@ -29,3 +29,4 @@ ignore:
   - build_clang
   - build_gcc
   - report
+  - justfile

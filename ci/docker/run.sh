@@ -17,4 +17,4 @@ docker container run --rm --ulimit nofile=1024 \
 	-e PAT \
 	-v "/var/run/docker.sock:/var/run/docker.sock:rw" \
 	-v "$(pwd)":/home/user/work \
-	melg8/cit:0.0.7 "${COMMAND}"
+	melg8/cit:0.0.7 bash -c "${COMMAND}"

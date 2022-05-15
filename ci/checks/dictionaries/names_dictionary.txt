@@ -74,3 +74,4 @@ PYTHONPATH
 Jenkinsfile
 gitpython
 codespellrc
+justfile

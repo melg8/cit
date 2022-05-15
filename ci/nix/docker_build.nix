@@ -59,7 +59,7 @@ rec {
       (writeTextDir "etc/nix/nix.conf" nix_conf)
     ] ++ tools;
     config = {
-      Cmd = [ "sh" ];
+      Cmd = [ "bash" ];
       User = "user";
       WorkingDir = "/home/user/work";
       Env = [
