@@ -26,6 +26,7 @@
     ],
     "dictionaries": ["cpp", "bash", "python", "ruby", "workspace", "nix", "names"],
     "ignorePaths": ["ci/checks/dictionaries/spelling_corrections.txt",
+                    "LICENSES/*",
                     "*deps.nix",
                     "*gemset.nix",
                     "*Gemfile.lock",

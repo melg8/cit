@@ -21,6 +21,10 @@ checkit:
 lint-all:
   @ci/checks/lint_all.sh
 
+# Run concrete linter.
+lint-with +linter_name:
+  @ENABLE_LINTERS={{linter_name}} ci/checks/lint_all.sh
+
 # Build with gcc, run tests.
 build-gcc:
   @ci/builders/gcc/build.sh

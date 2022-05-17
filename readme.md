@@ -33,6 +33,50 @@ ready to use template.
 
 - Encourage responsible attitude towards the development of quality software
 
+## Features
+
+- \[x] This repository provides reproducible development and testing
+  environments with version pinning thanks to
+  [**docker**](https://www.docker.com/) and
+  [**nix**](https://github.com/nix-community/awesome-nix)
+
+- \[x] Support of major c++ compilers, with all compile time checks enabled
+
+- \[x] Familiar cross-platform build setup using cmake and conan
+
+- \[x] Runtime tests with doctest and sanitizers
+
+- \[x] Command-line [tool](https://github.com/casey/just) to simplify usage of
+  functionality
+
+![Just](docs/images/just.png "Just")
+
+- \[x] A lot of linters, formatters and static analysis tools integrated and
+  setup for each aspect of project with informative reports thanks to
+  integration with patched version of
+  [megalinter](https://github.com/megalinter/megalinter)
+
+![Local report](docs/images/local_report.png "Local report")
+
+- \[x] Even if you can’t run it locally - that’s not an issue. Ready to use
+  GitHub ci setup with same checks
+
+- \[x] Pull requests won’t pass if linters found some issues
+
+![Checks report](docs/images/checks_report.png "Checks report")
+
+- \[x] Pull requests feedback with linting results as comment:
+  [example](https://github.com/melg8/cit/pull/17#issuecomment-1126876938).
+  When there are no issues left with pr you will see updated message from bot
+
+![Pr message](docs/images/pr_message.png "Pr message")
+
+- \[x] Code coverage with pull request Codecov reports
+
+![Codecov](docs/images/codecov.png "Codecov")
+
+- \[x] All artifacts with logs are available for download from ci
+
 ## Current status
 
 This project is under development, expect changes in api, setup and tools.
@@ -41,56 +85,121 @@ fill free to change configuration files to best fit your personal needs.
 You can fork and play with it, contributions to the source code,
 issues and requests are welcome.
 
-## How it works
+## Getting Started
 
-1. [Nix](https://github.com/nixos/nix) used to reproducibly build
-   tar archive with docker image containing all linters:
+You can use this template in different levels of integration with user
+environment. From using text editor and running all checks in CI, up to
+using prepared docker image or nix-shell and running check locally.
+
+1. Fork this project, enable GitHub actions and edit it either with
+   GitHub editor or with local text editor
+
+1. Project use cmake ninja and conan. If you have them installed on your system
+   you can build and run tests as with any other cmake project. Or run this
+   bash script from root of project to build project with gcc:
 
    ```bash
-   nix build -f ci/nix/docker_build.nix --enforce-determinism --repeat 1 --keep-failed
+      ci/builders/gcc/build.sh
    ```
 
-1. You can check that produced result has same hash sum as result
-   produced by ci:
+1. To use this project locally to the full potential you have options:
 
-   ```bash
+- Install docker than you can use prepared docker image. Call this script
+  from root of project to run bash shell inside docker image
+
+  ```bash
+     ci/docker/run_shell.sh
+  ```
+
+- Install nix package manager or use nixos. In that case call nix-shell
+
+  ```bash
+     nix-shell
+  ```
+
+## Usage
+
+Okay. You got your environment either with docker image or with nix-shell,
+let’s take a look what’s next.
+To ease usage of project we use [just](https://github.com/casey/just).
+So we can call it like that:
+
+```bash
+   just
+```
+
+You will see available recipes (actions) which you can do to use project:
+
+![Just](docs/images/just.png "Just")
+
+Let’s explore main functions.
+You can build project with gcc or clang compiler using commands:
+
+```bash
+   just build-gcc
+```
+
+```bash
+   just build-clang
+```
+
+To run all linters on your project use:
+
+```bash
+   just lint-all
+```
+
+To run specific linter on your project use lint-with command with name of
+descriptor and linter all capital case split by underscores. So if we want
+to run clang-tidy from CPP descriptor we call:
+
+```bash
+   just lint-with CPP_CLANG_TIDY
+```
+
+And we will see report of single linter:
+
+![Single linter](docs/images/single_linter.png "Single linter")
+
+After linting you can check report folder with all logs from linters.
+
+From nix-shell or docker image you can also build docker image yourself.
+[Nix](https://github.com/nixos/nix) used to reproducibly build
+tar archive with docker image containing all linters
+
+```bash
+   just docker-build
+```
+
+You can check that produced result has same hash sum as result
+produced by ci:
+
+```bash
    sha256sum result
-   ```
+```
 
-1. Docker image than loaded from result:
+Docker image than loaded from result:
 
-   ```bash
-   docker load < result
-   ```
+```bash
+   just docker-load
+```
 
-1. To run all linters checks run inside that container use docker_run.sh script
-   with all.sh script as argument:
+Or you can run docker-update-locally to do image creation, sha256sum and load
+in single command:
 
-   ```bash
-   ci/docker/docker_run.sh ci/checks/all.sh
-   ```
+```bash
+   just docker-update-locally
+```
 
-1. To run more specific checks use docker_run.sh script with name of
-   script from ci/checks:
+Docker-update command will build image and upload it to docker-hub:
 
-   ```bash
-   ci/docker/docker_run.sh ci/checks/md_files_style.sh
-   ```
+```bash
+   just docker-update
+```
 
-1. To run interactive shell inside docker image:
-
-   ```bash
-   ci/docker/run_shell.sh
-   ```
-
-1. If you don’t want to build docker image, you can load prepared docker
-   image from docker hub:
-
-   ```bash
-   ci/docker/docker_pull.sh
-   ```
-
-See [GitHub workflows](.github/workflows/checks.yml) for usage details.
+To see all inner workings take a look in [justfile](justfile) for concrete
+bash scripts for each action. Check
+[GitHub workflows](.github/workflows/checks.yml) file for GitHub ci setup.
 
 ## Available tools
 

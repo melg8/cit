@@ -9,6 +9,10 @@ Source: https://github.com/melg8/cit
 # Copyright: $YEAR $NAME <$CONTACT>
 # License: ...
 
+Files: ci/docs/**
+Copyright: © 2022 Melg Eight <public.melg8@gmail.com>
+License: MIT
+
 Files: ci/checks/dictionaries/*
 Copyright: © 2022 Melg Eight <public.melg8@gmail.com>
 License: MIT
