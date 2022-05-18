@@ -177,7 +177,37 @@ jobs:
           sudo chmod 777 "$(pwd)"
           sudo chmod -R 777 "$(pwd)/.git"
           sudo chown -R 1000:100 "$(pwd)"
-          just docker-run "just lint-all"
+          just docker-run "just lint-with CPP_CPPLINT"
+      - uses: docker://melg8/cit:0.0.7
+      - name: Archive production artifacts
+        if: ${{ success() }} || ${{ failure() }}
+        uses: actions/upload-artifact@v2
+        with:
+          name: MegaLinter reports
+          path: |
+            report
+            mega-linter.log
+      - name: Deploy 🚀
+        uses: JamesIves/github-pages-deploy-action@v4.3.3
+        with:
+          branch: errors # The branch the action should deploy to.
+          folder: report/errors # The folder the action should deploy.
+  lint_all_in_docker_v3:
+    runs-on: ubuntu-20.04
+    env:
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      REVIEWDOG_GITHUB_API_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    needs: build_docker
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+      - uses: extractions/setup-just@v1
+      - run: |
+          sudo chmod 777 "$(pwd)"
+          sudo chmod -R 777 "$(pwd)/.git"
+          sudo chown -R 1000:100 "$(pwd)"
+          just docker-run "just lint-with CPP_CLANG_TIDY"
       - uses: docker://melg8/cit:0.0.7
       - name: Archive production artifacts
         if: ${{ success() }} || ${{ failure() }}

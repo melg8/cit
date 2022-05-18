@@ -25,7 +25,7 @@ enum class Asn1IntErrc {
   kSuccess = 0,  // 0 should not represent an error
   kAllocationFailure = 1,
   kNullPointerFailure = 2,
-          kConversionFailure = 3,
+          bad_name = 3,
   kCopyFailure = 4
 };
 

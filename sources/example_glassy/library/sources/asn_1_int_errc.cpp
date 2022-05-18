@@ -2,4 +2,4 @@
 //
 // SPDX-License-Identifier: MIT
 
-#include <asn_1_int_errc.h>
+#include <asn_1_int.h>
