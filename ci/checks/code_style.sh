@@ -54,5 +54,5 @@ cmake -B "${DIRECTORY}" -G Ninja \
 	-DCMAKE_TOOLCHAIN_FILE="conan_toolchain.cmake"
 
 find ./sources -name "*.cpp" -exec \
-	run-clang-tidy -header-filter='^(u(i[^_]|[^i])|[^u])+$' -j"$(nproc --all)" \
+	clang-tidy-run -header-filter='^(u(i[^_]|[^i])|[^u])+$' -j"$(nproc --all)" \
 	-p="${DIRECTORY}" {} +

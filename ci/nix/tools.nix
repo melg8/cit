@@ -15,11 +15,7 @@ let
   git_spell = pkgs.callPackage ./git_spell/default.nix { };
   ls_spell = pkgs.callPackage ./ls_spell/default.nix { };
   nixpkgs_fmt_wrapper = pkgs.callPackage ./nixpkgs_fmt_wrapper/default.nix { };
-  run_clang_tidy_script = pkgs.runCommand
-    "run_clang_tidy"
-    { }
-    "mkdir -p $out/bin
-    cp -r ${pkgs.clang_13.cc}/bin/run-clang-tidy $out/bin/run-clang-tidy";
+  clang_tidy_run = pkgs.callPackage ./clang_tidy_run/default.nix { };
 in
 [
   # Scripts.
@@ -44,7 +40,7 @@ in
   pkgs.cpplint
 
   pkgs.clang-tools
-  "${run_clang_tidy_script}"
+  clang_tidy_run
   pkgs.clang_13 # Must be after gcc to provide right links in docker.
   pkgs.conan
 

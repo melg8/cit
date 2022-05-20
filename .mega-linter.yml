@@ -128,3 +128,4 @@ CPP_CLANG_TIDY_PRE_COMMANDS:
 CPP_CLANG_TIDY_ARGUMENTS: >
   -header-filter='^(u(i[^_]|[^i])|[^u])+$'
   -p=build_clang
+  -use-color=false

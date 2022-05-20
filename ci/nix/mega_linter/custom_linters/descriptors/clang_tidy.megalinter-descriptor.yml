@@ -23,7 +23,7 @@ file_extensions:
 linters:
   # CLANG_TIDY
   - linter_name: clang-tidy
-    cli_executable: run-clang-tidy
+    cli_executable: clang-tidy-run
     linter_url: https://clang.llvm.org/extra/clang-tidy
     linter_rules_url: https://clang.llvm.org/extra/clang-tidy/checks/list.html
     cli_lint_mode: list_of_files
@@ -34,7 +34,7 @@ linters:
     cli_lint_errors_regex: "-warnings-as-errors"
     processing_order: -9
     examples:
-      - "run-clang-tidy test_1.cpp test_2.cpp"
+      - "clang-tidy-run test_1.cpp test_2.cpp"
     install:
       dockerfile:
         - RUN echo "is not implemented"
