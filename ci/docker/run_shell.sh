@@ -6,12 +6,15 @@
 
 set -e
 
+# --privileged flag used for docker incompatibility with glibc-2.34 workaround.
+
 docker container run --rm -it --ulimit nofile=1024 \
 	-e GITHUB_REPOSITORY \
 	-e GITHUB_SHA \
 	-e GITHUB_TOKEN \
 	-e GITHUB_RUN_ID \
 	-e PAT \
+	--privileged \
 	-v "/var/run/docker.sock:/var/run/docker.sock:rw" \
 	-v "$(pwd)":/home/user/work melg8/cit:0.0.7
 bash
