@@ -17,6 +17,7 @@ DIRECTORY=build_"${CONAN_COMPILER}"
 cd "${DIRECTORY}"
 
 cmake .. -G Ninja \
+	-DCMAKE_BUILD_TYPE=Release \
 	-DCMAKE_CXX_COMPILER="${COMPILER}" \
 	-DCMAKE_TOOLCHAIN_FILE="conan_toolchain.cmake"
 
