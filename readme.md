@@ -209,6 +209,9 @@ bash scripts for each action. Check
   - [lgtm](https://lgtm.com/) - build and analyze source code
   - [dependabot][8] - check dependencies
 
+- **unified console commands**
+  - [just](https://github.com/casey/just) - CC0 1.0 Universal
+
 - **git**
   - [git](https://github.com/git/git) - GPLv2,LGPLv2.1
   - [git-sizer](https://github.com/github/git-sizer) - MIT
@@ -299,7 +302,6 @@ bash scripts for each action. Check
   - [sha256sum](https://github.com/coreutils/coreutils) - GPL-3.0
 
 - **unified console commands**
-  - [just](https://github.com/casey/just) - CC0 1.0 Universal
   - [husky](https://github.com/typicode/husky) - MIT
 
 - **approval testing**
