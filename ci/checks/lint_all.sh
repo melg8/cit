@@ -12,6 +12,10 @@ export DEFAULT_WORKSPACE
 MEGALINTER_FLAVOR=cit
 export MEGALINTER_FLAVOR
 
-command time megalinter --flavor
-
-echo "All checks are passed."
+if megalinter --flavor; then
+	echo "All checks are passed."
+else
+	echo "To view the results in a browser run:
+    > firefox $(pwd)/report/errors/index.html"
+	exit 1
+fi

@@ -16,6 +16,7 @@ let
   ls_spell = pkgs.callPackage ./ls_spell/default.nix { };
   nixpkgs_fmt_wrapper = pkgs.callPackage ./nixpkgs_fmt_wrapper/default.nix { };
   clang_tidy_run = pkgs.callPackage ./clang_tidy_run/default.nix { };
+  code_checker = pkgs.callPackage ./code_checker/default.nix { };
 in
 [
   # Scripts.
@@ -77,6 +78,8 @@ in
   pkgs.gitlint
   pkgs.reuse
   mega_linter
+
+  code_checker
 
   # Potentially later.
   # Together 77 MB (+ 22 MB to total image size).

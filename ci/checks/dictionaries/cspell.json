@@ -33,6 +33,7 @@
                     "*node-packages.nix",
                     "*node-env.nix",
                     "*package-lock.json",
+                    "*python-packages.nix",
                     "*yarn_deps.nix",
                     "*yarn.lock",
                     "*CMakeLists.txt.user",

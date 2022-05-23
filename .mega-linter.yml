@@ -94,10 +94,19 @@ CPP_CPPLINT_ARGUMENTS: >
 CPP_CPPCHECK_PRE_COMMANDS:
   - command: >
       rm -rf ./build_gcc/*;
+      mkdir -p report/linters_logs/cppcheck_raw;
       ./ci/builders/common/cmake_setup.sh g++ gcc 11;
       cmake -B build_gcc -G Ninja
       -DCMAKE_CXX_COMPILER=g++
       -DCMAKE_TOOLCHAIN_FILE="conan_toolchain.cmake";
+    cwd: "root"
+    continue_if_failed: false
+
+# Absolute paths needed so that CodeChecker doesn't try to search for files
+# with relative paths.
+CPP_CPPCHECK_POST_COMMANDS:
+  - command: >
+      find . -name '*.plist' -exec sed -i 's?sources?'`pwd`'/sources?' {} +
     cwd: "root"
     continue_if_failed: false
 
@@ -113,6 +122,7 @@ CPP_CPPCHECK_ARGUMENTS: >
   --suppress=unusedStructMember
   --suppress=unmatchedSuppression
   --suppress=missingIncludeSystem
+  --plist-output=report/linters_logs/cppcheck_raw
 
 # CLANG_TIDY
 CPP_CLANG_TIDY_PRE_COMMANDS:
@@ -129,3 +139,9 @@ CPP_CLANG_TIDY_ARGUMENTS: >
   -header-filter='^(u(i[^_]|[^i])|[^u])+$'
   -p=build_clang
   -use-color=false
+
+POST_COMMANDS:
+  - command: >
+      ci/checks/code_checker_reports_convert.sh
+    cwd: "root"
+    continue_if_failed: false
