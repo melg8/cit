@@ -75,3 +75,4 @@ Jenkinsfile
 gitpython
 codespellrc
 justfile
+pavi
