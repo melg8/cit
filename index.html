@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Plist HTML Viewer</title>
+
+    <meta charset="UTF-8">
+
+    <style type="text/css">
+      .severity-low {
+  background-color: #669603;
+}
+
+.severity-low:after {
+  content : 'L';
+}
+
+.severity-unspecified {
+  background-color: #666666;
+}
+
+.severity-unspecified:after {
+  content : 'U';
+}
+
+.severity-style {
+  background-color: #9932cc;
+}
+
+.severity-style:after {
+  content : 'S';
+}
+
+.severity-medium {
+  background-color: #a9d323;
+  color: black;
+}
+
+.severity-medium:after {
+  content : 'M';
+}
+
+.severity-high {
+  background-color: #ffa800;
+}
+
+.severity-high:after {
+  content : 'H';
+}
+
+.severity-critical {
+  background-color: #e92625;
+}
+
+.severity-critical:after {
+  content : 'C';
+}
+
+i[class*="severity-"] {
+  line-height: normal;
+  text-transform: capitalize;
+  font-size: 0.8em;
+  font-weight: bold;
+  color: white;
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  text-align: center;
+  font-family: sans-serif;
+}
+
+      html, body {
+  width: 100%;
+  height: 100%;
+  padding: 0px;
+  margin: 0px;
+}
+
+div.container {
+  padding: 10px;
+}
+
+#content {
+  height: 100%;
+  display: block;
+  overflow: hidden;
+}
+
+#content > div {
+  margin: 10px;
+  border: 1px solid #ddd;
+  border-radius: 3px;
+  height: 97%;
+}
+
+#side-bar {
+  overflow: auto;
+}
+
+#editor-wrapper {
+  overflow: hidden;
+}
+
+.button {
+  background-color: #f1f1f1;
+  text-decoration: none;
+  display: inline-block;
+  padding: 8px 16px;
+  color: black;
+  cursor: pointer;
+}
+
+.button:hover {
+  background-color: #ddd;
+  color: black;
+}
+
+.review-status {
+  color: white;
+  text-align: center;
+}
+
+.review-status-confirmed {
+  background-color: #e92625;
+}
+
+.review-status-false-positive {
+  background-color: grey;
+}
+
+.review-status-intentional {
+  background-color: #669603;
+}
+
+      table th {
+  font-size: 1.2em;
+  color: #fff;
+  line-height: 1.4;
+  background-color: #007ea7;
+}
+
+table th.active,
+table th.sortable:hover {
+  cursor: pointer;
+  background-color: #2da6ce;
+}
+
+table tr:nth-child(even) {
+  background-color: #f5f5f5;
+}
+
+table tr > td {
+  padding: 5px;
+}
+
+      #report-list {
+  width: 100%;
+}
+
+#report-list .bug-path-length {
+  width: 5%;
+  text-align: center;
+}
+
+#report-list .severity {
+  text-align: center;
+}
+
+    </style>
+
+    <script>
+      function setNonCompatibleBrowserMessage() {
+  document.body.innerHTML =
+    '<h2 style="margin-left: 20px;">Your browser is not compatible with CodeChecker Viewer!</h2> \
+     <p style="margin-left: 20px;">The version required for the following browsers are:</p> \
+     <ul style="margin-left: 20px;"> \
+     <li>Internet Explorer: version 9 or newer</li> \
+     <li>Firefox: version 22.0 or newer</li> \
+     </ul>';
+}
+
+// http://stackoverflow.com/questions/5916900/how-can-you-detect-the-version-of-a-browser
+var browserVersion = (function(){
+  var ua = navigator.userAgent, tem,
+    M = ua.match(/(opera|chrome|safari|firefox|msie|trident(?=\/))\/?\s*(\d+)/i) || [];
+
+  if (/trident/i.test(M[1])) {
+    tem = /\brv[ :]+(\d+)/g.exec(ua) || [];
+    return 'IE ' + (tem[1] || '');
+  }
+
+  if (M[1] === 'Chrome') {
+    tem = ua.match(/\b(OPR|Edge)\/(\d+)/);
+    if (tem != null) return tem.slice(1).join(' ').replace('OPR', 'Opera');
+  }
+
+  M = M[2] ? [M[1], M[2]] : [navigator.appName, navigator.appVersion, '-?'];
+  if ((tem = ua.match(/version\/(\d+)/i)) != null) M.splice(1, 1, tem[1]);
+    return M.join(' ');
+})();
+
+var pos = browserVersion.indexOf(' ');
+var browser = browserVersion.substr(0, pos);
+var version = parseInt(browserVersion.substr(pos + 1));
+
+var browserCompatible
+  = browser === 'Firefox'
+  ? version >= 22
+  : browser === 'IE'
+  ? version >= 9
+  : true;
+
+      // -------------------------------------------------------------------------
+//  Part of the CodeChecker project, under the Apache License v2.0 with
+//  LLVM Exceptions. See LICENSE for license information.
+//  SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
+// -------------------------------------------------------------------------
+
+var BugList = {
+
+  init : function () {
+    this.initTableSort();
+    this.initBugPathLength();
+    this.initByUrl();
+  },
+
+  initTableSort : function () {
+    var that = this;
+
+    var table = document.getElementById('report-list');
+    table.querySelectorAll('th').forEach(function (column) {
+      if (that.canSort(column.id)) {
+        column.addEventListener('click', function () {
+          that.sort(column.id);
+        });
+        column.classList.add('sortable');
+      }
+    });
+  },
+
+  initBugPathLength : function () {
+    var that = this;
+
+    document.querySelectorAll('.bug-path-length').forEach(
+    function (widget) {
+      widget.style.backgroundColor =
+        that.generateRedGreenGradientColor(widget.innerHTML, 20, 0.5);
+    });
+  },
+
+  initByUrl : function () {
+    var state = {};
+    window.location.hash.substr(1).split('&').forEach(function (s) {
+      var parts = s.split('=');
+      state[parts[0]] = parts[1];
+    });
+
+    var column = state['sort'] ? state['sort'] : 'file-path';
+    var asc = state['asc'] ? !!parseInt(state['asc']) : true;
+    this.sort(column, asc);
+  },
+
+  generateRedGreenGradientColor : function (value, max, opacity) {
+    var red   = (255 * value) / max;
+    var green = (255 * (max - value)) / max;
+    var blue  = 0;
+    return 'rgba(' + parseInt(red) + ',' + parseInt(green) + ',' + blue
+      + ',' + opacity + ')';
+  },
+
+  canSort : function (columnId) {
+    return columnId === 'report-id' ||
+           columnId === 'file-path' ||
+           columnId === 'severity' ||
+           columnId === 'checker-name' ||
+           columnId === 'message' ||
+           columnId === 'bug-path-length' ||
+           columnId === 'review-status';
+  },
+
+  compare : function (columnId, a, b, asc) {
+    switch (columnId) {
+      case 'report-id':
+      case 'bug-path-length':
+        return asc
+          ? parseInt(a.innerHTML) > parseInt(b.innerHTML)
+          : parseInt(a.innerHTML) < parseInt(b.innerHTML);
+
+      case 'file-path':
+        var fileA = a.getAttribute('file');
+        var fileB = b.getAttribute('file');
+        var lineA = parseInt(a.getAttribute('line'));
+        var lineB = parseInt(b.getAttribute('line'));
+
+        if (asc) {
+          if (fileA > fileB) {
+            return true;
+          } else if (fileA === fileB) {
+            return lineA > lineB ? true : false;
+          } else {
+            return false;
+          }
+        } else {
+          if (fileA < fileB) {
+            return true;
+          } else if (fileA === fileB) {
+            return lineA < lineB ? true : false;
+          } else {
+            return false;
+          }
+        }
+
+      case 'severity':
+        return asc
+          ? a.getAttribute('severity') > b.getAttribute('severity')
+          : a.getAttribute('severity') < b.getAttribute('severity');
+
+      default:
+        return asc
+          ? a.innerHTML.toLowerCase() > b.innerHTML.toLowerCase()
+          : a.innerHTML.toLowerCase() < b.innerHTML.toLowerCase();
+    }
+  },
+
+  sort : function (columnId, asc) {
+    var rows = null,
+        switching = true,
+        i, j, x, y, minIdx;
+
+    var table = document.getElementById('report-list');
+    var column = document.getElementById(columnId);
+    var cellIndex = column.cellIndex;
+
+    if (asc === undefined) {
+      asc = column.getAttribute('sort') === 'desc' ? false : true;
+    }
+
+    var n = table.rows.length;
+    for (i = 1; i < n - 1; i++)
+    {
+      minIdx = i;
+      for (j = i + 1; j < n; j++) {
+        x = table.rows[minIdx].getElementsByTagName('td')[cellIndex];
+        y = table.rows[j].getElementsByTagName('td')[cellIndex];
+        if (this.compare(columnId, x, y, asc)) {
+          minIdx = j;
+        }
+      }
+
+      if (minIdx !== i) {
+        table.rows[i].parentNode.insertBefore(
+          table.rows[minIdx], table.rows[i]);
+      }
+    }
+
+    table.querySelectorAll('th').forEach(function (column) {
+      column.removeAttribute('sort');
+      column.classList.remove('active');
+    });
+
+    column.classList.add('active');
+    column.setAttribute('sort', asc ? 'desc' : 'asc');
+    window.location.hash = '#sort=' + columnId + '&asc=' + (asc ? 1 : 0);
+  }
+};
+
+
+      window.onload = function () {
+        if (!browserCompatible) {
+          setNonCompatibleBrowserMessage();
+        } else {
+          BugList.init()
+        }
+      }
+    </script>
+  </head>
+  <body>
+  <div class="container">
+    <a href="statistics.html" class="button">Go To Statistics</a>
+    <table id="report-list">
+      
+                <tr>
+                  <th id="report-id">&nbsp;</th>
+                  <th id="file-path">File</th>
+                  <th id="severity">Severity</th>
+                  <th id="checker-name">Checker name</th>
+                  <th id="message">Message</th>
+                  <th id="bug-path-length">Bug path length</th>
+                  <th id="review-status">Review status</th>
+                </tr>
+    </table>
+  </div>
+  </body>
+</html>
