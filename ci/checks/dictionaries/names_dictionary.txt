@@ -76,3 +76,4 @@ gitpython
 codespellrc
 justfile
 pavi
+reviewdog

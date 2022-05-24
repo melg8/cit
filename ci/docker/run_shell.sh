@@ -9,6 +9,7 @@ set -e
 # --privileged flag used for docker incompatibility with glibc-2.34 workaround.
 
 docker container run --rm -it --ulimit nofile=1024 \
+	-e REVIEWDOG_GITHUB_API_TOKEN \
 	-e GITHUB_REPOSITORY \
 	-e GITHUB_SHA \
 	-e GITHUB_TOKEN \

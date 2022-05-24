@@ -68,6 +68,7 @@ jobs:
     runs-on: ubuntu-20.04
     env:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      REVIEWDOG_GITHUB_API_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     needs: build_docker
     steps:
       - uses: actions/checkout@v2
@@ -119,6 +120,7 @@ jobs:
     runs-on: ubuntu-20.04
     env:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      REVIEWDOG_GITHUB_API_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     needs: build_docker
     steps:
       - uses: actions/checkout@v2
@@ -164,6 +166,7 @@ jobs:
     runs-on: ubuntu-20.04
     env:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      REVIEWDOG_GITHUB_API_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     needs: build_docker
     steps:
       - uses: actions/checkout@v2

@@ -49,6 +49,7 @@ in
   pkgs.git-sizer # 37 MB
   pkgs.gitleaks
   pkgs.shfmt
+  pkgs.reviewdog
   conform # 57 MB
   ls_lint # 4.2 MB
 
