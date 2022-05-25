@@ -42,3 +42,23 @@ if test -d "${CODE_CHECKER_RAW_LOGS}"; then
 		true # Ignore error code from checker.
 	echo "$CODE_CHECKER_RAW_LOGS exists."
 fi
+
+if test -d "${CODE_CHECKER_RAW_LOGS}" &&
+	test -n "${GITHUB_ACTIONS}"; then
+	CodeChecker parse -o ./coverage/result.json \
+		report/linters_logs/codechecker_raw/ |
+		reviewdog -efm="[%m] %f:%l:%c: %m" \
+			-diff="git diff HEAD" | sort | uniq |
+		awk '!/'warnings-as-errors'/ {print} ' |
+		reviewdog -efm="[%m] %f:%l:%c: %m" \
+			-diff="git diff HEAD" \
+			-reporter=github-pr-review
+
+	TMPFILE=$(mktemp)
+	git diff >"${TMPFILE}"
+	reviewdog \
+		-f=diff \
+		-f.diff.strip=1 \
+		-diff="git diff HEAD" \
+		-reporter=github-pr-review <"${TMPFILE}"
+fi

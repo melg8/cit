@@ -17,8 +17,11 @@ docker container run --rm --ulimit nofile=1024 \
 	-e GITHUB_SHA \
 	-e GITHUB_TOKEN \
 	-e GITHUB_RUN_ID \
+	-e GITHUB_ACTIONS \
+	-e GITHUB_EVENT_PATH="/home/user/event.json" \
 	-e PAT \
 	--privileged \
 	-v "/var/run/docker.sock:/var/run/docker.sock:rw" \
+	-v "${GITHUB_EVENT_PATH}":"/home/user/event.json" \
 	-v "$(pwd)":/home/user/work \
 	melg8/cit:0.0.7 nix-shell --run "${COMMAND}"
