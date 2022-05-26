@@ -48,10 +48,10 @@ if test -d "${CODE_CHECKER_RAW_LOGS}" &&
 	CodeChecker parse -o ./coverage/result.json \
 		report/linters_logs/codechecker_raw/ |
 		reviewdog -efm="[%m] %f:%l:%c: %m" \
-			-diff="git diff HEAD" | sort | uniq |
+			-diff="git diff FETCH_HEAD" | sort | uniq |
 		awk '!/'warnings-as-errors'/ {print} ' |
 		reviewdog -efm="[%m] %f:%l:%c: %m" \
-			-diff="git diff HEAD" \
+			-diff="git diff FETCH_HEAD" \
 			-reporter=github-pr-review
 
 	TMPFILE=$(mktemp)

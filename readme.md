@@ -49,31 +49,46 @@ ready to use template.
 - \[x] Command-line [tool](https://github.com/casey/just) to simplify usage of
   functionality
 
-![Just](docs/images/just.png "Just")
+  ![Just](docs/images/just.png "Just")
 
 - \[x] A lot of linters, formatters and static analysis tools integrated and
   setup for each aspect of project with informative reports thanks to
   integration with patched version of
   [megalinter](https://github.com/megalinter/megalinter)
 
-![Local report](docs/images/local_report.png "Local report")
+  ![Local report](docs/images/local_report.png "Local report")
+
+- \[x] You don’t need to stare at raw logs of tools, thanks to
+  [CodeChecker](https://github.com/Ericsson/codechecker) you can check summary
+  tables, statistics for project and reports in your browser
+  ![HTML report](docs/images/html_report.png "HTML report")
 
 - \[x] Even if you can’t run it locally - that’s not an issue. Ready to use
-  GitHub ci setup with same checks
+  GitHub ci setup with same checks and reports uploaded as artifacts
 
 - \[x] Pull requests won’t pass if linters found some issues
 
-![Checks report](docs/images/checks_report.png "Checks report")
+  ![Checks report](docs/images/checks_report.png "Checks report")
+
+- \[x] [Reviewdog](https://github.com/reviewdog/reviewdog)
+  comments cpp linters output in pull request
+
+  ![GitHub report](docs/images/github_report.png "GitHub report")
+
+- \[x] Linters suggestions and auto fixes are also displayed by reviewdog as
+  suggestions in pull request
+
+  ![GitHub diff](docs/images/github_diff.png "GitHub diff")
 
 - \[x] Pull requests feedback with linting results as comment:
   [example](https://github.com/melg8/cit/pull/17#issuecomment-1126876938).
   When there are no issues left with pr you will see updated message from bot
 
-![Pr message](docs/images/pr_message.png "Pr message")
+  ![Pr message](docs/images/pr_message.png "Pr message")
 
 - \[x] Code coverage with pull request Codecov reports
 
-![Codecov](docs/images/codecov.png "Codecov")
+  ![Codecov](docs/images/codecov.png "Codecov")
 
 - \[x] All artifacts with logs are available for download from ci
 
