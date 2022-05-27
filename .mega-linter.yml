@@ -39,7 +39,7 @@ FORMATTERS_DISABLE_ERRORS: false
 
 # Reports style.
 SHOW_ELAPSED_TIME: true
-FILEIO_REPORTER: false # Enable only if runner has internet connection.
+FILEIO_REPORTER: true # Enable only if runner has internet connection.
 PRINT_ALPACA: false # Don't print logo.
 
 # GIT_DIFF
