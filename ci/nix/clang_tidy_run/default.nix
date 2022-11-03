@@ -7,7 +7,7 @@ let
   run_clang_tidy_py =
     fetchurl {
       url = "https://raw.githubusercontent.com/llvm/llvm-project/main/clang-tools-extra/clang-tidy/tool/run-clang-tidy.py";
-      sha256 = "sha256:0am4wkijxssw694asgqv6c11hjj0ycq4x4894wzxvx9r36cjvfsj";
+      sha256 = "sha256-DIz5oT/Kl9wgryxu9z4LsGLXoTZdyODrhvUtz5Z8lUw=";
     };
 in
 stdenv.mkDerivation {
