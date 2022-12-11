@@ -19,6 +19,8 @@ include("${CMAKE_CURRENT_SOURCE_DIR}/cmake/ccache.cmake")
 include("${CMAKE_CURRENT_SOURCE_DIR}/cmake/compiler_flags.cmake")
 include("${CMAKE_CURRENT_SOURCE_DIR}/cmake/recursive_directories_macro.cmake")
 
+message(STATUS "Using toolchain file: ${CMAKE_TOOLCHAIN_FILE}")
+
 if(ENABLE_TESTING)
   enable_testing()
 endif()

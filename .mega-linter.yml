@@ -129,7 +129,7 @@ CPP_CPPCHECK_ARGUMENTS: >
 CPP_CLANG_TIDY_PRE_COMMANDS:
   - command: >
       rm -rf ./build_clang/*;
-      ./ci/builders/common/cmake_setup.sh clang++ clang 13;
+      ./ci/builders/common/cmake_setup.sh clang++ clang 14;
       cmake -B build_clang -G Ninja
       -DCMAKE_BUILD_TYPE=Release
       -DCMAKE_CXX_COMPILER=clang++

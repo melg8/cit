@@ -46,7 +46,7 @@ cppcheck \
 	--suppress=unmatchedSuppression \
 	--suppress=missingIncludeSystem
 
-./ci/builders/common/cmake_setup.sh clang++ clang 13
+./ci/builders/common/cmake_setup.sh clang++ clang 14
 
 DIRECTORY="./build_clang"
 

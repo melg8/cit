@@ -25,7 +25,8 @@ extraction:
     configure:
       command:
         - mkdir build_gcc && cd build_gcc
-        - conan install .. -s compiler="gcc" -s compiler.version="11"
+        - conan install .. --build missing \
+          -s compiler="gcc" -s compiler.version="11"
     index:
       build_command: |
         cd build_gcc && \

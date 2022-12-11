@@ -49,10 +49,12 @@ in
   pkgs.bintools-unwrapped # Linker: ar.
   pkgs.cpplint
 
-  pkgs.clang-tools
+  pkgs2.clang-tools_14
   clang_tidy_run
   pkgs2.clang_14 # Must be after gcc to provide right links in docker.
   conan_1_55
+
+  pkgs2.perl # For building openssl for clang_14 version from sources.
 
   # go
   pkgs.git-sizer # 37 MB
