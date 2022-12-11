@@ -97,6 +97,7 @@ CPP_CPPCHECK_PRE_COMMANDS:
       mkdir -p report/linters_logs/cppcheck_raw;
       ./ci/builders/common/cmake_setup.sh g++ gcc 11;
       cmake -B build_gcc -G Ninja
+      -DCMAKE_BUILD_TYPE=Release
       -DCMAKE_CXX_COMPILER=g++
       -DCMAKE_TOOLCHAIN_FILE="conan_toolchain.cmake";
     cwd: "root"
@@ -130,6 +131,7 @@ CPP_CLANG_TIDY_PRE_COMMANDS:
       rm -rf ./build_clang/*;
       ./ci/builders/common/cmake_setup.sh clang++ clang 13;
       cmake -B build_clang -G Ninja
+      -DCMAKE_BUILD_TYPE=Release
       -DCMAKE_CXX_COMPILER=clang++
       -DCMAKE_TOOLCHAIN_FILE="conan_toolchain.cmake";
     cwd: "root"

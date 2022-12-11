@@ -2,7 +2,7 @@
 #
 # SPDX-License-Identifier: MIT
 
-{ pkgs }:
+{ pkgs, pkgs2 }:
 let
   pvs_studio_for_free = pkgs.callPackage ./pvs/how_to_use_pvs_studio_free.nix { };
   conform = pkgs.callPackage ./conform/default.nix { };
@@ -17,6 +17,15 @@ let
   nixpkgs_fmt_wrapper = pkgs.callPackage ./nixpkgs_fmt_wrapper/default.nix { };
   clang_tidy_run = pkgs.callPackage ./clang_tidy_run/default.nix { };
   code_checker = pkgs.callPackage ./code_checker/default.nix { };
+  conan_1_55 = pkgs2.conan.overrideAttrs (_finalAttrs: _previousAttrs: rec {
+    version = "1.55.0";
+    src = pkgs2.fetchFromGitHub {
+      owner = "conan-io";
+      repo = "conan";
+      rev = version;
+      hash = "sha256-YIw+D6C2BgOb7pkjViOIPTidaoLr1MWntY3nbDyjShc=";
+    };
+  });
 in
 [
   # Scripts.
@@ -43,7 +52,7 @@ in
   pkgs.clang-tools
   clang_tidy_run
   pkgs.clang_13 # Must be after gcc to provide right links in docker.
-  pkgs.conan
+  conan_1_55
 
   # go
   pkgs.git-sizer # 37 MB

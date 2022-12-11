@@ -27,6 +27,7 @@ cpplint \
 DIRECTORY="./build_gcc"
 
 cmake -B "${DIRECTORY}" -G Ninja \
+	-DCMAKE_BUILD_TYPE=Release \
 	-DCMAKE_CXX_COMPILER=g++ \
 	-DCMAKE_TOOLCHAIN_FILE="conan_toolchain.cmake"
 
@@ -50,6 +51,7 @@ cppcheck \
 DIRECTORY="./build_clang"
 
 cmake -B "${DIRECTORY}" -G Ninja \
+	-DCMAKE_BUILD_TYPE=Release \
 	-DCMAKE_CXX_COMPILER=clang++ \
 	-DCMAKE_TOOLCHAIN_FILE="conan_toolchain.cmake"
 

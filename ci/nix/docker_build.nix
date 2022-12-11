@@ -4,8 +4,12 @@
 
 let
   nixpkgs = import ./pinned_nixpkgs.nix;
+  nixpkgs2 = import ./pinned_nixpkgs_2.nix;
   pkgs = import nixpkgs { };
-  tools = import ./tools.nix { inherit pkgs; };
+  pkgs2 = import nixpkgs2 { };
+  tools = import ./tools.nix {
+    inherit pkgs; inherit pkgs2;
+  };
   inherit (pkgs.lib) concatStringsSep genList;
   nsswitch = ''
     passwd:    files systemd
