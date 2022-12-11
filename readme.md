@@ -96,7 +96,7 @@ ready to use template.
 
 This project is under development, expect changes in api, setup and tools.
 It uses opinionated set of rules and conventions for project,
-fill free to change configuration files to best fit your personal needs.
+feel free to change configuration files to best fit your personal needs.
 You can fork and play with it, contributions to the source code,
 issues and requests are welcome.
 
