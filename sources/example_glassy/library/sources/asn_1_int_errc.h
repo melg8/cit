@@ -32,15 +32,15 @@ enum class Asn1IntErrc {
 namespace detail {
 struct Asn1IntErrorCategory : std::error_category {
   const char* name() const noexcept override;
-  std::string message(int ev) const override;
+  std::string message(int error_value) const override;
 };
 
 inline const char* Asn1IntErrorCategory::name() const noexcept {
   return "BigNum";
 }
 
-inline std::string Asn1IntErrorCategory::message(int ev) const {
-  switch (static_cast<Asn1IntErrc>(ev)) {
+inline std::string Asn1IntErrorCategory::message(int error_value) const {
+  switch (static_cast<Asn1IntErrc>(error_value)) {
     case Asn1IntErrc::kAllocationFailure:
       return "allocation failed";
     case Asn1IntErrc::kNullPointerFailure:

@@ -292,7 +292,7 @@ inline Result<void> operator+=(Result<BigNum>& maybe_lhs,
   return outcome::success();
 }
 
-inline int Sum(int a, int b) { return a + b; }
+inline int Sum(int lhs, int rhs) { return lhs + rhs; }
 
 }  // namespace glassy
 

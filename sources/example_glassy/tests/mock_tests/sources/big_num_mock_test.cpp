@@ -15,12 +15,12 @@ static BIGNUM* MockBnNew() noexcept {
   return should_fail_alloc ? nullptr : BN_new();
 }
 
-static int BnSetWord(BIGNUM* a, BN_ULONG w) noexcept {
+static int BnSetWord(BIGNUM* big_num, BN_ULONG word) noexcept {
   if (should_fail_one_time_set_word) {
     should_fail_one_time_set_word = false;
     return 0;
   }
-  return BN_set_word(a, w);
+  return BN_set_word(big_num, word);
 }
 
 // For this function fail condition is represented by all 0xFF bytes

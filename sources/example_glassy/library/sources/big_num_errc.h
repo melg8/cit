@@ -33,15 +33,15 @@ enum class BigNumErrc {
 namespace detail {
 struct BigNumErrorCategory : std::error_category {
   const char* name() const noexcept override;
-  std::string message(int ev) const override;
+  std::string message(int error_value) const override;
 };
 
 inline const char* BigNumErrorCategory::name() const noexcept {
   return "BigNum";
 }
 
-inline std::string BigNumErrorCategory::message(int ev) const {
-  switch (static_cast<BigNumErrc>(ev)) {
+inline std::string BigNumErrorCategory::message(int error_value) const {
+  switch (static_cast<BigNumErrc>(error_value)) {
     case BigNumErrc::kAllocationFailure:
       return "allocation failed";
     case BigNumErrc::kNullPointerFailure:
