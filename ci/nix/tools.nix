@@ -51,7 +51,7 @@ in
 
   pkgs.clang-tools
   clang_tidy_run
-  pkgs.clang_13 # Must be after gcc to provide right links in docker.
+  pkgs2.clang_14 # Must be after gcc to provide right links in docker.
   conan_1_55
 
   # go
