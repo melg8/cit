@@ -22,7 +22,7 @@ cpplint \
 	--root=./sources \
 	./sources
 
-./ci/builders/common/cmake_setup.sh g++ gcc 11
+./ci/builders/common/cmake_setup.sh g++ gcc 12
 
 DIRECTORY="./build_gcc"
 

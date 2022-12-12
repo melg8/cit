@@ -95,7 +95,7 @@ CPP_CPPCHECK_PRE_COMMANDS:
   - command: >
       rm -rf ./build_gcc/*;
       mkdir -p report/linters_logs/cppcheck_raw;
-      ./ci/builders/common/cmake_setup.sh g++ gcc 11;
+      ./ci/builders/common/cmake_setup.sh g++ gcc 12;
       cmake -B build_gcc -G Ninja
       -DCMAKE_BUILD_TYPE=Release
       -DCMAKE_CXX_COMPILER=g++

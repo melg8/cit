@@ -17,5 +17,6 @@ cd "${DIRECTORY}"
 
 conan install .. \
 	--build missing \
+	-s compiler.libcxx="libstdc++11" \
 	-s compiler="${CONAN_COMPILER}" \
 	-s compiler.version="${CONAN_COMPILER_VERSION}"

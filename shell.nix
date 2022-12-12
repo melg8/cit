@@ -8,7 +8,7 @@ let
   pkgs = import nixpkgs { };
   pkgs2 = import nixpkgs2 { };
 in
-pkgs.mkShell.override { stdenv = pkgs.gcc11Stdenv; } rec {
+pkgs2.mkShell.override { stdenv = pkgs2.gcc12Stdenv; } rec {
   buildInputs = import ./ci/nix/tools.nix { inherit pkgs; inherit pkgs2; };
 
   shellHook = ''
