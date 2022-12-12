@@ -43,11 +43,11 @@ in
   pkgs.grcov
 
   # cpp analyzers and compilers.
-  pkgs.cppcheck
+  pkgs2.cppcheck
   pkgs2.gcc12.cc # For gcov tool.
   pkgs2.gcc12 # Must be after gcc11.cc to provide right links in docker.
-  pkgs.bintools-unwrapped # Linker: ar.
-  pkgs.cpplint
+  pkgs2.bintools-unwrapped # Linker: ar.
+  pkgs2.cpplint
 
   pkgs2.clang-tools_14
   clang_tidy_run
