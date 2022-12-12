@@ -57,10 +57,10 @@ in
   pkgs2.perl # For building openssl for clang_14 version from sources.
 
   # go
-  pkgs.git-sizer # 37 MB
-  pkgs.gitleaks
-  pkgs.shfmt
-  pkgs.reviewdog
+  pkgs2.git-sizer # 37 MB
+  pkgs2.gitleaks
+  pkgs2.shfmt
+  pkgs2.reviewdog
   conform # 57 MB
   ls_lint # 4.2 MB
 
@@ -71,7 +71,7 @@ in
 
   # npm
   # Together 281 MB.
-  pkgs.commitlint
+  pkgs2.commitlint
   pkgs.nodePackages.cspell
   pkgs.nodePackages.prettier
   text_lint # 247 MB.
@@ -79,16 +79,16 @@ in
 
   # Haskell
   # Together 45 MB
-  pkgs.shellcheck # 45 MB
+  pkgs2.shellcheck # 45 MB
 
   # python 3
   # Together 412 MB
   pkgs.python39Full
-  pkgs.codespell # 140 MB
-  pkgs.yamllint # 140 MB
-  pkgs.cmake-format # 150 MB
-  pkgs.gitlint
-  pkgs.reuse
+  pkgs2.codespell # 140 MB
+  pkgs2.yamllint # 140 MB
+  pkgs2.cmake-format # 150 MB
+  pkgs2.gitlint
+  pkgs2.reuse
   mega_linter
 
   code_checker
