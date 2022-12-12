@@ -95,30 +95,30 @@ in
 
   # Potentially later.
   # Together 77 MB (+ 22 MB to total image size).
-  pkgs.nix
-  pkgs.nixpkgs-fmt
-  pkgs.nix-linter
-  pkgs.pkgsStatic.busybox
+  pkgs2.nix
+  pkgs2.nixpkgs-fmt
+  pkgs2.nix-linter
+  pkgs2.pkgsStatic.busybox
 
   ### For debug only.
-  pkgs.nix-tree
+  pkgs2.nix-tree
 
   ### Add deps for docker to be hermetic.
-  pkgs.cacert
-  pkgs.binutils
+  pkgs2.cacert
+  pkgs2.binutils
 
-  pkgs.just
-  pkgs.bashInteractive
-  pkgs.bashInteractive.dev
-  pkgs.bashInteractive.doc
-  pkgs.bashInteractive.info
-  pkgs.bashInteractive.man
+  pkgs2.just
+  pkgs2.bashInteractive
+  pkgs2.bashInteractive.dev
+  pkgs2.bashInteractive.doc
+  pkgs2.bashInteractive.info
+  pkgs2.bashInteractive.man
 
-  pkgs.gawk
-  pkgs.gnumake
-  pkgs.ed
-  pkgs.gnupatch
-  pkgs.patchelf
-  pkgs.findutils
-  pkgs.diffutils
+  pkgs2.gawk
+  pkgs2.gnumake
+  pkgs2.ed
+  pkgs2.gnupatch
+  pkgs2.patchelf
+  pkgs2.findutils
+  pkgs2.diffutils
 ]
