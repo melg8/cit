@@ -35,12 +35,12 @@ in
   nixpkgs_fmt_wrapper
 
   pvs_studio_for_free # 2.5 MB
-  pkgs.git # 397 MB
-  pkgs.ccache # 33 MB
-  pkgs.cmake # 96 MB
-  pkgs.ninja
-  pkgs.lcov
-  pkgs.grcov
+  pkgs2.git # 397 MB
+  pkgs2.ccache # 33 MB
+  pkgs2.cmake # 96 MB
+  pkgs2.ninja
+  pkgs2.lcov
+  pkgs2.grcov
 
   # cpp analyzers and compilers.
   pkgs2.cppcheck
