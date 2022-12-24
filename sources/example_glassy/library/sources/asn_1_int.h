@@ -24,17 +24,45 @@ using Result = outcome::result<T>;
 
 using Asn1IntegerOwnerPtr = gsl::owner<ASN1_INTEGER*>;
 
+// Possible combinations
+// owned or viewed
+// constant or variable
+// not_null or nullable
+
+// Functions signatures conversion.
+// asn_in(const ASN1_INTEGER *x); -> AsnIn(Asn1IntConstView view);
+// asn_in_out(ASN1_INTEGER *a); -> AsnInOut(Asn1IntView view_modifiable);
+// asn_in_consume(ASN1_INTEGER *a); -> AsnInConsume(Asn1Int && owner_move_in);
+// ASN1_INTEGER *asn_out_return(); -> Result<Asn1Int> AsnOutReturn();
+
+// New types conversion
+// ASN1_INTEGER* -> Asn1IntegerNotNull
+// const ASN1_INTEGER* -> Asn1IntegerConstNotNull
+// Asn1Int& -> Asn1IntView
+// Asn1IntView -> Asn1IntConstView
+// const Asn1Int& -> Asn1IntConstView
+
+// Implementation details:
+// Asn1IntView uses Asn1IntegerNotNull
+// Asn1IntConstView uses Asn1IntegerConstNotNull
+// Asn1Int uses Asn1IntImpl(unique_ptr)
+
+using Asn1IntegerNotNull = gsl::not_null<ASN1_INTEGER*>;
+using Asn1IntegerConstNotNull = gsl::not_null<const ASN1_INTEGER*>;
+
+struct Asn1IntConstView;
+
 class Asn1Int {
  public:
   static Result<Asn1Int> New(Long value = 0) noexcept;
-  static Result<Asn1Int> New(const Asn1Int& other) noexcept;
+  static Result<Asn1Int> New(const Asn1IntConstView& other) noexcept;
 
   static Result<Asn1Int> Own(Asn1IntegerOwnerPtr ptr) noexcept;
 
   Result<Long> ToLong() const noexcept;
 
-  const ASN1_INTEGER* Ptr() const noexcept;
-  ASN1_INTEGER* Ptr() noexcept;
+  Asn1IntegerConstNotNull Ptr() const noexcept;
+  Asn1IntegerNotNull Ptr() noexcept;
 
  private:
   struct Deleter {
@@ -50,15 +78,46 @@ class Asn1Int {
   Asn1IntImpl ptr_{};
 };
 
-int Compare(const Asn1Int& lhs, const Asn1Int& rhs) noexcept;
+struct Asn1IntConstView {
+  // cppcheck-suppress noExplicitConstructor
+  Asn1IntConstView(Asn1IntegerNotNull ptr)  // NOLINT
+      : ptr_{std::move(ptr)} {}
 
-bool operator<(const Asn1Int& lhs, const Asn1Int& rhs) noexcept;
+  // cppcheck-suppress noExplicitConstructor
+  Asn1IntConstView(Asn1IntegerConstNotNull ptr)  // NOLINT
+      : ptr_{std::move(ptr)} {}
 
-bool operator>(const Asn1Int& lhs, const Asn1Int& rhs) noexcept;
+  // cppcheck-suppress noExplicitConstructor
+  Asn1IntConstView(Asn1Int& view)  // NOLINT
+      : ptr_{view.Ptr()} {}
 
-bool operator==(const Asn1Int& lhs, const Asn1Int& rhs) noexcept;
+  // cppcheck-suppress noExplicitConstructor
+  Asn1IntConstView(const Asn1Int& view)  // NOLINT
+      : ptr_{view.Ptr()} {}
 
-bool operator!=(const Asn1Int& lhs, const Asn1Int& rhs) noexcept;
+  Asn1IntegerConstNotNull Ptr() const noexcept;
+
+ private:
+  Asn1IntegerConstNotNull ptr_;
+};
+
+inline Asn1IntegerConstNotNull Asn1IntConstView::Ptr() const noexcept {
+  return ptr_;
+}
+
+int Compare(const Asn1IntConstView& lhs, const Asn1IntConstView& rhs) noexcept;
+
+bool operator<(const Asn1IntConstView& lhs,
+               const Asn1IntConstView& rhs) noexcept;
+
+bool operator>(const Asn1IntConstView& lhs,
+               const Asn1IntConstView& rhs) noexcept;
+
+bool operator==(const Asn1IntConstView& lhs,
+                const Asn1IntConstView& rhs) noexcept;
+
+bool operator!=(const Asn1IntConstView& lhs,
+                const Asn1IntConstView& rhs) noexcept;
 
 inline void Asn1Int::Deleter::operator()(
     Asn1IntegerOwnerPtr number) const noexcept {
@@ -82,7 +141,7 @@ inline glassy::Result<glassy::Asn1Int> glassy::Asn1Int::New(
   return result;
 }
 
-inline Result<Asn1Int> Asn1Int::New(const Asn1Int& other) noexcept {
+inline Result<Asn1Int> Asn1Int::New(const Asn1IntConstView& other) noexcept {
   Asn1IntImpl ptr{ASN1_INTEGER_dup(other.Ptr())};
   if (!ptr) {
     return Asn1IntErrc::kCopyFailure;
@@ -105,29 +164,36 @@ inline Result<Long> Asn1Int::ToLong() const noexcept {
   return result;
 }
 
-inline const ASN1_INTEGER* Asn1Int::Ptr() const noexcept { return ptr_.get(); }
+inline Asn1IntegerConstNotNull Asn1Int::Ptr() const noexcept {
+  return ptr_.get();
+}
 
-inline ASN1_INTEGER* Asn1Int::Ptr() noexcept { return ptr_.get(); }
+inline Asn1IntegerNotNull Asn1Int::Ptr() noexcept { return ptr_.get(); }
 
 inline Asn1Int::Asn1Int(Asn1IntImpl ptr) noexcept : ptr_{std::move(ptr)} {}
 
-inline int Compare(const Asn1Int& lhs, const Asn1Int& rhs) noexcept {
+inline int Compare(const Asn1IntConstView& lhs,
+                   const Asn1IntConstView& rhs) noexcept {
   return ASN1_INTEGER_cmp(lhs.Ptr(), rhs.Ptr());
 }
 
-inline bool operator<(const Asn1Int& lhs, const Asn1Int& rhs) noexcept {
+inline bool operator<(const Asn1IntConstView& lhs,
+                      const Asn1IntConstView& rhs) noexcept {
   return Compare(lhs, rhs) < 0;
 }
 
-inline bool operator>(const Asn1Int& lhs, const Asn1Int& rhs) noexcept {
+inline bool operator>(const Asn1IntConstView& lhs,
+                      const Asn1IntConstView& rhs) noexcept {
   return Compare(lhs, rhs) > 0;
 }
 
-inline bool operator==(const Asn1Int& lhs, const Asn1Int& rhs) noexcept {
+inline bool operator==(const Asn1IntConstView& lhs,
+                       const Asn1IntConstView& rhs) noexcept {
   return Compare(lhs, rhs) == 0;
 }
 
-inline bool operator!=(const Asn1Int& lhs, const Asn1Int& rhs) noexcept {
+inline bool operator!=(const Asn1IntConstView& lhs,
+                       const Asn1IntConstView& rhs) noexcept {
   return Compare(lhs, rhs) != 0;
 }
 
