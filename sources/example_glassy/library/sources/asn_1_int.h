@@ -11,6 +11,7 @@
 #include <asn_1_int_errc.h>
 
 #include <openssl/asn1.h>
+#include <gsl/gsl-lite.hpp>
 #include <outcome.hpp>
 
 namespace glassy {
@@ -21,12 +22,14 @@ namespace outcome = OUTCOME_V2_NAMESPACE;
 template <typename T>
 using Result = outcome::result<T>;
 
+using Asn1IntegerOwnerPtr = gsl::owner<ASN1_INTEGER*>;
+
 class Asn1Int {
  public:
   static Result<Asn1Int> New(Long value = 0) noexcept;
   static Result<Asn1Int> New(const Asn1Int& other) noexcept;
 
-  static Result<Asn1Int> Own(ASN1_INTEGER* ptr) noexcept;
+  static Result<Asn1Int> Own(Asn1IntegerOwnerPtr ptr) noexcept;
 
   Result<Long> ToLong() const noexcept;
 
@@ -35,7 +38,7 @@ class Asn1Int {
 
  private:
   struct Deleter {
-    void operator()(ASN1_INTEGER* number) const noexcept;
+    void operator()(Asn1IntegerOwnerPtr number) const noexcept;
   };
 
   using Asn1IntImpl = std::unique_ptr<ASN1_INTEGER, Deleter>;
@@ -57,7 +60,8 @@ bool operator==(const Asn1Int& lhs, const Asn1Int& rhs) noexcept;
 
 bool operator!=(const Asn1Int& lhs, const Asn1Int& rhs) noexcept;
 
-inline void Asn1Int::Deleter::operator()(ASN1_INTEGER* number) const noexcept {
+inline void Asn1Int::Deleter::operator()(
+    Asn1IntegerOwnerPtr number) const noexcept {
   ASN1_INTEGER_free(number);
 }
 
@@ -86,7 +90,7 @@ inline Result<Asn1Int> Asn1Int::New(const Asn1Int& other) noexcept {
   return Asn1Int{std::move(ptr)};
 }
 
-inline Result<Asn1Int> Asn1Int::Own(ASN1_INTEGER* ptr) noexcept {
+inline Result<Asn1Int> Asn1Int::Own(Asn1IntegerOwnerPtr ptr) noexcept {
   if (!ptr) {
     return Asn1IntErrc::kNullPointerFailure;
   }

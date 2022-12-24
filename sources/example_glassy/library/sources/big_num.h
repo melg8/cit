@@ -27,15 +27,20 @@ using Result = outcome::result<T>;
 
 struct OpenSslFree {
   template <typename T>
-  void operator()(T* ptr) const noexcept {
-    OPENSSL_free(ptr);
-  }
+  void operator()(gsl::owner<T*> ptr) const noexcept;
 };
 
+template <typename T>
+void OpenSslFree::operator()(gsl::owner<T*> ptr) const noexcept {
+  // TODO(melg): try to implement saving of FILE/LINE from call side.
+  OPENSSL_free(ptr);
+}
+
 using SslString = std::unique_ptr<char, OpenSslFree>;
+using SslSpan = gsl::span<const unsigned char>;
 using SslData = std::vector<unsigned char>;  // TODO(melg): replace with openssl
                                              // based allocation mechanism.
-using SslSpan = gsl::span<const unsigned char>;
+using BigNumOwnerPtr = gsl::owner<BIGNUM*>;
 
 struct Dec {
   const char* const value{nullptr};  // NOLINT
@@ -52,7 +57,10 @@ class BigNum {
   static Result<BigNum> New(const Dec& dec) noexcept;
   static Result<BigNum> New(const Hex& hex) noexcept;
   static Result<BigNum> New(const SslSpan& span) noexcept;
-  static Result<BigNum> Own(BIGNUM* ptr) noexcept;
+
+  // TODO(melg): maybe should make static BigNum Own(NotNullBigNumOwnerPtr ptr)
+  // noexcept interface.
+  static Result<BigNum> Own(BigNumOwnerPtr ptr) noexcept;
 
   static Result<BigNum> Add(const BigNum& lhs, const BigNum& rhs) noexcept;
 
@@ -69,7 +77,7 @@ class BigNum {
 
  private:
   struct Deleter {
-    void operator()(BIGNUM* number) noexcept;
+    void operator()(BigNumOwnerPtr number) noexcept;
   };
 
   using BigNumImpl = std::unique_ptr<BIGNUM, Deleter>;
@@ -112,7 +120,8 @@ inline bool operator!=(const BigNum& lhs, const BigNum& rhs) noexcept {
   return Compare(lhs, rhs) != 0;
 }
 
-inline void glassy::BigNum::Deleter::operator()(BIGNUM* number) noexcept {
+inline void glassy::BigNum::Deleter::operator()(
+    glassy::BigNumOwnerPtr number) noexcept {
   BN_free(number);
 }
 
@@ -126,7 +135,7 @@ inline Result<BigNum> BigNum::New() noexcept {
   return BigNum{std::move(ptr)};
 }
 
-inline Result<BigNum> BigNum::Own(BIGNUM* ptr) noexcept {
+inline Result<BigNum> BigNum::Own(BigNumOwnerPtr ptr) noexcept {
   if (!ptr) {
     return BigNumErrc::kNullPointerFailure;
   }
