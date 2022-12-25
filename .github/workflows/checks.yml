@@ -22,7 +22,9 @@ jobs:
       - uses: cachix/install-nix-action@v16
         with:
           nix_path: nixpkgs=channel:nixos-unstable
-      - uses: extractions/setup-just@v1
+      - uses: taiki-e/install-action@v1
+        with:
+          tool: just
       - if: steps.filter.outputs.ci_nix == 'true'
         run: just docker-build
   build_docker_from_docker:
@@ -37,7 +39,9 @@ jobs:
           filters: |
             ci_nix:
               - 'ci/nix/**'
-      - uses: extractions/setup-just@v1
+      - uses: taiki-e/install-action@v1
+        with:
+          tool: just
       - if: steps.filter.outputs.ci_nix == 'true'
         run: |
           sudo chmod 777 "$(pwd)"
@@ -83,7 +87,9 @@ jobs:
       - uses: cachix/install-nix-action@v16
         with:
           nix_path: nixpkgs=channel:nixos-unstable
-      - uses: extractions/setup-just@v1
+      - uses: taiki-e/install-action@v1
+        with:
+          tool: just
       - if: steps.filter.outputs.ci_nix == 'true'
         run: |
           nix-shell --run "just lint-all"
@@ -108,7 +114,9 @@ jobs:
           filters: |
             ci_nix:
               - 'ci/nix/**'
-      - uses: extractions/setup-just@v1
+      - uses: taiki-e/install-action@v1
+        with:
+          tool: just
       - if: steps.filter.outputs.ci_nix == 'true'
         run: |
           sudo chmod 777 "$(pwd)"
@@ -132,7 +140,9 @@ jobs:
           filters: |
             ci_nix:
               - 'ci/nix/**'
-      - uses: extractions/setup-just@v1
+      - uses: taiki-e/install-action@v1
+        with:
+          tool: just
       - if: steps.filter.outputs.ci_nix == 'true'
         run: |
           sudo chmod 777 "$(pwd)"
@@ -155,7 +165,9 @@ jobs:
       - uses: actions/checkout@v2
         with:
           fetch-depth: 0
-      - uses: extractions/setup-just@v1
+      - uses: taiki-e/install-action@v1
+        with:
+          tool: just
       - run: |
           sudo chmod 777 "$(pwd)"
           sudo chmod -R 777 "$(pwd)/.git"
@@ -172,7 +184,9 @@ jobs:
       - uses: actions/checkout@v2
         with:
           fetch-depth: 0
-      - uses: extractions/setup-just@v1
+      - uses: taiki-e/install-action@v1
+        with:
+          tool: just
       - run: |
           sudo chmod 777 "$(pwd)"
           sudo chmod -R 777 "$(pwd)/.git"
@@ -199,7 +213,9 @@ jobs:
       - uses: actions/checkout@v2
         with:
           fetch-depth: 0
-      - uses: extractions/setup-just@v1
+      - uses: taiki-e/install-action@v1
+        with:
+          tool: just
       - uses: docker://melg8/cit:0.0.7
       - run: |
           sudo chmod 777 "$(pwd)"
@@ -221,7 +237,9 @@ jobs:
       - uses: actions/checkout@v2
         with:
           fetch-depth: 0
-      - uses: extractions/setup-just@v1
+      - uses: taiki-e/install-action@v1
+        with:
+          tool: just
       - uses: docker://melg8/cit:0.0.7
       - run: |
           sudo chmod 777 "$(pwd)"

@@ -98,3 +98,5 @@ JSONLINT
 MARKDOWNLINT
 codechecker
 TEMPDIR
+justtool
+taiki
