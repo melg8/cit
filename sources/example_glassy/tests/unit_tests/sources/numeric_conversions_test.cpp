@@ -24,7 +24,7 @@ SCENARIO("Asn1Int conversions to/from BigNum") {
     {
       OUTCOME_TRY(const auto value, BigNum::New(32));
       OUTCOME_TRY(const auto converted, convert::FromBigNum(value));
-      CHECK_EQ(converted.ToLong().value(), 32);
+      CHECK_EQ(ToLong(converted).value(), 32);
     }
 
     return outcome::success();

@@ -65,7 +65,7 @@ SCENARIO("Asn1Int failures") {
     should_fail_to_set_value = false;
     {
       const auto value = Asn1Int::New().value();
-      const auto result = value.ToLong();
+      const auto result = ToLong(value);
       CHECK_FALSE(result.has_value());
     }
   }

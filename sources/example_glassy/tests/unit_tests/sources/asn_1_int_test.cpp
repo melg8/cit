@@ -35,7 +35,7 @@ SCENARIO("Asn1Int creation and conversions") {
                 [](auto test) -> Result<void> {
                   SUBCASE(test.subcase_name.c_str()) {
                     OUTCOME_TRY(const auto number, test.create());
-                    CHECK_EQ(number.ToLong().value(), test.value);
+                    CHECK_EQ(ToLong(number).value(), test.value);
                   }
 
                   return outcome::success();
@@ -100,9 +100,9 @@ SCENARIO("Asn1Int copy") {
       OUTCOME_TRY(const auto copy, Asn1Int::New(original));
 
       CHECK_NE(original.Ptr(), copy.Ptr());
-      CHECK_EQ(original.ToLong().value(), copy.ToLong().value());
+      CHECK_EQ(ToLong(original).value(), ToLong(copy).value());
       CHECK_EQ(original, copy);
-      CHECK_EQ(copy.ToLong().value(), 32);
+      CHECK_EQ(ToLong(copy).value(), 32);
 
       return outcome::success();
     }()

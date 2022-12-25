@@ -55,11 +55,9 @@ struct Asn1IntConstView;
 class Asn1Int {
  public:
   static Result<Asn1Int> New(Long value = 0) noexcept;
-  static Result<Asn1Int> New(const Asn1IntConstView& other) noexcept;
+  static Result<Asn1Int> New(const Asn1IntConstView& view) noexcept;
 
   static Result<Asn1Int> Own(Asn1IntegerOwnerPtr ptr) noexcept;
-
-  Result<Long> ToLong() const noexcept;
 
   Asn1IntegerConstNotNull Ptr() const noexcept;
   Asn1IntegerNotNull Ptr() noexcept;
@@ -105,6 +103,8 @@ inline Asn1IntegerConstNotNull Asn1IntConstView::Ptr() const noexcept {
   return ptr_;
 }
 
+Result<Long> ToLong(const Asn1IntConstView& view) noexcept;
+
 int Compare(const Asn1IntConstView& lhs, const Asn1IntConstView& rhs) noexcept;
 
 bool operator<(const Asn1IntConstView& lhs,
@@ -141,8 +141,8 @@ inline glassy::Result<glassy::Asn1Int> glassy::Asn1Int::New(
   return result;
 }
 
-inline Result<Asn1Int> Asn1Int::New(const Asn1IntConstView& other) noexcept {
-  Asn1IntImpl ptr{ASN1_INTEGER_dup(other.Ptr())};
+inline Result<Asn1Int> Asn1Int::New(const Asn1IntConstView& view) noexcept {
+  Asn1IntImpl ptr{ASN1_INTEGER_dup(view.Ptr())};
   if (!ptr) {
     return Asn1IntErrc::kCopyFailure;
   }
@@ -156,14 +156,6 @@ inline Result<Asn1Int> Asn1Int::Own(Asn1IntegerOwnerPtr ptr) noexcept {
   return Asn1Int{Asn1IntImpl{ptr}};
 }
 
-inline Result<Long> Asn1Int::ToLong() const noexcept {
-  const auto result = ASN1_INTEGER_get(Ptr());
-  if (result == -1) {
-    return Asn1IntErrc::kConversionFailure;
-  }
-  return result;
-}
-
 inline Asn1IntegerConstNotNull Asn1Int::Ptr() const noexcept {
   return ptr_.get();
 }
@@ -171,6 +163,14 @@ inline Asn1IntegerConstNotNull Asn1Int::Ptr() const noexcept {
 inline Asn1IntegerNotNull Asn1Int::Ptr() noexcept { return ptr_.get(); }
 
 inline Asn1Int::Asn1Int(Asn1IntImpl ptr) noexcept : ptr_{std::move(ptr)} {}
+
+inline Result<Long> ToLong(const Asn1IntConstView& view) noexcept {
+  const auto result = ASN1_INTEGER_get(view.Ptr());
+  if (result == -1) {
+    return Asn1IntErrc::kConversionFailure;
+  }
+  return result;
+}
 
 inline int Compare(const Asn1IntConstView& lhs,
                    const Asn1IntConstView& rhs) noexcept {
