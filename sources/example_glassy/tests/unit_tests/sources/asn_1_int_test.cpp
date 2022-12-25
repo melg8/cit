@@ -110,5 +110,63 @@ SCENARIO("Asn1Int copy") {
   }
 }
 
+static void TestFunction(const Asn1IntConstView& view) noexcept {
+  CHECK_NE(view.Ptr().get(), nullptr);
+}
+
+SCENARIO("ASn1IntConstView") {
+  SUBCASE("create Asn1IntConstView from owners") {
+    []() -> Result<void> {
+      OUTCOME_TRY(const auto const_owner, Asn1Int::New(32));
+      OUTCOME_TRY(auto mutable_owner, Asn1Int::New(32));
+
+      const Asn1IntConstView view_from_const_owner{const_owner};
+      const Asn1IntConstView view_from_mutable_owner{mutable_owner};
+      CHECK_EQ(view_from_const_owner, view_from_mutable_owner);
+      return outcome::success();
+    }()
+                .value();
+
+    SUBCASE("create Asn1IntConstView from pointers") {
+      []() -> Result<void> {
+        OUTCOME_TRY(const auto const_owner, Asn1Int::New(32));
+        OUTCOME_TRY(auto mutable_owner, Asn1Int::New(32));
+
+        const Asn1IntegerConstNotNull const_pointer = const_owner.Ptr();
+        const Asn1IntegerNotNull mutable_pointer = mutable_owner.Ptr();
+
+        const Asn1IntConstView view_from_const_pointer{const_pointer};
+        const Asn1IntConstView view_from_mutable_pointer{mutable_pointer};
+
+        CHECK_EQ(view_from_const_pointer, view_from_mutable_pointer);
+
+        return outcome::success();
+      }()
+                  .value();
+
+      SUBCASE(
+          "can use owned and pointers in function taking  Asn1IntConstView as "
+          "arguments") {
+        []() -> Result<void> {
+          OUTCOME_TRY(const auto const_owner, Asn1Int::New(32));
+          TestFunction(const_owner);
+
+          const Asn1IntegerConstNotNull const_pointer = const_owner.Ptr();
+          TestFunction(const_pointer);
+
+          OUTCOME_TRY(auto mutable_owner, Asn1Int::New(32));
+          TestFunction(mutable_owner);
+
+          const Asn1IntegerNotNull mutable_pointer = mutable_owner.Ptr();
+          TestFunction(mutable_pointer);
+
+          return outcome::success();
+        }()
+                    .value();
+      }
+    }
+  }
+}
+
 }  // namespace test
 }  // namespace glassy
