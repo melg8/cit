@@ -22,59 +22,75 @@ namespace outcome = OUTCOME_V2_NAMESPACE;
 template <typename T>
 using Result = outcome::result<T>;
 
-using Asn1IntegerOwnerPtr = gsl::owner<ASN1_INTEGER*>;
-
 // Possible combinations
 // owned or viewed
 // constant or variable
 // not_null or nullable
 
 // Functions signatures conversion.
-// asn_in(const ASN1_INTEGER *x); -> AsnIn(Asn1IntConstView view);
-// asn_in_out(ASN1_INTEGER *a); -> AsnInOut(Asn1IntView view_modifiable);
+// asn_in(const ASN1_INTEGER *x); -> AsnIn(const Asn1IntConstView &view);
+// asn_in_out(ASN1_INTEGER *a); -> AsnInOut(Asn1IntView& view_modifiable);
 // asn_in_consume(ASN1_INTEGER *a); -> AsnInConsume(Asn1Int && owner_move_in);
 // ASN1_INTEGER *asn_out_return(); -> Result<Asn1Int> AsnOutReturn();
 
-// New types conversion
-// ASN1_INTEGER* -> Asn1IntegerNotNull
-// const ASN1_INTEGER* -> Asn1IntegerConstNotNull
-// Asn1Int& -> Asn1IntView
-// Asn1IntView -> Asn1IntConstView
-// const Asn1Int& -> Asn1IntConstView
-
-// Implementation details:
-// Asn1IntView uses Asn1IntegerNotNull
-// Asn1IntConstView uses Asn1IntegerConstNotNull
-// Asn1Int uses Asn1IntImpl(unique_ptr)
-
+using Asn1IntegerOwnerPtr = gsl::owner<ASN1_INTEGER*>;
 using Asn1IntegerNotNull = gsl::not_null<ASN1_INTEGER*>;
 using Asn1IntegerConstNotNull = gsl::not_null<const ASN1_INTEGER*>;
 
-struct Asn1IntConstView;
+struct Asn1IntDeleter {
+  void operator()(Asn1IntegerOwnerPtr number) const noexcept;
+};
 
-class Asn1Int {
- public:
-  static Result<Asn1Int> New(Long value = 0) noexcept;
-  static Result<Asn1Int> New(const Asn1IntConstView& view) noexcept;
+inline void Asn1IntDeleter::operator()(
+    Asn1IntegerOwnerPtr number) const noexcept {
+  ASN1_INTEGER_free(number);
+}
 
-  static Result<Asn1Int> Own(Asn1IntegerOwnerPtr ptr) noexcept;
+struct Asn1IntOwner {
+  using Asn1IntHolder = std::unique_ptr<ASN1_INTEGER, Asn1IntDeleter>;
+
+  explicit Asn1IntOwner(gsl::not_null<Asn1IntHolder> ptr) noexcept;
 
   Asn1IntegerConstNotNull Ptr() const noexcept;
   Asn1IntegerNotNull Ptr() noexcept;
 
  private:
-  struct Deleter {
-    void operator()(Asn1IntegerOwnerPtr number) const noexcept;
-  };
-
-  using Asn1IntImpl = std::unique_ptr<ASN1_INTEGER, Deleter>;
-
-  static Result<Asn1Int> NewUninitialized() noexcept;
-
-  explicit Asn1Int(Asn1IntImpl ptr) noexcept;
-
-  Asn1IntImpl ptr_{};
+  gsl::not_null<Asn1IntHolder> ptr_;
 };
+
+inline Asn1IntOwner::Asn1IntOwner(gsl::not_null<Asn1IntHolder> ptr) noexcept
+    : ptr_{std::move(ptr)} {}
+
+inline Asn1IntegerConstNotNull Asn1IntOwner::Ptr() const noexcept {
+  return ptr_.get();
+}
+
+inline Asn1IntegerNotNull Asn1IntOwner::Ptr() noexcept { return ptr_.get(); }
+
+struct Asn1IntView {
+  // cppcheck-suppress noExplicitConstructor
+  Asn1IntView(Asn1IntegerNotNull ptr);  // NOLINT
+
+  // cppcheck-suppress noExplicitConstructor
+  Asn1IntView(Asn1IntOwner& view);  // NOLINT
+
+  Asn1IntegerConstNotNull Ptr() const noexcept;
+  Asn1IntegerNotNull Ptr() noexcept;
+
+ private:
+  Asn1IntegerNotNull ptr_;
+};
+
+inline Asn1IntegerNotNull Asn1IntView::Ptr() noexcept { return ptr_; }
+
+inline Asn1IntView::Asn1IntView(Asn1IntegerNotNull ptr)
+    : ptr_{std::move(ptr)} {}
+
+inline Asn1IntView::Asn1IntView(Asn1IntOwner& view) : ptr_{view.Ptr()} {}
+
+inline Asn1IntegerConstNotNull Asn1IntView::Ptr() const noexcept {
+  return ptr_;
+}
 
 struct Asn1IntConstView {
   // cppcheck-suppress noExplicitConstructor
@@ -86,11 +102,11 @@ struct Asn1IntConstView {
       : ptr_{std::move(ptr)} {}
 
   // cppcheck-suppress noExplicitConstructor
-  Asn1IntConstView(Asn1Int& view)  // NOLINT
+  Asn1IntConstView(const Asn1IntView& view)  // NOLINT
       : ptr_{view.Ptr()} {}
 
   // cppcheck-suppress noExplicitConstructor
-  Asn1IntConstView(const Asn1Int& view)  // NOLINT
+  Asn1IntConstView(const Asn1IntOwner& view)  // NOLINT
       : ptr_{view.Ptr()} {}
 
   Asn1IntegerConstNotNull Ptr() const noexcept;
@@ -102,6 +118,18 @@ struct Asn1IntConstView {
 inline Asn1IntegerConstNotNull Asn1IntConstView::Ptr() const noexcept {
   return ptr_;
 }
+
+class Asn1Int : public Asn1IntOwner {
+ public:
+  using Asn1IntOwner::Asn1IntOwner;
+  static Result<Asn1Int> New(Long value = 0) noexcept;
+  static Result<Asn1Int> New(const Asn1IntConstView& view) noexcept;
+
+  static Result<Asn1Int> Own(Asn1IntegerOwnerPtr ptr) noexcept;
+
+ private:
+  static Result<Asn1Int> NewUninitialized() noexcept;
+};
 
 Result<Long> ToLong(const Asn1IntConstView& view) noexcept;
 
@@ -119,13 +147,8 @@ bool operator==(const Asn1IntConstView& lhs,
 bool operator!=(const Asn1IntConstView& lhs,
                 const Asn1IntConstView& rhs) noexcept;
 
-inline void Asn1Int::Deleter::operator()(
-    Asn1IntegerOwnerPtr number) const noexcept {
-  ASN1_INTEGER_free(number);
-}
-
 inline Result<Asn1Int> Asn1Int::NewUninitialized() noexcept {
-  Asn1IntImpl ptr{ASN1_INTEGER_new()};
+  Asn1IntHolder ptr{ASN1_INTEGER_new()};
   if (!ptr) {
     return Asn1IntErrc::kAllocationFailure;
   }
@@ -142,7 +165,7 @@ inline glassy::Result<glassy::Asn1Int> glassy::Asn1Int::New(
 }
 
 inline Result<Asn1Int> Asn1Int::New(const Asn1IntConstView& view) noexcept {
-  Asn1IntImpl ptr{ASN1_INTEGER_dup(view.Ptr())};
+  Asn1IntHolder ptr{ASN1_INTEGER_dup(view.Ptr())};
   if (!ptr) {
     return Asn1IntErrc::kCopyFailure;
   }
@@ -153,16 +176,8 @@ inline Result<Asn1Int> Asn1Int::Own(Asn1IntegerOwnerPtr ptr) noexcept {
   if (!ptr) {
     return Asn1IntErrc::kNullPointerFailure;
   }
-  return Asn1Int{Asn1IntImpl{ptr}};
+  return Asn1Int{Asn1IntHolder{ptr}};
 }
-
-inline Asn1IntegerConstNotNull Asn1Int::Ptr() const noexcept {
-  return ptr_.get();
-}
-
-inline Asn1IntegerNotNull Asn1Int::Ptr() noexcept { return ptr_.get(); }
-
-inline Asn1Int::Asn1Int(Asn1IntImpl ptr) noexcept : ptr_{std::move(ptr)} {}
 
 inline Result<Long> ToLong(const Asn1IntConstView& view) noexcept {
   const auto result = ASN1_INTEGER_get(view.Ptr());

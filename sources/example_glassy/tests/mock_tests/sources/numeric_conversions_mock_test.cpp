@@ -37,6 +37,12 @@ SCENARIO("numeric conversions failure") {
     const auto result = convert::FromBigNum(value.value());
     CHECK_FALSE(result.has_value());
   }
+  SUBCASE("failing to update Asn1Int from BigNum") {
+    const auto value = BigNum::New(32);
+    auto for_update = Asn1Int::New(32);
+    const auto result = convert::FromBigNum(value.value(), for_update.value());
+    CHECK_FALSE(result.has_value());
+  }
 }
 
 }  // namespace test

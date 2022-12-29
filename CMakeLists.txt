@@ -11,6 +11,10 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
+# Gives gsl::not_null ability to work transparently with unique_ptr. In cases of
+# gsl::not_null<std::unique_ptr<T, Deleter>>.
+add_definitions(-Dgsl_CONFIG_TRANSPARENT_NOT_NULL=1)
+
 option(ENABLE_TESTING "Enable the tests" ON)
 option(USE_CCACHE "Enable use of ccache" ON)
 option(ENABLE_COVERAGE "Enable profiling and coverage report analysis" ON)

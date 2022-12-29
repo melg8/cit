@@ -14,6 +14,10 @@ namespace test {
 
 namespace outcome = OUTCOME_V2_NAMESPACE;
 
+static Asn1IntView ViewExtractor(Asn1IntOwner& owner) noexcept {
+  return {owner};
+}
+
 SCENARIO("Asn1Int conversions to/from BigNum") {
   []() -> Result<void> {
     {
@@ -25,6 +29,16 @@ SCENARIO("Asn1Int conversions to/from BigNum") {
       OUTCOME_TRY(const auto value, BigNum::New(32));
       OUTCOME_TRY(const auto converted, convert::FromBigNum(value));
       CHECK_EQ(ToLong(converted).value(), 32);
+    }
+    {
+      OUTCOME_TRY(const auto bignum, BigNum::New(32));
+
+      OUTCOME_TRY(auto asn_1_int, Asn1Int::New(10));
+      OUTCOME_TRY(convert::FromBigNum(bignum, asn_1_int));
+
+      auto view = ViewExtractor(asn_1_int);
+      OUTCOME_TRY(convert::FromBigNum(bignum, view));
+      CHECK_EQ(ToLong(asn_1_int).value(), 32);
     }
 
     return outcome::success();

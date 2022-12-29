@@ -16,10 +16,12 @@ namespace outcome = OUTCOME_V2_NAMESPACE;
 template <typename T>
 using Result = outcome::result<T>;
 
-static Result<BigNum> FromAsn1Int(const Asn1Int& value) noexcept;
+static Result<BigNum> FromAsn1Int(const Asn1IntConstView& value) noexcept;
 static Result<Asn1Int> FromBigNum(const BigNum& value) noexcept;
+static Result<void> FromBigNum(const BigNum& value,
+                               Asn1IntView target) noexcept;
 
-inline Result<BigNum> FromAsn1Int(const Asn1Int& value) noexcept {
+inline Result<BigNum> FromAsn1Int(const Asn1IntConstView& value) noexcept {
   auto result = BigNum::Own(ASN1_INTEGER_to_BN(value.Ptr(), nullptr));
   if (result.has_error()) {
     return BigNumErrc::kConversionFailure;
@@ -33,6 +35,14 @@ inline Result<Asn1Int> FromBigNum(const BigNum& value) noexcept {
     return Asn1IntErrc::kConversionFailure;
   }
   return result;
+}
+
+inline Result<void> FromBigNum(const BigNum& value,
+                               Asn1IntView target) noexcept {
+  if (BN_to_ASN1_INTEGER(value.Ptr(), target.Ptr()) == nullptr) {
+    return Asn1IntErrc::kConversionFailure;
+  }
+  return outcome::success();
 }
 
 }  // namespace convert

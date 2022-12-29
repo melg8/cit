@@ -100,3 +100,4 @@ codechecker
 TEMPDIR
 justtool
 taiki
+Dgsl

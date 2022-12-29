@@ -111,7 +111,8 @@ SCENARIO("Asn1Int copy") {
 }
 
 static void TestFunction(const Asn1IntConstView& view) noexcept {
-  CHECK_NE(view.Ptr().get(), nullptr);
+  const ASN1_INTEGER* pointer = view.Ptr();
+  CHECK_NE(pointer, nullptr);
 }
 
 SCENARIO("ASn1IntConstView") {
@@ -157,8 +158,18 @@ SCENARIO("ASn1IntConstView") {
           OUTCOME_TRY(auto mutable_owner, Asn1Int::New(32));
           TestFunction(mutable_owner);
 
+          Asn1IntView mutable_view{mutable_owner};
+          TestFunction(mutable_view);
+
+          const Asn1IntView& const_ref_to_view = mutable_view;
+          TestFunction(const_ref_to_view.Ptr());
+
           const Asn1IntegerNotNull mutable_pointer = mutable_owner.Ptr();
           TestFunction(mutable_pointer);
+
+          Asn1IntView mutable_view_from_pointer{mutable_pointer};
+          TestFunction(mutable_view_from_pointer);
+          TestFunction(mutable_view_from_pointer.Ptr());
 
           return outcome::success();
         }()
