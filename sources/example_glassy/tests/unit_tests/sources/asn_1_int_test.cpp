@@ -22,7 +22,7 @@ struct Asn1IntTestData {
   Long value{0};
 };
 
-#define CALL(X) []() { return Asn1Int::X; }
+#define CALL(X) []() noexcept { return Asn1Int::X; }
 
 SCENARIO("Asn1Int creation and conversions") {
   auto tests = std::vector<Asn1IntTestData>{

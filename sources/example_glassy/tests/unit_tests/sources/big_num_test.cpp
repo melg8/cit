@@ -29,7 +29,7 @@ struct BigNumTestData {
   SslData bin_data{};
 };
 
-#define CALL(X) []() { return BigNum::X; }
+#define CALL(X) []() noexcept { return BigNum::X; }
 
 SCENARIO("BigNum creation and conversions") {
   auto tests = std::vector<BigNumTestData>{
