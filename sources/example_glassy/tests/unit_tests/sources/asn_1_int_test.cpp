@@ -17,7 +17,7 @@ namespace outcome = OUTCOME_V2_NAMESPACE;
 
 struct Asn1IntTestData {
   std::string subcase_name{};
-  std::function<Result<Asn1Int>()> create{};
+  std::function<Result<Asn1IntOwner>()> create{};
   Long value{0};
 };
 
@@ -44,37 +44,13 @@ SCENARIO("Asn1Int creation and conversions") {
 SCENARIO("Asn1Int comparison") {
   SUBCASE("compare two Asn1Int values") {
     []() -> Result<void> {
-      OUTCOME_TRY(const auto zero, Asn1Int::New(0));
       OUTCOME_TRY(const auto one, Asn1Int::New(1));
+      OUTCOME_TRY(const auto zero, Asn1Int::New(0));
       SUBCASE("compare") {
         CHECK_EQ(Compare(zero, zero), 0);
         CHECK_EQ(Compare(one, one), 0);
         CHECK_EQ(Compare(zero, one), -1);
         CHECK_EQ(Compare(one, zero), 1);
-      }
-      SUBCASE("less") {
-        CHECK(zero < one);
-        CHECK_FALSE(one < zero);
-        CHECK_FALSE(zero < zero);
-        CHECK_FALSE(one < one);
-      }
-      SUBCASE("greater") {
-        CHECK(one > zero);
-        CHECK_FALSE(zero > one);
-        CHECK_FALSE(zero > zero);
-        CHECK_FALSE(one > one);
-      }
-      SUBCASE("equal") {
-        CHECK(zero == zero);
-        CHECK(one == one);
-        CHECK_FALSE(zero == one);
-        CHECK_FALSE(one == zero);
-      }
-      SUBCASE("not equal") {
-        CHECK(zero != one);
-        CHECK(one != zero);
-        CHECK_FALSE(zero != zero);
-        CHECK_FALSE(one != one);
       }
       return outcome::success();
     }()
@@ -98,9 +74,10 @@ SCENARIO("Asn1Int copy") {
       OUTCOME_TRY(const auto original, Asn1Int::New(32));
       OUTCOME_TRY(const auto copy, Asn1Int::New(original));
 
-      CHECK_NE(original.Ptr(), copy.Ptr());
+      CHECK_NE(original.get(), copy.get());
       CHECK_EQ(ToLong(original).value(), ToLong(copy).value());
-      CHECK_EQ(original, copy);
+
+      CHECK_NE(original, copy);
       CHECK_EQ(ToLong(copy).value(), 32);
 
       return outcome::success();
@@ -110,7 +87,7 @@ SCENARIO("Asn1Int copy") {
 }
 
 static void TestFunction(const Asn1IntConstView& view) noexcept {
-  const ASN1_INTEGER* pointer = view.Ptr();
+  const ASN1_INTEGER* pointer = view.get();
   CHECK_NE(pointer, nullptr);
 }
 
@@ -122,7 +99,7 @@ SCENARIO("ASn1IntConstView") {
 
       const Asn1IntConstView view_from_const_owner{const_owner};
       const Asn1IntConstView view_from_mutable_owner{mutable_owner};
-      CHECK_EQ(view_from_const_owner, view_from_mutable_owner);
+      CHECK_EQ(Compare(view_from_const_owner, view_from_mutable_owner), 0);
       return outcome::success();
     }()
                 .value();
@@ -132,13 +109,14 @@ SCENARIO("ASn1IntConstView") {
         OUTCOME_TRY(const auto const_owner, Asn1Int::New(32));
         OUTCOME_TRY(auto mutable_owner, Asn1Int::New(32));
 
-        const Asn1IntegerConstNotNull const_pointer = const_owner.Ptr();
-        const Asn1IntegerNotNull mutable_pointer = mutable_owner.Ptr();
+        const Asn1IntegerConstNotNull const_pointer = const_owner.get();
+        const Asn1IntegerNotNull mutable_pointer = mutable_owner.get();
 
         const Asn1IntConstView view_from_const_pointer{const_pointer};
         const Asn1IntConstView view_from_mutable_pointer{mutable_pointer};
 
-        CHECK_EQ(view_from_const_pointer, view_from_mutable_pointer);
+        CHECK_EQ(Compare(view_from_const_pointer, view_from_mutable_pointer),
+                 0);
 
         return outcome::success();
       }()
@@ -151,7 +129,7 @@ SCENARIO("ASn1IntConstView") {
           OUTCOME_TRY(const auto const_owner, Asn1Int::New(32));
           TestFunction(const_owner);
 
-          const Asn1IntegerConstNotNull const_pointer = const_owner.Ptr();
+          const Asn1IntegerConstNotNull const_pointer = const_owner.get();
           TestFunction(const_pointer);
 
           OUTCOME_TRY(auto mutable_owner, Asn1Int::New(32));
@@ -161,14 +139,14 @@ SCENARIO("ASn1IntConstView") {
           TestFunction(mutable_view);
 
           const Asn1IntView& const_ref_to_view = mutable_view;
-          TestFunction(const_ref_to_view.Ptr());
+          TestFunction(const_ref_to_view.get());
 
-          const Asn1IntegerNotNull mutable_pointer = mutable_owner.Ptr();
+          const Asn1IntegerNotNull mutable_pointer = mutable_owner.get();
           TestFunction(mutable_pointer);
 
           Asn1IntView mutable_view_from_pointer{mutable_pointer};
           TestFunction(mutable_view_from_pointer);
-          TestFunction(mutable_view_from_pointer.Ptr());
+          TestFunction(mutable_view_from_pointer.get());
 
           return outcome::success();
         }()

@@ -12,18 +12,18 @@
 
 namespace glassy::test {
 
-static Result<Asn1Int> ProvideAsn1Value() noexcept {
+static Result<Asn1IntOwner> ProvideAsn1Value() noexcept {
   O_TRY(auto asn_1_int, Asn1Int::New(32));
   O_TRY(auto bignum, convert::FromAsn1Int(asn_1_int));
   O_TRY(bignum += BigNum::New(1));
   O_TRY(convert::FromBigNum(bignum, asn_1_int));
-  return asn_1_int;
+  return {std::move(asn_1_int)};
 }
 
 SCENARIO("Asn1Int and Bignum usability test") {
   const auto asn_1_int = ProvideAsn1Value();
   CHECK(asn_1_int.has_value());
-  CHECK_EQ(asn_1_int.value(), Asn1Int::New(33).value());
+  CHECK_EQ(Compare(asn_1_int.value(), Asn1Int::New(33).value()), 0);
 }
 
 static ASN1_INTEGER* ProvideAsn1Pointer() noexcept {
