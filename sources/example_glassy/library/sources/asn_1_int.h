@@ -51,7 +51,7 @@ struct Asn1IntOwner {
 
   explicit Asn1IntOwner(gsl::not_null<Asn1IntHolder> ptr) noexcept;
 
-  Asn1IntegerConstNotNull Ptr() const noexcept;
+  [[nodiscard]] Asn1IntegerConstNotNull Ptr() const noexcept;
   Asn1IntegerNotNull Ptr() noexcept;
 
  private:
@@ -74,7 +74,7 @@ struct Asn1IntView {
   // cppcheck-suppress noExplicitConstructor
   Asn1IntView(Asn1IntOwner& view);  // NOLINT
 
-  Asn1IntegerConstNotNull Ptr() const noexcept;
+  [[nodiscard]] Asn1IntegerConstNotNull Ptr() const noexcept;
   Asn1IntegerNotNull Ptr() noexcept;
 
  private:
@@ -109,7 +109,7 @@ struct Asn1IntConstView {
   Asn1IntConstView(const Asn1IntOwner& view)  // NOLINT
       : ptr_{view.Ptr()} {}
 
-  Asn1IntegerConstNotNull Ptr() const noexcept;
+  [[nodiscard]] Asn1IntegerConstNotNull Ptr() const noexcept;
 
  private:
   Asn1IntegerConstNotNull ptr_;

@@ -9,8 +9,7 @@
 #include <doctest/doctest.h>
 #include <outcome.hpp>
 
-namespace glassy {
-namespace test {
+namespace glassy::test {
 
 namespace outcome = OUTCOME_V2_NAMESPACE;
 
@@ -46,5 +45,4 @@ SCENARIO("Asn1Int conversions to/from BigNum") {
               .value();
 }
 
-}  // namespace test
-}  // namespace glassy
+}  // namespace glassy::test

@@ -8,8 +8,7 @@
 #include <doctest/doctest.h>
 #include <outcome.hpp>
 
-namespace glassy {
-namespace test {
+namespace glassy::test {
 
 SCENARIO("Asn1Int conversion to BigNum") {
   const auto value = Asn1Int::New(32);
@@ -17,5 +16,4 @@ SCENARIO("Asn1Int conversion to BigNum") {
   CHECK(converted.has_value());
 }
 
-}  // namespace test
-}  // namespace glassy
+}  // namespace glassy::test

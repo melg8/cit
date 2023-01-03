@@ -6,8 +6,7 @@
 
 #include <doctest/doctest.h>
 
-namespace glassy {
-namespace test {
+namespace glassy::test {
 
 SCENARIO("Asn1Int can be included into multiple translations units and used") {
   GIVEN("default created Asn1Int") {
@@ -17,5 +16,4 @@ SCENARIO("Asn1Int can be included into multiple translations units and used") {
   }
 }
 
-}  // namespace test
-}  // namespace glassy
+}  // namespace glassy::test

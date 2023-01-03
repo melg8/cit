@@ -10,8 +10,7 @@
 
 #define O_TRY OUTCOME_TRY
 
-namespace glassy {
-namespace test {
+namespace glassy::test {
 
 static Result<Asn1Int> ProvideAsn1Value() noexcept {
   O_TRY(auto asn_1_int, Asn1Int::New(32));
@@ -115,5 +114,4 @@ SCENARIO("openssl usability test 1") {
   CHECK_EQ(ASN1_INTEGER_cmp(result.get(), expected.get()), 0);
 }
 
-}  // namespace test
-}  // namespace glassy
+}  // namespace glassy::test

@@ -32,8 +32,8 @@ enum class BigNumErrc {
 
 namespace detail {
 struct BigNumErrorCategory : std::error_category {
-  const char* name() const noexcept override;
-  std::string message(int error_value) const override;
+  [[nodiscard]] const char* name() const noexcept override;
+  [[nodiscard]] std::string message(int error_value) const override;
 };
 
 inline const char* BigNumErrorCategory::name() const noexcept {

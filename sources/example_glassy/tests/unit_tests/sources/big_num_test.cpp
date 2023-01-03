@@ -11,8 +11,7 @@
 #include <doctest/doctest.h>
 #include <outcome.hpp>
 
-namespace glassy {
-namespace test {
+namespace glassy::test {
 
 namespace outcome = OUTCOME_V2_NAMESPACE;
 
@@ -190,5 +189,4 @@ SCENARIO("BigNum creation") {
   }
 }
 
-}  // namespace test
-}  // namespace glassy
+}  // namespace glassy::test

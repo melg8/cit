@@ -239,7 +239,9 @@ CheckOptions:
   - key:             readability-identifier-naming.TemplateTemplateParameterSuffix
     value:           ''
   - key:             readability-identifier-naming.TypeTemplateParameterCase
-    value:           CamelCase
+    value:           aNy_CasE
+  # TODO(melg): switch back to CamelCase after issue is fixed in clang-tidy.
+  # Link: https://github.com/llvm/llvm-project/issues/46097
   - key:             readability-identifier-naming.TypeTemplateParameterPrefix
     value:           ''
   - key:             readability-identifier-naming.TypeTemplateParameterSuffix

@@ -10,8 +10,7 @@
 
 #include <asn_1_int_errc.h>  // NOLINT
 
-namespace glassy {
-namespace test {
+namespace glassy::test {
 
 namespace outcome = OUTCOME_V2_NAMESPACE;
 
@@ -44,5 +43,4 @@ SCENARIO("Asn1IntErrc names and messages") {
                 });
 }
 
-}  // namespace test
-}  // namespace glassy
+}  // namespace glassy::test

@@ -58,8 +58,7 @@ static int AlwaysFailBnToBin(const BIGNUM*, unsigned char*) { return -1; }
 
 #include <big_num.h>
 
-namespace glassy {
-namespace test {
+namespace glassy::test {
 
 SCENARIO("BigNum failures") {
   should_fail_alloc = true;
@@ -231,5 +230,4 @@ SCENARIO("BigNum failures") {
               .value();
 }
 
-}  // namespace test
-}  // namespace glassy
+}  // namespace glassy::test

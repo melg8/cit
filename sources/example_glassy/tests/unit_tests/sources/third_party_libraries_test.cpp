@@ -7,8 +7,7 @@
 #include <gsl/gsl-lite.hpp>
 #include <outcome.hpp>
 
-namespace glassy {
-namespace test {
+namespace glassy::test {
 
 namespace outcome = OUTCOME_V2_NAMESPACE;
 
@@ -48,5 +47,4 @@ SCENARIO("gsl-lite") {
   }
 }
 
-}  // namespace test
-}  // namespace glassy
+}  // namespace glassy::test

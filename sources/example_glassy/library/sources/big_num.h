@@ -64,14 +64,14 @@ class BigNum {
 
   static Result<BigNum> Add(const BigNum& lhs, const BigNum& rhs) noexcept;
 
-  const BIGNUM* Ptr() const noexcept;
-  Result<BnUlong> ToBnUlong() const noexcept;
-  Result<SslString> ToDec() const noexcept;
-  Result<SslString> ToHex() const noexcept;
-  Result<SslData> ToBin() const noexcept;
+  [[nodiscard]] const BIGNUM* Ptr() const noexcept;
+  [[nodiscard]] Result<BnUlong> ToBnUlong() const noexcept;
+  [[nodiscard]] Result<SslString> ToDec() const noexcept;
+  [[nodiscard]] Result<SslString> ToHex() const noexcept;
+  [[nodiscard]] Result<SslData> ToBin() const noexcept;
 
-  int NumberOfBytes() const;
-  int NumberOfBits() const;
+  [[nodiscard]] int NumberOfBytes() const;
+  [[nodiscard]] int NumberOfBits() const;
 
   BIGNUM* Ptr() noexcept;
 

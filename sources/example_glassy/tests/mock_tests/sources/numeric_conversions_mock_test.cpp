@@ -23,8 +23,7 @@ static ASN1_INTEGER* AlwaysFailBnToAsn1Integer(const BIGNUM*, ASN1_INTEGER*) {
 
 #include <numeric_conversions.h>
 
-namespace glassy {
-namespace test {
+namespace glassy::test {
 
 SCENARIO("numeric conversions failure") {
   SUBCASE("failing to create BigNum from Asn1Int") {
@@ -45,5 +44,4 @@ SCENARIO("numeric conversions failure") {
   }
 }
 
-}  // namespace test
-}  // namespace glassy
+}  // namespace glassy::test

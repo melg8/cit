@@ -8,8 +8,7 @@
 #include <asn_1_int.h>
 #include <big_num.h>
 
-namespace glassy {
-namespace convert {
+namespace glassy::convert {
 
 namespace outcome = OUTCOME_V2_NAMESPACE;
 
@@ -45,7 +44,6 @@ inline Result<void> FromBigNum(const BigNum& value,
   return outcome::success();
 }
 
-}  // namespace convert
-}  // namespace glassy
+}  // namespace glassy::convert
 
 #endif  // NUMERIC_COVERSIONS_H

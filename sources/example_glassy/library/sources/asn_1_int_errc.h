@@ -31,8 +31,8 @@ enum class Asn1IntErrc {
 
 namespace detail {
 struct Asn1IntErrorCategory : std::error_category {
-  const char* name() const noexcept override;
-  std::string message(int error_value) const override;
+  [[nodiscard]] const char* name() const noexcept override;
+  [[nodiscard]] std::string message(int error_value) const override;
 };
 
 inline const char* Asn1IntErrorCategory::name() const noexcept {

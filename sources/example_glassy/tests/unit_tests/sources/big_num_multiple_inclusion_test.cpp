@@ -6,8 +6,7 @@
 
 #include <big_num.h>
 
-namespace glassy {
-namespace test {
+namespace glassy::test {
 
 SCENARIO("BigNum can be included into multiple translations units and used") {
   GIVEN("default created BigNum") {
@@ -17,5 +16,4 @@ SCENARIO("BigNum can be included into multiple translations units and used") {
   }
 }
 
-}  // namespace test
-}  // namespace glassy
+}  // namespace glassy::test
