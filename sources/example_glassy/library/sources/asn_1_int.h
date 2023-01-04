@@ -8,6 +8,8 @@
 #include <memory>
 #include <utility>
 
+#include <compare>
+
 #include <asn_1_int_errc.h>
 
 #include <openssl/asn1.h>
@@ -50,62 +52,69 @@ using Asn1IntHolder = std::unique_ptr<ASN1_INTEGER, Asn1IntDeleter>;
 
 using Asn1IntOwner = gsl::not_null<Asn1IntHolder>;
 
-struct Asn1IntView {
-  // cppcheck-suppress noExplicitConstructor
-  Asn1IntView(Asn1IntegerNotNull ptr);  // NOLINT
+template <class T>
+concept has_get = requires(T provider) {
+  {provider.get()};  // NOLINT
+};                   // NOLINT
 
-  // cppcheck-suppress noExplicitConstructor
-  Asn1IntView(Asn1IntOwner& view);  // NOLINT
+template <class T>
+using RawTypeOf = std::remove_cvref_t<std::remove_pointer_t<std::decay_t<T>>>;
 
-  [[nodiscard]] Asn1IntegerConstNotNull get() const noexcept;  // NOLINT
-  Asn1IntegerNotNull get() noexcept;                           // NOLINT
+template <class T, typename Target>
+concept is_not_null_of_concrete_raw_pointer =
+    std::same_as<RawTypeOf<T>, gsl::not_null<Target>>;
 
- private:
-  Asn1IntegerNotNull ptr_;
+template <class T>
+using ElementPointer = typename RawTypeOf<T>::element_type*;
+
+template <class T>
+using ElementType = typename RawTypeOf<T>::element_type;
+
+template <class T>
+concept is_not_null_of_raw_pointer =
+    is_not_null_of_concrete_raw_pointer<T, ElementPointer<T>>;
+
+static_assert(is_not_null_of_raw_pointer<Asn1IntegerNotNull>);
+
+template <class T>
+concept is_not_null_of_smart_pointer =
+    is_not_null_of_concrete_raw_pointer<T, ElementType<T>>;
+
+// static_assert(is_not_null_of_smart_pointer<Asn1IntOwner>);
+
+template <typename T>
+struct IsNotNull {
+  static constexpr bool const value = false;
 };
 
-inline Asn1IntegerNotNull Asn1IntView::get() noexcept { return ptr_; }
-
-inline Asn1IntView::Asn1IntView(Asn1IntegerNotNull ptr)
-    : ptr_{std::move(ptr)} {}
-
-inline Asn1IntView::Asn1IntView(Asn1IntOwner& view) : ptr_{view.get()} {}
-
-inline Asn1IntegerConstNotNull Asn1IntView::get() const noexcept {
-  return ptr_;
-}
-
-struct Asn1IntConstView {
-  // cppcheck-suppress noExplicitConstructor
-  Asn1IntConstView(Asn1IntegerNotNull ptr)  // NOLINT
-      : ptr_{std::move(ptr)} {}
-
-  // cppcheck-suppress noExplicitConstructor
-  Asn1IntConstView(Asn1IntegerConstNotNull ptr)  // NOLINT
-      : ptr_{std::move(ptr)} {}
-
-  // cppcheck-suppress noExplicitConstructor
-  Asn1IntConstView(const Asn1IntView& view)  // NOLINT
-      : ptr_{view.get()} {}
-
-  // cppcheck-suppress noExplicitConstructor
-  Asn1IntConstView(const Asn1IntOwner& view)  // NOLINT
-      : ptr_{view.get()} {}
-
-  [[nodiscard]] Asn1IntegerConstNotNull get() const noexcept;  // NOLINT
-
- private:
-  Asn1IntegerConstNotNull ptr_;
+template <typename T>
+struct IsNotNull<gsl::not_null<T>> {
+  static constexpr bool const value = true;
 };
 
-inline Asn1IntegerConstNotNull Asn1IntConstView::get() const noexcept {
-  return ptr_;
-}
+template <class T>
+concept is_not_null = IsNotNull<RawTypeOf<T>>::value;
+
+static_assert(is_not_null<Asn1IntOwner>);
+static_assert(!is_not_null<Asn1IntHolder>);
+static_assert(is_not_null<Asn1IntegerNotNull>);
+static_assert(is_not_null<Asn1IntegerConstNotNull>);
+
+template <class T, typename Target>
+concept not_null_provider_of = is_not_null<T> &&
+    (is_not_null_of_concrete_raw_pointer<T, Target> || requires(T provider) {
+      { provider.get() } -> std::convertible_to<Target>;
+    });
+
+static_assert(not_null_provider_of<Asn1IntOwner, const ASN1_INTEGER*>);
+static_assert(!not_null_provider_of<Asn1IntHolder, const ASN1_INTEGER*>);
 
 class Asn1Int {
  public:
   static Result<Asn1IntOwner> New(Long value = 0) noexcept;
-  static Result<Asn1IntOwner> New(const Asn1IntConstView& view) noexcept;
+
+  static Result<Asn1IntOwner> New(
+      not_null_provider_of<const ASN1_INTEGER*> auto&& view) noexcept;
 
   static Result<Asn1IntOwner> Own(Asn1IntegerOwnerPtr ptr) noexcept;
 
@@ -113,9 +122,18 @@ class Asn1Int {
   static Result<Asn1IntOwner> NewUninitialized() noexcept;
 };
 
-Result<Long> ToLong(const Asn1IntConstView& view) noexcept;
+Result<Long> ToLong(
+    not_null_provider_of<const ASN1_INTEGER*> auto&& view) noexcept;
 
-int Compare(const Asn1IntConstView& lhs, const Asn1IntConstView& rhs) noexcept;
+decltype(auto) GetPtr(is_not_null_of_raw_pointer auto&& lhs) { return lhs; }
+
+decltype(auto) GetPtr(auto&& lhs) { return lhs.get(); }
+
+std::strong_ordering Compare(
+    not_null_provider_of<const ASN1_INTEGER*> auto&& lhs,
+    not_null_provider_of<const ASN1_INTEGER*> auto&& rhs) noexcept {
+  return ASN1_INTEGER_cmp(GetPtr(lhs), GetPtr(rhs)) <=> 0;
+}
 
 inline glassy::Result<glassy::Asn1IntOwner>
 Asn1Int::NewUninitialized() noexcept {
@@ -136,8 +154,8 @@ inline glassy::Result<glassy::Asn1IntOwner> glassy::Asn1Int::New(
 }
 
 inline glassy::Result<glassy::Asn1IntOwner> Asn1Int::New(
-    const Asn1IntConstView& view) noexcept {
-  Asn1IntHolder ptr{ASN1_INTEGER_dup(view.get())};
+    not_null_provider_of<const ASN1_INTEGER*> auto&& view) noexcept {
+  Asn1IntHolder ptr{ASN1_INTEGER_dup(GetPtr(view))};
   if (!ptr) {
     return Asn1IntErrc::kCopyFailure;
   }
@@ -152,18 +170,13 @@ inline glassy::Result<glassy::Asn1IntOwner> Asn1Int::Own(
   return glassy::Result<glassy::Asn1IntOwner>{Asn1IntHolder{ptr}};
 }
 
-inline Result<Long> ToLong(const Asn1IntConstView& view) noexcept {
-  const auto result = ASN1_INTEGER_get(view.get());
+inline Result<Long> ToLong(
+    not_null_provider_of<const ASN1_INTEGER*> auto&& view) noexcept {
+  const auto result = ASN1_INTEGER_get(GetPtr(view));
   if (result == -1) {
     return Asn1IntErrc::kConversionFailure;
   }
   return result;
-}
-
-// TODO(melg): return c++20 type comparison type from <=> operator.
-inline int Compare(const Asn1IntConstView& lhs,
-                   const Asn1IntConstView& rhs) noexcept {
-  return ASN1_INTEGER_cmp(lhs.get(), rhs.get());
 }
 
 }  // namespace glassy

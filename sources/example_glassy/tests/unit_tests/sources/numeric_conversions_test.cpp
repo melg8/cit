@@ -13,8 +13,8 @@ namespace glassy::test {
 
 namespace outcome = OUTCOME_V2_NAMESPACE;
 
-static Asn1IntView ViewExtractor(Asn1IntOwner& owner) noexcept {
-  return {owner};
+static Asn1IntegerNotNull ViewExtractor(Asn1IntOwner& owner) noexcept {
+  return GetPtr(owner);
 }
 
 SCENARIO("Asn1Int conversions to/from BigNum") {

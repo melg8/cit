@@ -23,7 +23,7 @@ static Result<Asn1IntOwner> ProvideAsn1Value() noexcept {
 SCENARIO("Asn1Int and Bignum usability test") {
   const auto asn_1_int = ProvideAsn1Value();
   CHECK(asn_1_int.has_value());
-  CHECK_EQ(Compare(asn_1_int.value(), Asn1Int::New(33).value()), 0);
+  CHECK(std::is_eq(Compare(asn_1_int.value(), Asn1Int::New(33).value())));
 }
 
 static ASN1_INTEGER* ProvideAsn1Pointer() noexcept {
