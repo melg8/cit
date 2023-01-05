@@ -24,17 +24,6 @@ namespace outcome = OUTCOME_V2_NAMESPACE;
 template <typename T>
 using Result = outcome::result<T>;
 
-// Possible combinations
-// owned or viewed
-// constant or variable
-// not_null or nullable
-
-// Functions signatures conversion.
-// asn_in(const ASN1_INTEGER *x); -> AsnIn(const Asn1IntConstView &view);
-// asn_in_out(ASN1_INTEGER *a); -> AsnInOut(Asn1IntView& view_modifiable);
-// asn_in_consume(ASN1_INTEGER *a); -> AsnInConsume(Asn1Int && owner_move_in);
-// ASN1_INTEGER *asn_out_return(); -> Result<Asn1Int> AsnOutReturn();
-
 using Asn1IntegerOwnerPtr = gsl::owner<ASN1_INTEGER*>;
 using Asn1IntegerNotNull = gsl::not_null<ASN1_INTEGER*>;
 using Asn1IntegerConstNotNull = gsl::not_null<const ASN1_INTEGER*>;
@@ -49,13 +38,7 @@ inline void Asn1IntDeleter::operator()(
 }
 
 using Asn1IntHolder = std::unique_ptr<ASN1_INTEGER, Asn1IntDeleter>;
-
 using Asn1IntOwner = gsl::not_null<Asn1IntHolder>;
-
-template <class T>
-concept has_get = requires(T provider) {
-  {provider.get()};  // NOLINT
-};                   // NOLINT
 
 template <class T>
 using RawTypeOf = std::remove_cvref_t<std::remove_pointer_t<std::decay_t<T>>>;
@@ -64,23 +47,16 @@ template <class T, typename Target>
 concept is_not_null_of_concrete_raw_pointer =
     std::same_as<RawTypeOf<T>, gsl::not_null<Target>>;
 
+template <class T, typename Target>
+concept is_not_null_owner_of_concrete_raw_pointer = requires(T provider) {
+  { provider.get() } -> std::convertible_to<Target>;
+};  // NOLINT
+
 template <class T>
 using ElementPointer = typename RawTypeOf<T>::element_type*;
 
 template <class T>
 using ElementType = typename RawTypeOf<T>::element_type;
-
-template <class T>
-concept is_not_null_of_raw_pointer =
-    is_not_null_of_concrete_raw_pointer<T, ElementPointer<T>>;
-
-static_assert(is_not_null_of_raw_pointer<Asn1IntegerNotNull>);
-
-template <class T>
-concept is_not_null_of_smart_pointer =
-    is_not_null_of_concrete_raw_pointer<T, ElementType<T>>;
-
-// static_assert(is_not_null_of_smart_pointer<Asn1IntOwner>);
 
 template <typename T>
 struct IsNotNull {
@@ -100,11 +76,16 @@ static_assert(!is_not_null<Asn1IntHolder>);
 static_assert(is_not_null<Asn1IntegerNotNull>);
 static_assert(is_not_null<Asn1IntegerConstNotNull>);
 
+template <class T>
+concept is_not_null_of_raw_pointer =
+    is_not_null<T> && is_not_null_of_concrete_raw_pointer<T, ElementPointer<T>>;
+
+static_assert(is_not_null_of_raw_pointer<Asn1IntegerNotNull>);
+
 template <class T, typename Target>
 concept not_null_provider_of = is_not_null<T> &&
-    (is_not_null_of_concrete_raw_pointer<T, Target> || requires(T provider) {
-      { provider.get() } -> std::convertible_to<Target>;
-    });
+    (is_not_null_of_concrete_raw_pointer<T, Target> ||
+     is_not_null_owner_of_concrete_raw_pointer<T, Target>);
 
 static_assert(not_null_provider_of<Asn1IntOwner, const ASN1_INTEGER*>);
 static_assert(!not_null_provider_of<Asn1IntHolder, const ASN1_INTEGER*>);
