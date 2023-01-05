@@ -21,7 +21,7 @@ struct Asn1IntTestData {
   Long value{0};
 };
 
-#define CALL(X) []() noexcept { return Asn1Int::X; }
+#define CALL(X) []() noexcept { return glassy::X; }
 
 SCENARIO("Asn1Int creation and conversions") {
   auto tests = std::vector<Asn1IntTestData>{
@@ -42,13 +42,13 @@ SCENARIO("Asn1Int creation and conversions") {
 }
 
 #define CHECK_IS_EQ(X) CHECK(std::is_eq(X))
-#define RVALUE(X) Asn1Int::New(X).value()
+#define RVALUE(X) New(X).value()
 
 SCENARIO("Asn1Int comparison") {
   SUBCASE("compare two Asn1Int values") {
     []() -> Result<void> {
-      OUTCOME_TRY(const auto one, Asn1Int::New(1));
-      OUTCOME_TRY(const auto zero, Asn1Int::New(0));
+      OUTCOME_TRY(const auto one, New(1));
+      OUTCOME_TRY(const auto zero, New(0));
       SUBCASE("compare") {
         CHECK_IS_EQ(Compare(zero, zero));
         CHECK_IS_EQ(Compare(one, one));
@@ -98,19 +98,19 @@ SCENARIO("Asn1Int comparison") {
 
 SCENARIO("Asn1Int creation from pointer") {
   SUBCASE("creation from valid pointer should succeed") {
-    CHECK(Asn1Int::Own(ASN1_INTEGER_new()).has_value());
+    CHECK(Own(ASN1_INTEGER_new()).has_value());
   }
 
   SUBCASE("creation from nullptr should fail") {
-    CHECK_FALSE(Asn1Int::Own(nullptr).has_value());
+    CHECK_FALSE(Own(nullptr).has_value());
   }
 }
 
 SCENARIO("Asn1Int copy") {
   SUBCASE("create Asn1Int copy from original value") {
     []() -> Result<void> {
-      OUTCOME_TRY(const auto original, Asn1Int::New(32));
-      OUTCOME_TRY(const auto copy, Asn1Int::New(original));
+      OUTCOME_TRY(const auto original, New(32));
+      OUTCOME_TRY(const auto copy, New(original));
 
       CHECK_NE(original.get(), copy.get());
       CHECK_EQ(ToLong(original).value(), ToLong(copy).value());
@@ -133,8 +133,8 @@ static void TestFunction(
 SCENARIO("ASn1IntConstView") {
   SUBCASE("create Asn1IntConstView from owners") {
     []() -> Result<void> {
-      OUTCOME_TRY(const auto const_owner, Asn1Int::New(32));
-      OUTCOME_TRY(auto mutable_owner, Asn1Int::New(32));
+      OUTCOME_TRY(const auto const_owner, New(32));
+      OUTCOME_TRY(auto mutable_owner, New(32));
       CHECK(std::is_eq(Compare(const_owner, mutable_owner)));
 
       const Asn1IntegerConstNotNull view_from_const_owner{GetPtr(const_owner)};
@@ -149,13 +149,13 @@ SCENARIO("ASn1IntConstView") {
         "can use owned and pointers in function taking  Asn1IntConstView as "
         "arguments") {
       []() -> Result<void> {
-        OUTCOME_TRY(const auto const_owner, Asn1Int::New(32));
+        OUTCOME_TRY(const auto const_owner, New(32));
         TestFunction(const_owner);
 
         const Asn1IntegerConstNotNull const_pointer = const_owner.get();
         TestFunction(const_pointer);
 
-        OUTCOME_TRY(auto mutable_owner, Asn1Int::New(32));
+        OUTCOME_TRY(auto mutable_owner, New(32));
         TestFunction(mutable_owner);
 
         const Asn1IntegerNotNull mutable_pointer = GetPtr(mutable_owner);

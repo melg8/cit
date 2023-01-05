@@ -13,7 +13,7 @@
 namespace glassy::test {
 
 static Result<Asn1IntOwner> ProvideAsn1Value() noexcept {
-  O_TRY(auto asn_1_int, Asn1Int::New(32));
+  O_TRY(auto asn_1_int, New(32));
   O_TRY(auto bignum, convert::FromAsn1Int(asn_1_int));
   O_TRY(bignum += BigNum::New(1));
   O_TRY(convert::FromBigNum(bignum, asn_1_int));
@@ -23,7 +23,7 @@ static Result<Asn1IntOwner> ProvideAsn1Value() noexcept {
 SCENARIO("Asn1Int and Bignum usability test") {
   const auto asn_1_int = ProvideAsn1Value();
   CHECK(asn_1_int.has_value());
-  CHECK(std::is_eq(Compare(asn_1_int.value(), Asn1Int::New(33).value())));
+  CHECK(std::is_eq(Compare(asn_1_int.value(), New(33).value())));
 }
 
 static ASN1_INTEGER* ProvideAsn1Pointer() noexcept {

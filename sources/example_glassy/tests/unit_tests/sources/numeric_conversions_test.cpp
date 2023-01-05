@@ -20,7 +20,7 @@ static Asn1IntegerNotNull ViewExtractor(Asn1IntOwner& owner) noexcept {
 SCENARIO("Asn1Int conversions to/from BigNum") {
   []() -> Result<void> {
     {
-      OUTCOME_TRY(const auto value, Asn1Int::New(32));
+      OUTCOME_TRY(const auto value, New(32));
       OUTCOME_TRY(const auto converted, convert::FromAsn1Int(value));
       CHECK_EQ(converted.ToBnUlong().value(), 32);
     }
@@ -32,7 +32,7 @@ SCENARIO("Asn1Int conversions to/from BigNum") {
     {
       OUTCOME_TRY(const auto bignum, BigNum::New(32));
 
-      OUTCOME_TRY(auto asn_1_int, Asn1Int::New(10));
+      OUTCOME_TRY(auto asn_1_int, New(10));
       OUTCOME_TRY(convert::FromBigNum(bignum, asn_1_int));
 
       auto view = ViewExtractor(asn_1_int);

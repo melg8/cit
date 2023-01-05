@@ -36,18 +36,14 @@ using Asn1IntHolder =
 
 using Asn1IntOwner = gsl::not_null<Asn1IntHolder>;
 
-class Asn1Int {
- public:
-  static Result<Asn1IntOwner> New(Long value = 0) noexcept;
+static Result<Asn1IntOwner> New(Long value = 0) noexcept;
 
-  static Result<Asn1IntOwner> New(
-      not_null_provider_of<const ASN1_INTEGER*> auto&& view) noexcept;
+static Result<Asn1IntOwner> New(
+    not_null_provider_of<const ASN1_INTEGER*> auto&& view) noexcept;
 
-  static Result<Asn1IntOwner> Own(Asn1IntegerOwnerPtr ptr) noexcept;
+static Result<Asn1IntOwner> Own(Asn1IntegerOwnerPtr ptr) noexcept;
 
- private:
-  static Result<Asn1IntOwner> NewUninitialized() noexcept;
-};
+static Result<Asn1IntOwner> NewUninitialized() noexcept;
 
 Result<Long> ToLong(
     not_null_provider_of<const ASN1_INTEGER*> auto&& view) noexcept;
@@ -62,26 +58,26 @@ std::strong_ordering Compare(
   return ASN1_INTEGER_cmp(GetPtr(lhs), GetPtr(rhs)) <=> 0;
 }
 
-inline Result<Asn1IntOwner> Asn1Int::NewUninitialized() noexcept {
+inline Result<Asn1IntOwner> NewUninitialized() noexcept {
   Asn1IntHolder ptr{ASN1_INTEGER_new()};
   return ptr ? Result<Asn1IntOwner>{std::move(ptr)}
              : Asn1IntErrc::kAllocationFailure;
 }
 
-inline Result<Asn1IntOwner> Asn1Int::New(Long value) noexcept {
-  OUTCOME_TRY(auto result, Asn1Int::NewUninitialized());
+inline Result<Asn1IntOwner> New(Long value) noexcept {
+  OUTCOME_TRY(auto result, NewUninitialized());
   return ASN1_INTEGER_set(result.get(), value) != 0
              ? Result<Asn1IntOwner>{std::move(result)}
              : Asn1IntErrc::kAllocationFailure;
 }
 
-inline Result<Asn1IntOwner> Asn1Int::New(
+inline Result<Asn1IntOwner> New(
     not_null_provider_of<const ASN1_INTEGER*> auto&& view) noexcept {
   Asn1IntHolder ptr{ASN1_INTEGER_dup(GetPtr(view))};
   return ptr ? Result<Asn1IntOwner>{std::move(ptr)} : Asn1IntErrc::kCopyFailure;
 }
 
-inline Result<Asn1IntOwner> Asn1Int::Own(Asn1IntegerOwnerPtr ptr) noexcept {
+inline Result<Asn1IntOwner> Own(Asn1IntegerOwnerPtr ptr) noexcept {
   return ptr ? Result<Asn1IntOwner>{Asn1IntHolder{ptr}}
              : Asn1IntErrc::kNullPointerFailure;
 }

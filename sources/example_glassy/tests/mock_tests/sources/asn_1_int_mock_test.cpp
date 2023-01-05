@@ -42,11 +42,11 @@ SCENARIO("Asn1Int failures") {
   SUBCASE("failing to create Asn1Int due to allocation failure") {
     should_fail_alloc = true;
     {
-      const auto result = Asn1Int::New();
+      const auto result = New();
       CHECK_FALSE(result.has_value());
     }
     {
-      const auto result = Asn1Int::New(32);
+      const auto result = New(32);
       CHECK_FALSE(result.has_value());
     }
   }
@@ -55,7 +55,7 @@ SCENARIO("Asn1Int failures") {
     should_fail_alloc = false;
     should_fail_to_set_value = true;
     {
-      const auto result = Asn1Int::New();
+      const auto result = New();
       CHECK_FALSE(result.has_value());
     }
   }
@@ -63,7 +63,7 @@ SCENARIO("Asn1Int failures") {
     should_fail_alloc = false;
     should_fail_to_set_value = false;
     {
-      const auto value = Asn1Int::New().value();
+      const auto value = New().value();
       const auto result = ToLong(value);
       CHECK_FALSE(result.has_value());
     }
@@ -72,8 +72,8 @@ SCENARIO("Asn1Int failures") {
     should_fail_alloc = false;
     should_fail_to_set_value = false;
     {
-      const auto value = Asn1Int::New(32).value();
-      const auto result = Asn1Int::New(value);
+      const auto value = New(32).value();
+      const auto result = New(value);
       CHECK_FALSE(result.has_value());
     }
   }

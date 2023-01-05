@@ -32,7 +32,7 @@ inline Result<BigNum> FromAsn1Int(
 }
 
 inline Result<Asn1IntOwner> FromBigNum(const BigNum& value) noexcept {
-  auto result = Asn1Int::Own(BN_to_ASN1_INTEGER(value.Ptr(), nullptr));
+  auto result = Own(BN_to_ASN1_INTEGER(value.Ptr(), nullptr));
   if (result.has_error()) {
     return Asn1IntErrc::kConversionFailure;
   }
