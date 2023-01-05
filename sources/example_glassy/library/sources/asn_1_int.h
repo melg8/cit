@@ -19,6 +19,7 @@
 
 namespace glassy {
 
+// TODO(melg): add strong types library to deal with built-in types.
 using Long = long;  // NOLINT
 namespace outcome = OUTCOME_V2_NAMESPACE;
 
@@ -67,31 +68,27 @@ std::strong_ordering Compare(
   return ASN1_INTEGER_cmp(GetPtr(lhs), GetPtr(rhs)) <=> 0;
 }
 
-inline glassy::Result<glassy::Asn1IntOwner>
-Asn1Int::NewUninitialized() noexcept {
+inline Result<Asn1IntOwner> Asn1Int::NewUninitialized() noexcept {
   Asn1IntHolder ptr{ASN1_INTEGER_new()};
-  return ptr ? glassy::Result<Asn1IntOwner>{std::move(ptr)}
+  return ptr ? Result<Asn1IntOwner>{std::move(ptr)}
              : Asn1IntErrc::kAllocationFailure;
 }
 
-inline glassy::Result<glassy::Asn1IntOwner> glassy::Asn1Int::New(
-    Long value) noexcept {
+inline Result<Asn1IntOwner> Asn1Int::New(Long value) noexcept {
   OUTCOME_TRY(auto result, Asn1Int::NewUninitialized());
   return ASN1_INTEGER_set(result.get(), value) != 0
-             ? glassy::Result<glassy::Asn1IntOwner>{std::move(result)}
+             ? Result<Asn1IntOwner>{std::move(result)}
              : Asn1IntErrc::kAllocationFailure;
 }
 
-inline glassy::Result<glassy::Asn1IntOwner> Asn1Int::New(
+inline Result<Asn1IntOwner> Asn1Int::New(
     not_null_provider_of<const ASN1_INTEGER*> auto&& view) noexcept {
   Asn1IntHolder ptr{ASN1_INTEGER_dup(GetPtr(view))};
-  return ptr ? glassy::Result<glassy::Asn1IntOwner>{std::move(ptr)}
-             : Asn1IntErrc::kCopyFailure;
+  return ptr ? Result<Asn1IntOwner>{std::move(ptr)} : Asn1IntErrc::kCopyFailure;
 }
 
-inline glassy::Result<glassy::Asn1IntOwner> Asn1Int::Own(
-    Asn1IntegerOwnerPtr ptr) noexcept {
-  return ptr ? glassy::Result<glassy::Asn1IntOwner>{Asn1IntHolder{ptr}}
+inline Result<Asn1IntOwner> Asn1Int::Own(Asn1IntegerOwnerPtr ptr) noexcept {
+  return ptr ? Result<Asn1IntOwner>{Asn1IntHolder{ptr}}
              : Asn1IntErrc::kNullPointerFailure;
 }
 
