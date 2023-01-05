@@ -129,7 +129,7 @@ static void TestFunction(
   CHECK_NE(pointer, nullptr);
 }
 
-SCENARIO("ASn1IntConstView") {
+SCENARIO("Asn1IntConstView") {
   SUBCASE("create Asn1IntConstView from owners") {
     []() -> Result<void> {
       OUTCOME_TRY(const auto const_owner, Asn1IntegerFrom(32));
@@ -159,6 +159,25 @@ SCENARIO("ASn1IntConstView") {
 
         const Asn1IntegerNotNull mutable_pointer = GetPtr(mutable_owner);
         TestFunction(mutable_pointer);
+
+        return outcome::success();
+      }()
+                  .value();
+    }
+
+    SUBCASE("can set new value to already created Asn1Integer") {
+      []() -> Result<void> {
+        {
+          OUTCOME_TRY(auto value, Asn1IntegerFrom(0));
+          OUTCOME_TRY(Asn1IntegerSet(value, 32));
+          CHECK_IS_EQ(Asn1IntegerCmp(value, Asn1IntegerFrom(32).value()));
+        }
+        {
+          OUTCOME_TRY(auto value, Asn1IntegerFrom(0));
+          auto not_null_ptr = GetPtr(value);
+          OUTCOME_TRY(Asn1IntegerSet(not_null_ptr, 32));
+          CHECK_IS_EQ(Asn1IntegerCmp(value, Asn1IntegerFrom(32).value()));
+        }
 
         return outcome::success();
       }()

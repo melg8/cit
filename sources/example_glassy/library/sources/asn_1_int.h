@@ -36,11 +36,13 @@ using Asn1IntHolder =
 
 using Asn1IntOwner = gsl::not_null<Asn1IntHolder>;
 
-inline decltype(auto) GetPtr(is_not_null_of_raw_pointer auto&& lhs) {
+inline decltype(auto) GetPtr(is_not_null_of_raw_pointer auto&& lhs) noexcept {
   return lhs;
 }
 
-inline decltype(auto) GetPtr(auto&& lhs) { return lhs.get(); }
+inline decltype(auto) GetPtr(auto&& lhs) noexcept {
+  return gsl::not_null{lhs.get()};
+}
 
 inline std::strong_ordering Asn1IntegerCmp(
     not_null_provider_of<const ASN1_INTEGER*> auto&& lhs,
@@ -66,11 +68,17 @@ static inline Result<Long> Asn1IntegerGet(
   return result != -1 ? Result<Long>{result} : Asn1IntErrc::kConversionFailure;
 }
 
+static inline Result<void> Asn1IntegerSet(
+    not_null_provider_of<ASN1_INTEGER*> auto&& view, Long value) noexcept {
+  return ASN1_INTEGER_set(GetPtr(view), value) != 0
+             ? Result<void>{outcome::success()}
+             : Asn1IntErrc::kAllocationFailure;
+}
+
 static inline Result<Asn1IntOwner> Asn1IntegerFrom(Long value) noexcept {
   OUTCOME_TRY(auto result, Asn1IntegerNew());
-  return ASN1_INTEGER_set(result.get(), value) != 0
-             ? Result<Asn1IntOwner>{std::move(result)}
-             : Asn1IntErrc::kAllocationFailure;
+  OUTCOME_TRY(Asn1IntegerSet(result, value));
+  return Result<Asn1IntOwner>{std::move(result)};
 }
 
 static inline Result<Asn1IntOwner> Own(Asn1IntegerOwnerPtr ptr) noexcept {

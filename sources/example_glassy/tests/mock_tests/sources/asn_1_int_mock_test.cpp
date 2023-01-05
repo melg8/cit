@@ -24,7 +24,7 @@ static long AlwaysFailAsn1IntegerGet(const ASN1_INTEGER*) noexcept {
   return -1;
 }
 
-static ASN1_INTEGER* Asn1IntegerDup(const ASN1_INTEGER*) noexcept {
+static ASN1_INTEGER* MockAsn1IntegerDup(const ASN1_INTEGER*) noexcept {
   return nullptr;
 }
 }
@@ -32,7 +32,7 @@ static ASN1_INTEGER* Asn1IntegerDup(const ASN1_INTEGER*) noexcept {
 #define ASN1_INTEGER_new MockAsn1IntegerNew
 #define ASN1_INTEGER_set MockAsn1IntegerSet
 #define ASN1_INTEGER_get AlwaysFailAsn1IntegerGet
-#define ASN1_INTEGER_dup Asn1IntegerDup
+#define ASN1_INTEGER_dup MockAsn1IntegerDup
 
 #include <asn_1_int.h>
 
