@@ -11,6 +11,7 @@
 #include <compare>
 
 #include <asn_1_int_errc.h>
+#include <memory_helpers.h>
 #include <not_null_concepts.h>
 
 #include <openssl/asn1.h>
@@ -30,16 +31,9 @@ using Asn1IntegerOwnerPtr = gsl::owner<ASN1_INTEGER*>;
 using Asn1IntegerNotNull = gsl::not_null<ASN1_INTEGER*>;
 using Asn1IntegerConstNotNull = gsl::not_null<const ASN1_INTEGER*>;
 
-struct Asn1IntDeleter {
-  void operator()(Asn1IntegerOwnerPtr number) const noexcept;
-};
+using Asn1IntHolder =
+    std::unique_ptr<ASN1_INTEGER, DeleterFromFunction<ASN1_INTEGER_free>>;
 
-inline void Asn1IntDeleter::operator()(
-    Asn1IntegerOwnerPtr number) const noexcept {
-  ASN1_INTEGER_free(number);
-}
-
-using Asn1IntHolder = std::unique_ptr<ASN1_INTEGER, Asn1IntDeleter>;
 using Asn1IntOwner = gsl::not_null<Asn1IntHolder>;
 
 class Asn1Int {
