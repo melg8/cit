@@ -27,7 +27,7 @@ namespace glassy::test {
 
 SCENARIO("numeric conversions failure") {
   SUBCASE("failing to create BigNum from Asn1Int") {
-    const auto value = New(32);
+    const auto value = Asn1IntegerFrom(32);
     const auto result = convert::FromAsn1Int(value.value());
     CHECK_FALSE(result.has_value());
   }
@@ -38,7 +38,7 @@ SCENARIO("numeric conversions failure") {
   }
   SUBCASE("failing to update Asn1Int from BigNum") {
     const auto value = BigNum::New(32);
-    auto for_update = New(32);
+    auto for_update = Asn1IntegerFrom(32);
     const auto result = convert::FromBigNum(value.value(), for_update.value());
     CHECK_FALSE(result.has_value());
   }

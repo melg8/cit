@@ -25,16 +25,15 @@ struct Asn1IntTestData {
 
 SCENARIO("Asn1Int creation and conversions") {
   auto tests = std::vector<Asn1IntTestData>{
-      {"default number", CALL(New()), 0},
-      {"number 0", CALL(New(0)), 0},
-      {"number 32", CALL(New(32)), 32},
+      {"number 0", CALL(Asn1IntegerFrom(0)), 0},
+      {"number 32", CALL(Asn1IntegerFrom(32)), 32},
   };
 
   std::for_each(std::begin(tests), std::end(tests),
                 [](auto test) -> Result<void> {
                   SUBCASE(test.subcase_name.c_str()) {
                     OUTCOME_TRY(const auto number, test.create());
-                    CHECK_EQ(ToLong(number).value(), test.value);
+                    CHECK_EQ(Asn1IntegerGet(number).value(), test.value);
                   }
 
                   return outcome::success();
@@ -42,52 +41,52 @@ SCENARIO("Asn1Int creation and conversions") {
 }
 
 #define CHECK_IS_EQ(X) CHECK(std::is_eq(X))
-#define RVALUE(X) New(X).value()
+#define RVALUE(X) Asn1IntegerFrom(X).value()
 
 SCENARIO("Asn1Int comparison") {
   SUBCASE("compare two Asn1Int values") {
     []() -> Result<void> {
-      OUTCOME_TRY(const auto one, New(1));
-      OUTCOME_TRY(const auto zero, New(0));
+      OUTCOME_TRY(const auto one, Asn1IntegerFrom(1));
+      OUTCOME_TRY(const auto zero, Asn1IntegerFrom(0));
       SUBCASE("compare") {
-        CHECK_IS_EQ(Compare(zero, zero));
-        CHECK_IS_EQ(Compare(one, one));
-        CHECK(std::is_lt(Compare(zero, one)));
-        CHECK(std::is_gt(Compare(one, zero)));
+        CHECK_IS_EQ(Asn1IntegerCmp(zero, zero));
+        CHECK_IS_EQ(Asn1IntegerCmp(one, one));
+        CHECK(std::is_lt(Asn1IntegerCmp(zero, one)));
+        CHECK(std::is_gt(Asn1IntegerCmp(one, zero)));
       }
 
       SUBCASE("compare rvalue references") {
-        CHECK_IS_EQ(Compare(RVALUE(0), RVALUE(0)));
-        CHECK_IS_EQ(Compare(RVALUE(1), RVALUE(1)));
-        CHECK(std::is_lt(Compare(RVALUE(0), RVALUE(1))));
-        CHECK(std::is_gt(Compare(RVALUE(1), RVALUE(0))));
+        CHECK_IS_EQ(Asn1IntegerCmp(RVALUE(0), RVALUE(0)));
+        CHECK_IS_EQ(Asn1IntegerCmp(RVALUE(1), RVALUE(1)));
+        CHECK(std::is_lt(Asn1IntegerCmp(RVALUE(0), RVALUE(1))));
+        CHECK(std::is_gt(Asn1IntegerCmp(RVALUE(1), RVALUE(0))));
       }
 
       SUBCASE("compare lvalue references") {
         const auto& l_zero = zero;
         const auto& l_one = one;
-        CHECK_IS_EQ(Compare(l_zero, l_zero));
-        CHECK_IS_EQ(Compare(l_one, l_one));
-        CHECK(std::is_lt(Compare(l_zero, l_one)));
-        CHECK(std::is_gt(Compare(l_one, l_zero)));
+        CHECK_IS_EQ(Asn1IntegerCmp(l_zero, l_zero));
+        CHECK_IS_EQ(Asn1IntegerCmp(l_one, l_one));
+        CHECK(std::is_lt(Asn1IntegerCmp(l_zero, l_one)));
+        CHECK(std::is_gt(Asn1IntegerCmp(l_one, l_zero)));
       }
 
       SUBCASE("compare not null const pointers") {
         Asn1IntegerConstNotNull ptr_zero = zero.get();
         Asn1IntegerConstNotNull ptr_one = one.get();
-        CHECK_IS_EQ(Compare(ptr_zero, ptr_zero));
-        CHECK_IS_EQ(Compare(ptr_one, ptr_one));
-        CHECK(std::is_lt(Compare(ptr_zero, ptr_one)));
-        CHECK(std::is_gt(Compare(ptr_one, ptr_zero)));
+        CHECK_IS_EQ(Asn1IntegerCmp(ptr_zero, ptr_zero));
+        CHECK_IS_EQ(Asn1IntegerCmp(ptr_one, ptr_one));
+        CHECK(std::is_lt(Asn1IntegerCmp(ptr_zero, ptr_one)));
+        CHECK(std::is_gt(Asn1IntegerCmp(ptr_one, ptr_zero)));
       }
 
       SUBCASE("compare not null pointers") {
         Asn1IntegerNotNull ptr_zero = zero.get();
         Asn1IntegerNotNull ptr_one = one.get();
-        CHECK_IS_EQ(Compare(ptr_zero, ptr_zero));
-        CHECK_IS_EQ(Compare(ptr_one, ptr_one));
-        CHECK(std::is_lt(Compare(ptr_zero, ptr_one)));
-        CHECK(std::is_gt(Compare(ptr_one, ptr_zero)));
+        CHECK_IS_EQ(Asn1IntegerCmp(ptr_zero, ptr_zero));
+        CHECK_IS_EQ(Asn1IntegerCmp(ptr_one, ptr_one));
+        CHECK(std::is_lt(Asn1IntegerCmp(ptr_zero, ptr_one)));
+        CHECK(std::is_gt(Asn1IntegerCmp(ptr_one, ptr_zero)));
       }
 
       return outcome::success();
@@ -109,14 +108,14 @@ SCENARIO("Asn1Int creation from pointer") {
 SCENARIO("Asn1Int copy") {
   SUBCASE("create Asn1Int copy from original value") {
     []() -> Result<void> {
-      OUTCOME_TRY(const auto original, New(32));
-      OUTCOME_TRY(const auto copy, New(original));
+      OUTCOME_TRY(const auto original, Asn1IntegerFrom(32));
+      OUTCOME_TRY(const auto copy, Asn1IntegerDup(original));
 
       CHECK_NE(original.get(), copy.get());
-      CHECK_EQ(ToLong(original).value(), ToLong(copy).value());
+      CHECK_EQ(Asn1IntegerGet(original).value(), Asn1IntegerGet(copy).value());
 
       CHECK_NE(original, copy);
-      CHECK_EQ(ToLong(copy).value(), 32);
+      CHECK_EQ(Asn1IntegerGet(copy).value(), 32);
 
       return outcome::success();
     }()
@@ -133,14 +132,14 @@ static void TestFunction(
 SCENARIO("ASn1IntConstView") {
   SUBCASE("create Asn1IntConstView from owners") {
     []() -> Result<void> {
-      OUTCOME_TRY(const auto const_owner, New(32));
-      OUTCOME_TRY(auto mutable_owner, New(32));
-      CHECK(std::is_eq(Compare(const_owner, mutable_owner)));
+      OUTCOME_TRY(const auto const_owner, Asn1IntegerFrom(32));
+      OUTCOME_TRY(auto mutable_owner, Asn1IntegerFrom(32));
+      CHECK(std::is_eq(Asn1IntegerCmp(const_owner, mutable_owner)));
 
       const Asn1IntegerConstNotNull view_from_const_owner{GetPtr(const_owner)};
       const Asn1IntegerNotNull view_from_mutable_owner{GetPtr(mutable_owner)};
-      CHECK(
-          std::is_eq(Compare(view_from_const_owner, view_from_mutable_owner)));
+      CHECK(std::is_eq(
+          Asn1IntegerCmp(view_from_const_owner, view_from_mutable_owner)));
       return outcome::success();
     }()
                 .value();
@@ -149,13 +148,13 @@ SCENARIO("ASn1IntConstView") {
         "can use owned and pointers in function taking  Asn1IntConstView as "
         "arguments") {
       []() -> Result<void> {
-        OUTCOME_TRY(const auto const_owner, New(32));
+        OUTCOME_TRY(const auto const_owner, Asn1IntegerFrom(32));
         TestFunction(const_owner);
 
         const Asn1IntegerConstNotNull const_pointer = const_owner.get();
         TestFunction(const_pointer);
 
-        OUTCOME_TRY(auto mutable_owner, New(32));
+        OUTCOME_TRY(auto mutable_owner, Asn1IntegerFrom(32));
         TestFunction(mutable_owner);
 
         const Asn1IntegerNotNull mutable_pointer = GetPtr(mutable_owner);

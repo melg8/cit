@@ -11,7 +11,7 @@
 namespace glassy::test {
 
 SCENARIO("Asn1Int conversion to BigNum") {
-  const auto value = New(32);
+  const auto value = Asn1IntegerFrom(32);
   const auto converted = convert::FromAsn1Int(value.value());
   CHECK(converted.has_value());
 }

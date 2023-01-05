@@ -36,56 +36,52 @@ using Asn1IntHolder =
 
 using Asn1IntOwner = gsl::not_null<Asn1IntHolder>;
 
-static Result<Asn1IntOwner> New(Long value = 0) noexcept;
-
-static Result<Asn1IntOwner> New(
+static Result<Asn1IntOwner> Asn1IntegerDup(
     not_null_provider_of<const ASN1_INTEGER*> auto&& view) noexcept;
 
-static Result<Asn1IntOwner> Own(Asn1IntegerOwnerPtr ptr) noexcept;
+static Result<Asn1IntOwner> Asn1IntegerNew() noexcept;
 
-static Result<Asn1IntOwner> NewUninitialized() noexcept;
-
-Result<Long> ToLong(
+Result<Long> Asn1IntegerGet(
     not_null_provider_of<const ASN1_INTEGER*> auto&& view) noexcept;
 
 decltype(auto) GetPtr(is_not_null_of_raw_pointer auto&& lhs) { return lhs; }
 
 decltype(auto) GetPtr(auto&& lhs) { return lhs.get(); }
 
-std::strong_ordering Compare(
+std::strong_ordering Asn1IntegerCmp(
     not_null_provider_of<const ASN1_INTEGER*> auto&& lhs,
     not_null_provider_of<const ASN1_INTEGER*> auto&& rhs) noexcept {
   return ASN1_INTEGER_cmp(GetPtr(lhs), GetPtr(rhs)) <=> 0;
 }
 
-inline Result<Asn1IntOwner> NewUninitialized() noexcept {
+inline Result<Asn1IntOwner> Asn1IntegerNew() noexcept {
   Asn1IntHolder ptr{ASN1_INTEGER_new()};
   return ptr ? Result<Asn1IntOwner>{std::move(ptr)}
              : Asn1IntErrc::kAllocationFailure;
 }
 
-inline Result<Asn1IntOwner> New(Long value) noexcept {
-  OUTCOME_TRY(auto result, NewUninitialized());
-  return ASN1_INTEGER_set(result.get(), value) != 0
-             ? Result<Asn1IntOwner>{std::move(result)}
-             : Asn1IntErrc::kAllocationFailure;
-}
-
-inline Result<Asn1IntOwner> New(
+inline Result<Asn1IntOwner> Asn1IntegerDup(
     not_null_provider_of<const ASN1_INTEGER*> auto&& view) noexcept {
   Asn1IntHolder ptr{ASN1_INTEGER_dup(GetPtr(view))};
   return ptr ? Result<Asn1IntOwner>{std::move(ptr)} : Asn1IntErrc::kCopyFailure;
 }
 
-inline Result<Asn1IntOwner> Own(Asn1IntegerOwnerPtr ptr) noexcept {
-  return ptr ? Result<Asn1IntOwner>{Asn1IntHolder{ptr}}
-             : Asn1IntErrc::kNullPointerFailure;
-}
-
-inline Result<Long> ToLong(
+inline Result<Long> Asn1IntegerGet(
     not_null_provider_of<const ASN1_INTEGER*> auto&& view) noexcept {
   const auto result = ASN1_INTEGER_get(GetPtr(view));
   return result != -1 ? Result<Long>{result} : Asn1IntErrc::kConversionFailure;
+}
+
+static inline Result<Asn1IntOwner> Asn1IntegerFrom(Long value) noexcept {
+  OUTCOME_TRY(auto result, Asn1IntegerNew());
+  return ASN1_INTEGER_set(result.get(), value) != 0
+             ? Result<Asn1IntOwner>{std::move(result)}
+             : Asn1IntErrc::kAllocationFailure;
+}
+
+static inline Result<Asn1IntOwner> Own(Asn1IntegerOwnerPtr ptr) noexcept {
+  return ptr ? Result<Asn1IntOwner>{Asn1IntHolder{ptr}}
+             : Asn1IntErrc::kNullPointerFailure;
 }
 
 }  // namespace glassy
