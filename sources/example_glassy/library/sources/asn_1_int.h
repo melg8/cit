@@ -36,37 +36,31 @@ using Asn1IntHolder =
 
 using Asn1IntOwner = gsl::not_null<Asn1IntHolder>;
 
-static Result<Asn1IntOwner> Asn1IntegerDup(
-    not_null_provider_of<const ASN1_INTEGER*> auto&& view) noexcept;
+inline decltype(auto) GetPtr(is_not_null_of_raw_pointer auto&& lhs) {
+  return lhs;
+}
 
-static Result<Asn1IntOwner> Asn1IntegerNew() noexcept;
+inline decltype(auto) GetPtr(auto&& lhs) { return lhs.get(); }
 
-Result<Long> Asn1IntegerGet(
-    not_null_provider_of<const ASN1_INTEGER*> auto&& view) noexcept;
-
-decltype(auto) GetPtr(is_not_null_of_raw_pointer auto&& lhs) { return lhs; }
-
-decltype(auto) GetPtr(auto&& lhs) { return lhs.get(); }
-
-std::strong_ordering Asn1IntegerCmp(
+inline std::strong_ordering Asn1IntegerCmp(
     not_null_provider_of<const ASN1_INTEGER*> auto&& lhs,
     not_null_provider_of<const ASN1_INTEGER*> auto&& rhs) noexcept {
   return ASN1_INTEGER_cmp(GetPtr(lhs), GetPtr(rhs)) <=> 0;
 }
 
-inline Result<Asn1IntOwner> Asn1IntegerNew() noexcept {
+static inline Result<Asn1IntOwner> Asn1IntegerNew() noexcept {
   Asn1IntHolder ptr{ASN1_INTEGER_new()};
   return ptr ? Result<Asn1IntOwner>{std::move(ptr)}
              : Asn1IntErrc::kAllocationFailure;
 }
 
-inline Result<Asn1IntOwner> Asn1IntegerDup(
+static inline Result<Asn1IntOwner> Asn1IntegerDup(
     not_null_provider_of<const ASN1_INTEGER*> auto&& view) noexcept {
   Asn1IntHolder ptr{ASN1_INTEGER_dup(GetPtr(view))};
   return ptr ? Result<Asn1IntOwner>{std::move(ptr)} : Asn1IntErrc::kCopyFailure;
 }
 
-inline Result<Long> Asn1IntegerGet(
+static inline Result<Long> Asn1IntegerGet(
     not_null_provider_of<const ASN1_INTEGER*> auto&& view) noexcept {
   const auto result = ASN1_INTEGER_get(GetPtr(view));
   return result != -1 ? Result<Long>{result} : Asn1IntErrc::kConversionFailure;
