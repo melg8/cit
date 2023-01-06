@@ -36,7 +36,7 @@ using Asn1IntHolder =
 
 using Asn1IntOwner = gsl::not_null<Asn1IntHolder>;
 
-inline std::strong_ordering Asn1IntegerCmp(
+static inline std::strong_ordering Asn1IntegerCmp(
     not_null_provider_of<const ASN1_INTEGER*> auto&& lhs,
     not_null_provider_of<const ASN1_INTEGER*> auto&& rhs) noexcept {
   return ASN1_INTEGER_cmp(GetPtr(lhs), GetPtr(rhs)) <=> 0;
@@ -54,6 +54,8 @@ static inline Result<Asn1IntOwner> Asn1IntegerDup(
   return ptr ? Result<Asn1IntOwner>{std::move(ptr)} : Asn1IntErrc::kCopyFailure;
 }
 
+// TODO(melg): mark as deprecated, implement ASN1_INTEGER_get_int64 to be used
+// instead.
 static inline Result<Long> Asn1IntegerGet(
     not_null_provider_of<const ASN1_INTEGER*> auto&& view) noexcept {
   const auto result = ASN1_INTEGER_get(GetPtr(view));
