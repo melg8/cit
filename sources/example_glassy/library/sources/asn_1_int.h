@@ -36,14 +36,6 @@ using Asn1IntHolder =
 
 using Asn1IntOwner = gsl::not_null<Asn1IntHolder>;
 
-inline decltype(auto) GetPtr(is_not_null_of_raw_pointer auto&& lhs) noexcept {
-  return lhs;
-}
-
-inline decltype(auto) GetPtr(auto&& lhs) noexcept {
-  return gsl::not_null{lhs.get()};
-}
-
 inline std::strong_ordering Asn1IntegerCmp(
     not_null_provider_of<const ASN1_INTEGER*> auto&& lhs,
     not_null_provider_of<const ASN1_INTEGER*> auto&& rhs) noexcept {

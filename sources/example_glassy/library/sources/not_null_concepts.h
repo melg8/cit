@@ -53,6 +53,14 @@ concept not_null_provider_of = is_not_null<T> &&
     (is_not_null_of_concrete_raw_pointer<T, Target> ||
      is_not_null_owner_of_concrete_raw_pointer<T, Target>);
 
+inline decltype(auto) GetPtr(is_not_null_of_raw_pointer auto&& lhs) noexcept {
+  return lhs;
+}
+
+inline decltype(auto) GetPtr(is_not_null auto&& lhs) noexcept {
+  return gsl::not_null{lhs.get()};
+}
+
 }  // namespace glassy
 
 #endif  // NOT_NULL_CONCEPTS_H
