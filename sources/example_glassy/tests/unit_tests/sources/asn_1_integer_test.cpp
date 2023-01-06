@@ -45,9 +45,6 @@ SCENARIO("Asn1Integer creation and conversions") {
                 });
 }
 
-#define CHECK_IS_EQ(X) CHECK(std::is_eq(X))
-#define RVALUE(X) Asn1IntegerFrom(X).value()
-
 SCENARIO("Asn1Integer comparison") {
   SUBCASE("compare two Asn1Integer values") {
     []() -> Result<void> {
@@ -56,15 +53,15 @@ SCENARIO("Asn1Integer comparison") {
       SUBCASE("compare") {
         CHECK_IS_EQ(Asn1IntegerCmp(zero, zero));
         CHECK_IS_EQ(Asn1IntegerCmp(one, one));
-        CHECK(std::is_lt(Asn1IntegerCmp(zero, one)));
-        CHECK(std::is_gt(Asn1IntegerCmp(one, zero)));
+        CHECK_IS_LT(Asn1IntegerCmp(zero, one));
+        CHECK_IS_GT(Asn1IntegerCmp(one, zero));
       }
 
       SUBCASE("compare rvalue references") {
         CHECK_IS_EQ(Asn1IntegerCmp(RVALUE(0), RVALUE(0)));
         CHECK_IS_EQ(Asn1IntegerCmp(RVALUE(1), RVALUE(1)));
-        CHECK(std::is_lt(Asn1IntegerCmp(RVALUE(0), RVALUE(1))));
-        CHECK(std::is_gt(Asn1IntegerCmp(RVALUE(1), RVALUE(0))));
+        CHECK_IS_LT(Asn1IntegerCmp(RVALUE(0), RVALUE(1)));
+        CHECK_IS_GT(Asn1IntegerCmp(RVALUE(1), RVALUE(0)));
       }
 
       SUBCASE("compare lvalue references") {
@@ -72,8 +69,8 @@ SCENARIO("Asn1Integer comparison") {
         const auto& l_one = one;
         CHECK_IS_EQ(Asn1IntegerCmp(l_zero, l_zero));
         CHECK_IS_EQ(Asn1IntegerCmp(l_one, l_one));
-        CHECK(std::is_lt(Asn1IntegerCmp(l_zero, l_one)));
-        CHECK(std::is_gt(Asn1IntegerCmp(l_one, l_zero)));
+        CHECK_IS_LT(Asn1IntegerCmp(l_zero, l_one));
+        CHECK_IS_GT(Asn1IntegerCmp(l_one, l_zero));
       }
 
       SUBCASE("compare not null const pointers") {
@@ -81,8 +78,8 @@ SCENARIO("Asn1Integer comparison") {
         Asn1IntegerConstNotNull ptr_one = one.get();
         CHECK_IS_EQ(Asn1IntegerCmp(ptr_zero, ptr_zero));
         CHECK_IS_EQ(Asn1IntegerCmp(ptr_one, ptr_one));
-        CHECK(std::is_lt(Asn1IntegerCmp(ptr_zero, ptr_one)));
-        CHECK(std::is_gt(Asn1IntegerCmp(ptr_one, ptr_zero)));
+        CHECK_IS_LT(Asn1IntegerCmp(ptr_zero, ptr_one));
+        CHECK_IS_GT(Asn1IntegerCmp(ptr_one, ptr_zero));
       }
 
       SUBCASE("compare not null pointers") {
@@ -90,8 +87,8 @@ SCENARIO("Asn1Integer comparison") {
         Asn1IntegerNotNull ptr_one = one.get();
         CHECK_IS_EQ(Asn1IntegerCmp(ptr_zero, ptr_zero));
         CHECK_IS_EQ(Asn1IntegerCmp(ptr_one, ptr_one));
-        CHECK(std::is_lt(Asn1IntegerCmp(ptr_zero, ptr_one)));
-        CHECK(std::is_gt(Asn1IntegerCmp(ptr_one, ptr_zero)));
+        CHECK_IS_LT(Asn1IntegerCmp(ptr_zero, ptr_one));
+        CHECK_IS_GT(Asn1IntegerCmp(ptr_one, ptr_zero));
       }
 
       return outcome::success();
