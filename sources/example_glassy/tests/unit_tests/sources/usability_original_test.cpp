@@ -44,7 +44,6 @@ SCENARIO("openssl usability") {
 
   // Mistake 1: used result instead of expected.
   CHECK_NE(ASN1_INTEGER_set(expected, 33), 0);
-
   CHECK_EQ(ASN1_INTEGER_cmp(result, expected), 0);
 
   ASN1_INTEGER_free(result);

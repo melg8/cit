@@ -2,7 +2,7 @@
 //
 // SPDX-License-Identifier: MIT
 
-#include <asn_1_int.h>
+#include <asn_1_integer.h>
 #include <numeric_conversions.h>
 
 #include <doctest/doctest.h>
@@ -10,7 +10,7 @@
 
 namespace glassy::test {
 
-SCENARIO("Asn1Int conversion to BigNum") {
+SCENARIO("Asn1Integer conversion to BigNum") {
   const auto value = Asn1IntegerFrom(32);
   const auto converted = convert::FromAsn1Int(value.value());
   CHECK(converted.has_value());

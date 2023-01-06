@@ -8,7 +8,7 @@
 #include <doctest/doctest.h>
 #include <outcome.hpp>
 
-#include <asn_1_int_errc.h>  // NOLINT
+#include <asn_1_integer_errc.h>  // NOLINT
 
 namespace glassy::test {
 
@@ -17,19 +17,19 @@ namespace outcome = OUTCOME_V2_NAMESPACE;
 template <typename T>
 using Result = outcome::result<T>;
 
-struct Asn1IntErrcTestData {
-  Asn1IntErrc error_code{};
+struct Asn1IntegerErrcTestData {
+  Asn1IntegerErrc error_code{};
   std::string message{};
 };
 
-SCENARIO("Asn1IntErrc names and messages") {
-  auto tests = std::vector<Asn1IntErrcTestData>{
-      {Asn1IntErrc::kSuccess, "successful"},
-      {Asn1IntErrc::kAllocationFailure, "allocation failed"},
-      {Asn1IntErrc::kNullPointerFailure,
+SCENARIO("Asn1IntegerErrc names and messages") {
+  auto tests = std::vector<Asn1IntegerErrcTestData>{
+      {Asn1IntegerErrc::kSuccess, "successful"},
+      {Asn1IntegerErrc::kAllocationFailure, "allocation failed"},
+      {Asn1IntegerErrc::kNullPointerFailure,
        "got null pointer for creation of Asn1Int"},
-      {Asn1IntErrc::kConversionFailure, "conversion failed"},
-      {Asn1IntErrc::kCopyFailure, "copy failed"},
+      {Asn1IntegerErrc::kConversionFailure, "conversion failed"},
+      {Asn1IntegerErrc::kCopyFailure, "copy failed"},
   };
 
   std::for_each(std::begin(tests), std::end(tests),

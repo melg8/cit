@@ -31,12 +31,12 @@ SCENARIO("numeric conversions failure") {
     const auto result = convert::FromAsn1Int(value.value());
     CHECK_FALSE(result.has_value());
   }
-  SUBCASE("failing to create Asn1Int from BigNum") {
+  SUBCASE("failing to create Asn1Integer from BigNum") {
     const auto value = BigNum::New(32);
     const auto result = convert::FromBigNum(value.value());
     CHECK_FALSE(result.has_value());
   }
-  SUBCASE("failing to update Asn1Int from BigNum") {
+  SUBCASE("failing to update Asn1Integer from BigNum") {
     const auto value = BigNum::New(32);
     auto for_update = Asn1IntegerFrom(32);
     const auto result = convert::FromBigNum(value.value(), for_update.value());

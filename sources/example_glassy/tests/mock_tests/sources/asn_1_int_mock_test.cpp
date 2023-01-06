@@ -34,12 +34,12 @@ static ASN1_INTEGER* MockAsn1IntegerDup(const ASN1_INTEGER*) noexcept {
 #define ASN1_INTEGER_get AlwaysFailAsn1IntegerGet
 #define ASN1_INTEGER_dup MockAsn1IntegerDup
 
-#include <asn_1_int.h>
+#include <asn_1_integer.h>
 
 namespace glassy::test {
 
-SCENARIO("Asn1Int failures") {
-  SUBCASE("failing to create Asn1Int due to allocation failure") {
+SCENARIO("Asn1Integer failures") {
+  SUBCASE("failing to create Asn1Integer due to allocation failure") {
     should_fail_alloc = true;
     {
       const auto result = Asn1IntegerFrom(0);
@@ -51,7 +51,7 @@ SCENARIO("Asn1Int failures") {
     }
   }
 
-  SUBCASE("failing to create Asn1Int due set value failure") {
+  SUBCASE("failing to create Asn1Integer due to set value failure") {
     should_fail_alloc = false;
     should_fail_to_set_value = true;
     {
@@ -59,7 +59,7 @@ SCENARIO("Asn1Int failures") {
       CHECK_FALSE(result.has_value());
     }
   }
-  SUBCASE("failing to convert Asn1Int to long") {
+  SUBCASE("failing to convert Asn1Integer to long") {
     should_fail_alloc = false;
     should_fail_to_set_value = false;
     {
@@ -68,7 +68,7 @@ SCENARIO("Asn1Int failures") {
       CHECK_FALSE(result.has_value());
     }
   }
-  SUBCASE("failing to copy Asn1Int value") {
+  SUBCASE("failing to copy Asn1Integer value") {
     should_fail_alloc = false;
     should_fail_to_set_value = false;
     {

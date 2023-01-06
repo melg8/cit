@@ -2,7 +2,7 @@
 //
 // SPDX-License-Identifier: MIT
 
-#include <asn_1_int.h>
+#include <asn_1_integer.h>
 #include <big_num.h>
 #include <numeric_conversions.h>
 
@@ -13,11 +13,11 @@ namespace glassy::test {
 
 namespace outcome = OUTCOME_V2_NAMESPACE;
 
-static Asn1IntegerNotNull ViewExtractor(Asn1IntOwner& owner) noexcept {
+static Asn1IntegerNotNull ViewExtractor(Asn1Integer& owner) noexcept {
   return GetPtr(owner);
 }
 
-SCENARIO("Asn1Int conversions to/from BigNum") {
+SCENARIO("Asn1Integer conversions to/from BigNum") {
   []() -> Result<void> {
     {
       OUTCOME_TRY(const auto value, Asn1IntegerFrom(32));

@@ -2,8 +2,8 @@
 //
 // SPDX-License-Identifier: MIT
 
-#ifndef ASN_1_INT_ERRC_H
-#define ASN_1_INT_ERRC_H
+#ifndef ASN_1_INTEGER_ERRC_H
+#define ASN_1_INTEGER_ERRC_H
 
 #include <string>
 #include <system_error>
@@ -11,17 +11,17 @@
 #include <outcome.hpp>
 
 namespace glassy {
-enum class Asn1IntErrc;
+enum class Asn1IntegerErrc;
 }
 
 namespace std {
 template <>
-struct is_error_code_enum<glassy::Asn1IntErrc> : true_type {};
+struct is_error_code_enum<glassy::Asn1IntegerErrc> : true_type {};
 }  // namespace std
 
 namespace glassy {
 
-enum class Asn1IntErrc {
+enum class Asn1IntegerErrc {
   kSuccess = 0,  // 0 should not represent an error
   kAllocationFailure = 1,
   kNullPointerFailure = 2,
@@ -40,16 +40,16 @@ inline const char* Asn1IntErrorCategory::name() const noexcept {
 }
 
 inline std::string Asn1IntErrorCategory::message(int error_value) const {
-  switch (static_cast<Asn1IntErrc>(error_value)) {
-    case Asn1IntErrc::kAllocationFailure:
+  switch (static_cast<Asn1IntegerErrc>(error_value)) {
+    case Asn1IntegerErrc::kAllocationFailure:
       return "allocation failed";
-    case Asn1IntErrc::kNullPointerFailure:
+    case Asn1IntegerErrc::kNullPointerFailure:
       return "got null pointer for creation of Asn1Int";
-    case Asn1IntErrc::kConversionFailure:
+    case Asn1IntegerErrc::kConversionFailure:
       return "conversion failed";
-    case Asn1IntErrc::kCopyFailure:
+    case Asn1IntegerErrc::kCopyFailure:
       return "copy failed";
-    case Asn1IntErrc::kSuccess:
+    case Asn1IntegerErrc::kSuccess:
       break;
   }
   return "successful";
@@ -60,10 +60,10 @@ const Asn1IntErrorCategory asn_1_int_error_category{};
 }  // namespace detail
 
 // NOLINTNEXTLINE
-inline std::error_code make_error_code(glassy::Asn1IntErrc e) {
+inline std::error_code make_error_code(glassy::Asn1IntegerErrc e) {
   return std::error_code{static_cast<int>(e), detail::asn_1_int_error_category};
 }
 
 }  // namespace glassy
 
-#endif  // ASN_1_INT_ERRC_H
+#endif  // ASN_1_INTEGER_ERRC_H

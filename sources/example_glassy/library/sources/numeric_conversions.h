@@ -5,7 +5,7 @@
 #ifndef NUMERIC_COVERSIONS_H
 #define NUMERIC_COVERSIONS_H
 
-#include <asn_1_int.h>
+#include <asn_1_integer.h>
 #include <big_num.h>
 
 namespace glassy::convert {
@@ -17,7 +17,7 @@ using Result = outcome::result<T>;
 
 static Result<BigNum> FromAsn1Int(
     not_null_provider_of<const ASN1_INTEGER*> auto&& value) noexcept;
-static Result<Asn1IntOwner> FromBigNum(const BigNum& value) noexcept;
+static Result<Asn1Integer> FromBigNum(const BigNum& value) noexcept;
 static Result<void> FromBigNum(
     const BigNum& value,
     not_null_provider_of<const ASN1_INTEGER*> auto&& target) noexcept;
@@ -31,10 +31,10 @@ inline Result<BigNum> FromAsn1Int(
   return result;
 }
 
-inline Result<Asn1IntOwner> FromBigNum(const BigNum& value) noexcept {
+inline Result<Asn1Integer> FromBigNum(const BigNum& value) noexcept {
   auto result = Own(BN_to_ASN1_INTEGER(value.Ptr(), nullptr));
   if (result.has_error()) {
-    return Asn1IntErrc::kConversionFailure;
+    return Asn1IntegerErrc::kConversionFailure;
   }
   return result;
 }
@@ -43,7 +43,7 @@ inline Result<void> FromBigNum(
     const BigNum& value,
     not_null_provider_of<const ASN1_INTEGER*> auto&& target) noexcept {
   if (BN_to_ASN1_INTEGER(value.Ptr(), GetPtr(target)) == nullptr) {
-    return Asn1IntErrc::kConversionFailure;
+    return Asn1IntegerErrc::kConversionFailure;
   }
   return outcome::success();
 }

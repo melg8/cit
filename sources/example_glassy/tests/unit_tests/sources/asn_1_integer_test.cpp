@@ -6,7 +6,7 @@
 #include <functional>
 #include <vector>
 
-#include <asn_1_int.h>
+#include <asn_1_integer.h>
 
 #include <doctest/doctest.h>
 #include <outcome.hpp>
@@ -15,16 +15,21 @@ namespace glassy::test {
 
 namespace outcome = OUTCOME_V2_NAMESPACE;
 
-struct Asn1IntTestData {
+struct Asn1IntegerTestData {
   std::string subcase_name{};
-  std::function<Result<Asn1IntOwner>()> create{};
+  std::function<Result<Asn1Integer>()> create{};
   Long value{0};
 };
 
 #define CALL(X) []() noexcept { return glassy::X; }
 
-SCENARIO("Asn1Int creation and conversions") {
-  auto tests = std::vector<Asn1IntTestData>{
+#define CHECK_IS_EQ(X) CHECK(std::is_eq(X))
+#define CHECK_IS_LT(X) CHECK(std::is_lt(X))
+#define CHECK_IS_GT(X) CHECK(std::is_gt(X))
+#define RVALUE(X) Asn1IntegerFrom(X).value()
+
+SCENARIO("Asn1Integer creation and conversions") {
+  auto tests = std::vector<Asn1IntegerTestData>{
       {"number 0", CALL(Asn1IntegerFrom(0)), 0},
       {"number 32", CALL(Asn1IntegerFrom(32)), 32},
   };
@@ -43,8 +48,8 @@ SCENARIO("Asn1Int creation and conversions") {
 #define CHECK_IS_EQ(X) CHECK(std::is_eq(X))
 #define RVALUE(X) Asn1IntegerFrom(X).value()
 
-SCENARIO("Asn1Int comparison") {
-  SUBCASE("compare two Asn1Int values") {
+SCENARIO("Asn1Integer comparison") {
+  SUBCASE("compare two Asn1Integer values") {
     []() -> Result<void> {
       OUTCOME_TRY(const auto one, Asn1IntegerFrom(1));
       OUTCOME_TRY(const auto zero, Asn1IntegerFrom(0));
@@ -95,7 +100,7 @@ SCENARIO("Asn1Int comparison") {
   }
 }
 
-SCENARIO("Asn1Int creation from pointer") {
+SCENARIO("Asn1Integer creation from pointer") {
   SUBCASE("creation from valid pointer should succeed") {
     CHECK(Own(ASN1_INTEGER_new()).has_value());
   }
@@ -105,8 +110,8 @@ SCENARIO("Asn1Int creation from pointer") {
   }
 }
 
-SCENARIO("Asn1Int copy") {
-  SUBCASE("create Asn1Int copy from original value") {
+SCENARIO("Asn1Integer copy") {
+  SUBCASE("create Asn1Integer copy from original value") {
     []() -> Result<void> {
       OUTCOME_TRY(const auto original, Asn1IntegerFrom(32));
       OUTCOME_TRY(const auto copy, Asn1IntegerDup(original));
@@ -129,8 +134,8 @@ static void TestFunction(
   CHECK_NE(pointer, nullptr);
 }
 
-SCENARIO("Asn1IntConstView") {
-  SUBCASE("create Asn1IntConstView from owners") {
+SCENARIO("Asn1IntegerConstView") {
+  SUBCASE("create Asn1IntegerConstView from owners") {
     []() -> Result<void> {
       OUTCOME_TRY(const auto const_owner, Asn1IntegerFrom(32));
       OUTCOME_TRY(auto mutable_owner, Asn1IntegerFrom(32));
@@ -145,8 +150,8 @@ SCENARIO("Asn1IntConstView") {
                 .value();
 
     SUBCASE(
-        "can use owned and pointers in function taking  Asn1IntConstView as "
-        "arguments") {
+        "can use owned and pointers in function taking  Asn1IntegerConstView "
+        "as arguments") {
       []() -> Result<void> {
         OUTCOME_TRY(const auto const_owner, Asn1IntegerFrom(32));
         TestFunction(const_owner);
