@@ -57,11 +57,39 @@ SCENARIO("Asn1Integer comparison") {
         CHECK_IS_GT(Asn1IntegerCmp(one, zero));
       }
 
+      SUBCASE("compare value of") {
+        CHECK_IS_EQ(ValueOf(zero) <=> ValueOf(zero));
+        CHECK_EQ(ValueOf(zero), ValueOf(zero));
+
+        CHECK_EQ(ValueOf(zero), ValueOf(zero));
+        CHECK_EQ(ValueOf(one), ValueOf(one));
+        CHECK(ValueOf(zero) < ValueOf(one));
+        CHECK(ValueOf(one) > ValueOf(zero));
+      }
+
       SUBCASE("compare rvalue references") {
         CHECK_IS_EQ(Asn1IntegerCmp(RVALUE(0), RVALUE(0)));
         CHECK_IS_EQ(Asn1IntegerCmp(RVALUE(1), RVALUE(1)));
         CHECK_IS_LT(Asn1IntegerCmp(RVALUE(0), RVALUE(1)));
         CHECK_IS_GT(Asn1IntegerCmp(RVALUE(1), RVALUE(0)));
+      }
+
+      SUBCASE("compare value of rvalue references") {
+        ValueOf(Asn1IntegerFrom(0).value());
+        CHECK_EQ(ValueOf(RVALUE(0)), ValueOf(RVALUE(0)));
+        CHECK_EQ(ValueOf(RVALUE(1)), ValueOf(RVALUE(1)));
+        CHECK_NE(ValueOf(RVALUE(0)), ValueOf(RVALUE(1)));
+
+        // It owns lifetime of object if gets rvalue.
+        auto lhs_cmp = ValueOf(RVALUE(0));
+        auto rhs_cmp = ValueOf(RVALUE(1));
+        CHECK(lhs_cmp < rhs_cmp);
+        CHECK(rhs_cmp > lhs_cmp);
+
+        auto result = ValueOf(RVALUE(1)) > ValueOf(RVALUE(0));
+        CHECK(result);
+
+        CHECK_GT(ValueOf(RVALUE(1)), ValueOf(RVALUE(0)));
       }
 
       SUBCASE("compare lvalue references") {
@@ -73,6 +101,36 @@ SCENARIO("Asn1Integer comparison") {
         CHECK_IS_GT(Asn1IntegerCmp(l_one, l_zero));
       }
 
+      SUBCASE("compare value of different presentations") {
+        auto lhs_cmp = ValueOf(RVALUE(0));
+        CHECK_EQ(ValueOf(RVALUE(0)), lhs_cmp);
+        CHECK_EQ(lhs_cmp, ValueOf(RVALUE(0)));
+
+        const auto& l_zero = zero;
+        CHECK_EQ(ValueOf(RVALUE(0)), ValueOf(l_zero));
+        CHECK_EQ(ValueOf(l_zero), ValueOf(RVALUE(0)));
+
+        Asn1IntegerConstNotNull const_ptr_zero = zero.get();
+        CHECK_EQ(ValueOf(RVALUE(0)), ValueOf(const_ptr_zero));
+        CHECK_EQ(ValueOf(const_ptr_zero), ValueOf(RVALUE(0)));
+
+        Asn1IntegerNotNull ptr_zero = zero.get();
+        CHECK_EQ(ValueOf(RVALUE(0)), ValueOf(ptr_zero));
+        CHECK_EQ(ValueOf(ptr_zero), ValueOf(RVALUE(0)));
+
+        CHECK_EQ(ValueOf(const_ptr_zero), ValueOf(ptr_zero));
+        CHECK_EQ(ValueOf(ptr_zero), ValueOf(const_ptr_zero));
+      }
+
+      SUBCASE("compare value of lvalue references") {
+        const auto& l_zero = zero;
+        const auto& l_one = one;
+        CHECK_EQ(ValueOf(l_zero), ValueOf(l_zero));
+        CHECK_EQ(ValueOf(l_one), ValueOf(l_one));
+        CHECK_LT(ValueOf(l_zero), ValueOf(l_one));
+        CHECK_GT(ValueOf(l_one), ValueOf(l_zero));
+      }
+
       SUBCASE("compare not null const pointers") {
         Asn1IntegerConstNotNull ptr_zero = zero.get();
         Asn1IntegerConstNotNull ptr_one = one.get();
@@ -80,6 +138,15 @@ SCENARIO("Asn1Integer comparison") {
         CHECK_IS_EQ(Asn1IntegerCmp(ptr_one, ptr_one));
         CHECK_IS_LT(Asn1IntegerCmp(ptr_zero, ptr_one));
         CHECK_IS_GT(Asn1IntegerCmp(ptr_one, ptr_zero));
+      }
+
+      SUBCASE("compare value of not null const pointers") {
+        Asn1IntegerConstNotNull ptr_zero = zero.get();
+        Asn1IntegerConstNotNull ptr_one = one.get();
+        CHECK_EQ(ValueOf(ptr_zero), ValueOf(ptr_zero));
+        CHECK_EQ(ValueOf(ptr_one), ValueOf(ptr_one));
+        CHECK_LT(ValueOf(ptr_zero), ValueOf(ptr_one));
+        CHECK_GT(ValueOf(ptr_one), ValueOf(ptr_zero));
       }
 
       SUBCASE("compare not null pointers") {
@@ -91,6 +158,14 @@ SCENARIO("Asn1Integer comparison") {
         CHECK_IS_GT(Asn1IntegerCmp(ptr_one, ptr_zero));
       }
 
+      SUBCASE("compare value of not null pointers") {
+        Asn1IntegerNotNull ptr_zero = zero.get();
+        Asn1IntegerNotNull ptr_one = one.get();
+        CHECK_EQ(ValueOf(ptr_zero), ValueOf(ptr_zero));
+        CHECK_EQ(ValueOf(ptr_one), ValueOf(ptr_one));
+        CHECK_LT(ValueOf(ptr_zero), ValueOf(ptr_one));
+        CHECK_GT(ValueOf(ptr_one), ValueOf(ptr_zero));
+      }
       return outcome::success();
     }()
                 .value();

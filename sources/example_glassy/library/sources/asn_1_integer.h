@@ -41,6 +41,28 @@ static inline std::strong_ordering Asn1IntegerCmp(
   return ASN1_INTEGER_cmp(GetPtr(lhs), GetPtr(rhs)) <=> 0;
 }
 
+template <is_not_null T>
+struct ComparisonValueHolder {
+  T ptr;  // NOLINT
+
+  template <typename F>
+  inline constexpr auto operator<=>(
+      const ComparisonValueHolder<F>& rhs) const noexcept {
+    return Asn1IntegerCmp(this->ptr, rhs.ptr);
+  }
+
+  template <typename F>
+  inline constexpr bool operator==(
+      const ComparisonValueHolder<F>& rhs) const noexcept {
+    return std::is_eq(*this <=> rhs);
+  }
+};
+
+template <is_not_null T>
+static inline decltype(auto) ValueOf(T&& provider) noexcept {
+  return ComparisonValueHolder<T>{std::forward<T>(provider)};
+}
+
 static inline Result<Asn1Integer> Asn1IntegerNew() noexcept {
   Asn1IntegerMaybeNull ptr{ASN1_INTEGER_new()};
   return ptr ? Result<Asn1Integer>{std::move(ptr)}
