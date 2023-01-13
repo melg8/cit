@@ -16,6 +16,9 @@ if(${ENABLE_COVERAGE})
 endif()
 
 if(CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
+  add_compiler_flags(-fno-rtti)
+  add_compiler_flags(-fno-exceptions)
+
   add_compiler_flags(-fsanitize=address,undefined)
   add_compiler_flags(-Werror)
   add_compiler_flags(-Wno-c++98-compat)
