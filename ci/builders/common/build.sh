@@ -22,7 +22,7 @@ cmake .. -G Ninja \
 	-DCMAKE_TOOLCHAIN_FILE="conan_toolchain.cmake"
 
 cmake --build . -j "$(nproc)"
-ctest
+ctest --verbose --output-log ../report/ctest_logs_"${COMPILER}".txt
 
 grcov . \
 	-s .. \
