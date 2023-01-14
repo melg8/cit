@@ -22,7 +22,16 @@ cmake .. -G Ninja \
 	-DCMAKE_TOOLCHAIN_FILE="conan_toolchain.cmake"
 
 cmake --build . -j "$(nproc)"
-ctest --verbose --output-log ../report/ctest_logs_"${COMPILER}".txt
+
+mkdir -p ../report
+
+# Position of benchmark log in full ctest run.
+# Must be modified if new tests are added.
+BENCHMARK_LOG_ID=4
+ctest --verbose |
+grep -E '^(['${BENCHMARK_LOG_ID}'])\b' |
+sed 's/'${BENCHMARK_LOG_ID}': //g' > ../report/ctest_logs_"${COMPILER}".txt
+
 
 grcov . \
 	-s .. \

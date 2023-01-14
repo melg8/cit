@@ -220,7 +220,6 @@ jobs:
       - run: |
           sudo chmod 777 "$(pwd)"
           sudo chmod -R 777 "$(pwd)/.git"
-          sudo chown -R 1000:100 "$(pwd)"
           just docker-run "just build-gcc"
       - uses: codecov/codecov-action@v2
         with:
@@ -230,6 +229,32 @@ jobs:
           fail_ci_if_error: true
           flags: gcc_unit_tests
           verbose: true
+      - name: Store benchmark result
+        if: github.ref == 'refs/heads/develop'
+        uses: rhysd/github-action-benchmark@v1.7.0
+        with:
+          name: Catch2 Benchmark g++
+          tool: "catch2"
+          output-file-path: report/ctest_logs_g++.txt
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          auto-push: true
+          alert-threshold: "200%"
+          comment-on-alert: true
+          fail-on-alert: true
+          alert-comment-cc-users: "@melg8"
+      - name: Run benchmark - no store
+        if: github.ref != 'refs/heads/develop'
+        uses: rhysd/github-action-benchmark@v1.7.0
+        with:
+          name: Catch2 Benchmark g++
+          tool: "catch2"
+          output-file-path: report/ctest_logs_g++.txt
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          auto-push: false
+          alert-threshold: "200%"
+          comment-on-alert: true
+          fail-on-alert: true
+          alert-comment-cc-users: "@melg8"
   build_clang:
     runs-on: ubuntu-20.04
     needs: build_docker
@@ -244,7 +269,6 @@ jobs:
       - run: |
           sudo chmod 777 "$(pwd)"
           sudo chmod -R 777 "$(pwd)/.git"
-          sudo chown -R 1000:100 "$(pwd)"
           just docker-run "just build-clang"
       - uses: codecov/codecov-action@v2
         with:
@@ -254,3 +278,29 @@ jobs:
           fail_ci_if_error: true
           flags: clang_unit_tests
           verbose: true
+      - name: Store benchmark result
+        if: github.ref == 'refs/heads/develop'
+        uses: rhysd/github-action-benchmark@v1.7.0
+        with:
+          name: Catch2 Benchmark clang++
+          tool: "catch2"
+          output-file-path: report/ctest_logs_clang++.txt
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          auto-push: true
+          alert-threshold: "200%"
+          comment-on-alert: true
+          fail-on-alert: true
+          alert-comment-cc-users: "@melg8"
+      - name: Run benchmark - no store
+        if: github.ref != 'refs/heads/develop'
+        uses: rhysd/github-action-benchmark@v1.7.0
+        with:
+          name: Catch2 Benchmark clang++
+          tool: "catch2"
+          output-file-path: report/ctest_logs_clang++.txt
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          auto-push: false
+          alert-threshold: "200%"
+          comment-on-alert: true
+          fail-on-alert: true
+          alert-comment-cc-users: "@melg8"
