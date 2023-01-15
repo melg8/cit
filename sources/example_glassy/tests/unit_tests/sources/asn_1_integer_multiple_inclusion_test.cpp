@@ -4,7 +4,7 @@
 
 #include <asn_1_integer.h>
 
-#include <doctest/doctest.h>
+#include <testing_framework.h>
 
 namespace glassy::test {
 

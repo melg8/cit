@@ -4,7 +4,7 @@
 
 #include <limits>
 
-#include <doctest/doctest.h>
+#include <testing_framework.h>
 
 #include <openssl/bn.h>
 

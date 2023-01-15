@@ -8,7 +8,7 @@
 
 #include <asn_1_integer.h>
 
-#include <doctest/doctest.h>
+#include <testing_framework.h>
 #include <outcome.hpp>
 
 namespace glassy::test {

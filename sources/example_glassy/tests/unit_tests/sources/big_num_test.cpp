@@ -8,7 +8,7 @@
 
 #include <big_num.h>
 
-#include <doctest/doctest.h>
+#include <testing_framework.h>
 #include <outcome.hpp>
 
 namespace glassy::test {

@@ -5,7 +5,7 @@
 #include <algorithm>
 #include <vector>
 
-#include <doctest/doctest.h>
+#include <testing_framework.h>
 #include <outcome.hpp>
 
 #include <big_num_errc.h>  // NOLINT

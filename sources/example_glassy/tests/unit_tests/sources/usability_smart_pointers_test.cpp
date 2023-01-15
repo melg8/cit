@@ -6,7 +6,7 @@
 
 #include <openssl/asn1.h>
 
-#include <doctest/doctest.h>
+#include <testing_framework.h>
 
 namespace glassy::test {
 

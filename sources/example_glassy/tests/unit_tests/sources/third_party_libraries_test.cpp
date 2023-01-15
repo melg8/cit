@@ -2,8 +2,8 @@
 //
 // SPDX-License-Identifier: MIT
 
-#include <doctest/doctest.h>
 #include <openssl/bn.h>
+#include <testing_framework.h>
 #include <gsl/gsl-lite.hpp>
 #include <outcome.hpp>
 

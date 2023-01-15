@@ -6,7 +6,7 @@
 
 #include <memory_helpers.h>
 
-#include <doctest/doctest.h>
+#include <testing_framework.h>
 
 static void DeleterFunctionMock(gsl::owner<const int*> resource) noexcept {
   delete resource;
