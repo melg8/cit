@@ -3,6 +3,7 @@
 // SPDX-License-Identifier: MIT
 
 #include <algorithm>
+#include <string>
 #include <vector>
 
 #include <testing_framework.h>
@@ -13,6 +14,7 @@
 namespace glassy::test {
 
 namespace outcome = OUTCOME_V2_NAMESPACE;
+using std::string_literals::operator""s;  // NOLINT
 
 template <typename T>
 using Result = outcome::result<T>;
@@ -38,7 +40,7 @@ SCENARIO("Asn1IntegerErrc names and messages") {
                   CHECK(result.has_failure());
 
                   CHECK(result.error().message() == test.message);
-                  CHECK(result.error().category().name() == "BigNum");
+                  CHECK(result.error().category().name() == "BigNum"s);
                   return outcome::success();
                 });
 }
