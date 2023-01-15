@@ -43,11 +43,11 @@ SCENARIO("Asn1Integer failures") {
     should_fail_alloc = true;
     {
       const auto result = Asn1IntegerFrom(0);
-      CHECK_FALSE(result.has_value());
+      CHECK(!result.has_value());
     }
     {
       const auto result = Asn1IntegerFrom(32);
-      CHECK_FALSE(result.has_value());
+      CHECK(!result.has_value());
     }
   }
 
@@ -56,7 +56,7 @@ SCENARIO("Asn1Integer failures") {
     should_fail_to_set_value = true;
     {
       const auto result = Asn1IntegerFrom(0);
-      CHECK_FALSE(result.has_value());
+      CHECK(!result.has_value());
     }
   }
   SECTION("failing to convert Asn1Integer to long") {
@@ -65,7 +65,7 @@ SCENARIO("Asn1Integer failures") {
     {
       const auto value = Asn1IntegerFrom(0).value();
       const auto result = Asn1IntegerGet(value);
-      CHECK_FALSE(result.has_value());
+      CHECK(!result.has_value());
     }
   }
   SECTION("failing to copy Asn1Integer value") {
@@ -74,7 +74,7 @@ SCENARIO("Asn1Integer failures") {
     {
       const auto value = Asn1IntegerFrom(32).value();
       const auto result = Asn1IntegerDup(value);
-      CHECK_FALSE(result.has_value());
+      CHECK(!result.has_value());
     }
   }
 }

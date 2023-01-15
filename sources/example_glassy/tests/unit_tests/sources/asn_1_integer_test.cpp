@@ -178,7 +178,7 @@ SCENARIO("Asn1Integer creation from pointer") {
   }
 
   SECTION("creation from nullptr should fail") {
-    CHECK_FALSE(Own(nullptr).has_value());
+    CHECK(!Own(nullptr).has_value());
   }
 }
 

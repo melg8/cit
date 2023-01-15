@@ -155,27 +155,27 @@ SCENARIO("BigNum comparison") {
       }
       SECTION("less") {
         CHECK(zero < one);
-        CHECK_FALSE(one < zero);
-        CHECK_FALSE(zero < zero);
-        CHECK_FALSE(one < one);
+        CHECK(!(one < zero));
+        CHECK(!(zero < zero));
+        CHECK(!(one < one));
       }
       SECTION("greater") {
         CHECK(one > zero);
-        CHECK_FALSE(zero > one);
-        CHECK_FALSE(zero > zero);
-        CHECK_FALSE(one > one);
+        CHECK(!(zero > one));
+        CHECK(!(zero > zero));
+        CHECK(!(one > one));
       }
       SECTION("equal") {
         CHECK(zero == zero);
         CHECK(one == one);
-        CHECK_FALSE(zero == one);
-        CHECK_FALSE(one == zero);
+        CHECK(!(zero == one));
+        CHECK(!(one == zero));
       }
       SECTION("not equal") {
         CHECK(zero != one);
         CHECK(one != zero);
-        CHECK_FALSE(zero != zero);
-        CHECK_FALSE(one != one);
+        CHECK(!(zero != zero));
+        CHECK(!(one != one));
       }
       return outcome::success();
     }()
@@ -185,7 +185,7 @@ SCENARIO("BigNum comparison") {
 
 SCENARIO("BigNum creation") {
   SECTION("creation from nullptr should fail") {
-    CHECK_FALSE(BigNum::Own(nullptr).has_value());
+    CHECK(!BigNum::Own(nullptr).has_value());
   }
 }
 

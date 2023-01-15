@@ -29,18 +29,18 @@ SCENARIO("numeric conversions failure") {
   SECTION("failing to create BigNum from Asn1Int") {
     const auto value = Asn1IntegerFrom(32);
     const auto result = convert::FromAsn1Int(value.value());
-    CHECK_FALSE(result.has_value());
+    CHECK(!result.has_value());
   }
   SECTION("failing to create Asn1Integer from BigNum") {
     const auto value = BigNum::New(32);
     const auto result = convert::FromBigNum(value.value());
-    CHECK_FALSE(result.has_value());
+    CHECK(!result.has_value());
   }
   SECTION("failing to update Asn1Integer from BigNum") {
     const auto value = BigNum::New(32);
     auto for_update = Asn1IntegerFrom(32);
     const auto result = convert::FromBigNum(value.value(), for_update.value());
-    CHECK_FALSE(result.has_value());
+    CHECK(!result.has_value());
   }
 }
 

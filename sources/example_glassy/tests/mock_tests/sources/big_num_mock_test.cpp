@@ -65,7 +65,7 @@ SCENARIO("BigNum failures") {
   GIVEN("creating new BigNum") {
     const auto result = BigNum::New();
     WHEN("failed to create BigNum because of internal error") {
-      THEN("result doesn't have value") { CHECK_FALSE(result.has_value()); }
+      THEN("result doesn't have value") { CHECK(!result.has_value()); }
     }
   }
 
@@ -75,7 +75,7 @@ SCENARIO("BigNum failures") {
     WHEN("failed to create Bignum from it because of internal error") {
       const auto result = BigNum::New(value);
 
-      THEN("result doesn't have value") { CHECK_FALSE(result.has_value()); }
+      THEN("result doesn't have value") { CHECK(!result.has_value()); }
     }
   }
 
@@ -87,7 +87,7 @@ SCENARIO("BigNum failures") {
       should_fail_one_time_set_word = true;
       const auto result = BigNum::New(value);
 
-      THEN("result doesn't have value") { CHECK_FALSE(result.has_value()); }
+      THEN("result doesn't have value") { CHECK(!result.has_value()); }
     }
   }
 
@@ -98,15 +98,13 @@ SCENARIO("BigNum failures") {
     WHEN("failed to convert to BnUlong because of internal error") {
       const auto converted = result.value().ToBnUlong();
 
-      THEN("converted doesn't have value") {
-        CHECK_FALSE(converted.has_value());
-      }
+      THEN("converted doesn't have value") { CHECK(!converted.has_value()); }
     }
 
     WHEN("failed to convert to dec") {
       const auto converted = result.value().ToDec();
 
-      THEN("result doesn't have value") { CHECK_FALSE(converted.has_value()); }
+      THEN("result doesn't have value") { CHECK(!converted.has_value()); }
     }
   }
 
@@ -115,7 +113,7 @@ SCENARIO("BigNum failures") {
     WHEN("failed to convert BigNum from it") {
       const auto result = BigNum::New(Dec{"4"});
 
-      THEN("result doesn't have value") { CHECK_FALSE(result.has_value()); }
+      THEN("result doesn't have value") { CHECK(!result.has_value()); }
     }
   }
 
@@ -126,7 +124,7 @@ SCENARIO("BigNum failures") {
     WHEN("converting it to dec") {
       const auto result = value.value().ToHex();
 
-      THEN("result doesn't have value") { CHECK_FALSE(result.has_value()); }
+      THEN("result doesn't have value") { CHECK(!result.has_value()); }
     }
   }
 
@@ -137,7 +135,7 @@ SCENARIO("BigNum failures") {
     WHEN("converting it to bin") {
       const auto result = value.value().ToBin();
 
-      THEN("result doesn't have value") { CHECK_FALSE(result.has_value()); }
+      THEN("result doesn't have value") { CHECK(!result.has_value()); }
     }
   }
 
@@ -146,7 +144,7 @@ SCENARIO("BigNum failures") {
     WHEN("failed to convert BigNum from it") {
       const auto result = BigNum::New(Hex{"0F"});
 
-      THEN("result doesn't have value") { CHECK_FALSE(result.has_value()); }
+      THEN("result doesn't have value") { CHECK(!result.has_value()); }
     }
   }
 
@@ -157,7 +155,7 @@ SCENARIO("BigNum failures") {
     WHEN("failed to create BigNum from it") {
       const auto result = BigNum::New(value);
 
-      THEN("result doesn't have value") { CHECK_FALSE(result.has_value()); }
+      THEN("result doesn't have value") { CHECK(!result.has_value()); }
     }
   }
 
@@ -167,7 +165,7 @@ SCENARIO("BigNum failures") {
       OUTCOME_TRY(const auto first, BigNum::New(2));
       OUTCOME_TRY(const auto second, BigNum::New(3));
       const auto result = BigNum::Add(first, second);
-      CHECK_FALSE(result.has_value());
+      CHECK(!result.has_value());
     }
 
     SECTION("BigNum += BigNum failing") {
@@ -175,7 +173,7 @@ SCENARIO("BigNum failures") {
 
       OUTCOME_TRY(auto value, BigNum::New(2));
       OUTCOME_TRY(const auto second_value, BigNum::New(3));
-      CHECK_FALSE((value += second_value).has_value());
+      CHECK(!(value += second_value).has_value());
       OUTCOME_TRY(const auto result, BigNum::New(2));
       CHECK_EQ(value, result);
     }
@@ -184,7 +182,7 @@ SCENARIO("BigNum failures") {
       should_fail_alloc = false;
 
       OUTCOME_TRY(auto value, BigNum::New(2));
-      CHECK_FALSE((value += BigNum::New(3)).has_value());
+      CHECK(!(value += BigNum::New(3)).has_value());
       OUTCOME_TRY(const auto result, BigNum::New(2));
       CHECK_EQ(value, result);
     }
@@ -194,7 +192,7 @@ SCENARIO("BigNum failures") {
 
       auto value = BigNum::New(2);
       OUTCOME_TRY(const auto second_value, BigNum::New(3));
-      CHECK_FALSE((value += second_value).has_value());
+      CHECK(!(value += second_value).has_value());
       OUTCOME_TRY(const auto result, BigNum::New(2));
       CHECK_EQ(value.value(), result);
     }
@@ -203,7 +201,7 @@ SCENARIO("BigNum failures") {
       should_fail_alloc = false;
 
       auto value = BigNum::New(2);
-      CHECK_FALSE((value += BigNum::New(3)).has_value());
+      CHECK(!(value += BigNum::New(3)).has_value());
       OUTCOME_TRY(const auto result, BigNum::New(2));
       CHECK_EQ(value.value(), result);
     }
@@ -212,8 +210,8 @@ SCENARIO("BigNum failures") {
       should_fail_alloc = false;
 
       Result<BigNum> value = BigNumErrc::kAllocationFailure;
-      CHECK_FALSE((value += BigNum::New(3)).has_value());
-      CHECK_FALSE(value.has_value());
+      CHECK(!(value += BigNum::New(3)).has_value());
+      CHECK(!value.has_value());
     }
 
     SECTION("Result<BigNum> += !Result<BigNum>") {
@@ -221,7 +219,7 @@ SCENARIO("BigNum failures") {
 
       auto value = BigNum::New(2);
       Result<BigNum> second_value = BigNumErrc::kAllocationFailure;
-      CHECK_FALSE((value += second_value).has_value());
+      CHECK(!(value += second_value).has_value());
       OUTCOME_TRY(const auto result, BigNum::New(2));
       CHECK_EQ(value.value(), result);
     }
