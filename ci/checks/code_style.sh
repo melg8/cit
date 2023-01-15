@@ -16,10 +16,9 @@ find ./sources -name "*.cpp" -exec clang-format --dry-run --Werror {} +
 # changes in header guards.
 cpplint \
 	--recursive \
-        --linelength=80 \
+	--linelength=80 \
 	--includeorder=standardcfirst \
-        --filter=-build/c++11,-build/header_guard,-runtime/references,\
--readability/check \
+	--filter=-build/c++11,-build/header_guard,-runtime/references,-readability/check \
 	--root=./sources \
 	./sources
 

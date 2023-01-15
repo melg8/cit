@@ -36,7 +36,7 @@ SCENARIO("Asn1Integer creation and conversions") {
 
   std::for_each(std::begin(tests), std::end(tests),
                 [](auto test) -> Result<void> {
-                  SECTION(test.subcase_name.c_str()) {
+                  SECTION(test.subcase_name) {
                     OUTCOME_TRY(const auto number, test.create());
                     CHECK(Asn1IntegerGet(number).value() == test.value);
                   }

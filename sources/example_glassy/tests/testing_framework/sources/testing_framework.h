@@ -5,7 +5,7 @@
 #ifndef TESTING_FRAMEWORK_H
 #define TESTING_FRAMEWORK_H
 
-#include <doctest/doctest.h>
+#include <catch2/catch_all.hpp>
 
 #ifndef SECTION
 #define SECTION SUBCASE

@@ -42,19 +42,19 @@ SCENARIO("BigNum creation and conversions") {
       {"from bin", CALL(New(SslData{10})), 1, 4, 10, "10", "0A", SslData{10}},
       {"from 2 byte bin", CALL(New(SslData{255, 10})), 2, 16, 65290, "65290",
        "FF0A", SslData{255, 10}}};
-  std::for_each(
-      std::begin(tests), std::end(tests), [](auto test) -> Result<void> {
-        SECTION(test.subcase_name.c_str()) {
-          OUTCOME_TRY(const auto number, test.create());
-          CHECK(number.NumberOfBytes() == test.number_of_bytes);
-          CHECK(number.NumberOfBits() == test.number_of_bits);
-          CHECK(number.ToBnUlong().value() == test.value);
-          CHECK(std::string{number.ToDec().value().get()} == test.dec);
-          CHECK(std::string{number.ToHex().value().get()} == test.hex);
-          CHECK(number.ToBin().value() == test.bin_data);
-        }
-        return outcome::success();
-      });
+  std::for_each(std::begin(tests), std::end(tests),
+                [](auto test) -> Result<void> {
+                  SECTION(test.subcase_name) {
+                    OUTCOME_TRY(const auto number, test.create());
+                    CHECK(number.NumberOfBytes() == test.number_of_bytes);
+                    CHECK(number.NumberOfBits() == test.number_of_bits);
+                    CHECK(number.ToBnUlong().value() == test.value);
+                    CHECK(number.ToDec().value().get() == test.dec);
+                    CHECK(number.ToHex().value().get() == test.hex);
+                    CHECK(number.ToBin().value() == test.bin_data);
+                  }
+                  return outcome::success();
+                });
 }
 
 SCENARIO("BigNum operations") {

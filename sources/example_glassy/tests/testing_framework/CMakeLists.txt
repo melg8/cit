@@ -2,7 +2,7 @@
 #
 # SPDX-License-Identifier: MIT
 
-find_package(doctest REQUIRED)
+find_package(Catch2 3.2.1 REQUIRED)
 
 file(GLOB_RECURSE ALL_TESTING_FRAMEWORK_LIB_HEADERS
      "${CMAKE_CURRENT_SOURCE_DIR}/*.h")
@@ -17,4 +17,4 @@ header_directories(ALL_LIB_INCLUDE_DIRECTORIES)
 target_include_directories(testing_framework
                            PUBLIC "${ALL_LIB_INCLUDE_DIRECTORIES}")
 
-target_link_libraries(testing_framework PUBLIC doctest::doctest)
+target_link_libraries(testing_framework PUBLIC Catch2::Catch2WithMain)
