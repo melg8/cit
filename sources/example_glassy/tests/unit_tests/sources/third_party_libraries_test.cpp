@@ -28,7 +28,7 @@ SCENARIO("outcome") {
 
       THEN("it has value") { CHECK(result.has_value()); }
 
-      THEN("it has expected value") { CHECK_EQ(result.value(), 16); }
+      THEN("it has expected value") { CHECK(result.value() == 16); }
     }
   }
 }
@@ -41,7 +41,7 @@ SCENARIO("gsl-lite") {
       const auto result = gsl::narrow<uint8_t>(value);
 
       THEN("result is narrowed correctly and equal to expected") {
-        CHECK_EQ(result, uint8_t{42});
+        CHECK(result == uint8_t{42});
       }
     }
   }

@@ -37,8 +37,8 @@ SCENARIO("Asn1IntegerErrc names and messages") {
                   Result<void> result{test.error_code};
                   CHECK(result.has_failure());
 
-                  CHECK_EQ(result.error().message(), test.message);
-                  CHECK_EQ(result.error().category().name(), "BigNum");
+                  CHECK(result.error().message() == test.message);
+                  CHECK(result.error().category().name() == "BigNum");
                   return outcome::success();
                 });
 }

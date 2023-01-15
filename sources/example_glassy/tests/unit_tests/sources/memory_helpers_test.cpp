@@ -18,7 +18,7 @@ SCENARIO("DeleterFromFunction can be used with std::unique_ptr without leaks") {
   std::unique_ptr<int, DeleterFromFunction<DeleterFunctionMock>> ptr{
       new int{32}};
 
-  CHECK_EQ(*ptr, 32);
+  CHECK(*ptr == 32);
 }
 
 }  // namespace glassy::test

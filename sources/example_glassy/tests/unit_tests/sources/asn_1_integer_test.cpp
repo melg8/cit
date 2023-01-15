@@ -38,7 +38,7 @@ SCENARIO("Asn1Integer creation and conversions") {
                 [](auto test) -> Result<void> {
                   SECTION(test.subcase_name.c_str()) {
                     OUTCOME_TRY(const auto number, test.create());
-                    CHECK_EQ(Asn1IntegerGet(number).value(), test.value);
+                    CHECK(Asn1IntegerGet(number).value() == test.value);
                   }
 
                   return outcome::success();
@@ -59,10 +59,10 @@ SCENARIO("Asn1Integer comparison") {
 
       SECTION("compare value of") {
         CHECK_IS_EQ(ValueOf(zero) <=> ValueOf(zero));
-        CHECK_EQ(ValueOf(zero), ValueOf(zero));
+        CHECK(ValueOf(zero) == ValueOf(zero));
 
-        CHECK_EQ(ValueOf(zero), ValueOf(zero));
-        CHECK_EQ(ValueOf(one), ValueOf(one));
+        CHECK(ValueOf(zero) == ValueOf(zero));
+        CHECK(ValueOf(one) == ValueOf(one));
         CHECK(ValueOf(zero) < ValueOf(one));
         CHECK(ValueOf(one) > ValueOf(zero));
       }
@@ -76,9 +76,16 @@ SCENARIO("Asn1Integer comparison") {
 
       SECTION("compare value of rvalue references") {
         ValueOf(Asn1IntegerFrom(0).value());
-        CHECK_EQ(ValueOf(RVALUE(0)), ValueOf(RVALUE(0)));
-        CHECK_EQ(ValueOf(RVALUE(1)), ValueOf(RVALUE(1)));
-        CHECK_NE(ValueOf(RVALUE(0)), ValueOf(RVALUE(1)));
+
+        const auto zero_equals = ValueOf(RVALUE(0)) == ValueOf(RVALUE(0));
+        CHECK(zero_equals);
+
+        const auto one_equals = ValueOf(RVALUE(1)) == ValueOf(RVALUE(1));
+        CHECK(one_equals);
+
+        const auto one_not_equal_zero =
+            ValueOf(RVALUE(0)) != ValueOf(RVALUE(1));
+        CHECK(one_not_equal_zero);
 
         // It owns lifetime of object if gets rvalue.
         auto lhs_cmp = ValueOf(RVALUE(0));
@@ -86,10 +93,11 @@ SCENARIO("Asn1Integer comparison") {
         CHECK(lhs_cmp < rhs_cmp);
         CHECK(rhs_cmp > lhs_cmp);
 
-        auto result = ValueOf(RVALUE(1)) > ValueOf(RVALUE(0));
-        CHECK(result);
+        const auto greater = ValueOf(RVALUE(1)) > ValueOf(RVALUE(0));
+        CHECK(greater);
 
-        CHECK_GT(ValueOf(RVALUE(1)), ValueOf(RVALUE(0)));
+        const auto less = ValueOf(RVALUE(0)) < ValueOf(RVALUE(1));
+        CHECK(less);
       }
 
       SECTION("compare lvalue references") {
@@ -103,32 +111,55 @@ SCENARIO("Asn1Integer comparison") {
 
       SECTION("compare value of different presentations") {
         auto lhs_cmp = ValueOf(RVALUE(0));
-        CHECK_EQ(ValueOf(RVALUE(0)), lhs_cmp);
-        CHECK_EQ(lhs_cmp, ValueOf(RVALUE(0)));
+        const auto equals_left_value = ValueOf(RVALUE(0)) == lhs_cmp;
+        CHECK(equals_left_value);
+
+        const auto equals_right_value = lhs_cmp == ValueOf(RVALUE(0));
+        CHECK(equals_right_value);
 
         const auto& l_zero = zero;
-        CHECK_EQ(ValueOf(RVALUE(0)), ValueOf(l_zero));
-        CHECK_EQ(ValueOf(l_zero), ValueOf(RVALUE(0)));
+
+        const auto equals_left_reference =
+            ValueOf(RVALUE(0)) == ValueOf(l_zero);
+        CHECK(equals_left_reference);
+
+        const auto equals_right_reference =
+            ValueOf(l_zero) == ValueOf(RVALUE(0));
+        CHECK(equals_right_reference);
 
         Asn1IntegerConstNotNull const_ptr_zero = zero.get();
-        CHECK_EQ(ValueOf(RVALUE(0)), ValueOf(const_ptr_zero));
-        CHECK_EQ(ValueOf(const_ptr_zero), ValueOf(RVALUE(0)));
+
+        const auto equals_left_const_not_null =
+            ValueOf(RVALUE(0)) == ValueOf(const_ptr_zero);
+        CHECK(equals_left_const_not_null);
+
+        const auto equals_right_const_not_null =
+            ValueOf(const_ptr_zero) == ValueOf(RVALUE(0));
+
+        CHECK(equals_right_const_not_null);
 
         Asn1IntegerNotNull ptr_zero = zero.get();
-        CHECK_EQ(ValueOf(RVALUE(0)), ValueOf(ptr_zero));
-        CHECK_EQ(ValueOf(ptr_zero), ValueOf(RVALUE(0)));
 
-        CHECK_EQ(ValueOf(const_ptr_zero), ValueOf(ptr_zero));
-        CHECK_EQ(ValueOf(ptr_zero), ValueOf(const_ptr_zero));
+        const auto equals_left_not_null =
+            ValueOf(RVALUE(0)) == ValueOf(ptr_zero);
+        CHECK(equals_left_not_null);
+
+        const auto equals_right_not_null =
+            ValueOf(ptr_zero) == ValueOf(RVALUE(0));
+        CHECK(equals_right_not_null);
+
+        CHECK(ValueOf(const_ptr_zero) == ValueOf(ptr_zero));
+        CHECK(ValueOf(const_ptr_zero) == ValueOf(ptr_zero));
       }
 
       SECTION("compare value of lvalue references") {
         const auto& l_zero = zero;
         const auto& l_one = one;
-        CHECK_EQ(ValueOf(l_zero), ValueOf(l_zero));
-        CHECK_EQ(ValueOf(l_one), ValueOf(l_one));
-        CHECK_LT(ValueOf(l_zero), ValueOf(l_one));
-        CHECK_GT(ValueOf(l_one), ValueOf(l_zero));
+
+        CHECK(ValueOf(l_zero) == ValueOf(l_zero));
+        CHECK(ValueOf(l_one) == ValueOf(l_one));
+        CHECK(ValueOf(l_zero) < ValueOf(l_one));
+        CHECK(ValueOf(l_one) > ValueOf(l_zero));
       }
 
       SECTION("compare not null const pointers") {
@@ -143,10 +174,10 @@ SCENARIO("Asn1Integer comparison") {
       SECTION("compare value of not null const pointers") {
         Asn1IntegerConstNotNull ptr_zero = zero.get();
         Asn1IntegerConstNotNull ptr_one = one.get();
-        CHECK_EQ(ValueOf(ptr_zero), ValueOf(ptr_zero));
-        CHECK_EQ(ValueOf(ptr_one), ValueOf(ptr_one));
-        CHECK_LT(ValueOf(ptr_zero), ValueOf(ptr_one));
-        CHECK_GT(ValueOf(ptr_one), ValueOf(ptr_zero));
+        CHECK(ValueOf(ptr_zero) == ValueOf(ptr_zero));
+        CHECK(ValueOf(ptr_one) == ValueOf(ptr_one));
+        CHECK(ValueOf(ptr_zero) < ValueOf(ptr_one));
+        CHECK(ValueOf(ptr_one) > ValueOf(ptr_zero));
       }
 
       SECTION("compare not null pointers") {
@@ -161,10 +192,10 @@ SCENARIO("Asn1Integer comparison") {
       SECTION("compare value of not null pointers") {
         Asn1IntegerNotNull ptr_zero = zero.get();
         Asn1IntegerNotNull ptr_one = one.get();
-        CHECK_EQ(ValueOf(ptr_zero), ValueOf(ptr_zero));
-        CHECK_EQ(ValueOf(ptr_one), ValueOf(ptr_one));
-        CHECK_LT(ValueOf(ptr_zero), ValueOf(ptr_one));
-        CHECK_GT(ValueOf(ptr_one), ValueOf(ptr_zero));
+        CHECK(ValueOf(ptr_zero) == ValueOf(ptr_zero));
+        CHECK(ValueOf(ptr_one) == ValueOf(ptr_one));
+        CHECK(ValueOf(ptr_zero) < ValueOf(ptr_one));
+        CHECK(ValueOf(ptr_one) > ValueOf(ptr_zero));
       }
       return outcome::success();
     }()
@@ -188,11 +219,11 @@ SCENARIO("Asn1Integer copy") {
       OUTCOME_TRY(const auto original, Asn1IntegerFrom(32));
       OUTCOME_TRY(const auto copy, Asn1IntegerDup(original));
 
-      CHECK_NE(original.get(), copy.get());
-      CHECK_EQ(Asn1IntegerGet(original).value(), Asn1IntegerGet(copy).value());
+      CHECK(original.get() != copy.get());
+      CHECK(Asn1IntegerGet(original).value() == Asn1IntegerGet(copy).value());
 
-      CHECK_NE(original, copy);
-      CHECK_EQ(Asn1IntegerGet(copy).value(), 32);
+      CHECK(original != copy);
+      CHECK(Asn1IntegerGet(copy).value() == 32);
 
       return outcome::success();
     }()
@@ -203,7 +234,7 @@ SCENARIO("Asn1Integer copy") {
 static void TestFunction(
     not_null_provider_of<const ASN1_INTEGER*> auto&& view) noexcept {
   const ASN1_INTEGER* pointer = GetPtr(view);
-  CHECK_NE(pointer, nullptr);
+  CHECK(pointer != nullptr);
 }
 
 SCENARIO("Asn1IntegerConstView") {

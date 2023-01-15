@@ -175,7 +175,7 @@ SCENARIO("BigNum failures") {
       OUTCOME_TRY(const auto second_value, BigNum::New(3));
       CHECK(!(value += second_value).has_value());
       OUTCOME_TRY(const auto result, BigNum::New(2));
-      CHECK_EQ(value, result);
+      CHECK(value == result);
     }
 
     SECTION("BigNum += Result<BigNum> failing") {
@@ -184,7 +184,7 @@ SCENARIO("BigNum failures") {
       OUTCOME_TRY(auto value, BigNum::New(2));
       CHECK(!(value += BigNum::New(3)).has_value());
       OUTCOME_TRY(const auto result, BigNum::New(2));
-      CHECK_EQ(value, result);
+      CHECK(value == result);
     }
 
     SECTION("Result<BigNum> += BigNum") {
@@ -194,7 +194,7 @@ SCENARIO("BigNum failures") {
       OUTCOME_TRY(const auto second_value, BigNum::New(3));
       CHECK(!(value += second_value).has_value());
       OUTCOME_TRY(const auto result, BigNum::New(2));
-      CHECK_EQ(value.value(), result);
+      CHECK(value.value() == result);
     }
 
     SECTION("Result<BigNum> += Result<BigNum>") {
@@ -203,7 +203,7 @@ SCENARIO("BigNum failures") {
       auto value = BigNum::New(2);
       CHECK(!(value += BigNum::New(3)).has_value());
       OUTCOME_TRY(const auto result, BigNum::New(2));
-      CHECK_EQ(value.value(), result);
+      CHECK(value.value() == result);
     }
 
     SECTION("!Result<BigNum> += Result<BigNum>") {
@@ -221,7 +221,7 @@ SCENARIO("BigNum failures") {
       Result<BigNum> second_value = BigNumErrc::kAllocationFailure;
       CHECK(!(value += second_value).has_value());
       OUTCOME_TRY(const auto result, BigNum::New(2));
-      CHECK_EQ(value.value(), result);
+      CHECK(value.value() == result);
     }
     return outcome_v2::success();
   }()

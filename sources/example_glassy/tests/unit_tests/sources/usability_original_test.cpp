@@ -38,13 +38,13 @@ static ASN1_INTEGER* ProvideAsn1Pointer() noexcept {
 
 SCENARIO("openssl usability") {
   ASN1_INTEGER* result = ProvideAsn1Pointer();
-  CHECK_NE(result, nullptr);
+  CHECK(result != nullptr);
 
   ASN1_INTEGER* expected = ASN1_INTEGER_new();
 
   // Mistake 1: used result instead of expected.
-  CHECK_NE(ASN1_INTEGER_set(expected, 33), 0);
-  CHECK_EQ(ASN1_INTEGER_cmp(result, expected), 0);
+  CHECK(ASN1_INTEGER_set(expected, 33) != 0);
+  CHECK(ASN1_INTEGER_cmp(result, expected) == 0);
 
   ASN1_INTEGER_free(result);
   ASN1_INTEGER_free(expected);

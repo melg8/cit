@@ -15,7 +15,7 @@ namespace glassy::test {
 
 namespace outcome = OUTCOME_V2_NAMESPACE;
 
-SCENARIO("sum function working") { CHECK_EQ(Sum(1, 2), 3); }
+SCENARIO("sum function working") { CHECK(Sum(1, 2) == 3); }
 
 struct BigNumTestData {
   std::string subcase_name{};
@@ -46,12 +46,12 @@ SCENARIO("BigNum creation and conversions") {
       std::begin(tests), std::end(tests), [](auto test) -> Result<void> {
         SECTION(test.subcase_name.c_str()) {
           OUTCOME_TRY(const auto number, test.create());
-          CHECK_EQ(number.NumberOfBytes(), test.number_of_bytes);
-          CHECK_EQ(number.NumberOfBits(), test.number_of_bits);
-          CHECK_EQ(number.ToBnUlong().value(), test.value);
-          CHECK_EQ(std::string{number.ToDec().value().get()}, test.dec);
-          CHECK_EQ(std::string{number.ToHex().value().get()}, test.hex);
-          CHECK_EQ(number.ToBin().value(), test.bin_data);
+          CHECK(number.NumberOfBytes() == test.number_of_bytes);
+          CHECK(number.NumberOfBits() == test.number_of_bits);
+          CHECK(number.ToBnUlong().value() == test.value);
+          CHECK(std::string{number.ToDec().value().get()} == test.dec);
+          CHECK(std::string{number.ToHex().value().get()} == test.hex);
+          CHECK(number.ToBin().value() == test.bin_data);
         }
         return outcome::success();
       });
@@ -64,7 +64,7 @@ SCENARIO("BigNum operations") {
       OUTCOME_TRY(const auto second, BigNum::New(3));
       OUTCOME_TRY(const auto added, BigNum::Add(first, second));
       OUTCOME_TRY(const auto result, added.ToBnUlong());
-      CHECK_EQ(result, 5);
+      CHECK(result == 5);
     }
 
     SECTION("add assign BigNum& to const BigNum&") {
@@ -73,7 +73,7 @@ SCENARIO("BigNum operations") {
       OUTCOME_TRYV(first += second);
 
       OUTCOME_TRY(const auto result1, first.ToBnUlong());
-      CHECK_EQ(result1, 5);
+      CHECK(result1 == 5);
     }
 
     SECTION("add assign BigNum& to const Result<BigNum>&") {
@@ -82,7 +82,7 @@ SCENARIO("BigNum operations") {
       OUTCOME_TRYV(first += second);
 
       OUTCOME_TRY(const auto result1, first.ToBnUlong());
-      CHECK_EQ(result1, 5);
+      CHECK(result1 == 5);
     }
 
     SECTION("add assign BigNum& to Result<BigNum>&&") {
@@ -90,7 +90,7 @@ SCENARIO("BigNum operations") {
       OUTCOME_TRYV(first += BigNum::New(3) + BigNum::New(1));
 
       OUTCOME_TRY(const auto result1, first.ToBnUlong());
-      CHECK_EQ(result1, 6);
+      CHECK(result1 == 6);
     }
 
     SECTION("add assign Result<BigNum>& to const BigNum&") {
@@ -99,7 +99,7 @@ SCENARIO("BigNum operations") {
       OUTCOME_TRYV(first += second);
 
       OUTCOME_TRY(const auto result1, first.value().ToBnUlong());
-      CHECK_EQ(result1, 5);
+      CHECK(result1 == 5);
     }
 
     SECTION("add assign Result<BigNum>& to const Result<BigNum>&") {
@@ -108,7 +108,7 @@ SCENARIO("BigNum operations") {
       OUTCOME_TRYV(first += second);
 
       OUTCOME_TRY(const auto result1, first.value().ToBnUlong());
-      CHECK_EQ(result1, 5);
+      CHECK(result1 == 5);
     }
 
     SECTION("add assign Result<BigNum>& to Result<BigNum>&&") {
@@ -116,25 +116,23 @@ SCENARIO("BigNum operations") {
       OUTCOME_TRYV(first += BigNum::New(3));
 
       OUTCOME_TRY(const auto result1, first.value().ToBnUlong());
-      CHECK_EQ(result1, 5);
+      CHECK(result1 == 5);
     }
 
     SECTION("add several BigNum together") {
       const auto maybe_result = BigNum::New(1) + BigNum::New(Dec{"15"}) +
                                 BigNum::New(Hex{"0F"}) +
                                 BigNum::New(SslData{11});
-      CHECK_EQ(maybe_result.value().ToBnUlong().value(), 42);
+      CHECK(maybe_result.value().ToBnUlong().value() == 42);
 
-      CHECK_EQ((BigNum::New(1).value() + BigNum::New(Dec{"15"}))
-                   .value()
-                   .ToBnUlong()
-                   .value(),
-               16);
-      CHECK_EQ((BigNum::New(1) + BigNum::New(Dec{"15"}).value())
-                   .value()
-                   .ToBnUlong()
-                   .value(),
-               16);
+      CHECK((BigNum::New(1).value() + BigNum::New(Dec{"15"}))
+                .value()
+                .ToBnUlong()
+                .value() == 16);
+      CHECK((BigNum::New(1) + BigNum::New(Dec{"15"}).value())
+                .value()
+                .ToBnUlong()
+                .value() == 16);
     }
 
     return outcome::success();
@@ -148,10 +146,10 @@ SCENARIO("BigNum comparison") {
       OUTCOME_TRY(const auto zero, BigNum::New(0));
       OUTCOME_TRY(const auto one, BigNum::New(1));
       SECTION("compare") {
-        CHECK_EQ(Compare(zero, zero), 0);
-        CHECK_EQ(Compare(one, one), 0);
-        CHECK_EQ(Compare(zero, one), -1);
-        CHECK_EQ(Compare(one, zero), 1);
+        CHECK(Compare(zero, zero) == 0);
+        CHECK(Compare(one, one) == 0);
+        CHECK(Compare(zero, one) == -1);
+        CHECK(Compare(one, zero) == 1);
       }
       SECTION("less") {
         CHECK(zero < one);
