@@ -36,7 +36,7 @@ SCENARIO("Asn1Integer creation and conversions") {
 
   std::for_each(std::begin(tests), std::end(tests),
                 [](auto test) -> Result<void> {
-                  SUBCASE(test.subcase_name.c_str()) {
+                  SECTION(test.subcase_name.c_str()) {
                     OUTCOME_TRY(const auto number, test.create());
                     CHECK_EQ(Asn1IntegerGet(number).value(), test.value);
                   }
@@ -46,18 +46,18 @@ SCENARIO("Asn1Integer creation and conversions") {
 }
 
 SCENARIO("Asn1Integer comparison") {
-  SUBCASE("compare two Asn1Integer values") {
+  SECTION("compare two Asn1Integer values") {
     []() -> Result<void> {
       OUTCOME_TRY(const auto one, Asn1IntegerFrom(1));
       OUTCOME_TRY(const auto zero, Asn1IntegerFrom(0));
-      SUBCASE("compare") {
+      SECTION("compare") {
         CHECK_IS_EQ(Asn1IntegerCmp(zero, zero));
         CHECK_IS_EQ(Asn1IntegerCmp(one, one));
         CHECK_IS_LT(Asn1IntegerCmp(zero, one));
         CHECK_IS_GT(Asn1IntegerCmp(one, zero));
       }
 
-      SUBCASE("compare value of") {
+      SECTION("compare value of") {
         CHECK_IS_EQ(ValueOf(zero) <=> ValueOf(zero));
         CHECK_EQ(ValueOf(zero), ValueOf(zero));
 
@@ -67,14 +67,14 @@ SCENARIO("Asn1Integer comparison") {
         CHECK(ValueOf(one) > ValueOf(zero));
       }
 
-      SUBCASE("compare rvalue references") {
+      SECTION("compare rvalue references") {
         CHECK_IS_EQ(Asn1IntegerCmp(RVALUE(0), RVALUE(0)));
         CHECK_IS_EQ(Asn1IntegerCmp(RVALUE(1), RVALUE(1)));
         CHECK_IS_LT(Asn1IntegerCmp(RVALUE(0), RVALUE(1)));
         CHECK_IS_GT(Asn1IntegerCmp(RVALUE(1), RVALUE(0)));
       }
 
-      SUBCASE("compare value of rvalue references") {
+      SECTION("compare value of rvalue references") {
         ValueOf(Asn1IntegerFrom(0).value());
         CHECK_EQ(ValueOf(RVALUE(0)), ValueOf(RVALUE(0)));
         CHECK_EQ(ValueOf(RVALUE(1)), ValueOf(RVALUE(1)));
@@ -92,7 +92,7 @@ SCENARIO("Asn1Integer comparison") {
         CHECK_GT(ValueOf(RVALUE(1)), ValueOf(RVALUE(0)));
       }
 
-      SUBCASE("compare lvalue references") {
+      SECTION("compare lvalue references") {
         const auto& l_zero = zero;
         const auto& l_one = one;
         CHECK_IS_EQ(Asn1IntegerCmp(l_zero, l_zero));
@@ -101,7 +101,7 @@ SCENARIO("Asn1Integer comparison") {
         CHECK_IS_GT(Asn1IntegerCmp(l_one, l_zero));
       }
 
-      SUBCASE("compare value of different presentations") {
+      SECTION("compare value of different presentations") {
         auto lhs_cmp = ValueOf(RVALUE(0));
         CHECK_EQ(ValueOf(RVALUE(0)), lhs_cmp);
         CHECK_EQ(lhs_cmp, ValueOf(RVALUE(0)));
@@ -122,7 +122,7 @@ SCENARIO("Asn1Integer comparison") {
         CHECK_EQ(ValueOf(ptr_zero), ValueOf(const_ptr_zero));
       }
 
-      SUBCASE("compare value of lvalue references") {
+      SECTION("compare value of lvalue references") {
         const auto& l_zero = zero;
         const auto& l_one = one;
         CHECK_EQ(ValueOf(l_zero), ValueOf(l_zero));
@@ -131,7 +131,7 @@ SCENARIO("Asn1Integer comparison") {
         CHECK_GT(ValueOf(l_one), ValueOf(l_zero));
       }
 
-      SUBCASE("compare not null const pointers") {
+      SECTION("compare not null const pointers") {
         Asn1IntegerConstNotNull ptr_zero = zero.get();
         Asn1IntegerConstNotNull ptr_one = one.get();
         CHECK_IS_EQ(Asn1IntegerCmp(ptr_zero, ptr_zero));
@@ -140,7 +140,7 @@ SCENARIO("Asn1Integer comparison") {
         CHECK_IS_GT(Asn1IntegerCmp(ptr_one, ptr_zero));
       }
 
-      SUBCASE("compare value of not null const pointers") {
+      SECTION("compare value of not null const pointers") {
         Asn1IntegerConstNotNull ptr_zero = zero.get();
         Asn1IntegerConstNotNull ptr_one = one.get();
         CHECK_EQ(ValueOf(ptr_zero), ValueOf(ptr_zero));
@@ -149,7 +149,7 @@ SCENARIO("Asn1Integer comparison") {
         CHECK_GT(ValueOf(ptr_one), ValueOf(ptr_zero));
       }
 
-      SUBCASE("compare not null pointers") {
+      SECTION("compare not null pointers") {
         Asn1IntegerNotNull ptr_zero = zero.get();
         Asn1IntegerNotNull ptr_one = one.get();
         CHECK_IS_EQ(Asn1IntegerCmp(ptr_zero, ptr_zero));
@@ -158,7 +158,7 @@ SCENARIO("Asn1Integer comparison") {
         CHECK_IS_GT(Asn1IntegerCmp(ptr_one, ptr_zero));
       }
 
-      SUBCASE("compare value of not null pointers") {
+      SECTION("compare value of not null pointers") {
         Asn1IntegerNotNull ptr_zero = zero.get();
         Asn1IntegerNotNull ptr_one = one.get();
         CHECK_EQ(ValueOf(ptr_zero), ValueOf(ptr_zero));
@@ -173,17 +173,17 @@ SCENARIO("Asn1Integer comparison") {
 }
 
 SCENARIO("Asn1Integer creation from pointer") {
-  SUBCASE("creation from valid pointer should succeed") {
+  SECTION("creation from valid pointer should succeed") {
     CHECK(Own(ASN1_INTEGER_new()).has_value());
   }
 
-  SUBCASE("creation from nullptr should fail") {
+  SECTION("creation from nullptr should fail") {
     CHECK_FALSE(Own(nullptr).has_value());
   }
 }
 
 SCENARIO("Asn1Integer copy") {
-  SUBCASE("create Asn1Integer copy from original value") {
+  SECTION("create Asn1Integer copy from original value") {
     []() -> Result<void> {
       OUTCOME_TRY(const auto original, Asn1IntegerFrom(32));
       OUTCOME_TRY(const auto copy, Asn1IntegerDup(original));
@@ -207,7 +207,7 @@ static void TestFunction(
 }
 
 SCENARIO("Asn1IntegerConstView") {
-  SUBCASE("create Asn1IntegerConstView from owners") {
+  SECTION("create Asn1IntegerConstView from owners") {
     []() -> Result<void> {
       OUTCOME_TRY(const auto const_owner, Asn1IntegerFrom(32));
       OUTCOME_TRY(auto mutable_owner, Asn1IntegerFrom(32));
@@ -221,7 +221,7 @@ SCENARIO("Asn1IntegerConstView") {
     }()
                 .value();
 
-    SUBCASE(
+    SECTION(
         "can use owned and pointers in function taking  Asn1IntegerConstView "
         "as arguments") {
       []() -> Result<void> {
@@ -242,7 +242,7 @@ SCENARIO("Asn1IntegerConstView") {
                   .value();
     }
 
-    SUBCASE("can set new value to already created Asn1Integer") {
+    SECTION("can set new value to already created Asn1Integer") {
       []() -> Result<void> {
         {
           OUTCOME_TRY(auto value, Asn1IntegerFrom(0));

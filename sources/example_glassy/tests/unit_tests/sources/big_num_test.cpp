@@ -44,7 +44,7 @@ SCENARIO("BigNum creation and conversions") {
        "FF0A", SslData{255, 10}}};
   std::for_each(
       std::begin(tests), std::end(tests), [](auto test) -> Result<void> {
-        SUBCASE(test.subcase_name.c_str()) {
+        SECTION(test.subcase_name.c_str()) {
           OUTCOME_TRY(const auto number, test.create());
           CHECK_EQ(number.NumberOfBytes(), test.number_of_bytes);
           CHECK_EQ(number.NumberOfBits(), test.number_of_bits);
@@ -59,7 +59,7 @@ SCENARIO("BigNum creation and conversions") {
 
 SCENARIO("BigNum operations") {
   []() -> Result<void> {
-    SUBCASE("add two BigNum together") {
+    SECTION("add two BigNum together") {
       OUTCOME_TRY(const auto first, BigNum::New(2));
       OUTCOME_TRY(const auto second, BigNum::New(3));
       OUTCOME_TRY(const auto added, BigNum::Add(first, second));
@@ -67,7 +67,7 @@ SCENARIO("BigNum operations") {
       CHECK_EQ(result, 5);
     }
 
-    SUBCASE("add assign BigNum& to const BigNum&") {
+    SECTION("add assign BigNum& to const BigNum&") {
       OUTCOME_TRY(auto first, BigNum::New(2));
       OUTCOME_TRY(const auto second, BigNum::New(3));
       OUTCOME_TRYV(first += second);
@@ -76,7 +76,7 @@ SCENARIO("BigNum operations") {
       CHECK_EQ(result1, 5);
     }
 
-    SUBCASE("add assign BigNum& to const Result<BigNum>&") {
+    SECTION("add assign BigNum& to const Result<BigNum>&") {
       OUTCOME_TRY(auto first, BigNum::New(2));
       const auto second = BigNum::New(3);
       OUTCOME_TRYV(first += second);
@@ -85,7 +85,7 @@ SCENARIO("BigNum operations") {
       CHECK_EQ(result1, 5);
     }
 
-    SUBCASE("add assign BigNum& to Result<BigNum>&&") {
+    SECTION("add assign BigNum& to Result<BigNum>&&") {
       OUTCOME_TRY(auto first, BigNum::New(2));
       OUTCOME_TRYV(first += BigNum::New(3) + BigNum::New(1));
 
@@ -93,7 +93,7 @@ SCENARIO("BigNum operations") {
       CHECK_EQ(result1, 6);
     }
 
-    SUBCASE("add assign Result<BigNum>& to const BigNum&") {
+    SECTION("add assign Result<BigNum>& to const BigNum&") {
       auto first = BigNum::New(2);
       OUTCOME_TRY(const auto second, BigNum::New(3));
       OUTCOME_TRYV(first += second);
@@ -102,7 +102,7 @@ SCENARIO("BigNum operations") {
       CHECK_EQ(result1, 5);
     }
 
-    SUBCASE("add assign Result<BigNum>& to const Result<BigNum>&") {
+    SECTION("add assign Result<BigNum>& to const Result<BigNum>&") {
       auto first = BigNum::New(2);
       const auto second = BigNum::New(3);
       OUTCOME_TRYV(first += second);
@@ -111,7 +111,7 @@ SCENARIO("BigNum operations") {
       CHECK_EQ(result1, 5);
     }
 
-    SUBCASE("add assign Result<BigNum>& to Result<BigNum>&&") {
+    SECTION("add assign Result<BigNum>& to Result<BigNum>&&") {
       auto first = BigNum::New(2);
       OUTCOME_TRYV(first += BigNum::New(3));
 
@@ -119,7 +119,7 @@ SCENARIO("BigNum operations") {
       CHECK_EQ(result1, 5);
     }
 
-    SUBCASE("add several BigNum together") {
+    SECTION("add several BigNum together") {
       const auto maybe_result = BigNum::New(1) + BigNum::New(Dec{"15"}) +
                                 BigNum::New(Hex{"0F"}) +
                                 BigNum::New(SslData{11});
@@ -143,35 +143,35 @@ SCENARIO("BigNum operations") {
 }
 
 SCENARIO("BigNum comparison") {
-  SUBCASE("compare two BigNum values") {
+  SECTION("compare two BigNum values") {
     []() -> Result<void> {
       OUTCOME_TRY(const auto zero, BigNum::New(0));
       OUTCOME_TRY(const auto one, BigNum::New(1));
-      SUBCASE("compare") {
+      SECTION("compare") {
         CHECK_EQ(Compare(zero, zero), 0);
         CHECK_EQ(Compare(one, one), 0);
         CHECK_EQ(Compare(zero, one), -1);
         CHECK_EQ(Compare(one, zero), 1);
       }
-      SUBCASE("less") {
+      SECTION("less") {
         CHECK(zero < one);
         CHECK_FALSE(one < zero);
         CHECK_FALSE(zero < zero);
         CHECK_FALSE(one < one);
       }
-      SUBCASE("greater") {
+      SECTION("greater") {
         CHECK(one > zero);
         CHECK_FALSE(zero > one);
         CHECK_FALSE(zero > zero);
         CHECK_FALSE(one > one);
       }
-      SUBCASE("equal") {
+      SECTION("equal") {
         CHECK(zero == zero);
         CHECK(one == one);
         CHECK_FALSE(zero == one);
         CHECK_FALSE(one == zero);
       }
-      SUBCASE("not equal") {
+      SECTION("not equal") {
         CHECK(zero != one);
         CHECK(one != zero);
         CHECK_FALSE(zero != zero);
@@ -184,7 +184,7 @@ SCENARIO("BigNum comparison") {
 }
 
 SCENARIO("BigNum creation") {
-  SUBCASE("creation from nullptr should fail") {
+  SECTION("creation from nullptr should fail") {
     CHECK_FALSE(BigNum::Own(nullptr).has_value());
   }
 }

@@ -7,4 +7,8 @@
 
 #include <doctest/doctest.h>
 
+#ifndef SECTION
+#define SECTION SUBCASE
+#endif  // SECTION
+
 #endif  // TESTING_FRAMEWORK_H

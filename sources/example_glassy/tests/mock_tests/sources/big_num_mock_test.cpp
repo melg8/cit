@@ -162,7 +162,7 @@ SCENARIO("BigNum failures") {
   }
 
   []() -> Result<void> {
-    SUBCASE("add two BigNum failing") {
+    SECTION("add two BigNum failing") {
       should_fail_alloc = false;
       OUTCOME_TRY(const auto first, BigNum::New(2));
       OUTCOME_TRY(const auto second, BigNum::New(3));
@@ -170,7 +170,7 @@ SCENARIO("BigNum failures") {
       CHECK_FALSE(result.has_value());
     }
 
-    SUBCASE("BigNum += BigNum failing") {
+    SECTION("BigNum += BigNum failing") {
       should_fail_alloc = false;
 
       OUTCOME_TRY(auto value, BigNum::New(2));
@@ -180,7 +180,7 @@ SCENARIO("BigNum failures") {
       CHECK_EQ(value, result);
     }
 
-    SUBCASE("BigNum += Result<BigNum> failing") {
+    SECTION("BigNum += Result<BigNum> failing") {
       should_fail_alloc = false;
 
       OUTCOME_TRY(auto value, BigNum::New(2));
@@ -189,7 +189,7 @@ SCENARIO("BigNum failures") {
       CHECK_EQ(value, result);
     }
 
-    SUBCASE("Result<BigNum> += BigNum") {
+    SECTION("Result<BigNum> += BigNum") {
       should_fail_alloc = false;
 
       auto value = BigNum::New(2);
@@ -199,7 +199,7 @@ SCENARIO("BigNum failures") {
       CHECK_EQ(value.value(), result);
     }
 
-    SUBCASE("Result<BigNum> += Result<BigNum>") {
+    SECTION("Result<BigNum> += Result<BigNum>") {
       should_fail_alloc = false;
 
       auto value = BigNum::New(2);
@@ -208,7 +208,7 @@ SCENARIO("BigNum failures") {
       CHECK_EQ(value.value(), result);
     }
 
-    SUBCASE("!Result<BigNum> += Result<BigNum>") {
+    SECTION("!Result<BigNum> += Result<BigNum>") {
       should_fail_alloc = false;
 
       Result<BigNum> value = BigNumErrc::kAllocationFailure;
@@ -216,7 +216,7 @@ SCENARIO("BigNum failures") {
       CHECK_FALSE(value.has_value());
     }
 
-    SUBCASE("Result<BigNum> += !Result<BigNum>") {
+    SECTION("Result<BigNum> += !Result<BigNum>") {
       should_fail_alloc = false;
 
       auto value = BigNum::New(2);
