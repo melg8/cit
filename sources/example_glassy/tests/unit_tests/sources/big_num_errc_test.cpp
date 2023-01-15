@@ -36,15 +36,14 @@ SCENARIO("Asn1IntErrc names and messages") {
       {BigNumErrc::kAdditionFailure, "failed to add two values"},
   };
 
-  std::for_each(std::begin(tests), std::end(tests),
-                [](auto test) -> Result<void> {
-                  Result<void> result{test.error_code};
-                  CHECK(result.has_failure());
+  std::ranges::for_each(tests, [](auto test) -> Result<void> {
+    Result<void> result{test.error_code};
+    CHECK(result.has_failure());
 
-                  CHECK(result.error().message() == test.message);
-                  CHECK(result.error().category().name() == "BigNum"s);
-                  return outcome::success();
-                });
+    CHECK(result.error().message() == test.message);
+    CHECK(result.error().category().name() == "BigNum"s);
+    return outcome::success();
+  });
 }
 
 }  // namespace glassy::test

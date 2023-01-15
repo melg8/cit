@@ -34,15 +34,14 @@ SCENARIO("Asn1Integer creation and conversions") {
       {"number 32", CALL(Asn1IntegerFrom(32)), 32},
   };
 
-  std::for_each(std::begin(tests), std::end(tests),
-                [](auto test) -> Result<void> {
-                  SECTION(test.subcase_name) {
-                    OUTCOME_TRY(const auto number, test.create());
-                    CHECK(Asn1IntegerGet(number).value() == test.value);
-                  }
+  std::ranges::for_each(tests, [](auto test) -> Result<void> {
+    SECTION(test.subcase_name) {
+      OUTCOME_TRY(const auto number, test.create());
+      CHECK(Asn1IntegerGet(number).value() == test.value);
+    }
 
-                  return outcome::success();
-                });
+    return outcome::success();
+  });
 }
 
 SCENARIO("Asn1Integer comparison") {
