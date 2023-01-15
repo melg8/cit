@@ -14,7 +14,7 @@
 namespace glassy::test {
 
 namespace outcome = OUTCOME_V2_NAMESPACE;
-using std::string_literals::operator""s;  // NOLINT
+using std::string_literals::operator""s;  // NOLINT(misc-unused-using-decls)
 
 template <typename T>
 using Result = outcome::result<T>;
