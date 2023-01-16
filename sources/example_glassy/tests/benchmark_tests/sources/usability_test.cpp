@@ -22,11 +22,13 @@ static Result<Asn1Integer> ProvideAsn1Value() noexcept {
 }
 
 SCENARIO("Asn1Integer and Bignum usability") {
-  const auto asn_1_integer = ProvideAsn1Value();
-  CHECK(asn_1_integer.has_value());
+  BENCHMARK("compare modernized") {
+    const auto asn_1_integer = ProvideAsn1Value();
+    CHECK(asn_1_integer.has_value());
 
-  CHECK(std::is_eq(
-      Asn1IntegerCmp(asn_1_integer.value(), Asn1IntegerFrom(33).value())));
+    CHECK(std::is_eq(
+        Asn1IntegerCmp(asn_1_integer.value(), Asn1IntegerFrom(33).value())));
+  };
 }
 
 }  // namespace glassy::test

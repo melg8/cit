@@ -46,13 +46,15 @@ static Asn1Integer ProvideAsn1SmartPointer() noexcept {
 }
 
 SCENARIO("openssl usability with smart pointers") {
-  Asn1Integer result = ProvideAsn1SmartPointer();
-  CHECK(result != nullptr);
+  BENCHMARK("compare smart pointers") {
+    Asn1Integer result = ProvideAsn1SmartPointer();
+    CHECK(result != nullptr);
 
-  Asn1Integer expected{ASN1_INTEGER_new()};
+    Asn1Integer expected{ASN1_INTEGER_new()};
 
-  CHECK(ASN1_INTEGER_set(expected.get(), 33) != 0);
-  CHECK(ASN1_INTEGER_cmp(result.get(), expected.get()) == 0);
+    CHECK(ASN1_INTEGER_set(expected.get(), 33) != 0);
+    CHECK(ASN1_INTEGER_cmp(result.get(), expected.get()) == 0);
+  };
 }
 
 }  // namespace glassy::test
