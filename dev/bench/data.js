@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1673944856618,
+  "lastUpdate": 1673948007287,
   "repoUrl": "https://github.com/melg8/cit",
   "entries": {
     "Catch2 Benchmark clang++": [
@@ -194,6 +194,79 @@ window.BENCHMARK_DATA = {
             "name": "modernized with value of",
             "value": 3.72685,
             "range": "+/- 225.579",
+            "unit": "us",
+            "extra": "100 samples\n16 iterations"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "public.melg8@gmail.com",
+            "name": "Melg Eight",
+            "username": "melg8"
+          },
+          "committer": {
+            "email": "public.melg8@gmail.com",
+            "name": "Melg Eight",
+            "username": "melg8"
+          },
+          "distinct": true,
+          "id": "626840f64695e7f77f577265ecc1049cb0eaa022",
+          "message": "test: add more isolated benchmarks\n\nAdd more isolated benchmarks.\n\nSigned-off-by: Melg Eight <public.melg8@gmail.com>",
+          "timestamp": "2023-01-17T12:26:47+03:00",
+          "tree_id": "656ef51237687f9ae49223cfcd0b4551459aaa7e",
+          "url": "https://github.com/melg8/cit/commit/626840f64695e7f77f577265ecc1049cb0eaa022"
+        },
+        "date": 1673948006702,
+        "tool": "catch2",
+        "benches": [
+          {
+            "name": "creation with value",
+            "value": 1.24185,
+            "range": "+/- 147.705",
+            "unit": "us",
+            "extra": "100 samples\n48 iterations"
+          },
+          {
+            "name": "compare raw pointers",
+            "value": 2.28496,
+            "range": "+/- 212.878",
+            "unit": "us",
+            "extra": "100 samples\n26 iterations"
+          },
+          {
+            "name": "smart pointer with value",
+            "value": 1.1856,
+            "range": "+/- 106.606",
+            "unit": "us",
+            "extra": "100 samples\n50 iterations"
+          },
+          {
+            "name": "compare smart pointers",
+            "value": 2.50634,
+            "range": "+/- 203.729",
+            "unit": "us",
+            "extra": "100 samples\n23 iterations"
+          },
+          {
+            "name": "modernized with value",
+            "value": 1.71397,
+            "range": "+/- 43.1944",
+            "unit": "us",
+            "extra": "100 samples\n35 iterations"
+          },
+          {
+            "name": "compare modernized",
+            "value": 3.57281,
+            "range": "+/- 317.282",
+            "unit": "us",
+            "extra": "100 samples\n16 iterations"
+          },
+          {
+            "name": "modernized with value of",
+            "value": 3.62418,
+            "range": "+/- 213.521",
             "unit": "us",
             "extra": "100 samples\n16 iterations"
           }
