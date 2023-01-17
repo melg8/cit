@@ -31,4 +31,13 @@ SCENARIO("Asn1Integer and Bignum usability") {
   };
 }
 
+SCENARIO("Asn1Integer value of") {
+  BENCHMARK("modernized with value of") {
+    const auto asn_1_integer = ProvideAsn1Value();
+    CHECK(asn_1_integer.has_value());
+
+    CHECK(ValueOf(asn_1_integer.value()) ==
+          ValueOf(Asn1IntegerFrom(33).value()));
+  };
+}
 }  // namespace glassy::test
