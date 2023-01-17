@@ -35,7 +35,7 @@ using Asn1IntegerMaybeNull =
 
 using Asn1Integer = gsl::not_null<Asn1IntegerMaybeNull>;
 
-static inline std::strong_ordering Asn1IntegerCmp(
+constexpr inline std::strong_ordering Asn1IntegerCmp(
     not_null_provider_of<const ASN1_INTEGER*> auto&& lhs,
     not_null_provider_of<const ASN1_INTEGER*> auto&& rhs) noexcept {
   return ASN1_INTEGER_cmp(GetPtr(lhs), GetPtr(rhs)) <=> 0;
@@ -63,7 +63,7 @@ static inline decltype(auto) ValueOf(T&& provider) noexcept {
   return ComparisonValueHolder<T>{std::forward<T>(provider)};
 }
 
-static inline Result<Asn1Integer> Asn1IntegerNew() noexcept {
+inline Result<Asn1Integer> Asn1IntegerNew() noexcept {
   Asn1IntegerMaybeNull ptr{ASN1_INTEGER_new()};
   return ptr ? Result<Asn1Integer>{std::move(ptr)}
              : Asn1IntegerErrc::kAllocationFailure;
@@ -85,14 +85,14 @@ static inline Result<Long> Asn1IntegerGet(
                       : Asn1IntegerErrc::kConversionFailure;
 }
 
-static inline Result<void> Asn1IntegerSet(
+inline Result<void> Asn1IntegerSet(
     not_null_provider_of<ASN1_INTEGER*> auto&& view, Long value) noexcept {
   return ASN1_INTEGER_set(GetPtr(view), value) != 0
              ? Result<void>{outcome::success()}
              : Asn1IntegerErrc::kAllocationFailure;
 }
 
-static inline Result<Asn1Integer> Asn1IntegerFrom(Long value) noexcept {
+inline Result<Asn1Integer> Asn1IntegerFrom(Long value) noexcept {
   OUTCOME_TRY(auto result, Asn1IntegerNew());
   OUTCOME_TRY(Asn1IntegerSet(result, value));
   return Result<Asn1Integer>{std::move(result)};
