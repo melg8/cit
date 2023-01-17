@@ -45,7 +45,30 @@ static Asn1Integer ProvideAsn1SmartPointer() noexcept {
   return result;
 }
 
+inline Asn1Integer ProvideAsn1SmartPointerWithValue() noexcept {
+  Asn1Integer result{ASN1_INTEGER_new()};
+  if (result == nullptr) {
+    return nullptr;
+  }
+  if (ASN1_INTEGER_set(result.get(), 31) == 0) {
+    return nullptr;
+  }
+  return result;
+}
+
 SCENARIO("openssl usability with smart pointers") {
+  BENCHMARK("smart pointer with value") {
+    Asn1Integer result = ProvideAsn1SmartPointerWithValue();
+    CHECK(result != nullptr);
+
+    Asn1Integer expected{ASN1_INTEGER_new()};
+
+    CHECK(ASN1_INTEGER_set(expected.get(), 31) != 0);
+    CHECK(ASN1_INTEGER_cmp(result.get(), expected.get()) == 0);
+  };
+}
+
+SCENARIO("openssl isolated usability with smart pointers") {
   BENCHMARK("compare smart pointers") {
     Asn1Integer result = ProvideAsn1SmartPointer();
     CHECK(result != nullptr);

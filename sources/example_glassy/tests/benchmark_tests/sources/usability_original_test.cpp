@@ -36,7 +36,35 @@ static ASN1_INTEGER* ProvideAsn1Pointer() noexcept {
   return result;
 }
 
+inline ASN1_INTEGER* ProvideWithValue() noexcept {
+  ASN1_INTEGER* result = ASN1_INTEGER_new();
+  if (result == nullptr) {
+    return nullptr;
+  }
+  if (ASN1_INTEGER_set(result, 31) == 0) {
+    ASN1_INTEGER_free(result);
+    return nullptr;
+  }
+  return result;
+}
+
 SCENARIO("openssl usability") {
+  BENCHMARK("creation with value") {
+    ASN1_INTEGER* result = ProvideWithValue();
+    CHECK(result != nullptr);
+
+    ASN1_INTEGER* expected = ASN1_INTEGER_new();
+
+    // Mistake 1: used result instead of expected.
+    CHECK(ASN1_INTEGER_set(expected, 31) != 0);
+    CHECK(ASN1_INTEGER_cmp(result, expected) == 0);
+
+    ASN1_INTEGER_free(result);
+    ASN1_INTEGER_free(expected);
+  };
+}
+
+SCENARIO("openssl isolated") {
   BENCHMARK("compare raw pointers") {
     ASN1_INTEGER* result = ProvideAsn1Pointer();
     CHECK(result != nullptr);

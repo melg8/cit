@@ -21,7 +21,22 @@ static Result<Asn1Integer> ProvideAsn1Value() noexcept {
   return {std::move(asn_1_integer)};
 }
 
+inline Result<Asn1Integer> ProvideAsn1IntegerWithValue() noexcept {
+  O_TRY(auto asn_1_integer, Asn1IntegerFrom(31));
+  return {std::move(asn_1_integer)};
+}
+
 SCENARIO("Asn1Integer and Bignum usability") {
+  BENCHMARK("modernized with value") {
+    const auto asn_1_integer = ProvideAsn1IntegerWithValue();
+    CHECK(asn_1_integer.has_value());
+
+    CHECK(std::is_eq(
+        Asn1IntegerCmp(asn_1_integer.value(), Asn1IntegerFrom(31).value())));
+  };
+}
+
+SCENARIO("Asn1Integer isolated usability") {
   BENCHMARK("compare modernized") {
     const auto asn_1_integer = ProvideAsn1Value();
     CHECK(asn_1_integer.has_value());
