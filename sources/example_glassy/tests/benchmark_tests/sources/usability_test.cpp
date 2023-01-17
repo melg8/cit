@@ -6,6 +6,7 @@
 #include <big_num.h>
 #include <numeric_conversions.h>
 
+#include <common_macro.h>
 #include <testing_framework.h>
 #include <outcome.hpp>
 
@@ -21,7 +22,7 @@ static Result<Asn1Integer> ProvideAsn1Value() noexcept {
   return {std::move(asn_1_integer)};
 }
 
-inline Result<Asn1Integer> ProvideAsn1IntegerWithValue() noexcept {
+FORCEINLINE Result<Asn1Integer> ProvideAsn1IntegerWithValue() noexcept {
   O_TRY(auto asn_1_integer, Asn1IntegerFrom(31));
   return {std::move(asn_1_integer)};
 }
