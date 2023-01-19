@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1674158044746,
+  "lastUpdate": 1674158221748,
   "repoUrl": "https://github.com/melg8/cit",
   "entries": {
     "Catch2 Benchmark clang++": [
@@ -999,6 +999,79 @@ window.BENCHMARK_DATA = {
             "range": "+/- 134.51",
             "unit": "us",
             "extra": "100 samples\n13 iterations"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "public.melg8@gmail.com",
+            "name": "Melg Eight",
+            "username": "melg8"
+          },
+          "committer": {
+            "email": "public.melg8@gmail.com",
+            "name": "Melg Eight",
+            "username": "melg8"
+          },
+          "distinct": true,
+          "id": "298b76efbd0ac3b79fe854b3b0f0ca390d0c0c85",
+          "message": "chore: add leaf third party library\n\nAdd leaf third party library to replace outcome.\n\nSigned-off-by: Melg Eight <public.melg8@gmail.com>",
+          "timestamp": "2023-01-19T22:48:09+03:00",
+          "tree_id": "4e91f0f8671f236c16ae1ac07b013840362c3759",
+          "url": "https://github.com/melg8/cit/commit/298b76efbd0ac3b79fe854b3b0f0ca390d0c0c85"
+        },
+        "date": 1674158221201,
+        "tool": "catch2",
+        "benches": [
+          {
+            "name": "creation with value",
+            "value": 1.22467,
+            "range": "+/- 119.464",
+            "unit": "us",
+            "extra": "100 samples\n49 iterations"
+          },
+          {
+            "name": "compare raw pointers",
+            "value": 2.30861,
+            "range": "+/- 190.632",
+            "unit": "us",
+            "extra": "100 samples\n26 iterations"
+          },
+          {
+            "name": "smart pointer with value",
+            "value": 1.18607,
+            "range": "+/- 58.4375",
+            "unit": "us",
+            "extra": "100 samples\n52 iterations"
+          },
+          {
+            "name": "compare smart pointers",
+            "value": 2.20645,
+            "range": "+/- 145.495",
+            "unit": "us",
+            "extra": "100 samples\n26 iterations"
+          },
+          {
+            "name": "modernized with value",
+            "value": 1.78605,
+            "range": "+/- 63.493",
+            "unit": "us",
+            "extra": "100 samples\n33 iterations"
+          },
+          {
+            "name": "compare modernized",
+            "value": 3.62305,
+            "range": "+/- 248.065",
+            "unit": "us",
+            "extra": "100 samples\n16 iterations"
+          },
+          {
+            "name": "modernized with value of",
+            "value": 3.71186,
+            "range": "+/- 154.043",
+            "unit": "us",
+            "extra": "100 samples\n16 iterations"
           }
         ]
       }
