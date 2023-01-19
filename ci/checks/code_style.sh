@@ -18,6 +18,7 @@ cpplint \
 	--recursive \
 	--linelength=80 \
 	--includeorder=standardcfirst \
+	--exclude="./sources/example_glassy/third_party" \
 	--filter=-build/c++11,-build/header_guard,-runtime/references,-readability/check,-readability/nolint \
 	--root=./sources \
 	./sources

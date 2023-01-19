@@ -42,6 +42,8 @@ SHOW_ELAPSED_TIME: true
 FILEIO_REPORTER: false # Enable only if runner has internet connection.
 PRINT_ALPACA: false # Don't print logo.
 
+FILTER_REGEX_EXCLUDE: ".*/third_party/.*.hpp"
+
 # GIT_DIFF
 GIT_GIT_DIFF_ARGUMENTS: HEAD^
 
@@ -78,6 +80,7 @@ NIX_NIX_LINTER_FILTER_REGEX_EXCLUDE: "node-env.nix|node-packages.nix"
 SPELL_CODESPELL_ARGUMENTS: >
   -D=-
   -D=ci/checks/dictionaries/spelling_corrections.txt
+  --skip="sources/example_glassy/third_party/sources"
 
 # CMAKE_FORMAT
 CMAKE_CMAKE_FORMAT_DISABLE_ERRORS: true
