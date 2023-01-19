@@ -9,6 +9,7 @@ set -e
 DICTIONARY="./ci/checks/dictionaries/spelling_corrections.txt"
 SKIP=".git,\
 ./ci/checks/dictionaries/*,\
+./sources/example_glassy/third_party/sources/*,\
 *package-lock.json,\
 *CMakeLists.txt.user,\
 *node-packages.nix"
