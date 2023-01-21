@@ -9,6 +9,8 @@
 
 #include <concepts>
 
+#include <common_macro.h>
+
 #include <gsl/gsl-lite.hpp>
 
 namespace glassy {
@@ -53,12 +55,12 @@ concept not_null_provider_of = is_not_null<T> &&
     (is_not_null_of_concrete_raw_pointer<T, Target> ||
      is_not_null_owner_of_concrete_raw_pointer<T, Target>);
 
-constexpr inline decltype(auto) GetPtr(
+constexpr FORCEINLINE decltype(auto) GetPtr(
     is_not_null_of_raw_pointer auto&& lhs) noexcept {
   return lhs;
 }
 
-constexpr inline decltype(auto) GetPtr(is_not_null auto&& lhs) noexcept {
+constexpr FORCEINLINE decltype(auto) GetPtr(is_not_null auto&& lhs) noexcept {
   return gsl::not_null{lhs.get()};
 }
 

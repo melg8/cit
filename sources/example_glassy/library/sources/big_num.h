@@ -11,6 +11,7 @@
 #include <vector>
 
 #include <big_num_errc.h>
+#include <common_macro.h>
 
 #include <openssl/bn.h>
 #include <openssl/engine.h>
@@ -100,34 +101,34 @@ Result<BigNum> operator+(Result<BigNum>&& maybe_lhs,
 
 Result<void> operator+=(BigNum& lhs, const BigNum& rhs) noexcept;
 
-inline int Compare(const BigNum& lhs, const BigNum& rhs) noexcept {
+FORCEINLINE int Compare(const BigNum& lhs, const BigNum& rhs) noexcept {
   return BN_cmp(lhs.Ptr(), rhs.Ptr());
 }
 
-inline bool operator<(const BigNum& lhs, const BigNum& rhs) noexcept {
+FORCEINLINE bool operator<(const BigNum& lhs, const BigNum& rhs) noexcept {
   return Compare(lhs, rhs) < 0;
 }
 
-inline bool operator>(const BigNum& lhs, const BigNum& rhs) noexcept {
+FORCEINLINE bool operator>(const BigNum& lhs, const BigNum& rhs) noexcept {
   return Compare(lhs, rhs) > 0;
 }
 
-inline bool operator==(const BigNum& lhs, const BigNum& rhs) noexcept {
+FORCEINLINE bool operator==(const BigNum& lhs, const BigNum& rhs) noexcept {
   return Compare(lhs, rhs) == 0;
 }
 
-inline bool operator!=(const BigNum& lhs, const BigNum& rhs) noexcept {
+FORCEINLINE bool operator!=(const BigNum& lhs, const BigNum& rhs) noexcept {
   return Compare(lhs, rhs) != 0;
 }
 
-inline void glassy::BigNum::Deleter::operator()(
+FORCEINLINE void glassy::BigNum::Deleter::operator()(
     glassy::BigNumOwnerPtr number) noexcept {
   BN_free(number);
 }
 
-inline BigNum::BigNum(BigNumImpl ptr) noexcept : ptr_{std::move(ptr)} {}
+FORCEINLINE BigNum::BigNum(BigNumImpl ptr) noexcept : ptr_{std::move(ptr)} {}
 
-inline Result<BigNum> BigNum::New() noexcept {
+FORCEINLINE Result<BigNum> BigNum::New() noexcept {
   BigNumImpl ptr{BN_new()};
   if (!ptr) {
     return BigNumErrc::kAllocationFailure;
@@ -135,14 +136,14 @@ inline Result<BigNum> BigNum::New() noexcept {
   return BigNum{std::move(ptr)};
 }
 
-inline Result<BigNum> BigNum::Own(BigNumOwnerPtr ptr) noexcept {
+FORCEINLINE Result<BigNum> BigNum::Own(BigNumOwnerPtr ptr) noexcept {
   if (!ptr) {
     return BigNumErrc::kNullPointerFailure;
   }
   return BigNum{BigNumImpl{ptr}};
 }
 
-inline Result<BigNum> BigNum::New(BnUlong value) noexcept {
+FORCEINLINE Result<BigNum> BigNum::New(BnUlong value) noexcept {
   OUTCOME_TRY(auto result, BigNum::New());
   if (BN_set_word(result.Ptr(), value) == 0) {
     return BigNumErrc::kExpansionFailure;
@@ -150,7 +151,7 @@ inline Result<BigNum> BigNum::New(BnUlong value) noexcept {
   return result;
 }
 
-inline Result<BnUlong> BigNum::ToBnUlong() const noexcept {
+FORCEINLINE Result<BnUlong> BigNum::ToBnUlong() const noexcept {
   const auto result = BN_get_word(ptr_.get());
   if (result == std::numeric_limits<decltype(result)>::max()) {
     return BigNumErrc::kTooBigForConversion;
@@ -158,7 +159,7 @@ inline Result<BnUlong> BigNum::ToBnUlong() const noexcept {
   return result;
 }
 
-inline Result<BigNum> BigNum::New(const Dec& dec) noexcept {
+FORCEINLINE Result<BigNum> BigNum::New(const Dec& dec) noexcept {
   OUTCOME_TRY(auto result, BigNum::New());
   auto* ptr = result.Ptr();
   if (BN_dec2bn(&ptr, dec.value) == 0) {
@@ -167,7 +168,7 @@ inline Result<BigNum> BigNum::New(const Dec& dec) noexcept {
   return result;
 }
 
-inline Result<SslString> BigNum::ToDec() const noexcept {
+FORCEINLINE Result<SslString> BigNum::ToDec() const noexcept {
   SslString result{BN_bn2dec(ptr_.get())};
   if (!result.get()) {
     return BigNumErrc::kConversionFailure;
@@ -175,7 +176,7 @@ inline Result<SslString> BigNum::ToDec() const noexcept {
   return result;
 }
 
-inline Result<SslString> BigNum::ToHex() const noexcept {
+FORCEINLINE Result<SslString> BigNum::ToHex() const noexcept {
   SslString result{BN_bn2hex(ptr_.get())};
   if (!result.get()) {
     return BigNumErrc::kConversionFailure;
@@ -183,7 +184,7 @@ inline Result<SslString> BigNum::ToHex() const noexcept {
   return result;
 }
 
-inline Result<SslData> BigNum::ToBin() const noexcept {
+FORCEINLINE Result<SslData> BigNum::ToBin() const noexcept {
   SslData result;
   result.resize(NumberOfBytes());
   if (BN_bn2bin(ptr_.get(), result.data()) < 0) {
@@ -192,8 +193,8 @@ inline Result<SslData> BigNum::ToBin() const noexcept {
   return result;
 }
 
-inline Result<BigNum> BigNum::Add(const BigNum& lhs,
-                                  const BigNum& rhs) noexcept {
+FORCEINLINE Result<BigNum> BigNum::Add(const BigNum& lhs,
+                                       const BigNum& rhs) noexcept {
   OUTCOME_TRY(auto result, BigNum::New());
   if (BN_add(result.Ptr(), lhs.Ptr(), rhs.Ptr()) == 0) {
     return BigNumErrc::kAdditionFailure;
@@ -201,11 +202,11 @@ inline Result<BigNum> BigNum::Add(const BigNum& lhs,
   return result;
 }
 
-inline const BIGNUM* BigNum::Ptr() const noexcept { return ptr_.get(); }
+FORCEINLINE const BIGNUM* BigNum::Ptr() const noexcept { return ptr_.get(); }
 
-inline BIGNUM* BigNum::Ptr() noexcept { return ptr_.get(); }
+FORCEINLINE BIGNUM* BigNum::Ptr() noexcept { return ptr_.get(); }
 
-inline Result<BigNum> BigNum::New(const SslSpan& span) noexcept {
+FORCEINLINE Result<BigNum> BigNum::New(const SslSpan& span) noexcept {
   BIGNUM* initial_value = nullptr;
   BigNumImpl ptr{
       // TODO(melg): replace narrow with optional cast.
@@ -216,11 +217,13 @@ inline Result<BigNum> BigNum::New(const SslSpan& span) noexcept {
   return BigNum{std::move(ptr)};
 }
 
-inline int BigNum::NumberOfBytes() const { return BN_num_bytes(ptr_.get()); }
+FORCEINLINE int BigNum::NumberOfBytes() const {
+  return BN_num_bytes(ptr_.get());
+}
 
-inline int BigNum::NumberOfBits() const { return BN_num_bits(ptr_.get()); }
+FORCEINLINE int BigNum::NumberOfBits() const { return BN_num_bits(ptr_.get()); }
 
-inline Result<BigNum> BigNum::New(const Hex& hex) noexcept {
+FORCEINLINE Result<BigNum> BigNum::New(const Hex& hex) noexcept {
   OUTCOME_TRY(auto result, BigNum::New());
   auto* ptr = result.Ptr();
   if (BN_hex2bn(&ptr, hex.value) == 0) {
@@ -229,38 +232,39 @@ inline Result<BigNum> BigNum::New(const Hex& hex) noexcept {
   return result;
 }
 
-inline Result<BigNum> operator+(const BigNum& lhs, const BigNum& rhs) noexcept {
+FORCEINLINE Result<BigNum> operator+(const BigNum& lhs,
+                                     const BigNum& rhs) noexcept {
   return BigNum::Add(lhs, rhs);
 }
 
-inline Result<BigNum> operator+(Result<BigNum>&& maybe_lhs,
-                                Result<BigNum>&& maybe_rhs) noexcept {
+FORCEINLINE Result<BigNum> operator+(Result<BigNum>&& maybe_lhs,
+                                     Result<BigNum>&& maybe_rhs) noexcept {
   OUTCOME_TRY(auto&& lhs, std::move(maybe_lhs));
   OUTCOME_TRY(auto&& rhs, std::move(maybe_rhs));
   return lhs + rhs;
 }
 
-inline Result<BigNum> operator+(const BigNum& lhs,
-                                Result<BigNum>&& maybe_rhs) noexcept {
+FORCEINLINE Result<BigNum> operator+(const BigNum& lhs,
+                                     Result<BigNum>&& maybe_rhs) noexcept {
   OUTCOME_TRY(auto&& rhs, std::move(maybe_rhs));
   return lhs + rhs;
 }
 
-inline Result<BigNum> operator+(Result<BigNum>&& maybe_lhs,
-                                const BigNum& rhs) noexcept {
+FORCEINLINE Result<BigNum> operator+(Result<BigNum>&& maybe_lhs,
+                                     const BigNum& rhs) noexcept {
   OUTCOME_TRY(auto&& lhs, std::move(maybe_lhs));
   return lhs + rhs;
 }
 
-inline Result<void> operator+=(BigNum& lhs, const BigNum& rhs) noexcept {
+FORCEINLINE Result<void> operator+=(BigNum& lhs, const BigNum& rhs) noexcept {
   if (BN_add(lhs.Ptr(), lhs.Ptr(), rhs.Ptr()) == 0) {
     return outcome::failure(BigNumErrc::kAdditionFailure);
   }
   return outcome::success();
 }
 
-inline Result<void> operator+=(BigNum& lhs,
-                               const Result<BigNum>& maybe_rhs) noexcept {
+FORCEINLINE Result<void> operator+=(BigNum& lhs,
+                                    const Result<BigNum>& maybe_rhs) noexcept {
   if (maybe_rhs.has_error()) {
     return maybe_rhs.assume_error();
   }
@@ -271,8 +275,8 @@ inline Result<void> operator+=(BigNum& lhs,
   return outcome::success();
 }
 
-inline Result<void> operator+=(Result<BigNum>& maybe_lhs,
-                               const BigNum& rhs) noexcept {
+FORCEINLINE Result<void> operator+=(Result<BigNum>& maybe_lhs,
+                                    const BigNum& rhs) noexcept {
   if (maybe_lhs.has_error()) {
     return maybe_lhs.assume_error();
   }
@@ -284,8 +288,8 @@ inline Result<void> operator+=(Result<BigNum>& maybe_lhs,
   return outcome::success();
 }
 
-inline Result<void> operator+=(Result<BigNum>& maybe_lhs,
-                               const Result<BigNum>& maybe_rhs) noexcept {
+FORCEINLINE Result<void> operator+=(Result<BigNum>& maybe_lhs,
+                                    const Result<BigNum>& maybe_rhs) noexcept {
   if (maybe_lhs.has_error()) {
     return maybe_lhs.assume_error();
   }
@@ -301,7 +305,7 @@ inline Result<void> operator+=(Result<BigNum>& maybe_lhs,
   return outcome::success();
 }
 
-inline int Sum(int lhs, int rhs) { return lhs + rhs; }
+FORCEINLINE int Sum(int lhs, int rhs) { return lhs + rhs; }
 
 }  // namespace glassy
 

@@ -47,20 +47,20 @@ struct ComparisonValueHolder {
   T ptr;  // NOLINT
 
   template <typename F>
-  inline constexpr auto operator<=>(
+  FORCEINLINE constexpr auto operator<=>(
       const ComparisonValueHolder<F>& rhs) const noexcept {
     return Asn1IntegerCmp(this->ptr, rhs.ptr);
   }
 
   template <typename F>
-  inline constexpr bool operator==(
+  FORCEINLINE constexpr bool operator==(
       const ComparisonValueHolder<F>& rhs) const noexcept {
     return std::is_eq(*this <=> rhs);
   }
 };
 
 template <is_not_null T>
-static inline decltype(auto) ValueOf(T&& provider) noexcept {
+FORCEINLINE decltype(auto) ValueOf(T&& provider) noexcept {
   return ComparisonValueHolder<T>{std::forward<T>(provider)};
 }
 
@@ -70,7 +70,7 @@ FORCEINLINE Result<Asn1Integer> Asn1IntegerNew() noexcept {
              : Asn1IntegerErrc::kAllocationFailure;
 }
 
-static inline Result<Asn1Integer> Asn1IntegerDup(
+FORCEINLINE Result<Asn1Integer> Asn1IntegerDup(
     not_null_provider_of<const ASN1_INTEGER*> auto&& view) noexcept {
   Asn1IntegerMaybeNull ptr{ASN1_INTEGER_dup(GetPtr(view))};
   return ptr ? Result<Asn1Integer>{std::move(ptr)}
@@ -79,7 +79,7 @@ static inline Result<Asn1Integer> Asn1IntegerDup(
 
 // TODO(melg): mark as deprecated, implement ASN1_INTEGER_get_int64 to be used
 // instead.
-static inline Result<Long> Asn1IntegerGet(
+FORCEINLINE Result<Long> Asn1IntegerGet(
     not_null_provider_of<const ASN1_INTEGER*> auto&& view) noexcept {
   const auto result = ASN1_INTEGER_get(GetPtr(view));
   return result != -1 ? Result<Long>{result}
@@ -99,7 +99,7 @@ FORCEINLINE Result<Asn1Integer> Asn1IntegerFrom(Long value) noexcept {
   return Result<Asn1Integer>{std::move(result)};
 }
 
-static inline Result<Asn1Integer> Own(Asn1IntegerOwnerPtr ptr) noexcept {
+FORCEINLINE Result<Asn1Integer> Own(Asn1IntegerOwnerPtr ptr) noexcept {
   return ptr ? Result<Asn1Integer>{Asn1IntegerMaybeNull{ptr}}
              : Asn1IntegerErrc::kNullPointerFailure;
 }

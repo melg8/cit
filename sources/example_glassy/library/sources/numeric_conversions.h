@@ -7,6 +7,7 @@
 
 #include <asn_1_integer.h>
 #include <big_num.h>
+#include <common_macro.h>
 
 namespace glassy::convert {
 
@@ -22,7 +23,7 @@ static Result<void> FromBigNum(
     const BigNum& value,
     not_null_provider_of<const ASN1_INTEGER*> auto&& target) noexcept;
 
-inline Result<BigNum> FromAsn1Int(
+FORCEINLINE Result<BigNum> FromAsn1Int(
     not_null_provider_of<const ASN1_INTEGER*> auto&& value) noexcept {
   auto result = BigNum::Own(ASN1_INTEGER_to_BN(GetPtr(value), nullptr));
   if (result.has_error()) {
@@ -31,7 +32,7 @@ inline Result<BigNum> FromAsn1Int(
   return result;
 }
 
-inline Result<Asn1Integer> FromBigNum(const BigNum& value) noexcept {
+FORCEINLINE Result<Asn1Integer> FromBigNum(const BigNum& value) noexcept {
   auto result = Own(BN_to_ASN1_INTEGER(value.Ptr(), nullptr));
   if (result.has_error()) {
     return Asn1IntegerErrc::kConversionFailure;
@@ -39,7 +40,7 @@ inline Result<Asn1Integer> FromBigNum(const BigNum& value) noexcept {
   return result;
 }
 
-inline Result<void> FromBigNum(
+FORCEINLINE Result<void> FromBigNum(
     const BigNum& value,
     not_null_provider_of<const ASN1_INTEGER*> auto&& target) noexcept {
   if (BN_to_ASN1_INTEGER(value.Ptr(), GetPtr(target)) == nullptr) {

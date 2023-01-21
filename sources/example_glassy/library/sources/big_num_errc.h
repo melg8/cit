@@ -8,6 +8,8 @@
 #include <string>
 #include <system_error>
 
+#include <common_macro.h>
+
 #include <outcome.hpp>
 
 namespace glassy {
@@ -36,11 +38,11 @@ struct BigNumErrorCategory : std::error_category {
   [[nodiscard]] std::string message(int error_value) const override;
 };
 
-inline const char* BigNumErrorCategory::name() const noexcept {
+FORCEINLINE const char* BigNumErrorCategory::name() const noexcept {
   return "BigNum";
 }
 
-inline std::string BigNumErrorCategory::message(int error_value) const {
+FORCEINLINE std::string BigNumErrorCategory::message(int error_value) const {
   switch (static_cast<BigNumErrc>(error_value)) {
     case BigNumErrc::kAllocationFailure:
       return "allocation failed";
@@ -65,7 +67,7 @@ const BigNumErrorCategory big_num_error_category{};
 }  // namespace detail
 
 // NOLINTNEXTLINE
-inline std::error_code make_error_code(glassy::BigNumErrc e) {
+FORCEINLINE std::error_code make_error_code(glassy::BigNumErrc e) {
   return std::error_code{static_cast<int>(e), detail::big_num_error_category};
 }
 
