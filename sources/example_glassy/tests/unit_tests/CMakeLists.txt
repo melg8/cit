@@ -5,6 +5,7 @@
 find_package(OpenSSL 3.0.2 REQUIRED)
 find_package(outcome 2.2.3 REQUIRED)
 find_package(gsl-lite 0.40 REQUIRED)
+find_package(range-v3 0.12.0 REQUIRED)
 
 file(GLOB_RECURSE ALL_GLASSY_TESTS_APPLICATION_HEADERS
      "${CMAKE_CURRENT_SOURCE_DIR}/*.h")
@@ -17,7 +18,7 @@ add_executable(glassy_tests "${ALL_GLASSY_TESTS_APPLICATION_HEADERS}"
 
 target_link_libraries(
   glassy_tests PUBLIC glassy testing_framework gsl::gsl-lite OpenSSL::Crypto
-                      outcome::outcome)
+                      outcome::outcome range-v3::range-v3)
 
 target_include_directories(glassy_tests PUBLIC "${OUTCOME_INCLUDE_DIR}")
 

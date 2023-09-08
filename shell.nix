@@ -5,11 +5,13 @@
 let
   nixpkgs = import ./ci/nix/pinned_nixpkgs.nix;
   nixpkgs2 = import ./ci/nix/pinned_nixpkgs_2.nix;
+  nixpkgs3 = import ./ci/nix/pinned_nixpkgs_3.nix;
   pkgs = import nixpkgs { };
   pkgs2 = import nixpkgs2 { };
+  pkgs3 = import nixpkgs3 { };
 in
-pkgs2.mkShell.override { stdenv = pkgs2.gcc12Stdenv; } rec {
-  buildInputs = import ./ci/nix/tools.nix { inherit pkgs; inherit pkgs2; };
+pkgs3.mkShell.override { stdenv = pkgs3.gcc13Stdenv; } rec {
+  buildInputs = import ./ci/nix/tools.nix { inherit pkgs; inherit pkgs2; inherit pkgs3;};
 
   shellHook = ''
     source <(just --completions=bash)

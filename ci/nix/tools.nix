@@ -2,7 +2,7 @@
 #
 # SPDX-License-Identifier: MIT
 
-{ pkgs, pkgs2 }:
+{ pkgs, pkgs2, pkgs3 }:
 let
   pvs_studio_for_free = pkgs.callPackage ./pvs/how_to_use_pvs_studio_free.nix { };
   conform = pkgs.callPackage ./conform/default.nix { };
@@ -10,7 +10,7 @@ let
   ls_lint = pkgs.callPackage ./ls_lint/default.nix { };
   remark_lint = (pkgs.callPackage ./remark/default.nix { }).shell.nodeDependencies;
   text_lint = (pkgs.callPackage ./text_lint/default.nix { }).shell.nodeDependencies;
-  mega_linter = pkgs.callPackage ./mega_linter/default.nix { };
+  mega_linter = pkgs3.callPackage ./mega_linter/default.nix { };
   bash_exec = pkgs.callPackage ./bash_exec/default.nix { };
   git_spell = pkgs.callPackage ./git_spell/default.nix { };
   ls_spell = pkgs.callPackage ./ls_spell/default.nix { };
@@ -44,14 +44,14 @@ in
 
   # cpp analyzers and compilers.
   pkgs2.cppcheck
-  pkgs2.gcc12.cc # For gcov tool.
-  pkgs2.gcc12 # Must be after gcc11.cc to provide right links in docker.
-  pkgs2.bintools-unwrapped # Linker: ar.
+  pkgs3.gcc13.cc # For gcov tool.
+  pkgs3.gcc13 # Must be after gcc13.cc to provide right links in docker.
+  pkgs3.bintools-unwrapped # Linker: ar.
   pkgs2.cpplint
 
-  pkgs2.clang-tools_14
+  pkgs3.clang-tools_15
   clang_tidy_run
-  pkgs2.clang_14 # Must be after gcc to provide right links in docker.
+  pkgs3.clang_15 # Must be after gcc to provide right links in docker.
   conan_1_55
 
   pkgs2.perl # For building openssl for clang_14 version from sources.
@@ -67,7 +67,7 @@ in
   # gem
   # Together 316 MB  (295 on ruby 2.7)
   pkgs.mdl # ruby 2.7 261.4 MB
-  git_lint # 294 MB
+  #git_lint # 294 MB
 
   # npm
   # Together 281 MB.
@@ -107,7 +107,7 @@ in
   pkgs2.cacert
   pkgs2.binutils
 
-  pkgs2.just
+  pkgs3.just
   pkgs2.bashInteractive
   pkgs2.bashInteractive.dev
   pkgs2.bashInteractive.doc

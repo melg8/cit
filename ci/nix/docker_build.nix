@@ -5,10 +5,12 @@
 let
   nixpkgs = import ./pinned_nixpkgs.nix;
   nixpkgs2 = import ./pinned_nixpkgs_2.nix;
+  nixpkgs3 = import ./pinned_nixpkgs_3.nix;
   pkgs = import nixpkgs { };
   pkgs2 = import nixpkgs2 { };
+  pkgs3 = import nixpkgs3 { };
   tools = import ./tools.nix {
-    inherit pkgs; inherit pkgs2;
+    inherit pkgs; inherit pkgs2; inherit pkgs3;
   };
   inherit (pkgs.lib) concatStringsSep genList;
   nsswitch = ''
