@@ -15,6 +15,8 @@ DIRECTORY=build_"${CONAN_COMPILER}"
 mkdir -p "${DIRECTORY}"
 cd "${DIRECTORY}"
 
+conan create ../ci/conan_recipes/range-v3/conanfile.py
+
 conan install .. \
 	--build missing \
 	-s compiler="${CONAN_COMPILER}" \

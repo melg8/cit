@@ -35,26 +35,26 @@ in
   nixpkgs_fmt_wrapper
 
   pvs_studio_for_free # 2.5 MB
-  pkgs2.git # 397 MB
-  pkgs2.ccache # 33 MB
-  pkgs2.cmake # 96 MB
-  pkgs2.ninja
-  pkgs2.lcov
-  pkgs2.grcov
+  pkgs3.git
+  pkgs3.ccache
+  pkgs3.cmake
+  pkgs3.ninja
+  pkgs3.lcov
+  pkgs3.grcov
 
   # cpp analyzers and compilers.
-  pkgs2.cppcheck
+  pkgs3.cppcheck
   pkgs3.gcc13.cc # For gcov tool.
   pkgs3.gcc13 # Must be after gcc13.cc to provide right links in docker.
   pkgs3.bintools-unwrapped # Linker: ar.
-  pkgs2.cpplint
+  pkgs3.cpplint
 
   pkgs3.clang-tools_15
   # clang_tidy_run
   pkgs3.clang_15 # Must be after gcc to provide right links in docker.
-  conan_1_55
+  pkgs3.conan
 
-  pkgs2.perl # For building openssl for clang_14 version from sources.
+  pkgs3.perl # For building openssl for clang_14 version from sources.
 
   # go
   pkgs2.git-sizer # 37 MB
@@ -95,30 +95,30 @@ in
 
   # Potentially later.
   # Together 77 MB (+ 22 MB to total image size).
-  pkgs2.nix
-  pkgs2.nixpkgs-fmt
+  pkgs3.nix
+  pkgs3.nixpkgs-fmt
   pkgs2.nix-linter
-  pkgs2.pkgsStatic.busybox
+  pkgs3.pkgsStatic.busybox
 
   ### For debug only.
-  pkgs2.nix-tree
+  pkgs3.nix-tree
 
   ### Add deps for docker to be hermetic.
-  pkgs2.cacert
-  pkgs2.binutils
+  pkgs3.cacert
+  pkgs3.binutils
 
   pkgs3.just
-  pkgs2.bashInteractive
-  pkgs2.bashInteractive.dev
-  pkgs2.bashInteractive.doc
-  pkgs2.bashInteractive.info
-  pkgs2.bashInteractive.man
+  pkgs3.bashInteractive
+  pkgs3.bashInteractive.dev
+  pkgs3.bashInteractive.doc
+  pkgs3.bashInteractive.info
+  pkgs3.bashInteractive.man
 
-  pkgs2.gawk
-  pkgs2.gnumake
-  pkgs2.ed
-  pkgs2.gnupatch
-  pkgs2.patchelf
-  pkgs2.findutils
-  pkgs2.diffutils
+  pkgs3.gawk
+  pkgs3.gnumake
+  pkgs3.ed
+  pkgs3.gnupatch
+  pkgs3.patchelf
+  pkgs3.findutils
+  pkgs3.diffutils
 ]
