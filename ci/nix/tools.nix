@@ -50,7 +50,7 @@ in
   pkgs2.cpplint
 
   pkgs3.clang-tools_15
-  clang_tidy_run
+  # clang_tidy_run
   pkgs3.clang_15 # Must be after gcc to provide right links in docker.
   conan_1_55
 
@@ -89,7 +89,7 @@ in
   pkgs2.cmake-format # 150 MB
   pkgs2.gitlint
   pkgs2.reuse
-  mega_linter
+  # mega_linter
 
   code_checker
 

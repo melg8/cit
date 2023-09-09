@@ -3,9 +3,9 @@
 # SPDX-License-Identifier: MIT
 
 let
-  rev = "f91ee3065de91a3531329a674a45ddcb3467a650";
+  rev = "4f77ea639305f1de0a14d9d41eef83313360638c";
 in
 builtins.fetchTarball {
   url = "https://github.com/NixOS/nixpkgs/archive/${rev}.tar.gz";
-  sha256 = "sha256:1jgcgllp8pxjz3q6r2yswsvlg96wlcnvdpgi71k7inibffqhq0z9";
+  sha256 = "sha256:13487jd9165hhravrzs8sm1j2swpcnv84jdiiiza4ma206vjji1w";
 }

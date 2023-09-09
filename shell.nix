@@ -12,13 +12,6 @@ let
 in
 pkgs3.mkShell.override { stdenv = pkgs3.gcc13Stdenv; } rec {
   buildInputs = import ./ci/nix/tools.nix { inherit pkgs; inherit pkgs2; inherit pkgs3;};
-
-  shellHook = ''
-    source <(just --completions=bash)
-    for input in ${builtins.toString buildInputs}; do
-       if [[ -e "$input/lib/node_modules" ]] ; then
-           export NODE_PATH="$input/lib/node_modules:$NODE_PATH";
-       fi
-    done
-  '';
+  fetchScripts = buildInputs;
+  shellHook = ''source <(just --completions=bash);for input in ${builtins.toString buildInputs}; do if [[ -e "$input/lib/node_modules" ]] ; then export NODE_PATH="$input/lib/node_modules:$NODE_PATH";fi;done'';
 }
