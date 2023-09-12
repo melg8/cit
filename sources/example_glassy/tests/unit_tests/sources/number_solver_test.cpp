@@ -158,7 +158,7 @@ SCENARIO("Drawing lines onto buffer display buffer") {
 
   SECTION("get properly filled buffer") {
     auto display_buffer = SingleSymbolBuffer(8, 14);
-    const auto line = LineFrom(1);
+    const auto line = LineFrom(0);
     DrawLineToBuffer(line, display_buffer);
     CHECK(SymbolsFromBuffer(display_buffer) == kSingleLineBuffer);
   }

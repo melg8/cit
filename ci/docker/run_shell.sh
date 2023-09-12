@@ -20,5 +20,5 @@ docker container run --rm -it --ulimit nofile=1024 \
 	--privileged \
 	-v "/var/run/docker.sock:/var/run/docker.sock:rw" \
 	-v "${GITHUB_EVENT_PATH}":"/home/user/event.json" \
-	-v "$(pwd)":/home/user/work melg8/cit:0.0.7
+	-v "$(pwd)":/home/user/work melg8/cit:0.1.0
 bash

@@ -6,4 +6,4 @@
 
 set -e
 
-./ci/builders/common/build.sh clang++ clang 14
+./ci/builders/common/build.sh clang++ clang 16

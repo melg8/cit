@@ -28,6 +28,8 @@ mkdir -p ../report
 ctest --verbose |
 	sed 's/[0-9]\+\: //g' >../report/ctest_logs_"${COMPILER}".txt
 
+export GCOV=gcov-13
+
 grcov . \
 	-s .. \
 	--ignore "/nix/store/*" \
