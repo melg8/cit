@@ -87,6 +87,12 @@ RUN apt-fast update \
 
 RUN npm i -g @commitlint/cli
 
+RUN apt-fast update \
+ && apt-fast -y install --no-install-recommends \
+    gitlint \
+ && apt-fast -y autoremove \
+ && apt-fast clean
+
 ENV LC_ALL C.UTF-8
 
 RUN usermod -l user ubuntu
