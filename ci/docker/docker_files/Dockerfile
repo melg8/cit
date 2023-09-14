@@ -73,6 +73,11 @@ RUN apt-fast -y install --no-install-recommends \
 RUN apt-fast -y install --no-install-recommends \
     git-sizer=1.5.*
 
+RUN apt-fast -y install --no-install-recommends \
+    golang-go=2:1.* \
+ && go install github.com/siderolabs/conform/cmd/conform@latest \
+ && mv ~/go/bin/* /usr/local/bin/
+
 ENV LC_ALL C.UTF-8
 
 RUN usermod -l user ubuntu
