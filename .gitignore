@@ -43,6 +43,7 @@
 
 # Reports directory
 *report
+*megalinter-reports
 
 # Cmake
 CMakeLists.txt.user

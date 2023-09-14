@@ -61,6 +61,15 @@ COPY ./megalinter/descriptors /megalinter-descriptors
 COPY ./megalinter.sh /usr/bin/megalinter
 RUN chmod +x /usr/bin/megalinter
 
+COPY ./linters/bash_exec/bash-exec.sh /usr/bin/bash-exec
+
+RUN apt-fast -y install --no-install-recommends \
+    shellcheck=0.9.* \
+    shfmt=3.6.*
+
+RUN apt-fast -y install --no-install-recommends \
+    cmake-format=0.6.*
+
 ENV LC_ALL C.UTF-8
 
 RUN usermod -l user ubuntu
