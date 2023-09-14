@@ -78,6 +78,15 @@ RUN apt-fast -y install --no-install-recommends \
  && go install github.com/siderolabs/conform/cmd/conform@latest \
  && mv ~/go/bin/* /usr/local/bin/
 
+RUN apt-fast update \
+ && apt-fast -y install --no-install-recommends \
+    nodejs=18.13.* \
+    npm=9.2.* \
+ && apt-fast -y autoremove \
+ && apt-fast clean
+
+RUN npm i -g @commitlint/cli
+
 ENV LC_ALL C.UTF-8
 
 RUN usermod -l user ubuntu
