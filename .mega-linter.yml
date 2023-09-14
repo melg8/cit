@@ -13,6 +13,9 @@ APPLY_FIXES: all # all, none, or list of linter keys.
 # ERROR - minimum output only in case of error.
 LOG_LEVEL: INFO
 
+# Dont check for linters that are not supported by cit but suggested by megalinter.
+FLAVOR_SUGGESTIONS: false
+
 # Linters that are not supported by cit but enabled for all megalinter images.
 DISABLE_LINTERS:
   [
@@ -30,6 +33,35 @@ DISABLE_LINTERS:
     MARKDOWN_MARKDOWN_TABLE_FORMATTER,
     SPELL_MISSPELL,
     YAML_V8R,
+    # To fix:
+    BASH_EXEC,
+    BASH_SHELLCHECK,
+    BASH_SHFMT,
+    CMAKE_CMAKE_FORMAT,
+    CMAKE_CMAKE_LINT,
+    GIT_GIT_DIFF,
+    GIT_GIT_SIZER,
+    GIT_CONFORM,
+    GIT_COMMITLINT,
+    GIT_GITLINT,
+    GIT_GIT_LINT,
+    GIT_GIT_SPELL,
+    NIX_NIX_LINTER,
+    NIX_NIXPKGS_FMT_WRAPPER,
+    SPELL_CSPELL,
+    SPELL_CODESPELL,
+    LICENSE_REUSE,
+    LS_LS_SPELL,
+    LS_LS_LINT,
+    CPP_CLANG_TIDY,
+    CPP_CPPCHECK,
+    CPP_CPPLINT,
+    CPP_CLANG_FORMAT,
+    YAML_PRETTIER,
+    YAML_YAMLLINT,
+    MARKDOWN_REMARK_LINT,
+    MARKDOWN_MDL,
+    MARKDOWN_TEXTLINT,
   ]
 
 # Policies.

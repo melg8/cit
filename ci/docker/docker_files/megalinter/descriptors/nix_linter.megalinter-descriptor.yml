@@ -1,0 +1,29 @@
+# SPDX-FileCopyrightText: © 2022 Melg Eight <public.melg8@gmail.com>
+#
+# SPDX-License-Identifier: MIT
+
+---
+descriptor_id: NIX
+descriptor_label: "nix"
+descriptor_type: language
+descriptor_flavors:
+  - cit
+file_extensions:
+  - ".nix"
+linters:
+  # NIX_LINTER
+  - linter_name: nix-linter
+    cli_executable: nix-linter
+    is_formatter: false
+    linter_url: https://github.com/Synthetica9/nix-linter
+    cli_lint_mode: list_of_files
+    cli_help_arg_name: "--help"
+    cli_version_arg_name: "--version"
+    cli_lint_errors_count: regex_count
+    cli_lint_errors_regex: " at "
+    linter_version_cache: "0.2.0.4"
+    examples:
+      - "nix-linter default.nix"
+    install:
+      dockerfile:
+        - RUN echo "is not implemented"

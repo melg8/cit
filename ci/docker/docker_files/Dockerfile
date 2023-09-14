@@ -1,3 +1,6 @@
+# SPDX-FileCopyrightText: © 2023 Melg Eight <public.melg8@gmail.com>
+#
+# SPDX-License-Identifier: MIT
 
 FROM ubuntu:23.04 AS cit
 
@@ -38,7 +41,25 @@ RUN apt-fast -y install --no-install-recommends \
     python3-full \
     python3-pip \
  && rm /usr/lib/python3.11/EXTERNALLY-MANAGED \
- && pip install conan
+ && pip install conan \
+ && pip install -U setuptools
+
+COPY ./megalinter/patches/megalinter.patch /tmp/megalinter.patch
+
+RUN mkdir /tmp/build \
+ && cd /tmp/build \
+ && git clone --branch v7.3.0 --depth 1 \
+    https://github.com/oxsecurity/megalinter.git \
+ && cd megalinter \
+ && mv /tmp/megalinter.patch ./megalinter.patch \
+ && git apply ./megalinter.patch \
+ && PYTHONDONTWRITEBYTECODE=1 python3 ./megalinter/setup.py install \
+ && mkdir /megalinter-descriptors \
+ && cp -r ./megalinter/descriptors/* /megalinter-descriptors
+ 
+COPY ./megalinter/descriptors /megalinter-descriptors
+COPY ./megalinter.sh /usr/bin/megalinter
+RUN chmod +x /usr/bin/megalinter
 
 ENV LC_ALL C.UTF-8
 

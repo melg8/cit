@@ -1,0 +1,30 @@
+# SPDX-FileCopyrightText: © 2022 Melg Eight <public.melg8@gmail.com>
+#
+# SPDX-License-Identifier: MIT
+
+---
+descriptor_id: CMAKE
+descriptor_label: "cmake"
+descriptor_type: format
+descriptor_flavors:
+  - cit
+file_extensions:
+  - ".cmake"
+file_names_regex:
+  - "CMakeLists.txt"
+linters:
+  # CMAKE_LINT
+  - linter_name: cmake-lint
+    linter_url: https://github.com/cheshirekow/cmake_format
+    cli_lint_mode: list_of_files
+    cli_help_arg_name: "--help"
+    cli_config_arg_name: "--config-files="
+    cli_version_arg_name: "--version"
+    config_file_name: ".cmake_format.yml"
+    cli_lint_errors_count: regex_sum
+    cli_lint_errors_regex: "(?:Convention|Refactor|Error|Warning): ([0-9]+)"
+    examples:
+      - "cmake-lint -c=./.cmake_format.yml CMakeLists.txt"
+    install:
+      dockerfile:
+        - RUN echo "is not implemented"

@@ -1,0 +1,27 @@
+# SPDX-FileCopyrightText: © 2022 Melg Eight <public.melg8@gmail.com>
+#
+# SPDX-License-Identifier: MIT
+
+---
+descriptor_id: LS
+descriptor_label: "ls"
+descriptor_type: other
+descriptor_flavors:
+  - cit
+file_extensions:
+  - "*"
+linters:
+  # LS_LINT
+  - linter_name: ls-lint
+    cli_lint_mode: project
+    linter_text: An extremely fast directory and filename linter
+    cli_executable: ls-lint
+    cli_help_arg_name: "--help"
+    cli_lint_errors_count: regex_count
+    cli_lint_errors_regex: "failed for rules"
+    linter_version_cache: "1.11.0"
+    examples:
+      - "ls-lint"
+    install:
+      dockerfile:
+        - RUN echo "is not implemented"

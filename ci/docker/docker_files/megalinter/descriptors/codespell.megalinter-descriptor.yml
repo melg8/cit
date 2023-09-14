@@ -1,0 +1,32 @@
+# SPDX-FileCopyrightText: © 2022 Melg Eight <public.melg8@gmail.com>
+#
+# SPDX-License-Identifier: MIT
+
+---
+descriptor_id: SPELL
+descriptor_type: format
+descriptor_flavors:
+  - cit
+file_extensions:
+  - "*"
+linters:
+  # CODESPELL
+  - linter_name: codespell
+    name: SPELL_CODESPELL
+    is_formatter: false
+    linter_text: check code for common misspellings
+    linter_url: https://github.com/codespell-project/codespell
+    cli_lint_mode: list_of_files
+    config_file_name: ".codespellrc"
+    cli_help_arg_name: "--help"
+    cli_version_arg_name: "--version"
+    cli_config_arg_name: "--config"
+    cli_lint_extra_args:
+      - "--check-filenames"
+    cli_lint_errors_count: regex_count
+    cli_lint_errors_regex: "==>"
+    examples:
+      - "codespell readme.md"
+    install:
+      pip:
+        - codespell
