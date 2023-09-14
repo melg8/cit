@@ -117,7 +117,7 @@ index 650f2cf535..7ddcbb4884 100644
 +            "BASH_SHFMT",
 +            "CMAKE_CMAKE_FORMAT",
 +            "CMAKE_CMAKE_LINT",
-+            "GIT_GIT_DIFF",
++            "REPOSITORY_GIT_DIFF",
 +            "GIT_GIT_SIZER",
 +            "GIT_CONFORM",
 +            "GIT_COMMITLINT",

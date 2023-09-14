@@ -70,6 +70,9 @@ RUN apt-fast -y install --no-install-recommends \
 RUN apt-fast -y install --no-install-recommends \
     cmake-format=0.6.*
 
+RUN apt-fast -y install --no-install-recommends \
+    git-sizer=1.5.*
+
 ENV LC_ALL C.UTF-8
 
 RUN usermod -l user ubuntu

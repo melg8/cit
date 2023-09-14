@@ -5,7 +5,7 @@
 ---
 APPLY_FIXES: all # all, none, or list of linter keys.
 
-# Example for key: GIT_GIT_DIFF uncomment to run only that linter.
+# Example for key: REPOSITORY_GIT_DIFF uncomment to run only that linter.
 # ENABLE_LINTERS: [CPP_CLANG_TIDY]
 
 # DEBUG - verbose output of command calls with respective arguments.
@@ -34,8 +34,6 @@ DISABLE_LINTERS:
     SPELL_MISSPELL,
     YAML_V8R,
     # To fix:
-    GIT_GIT_DIFF,
-    GIT_GIT_SIZER,
     GIT_CONFORM,
     GIT_COMMITLINT,
     GIT_GITLINT,
@@ -72,7 +70,7 @@ PRINT_ALPACA: false # Don't print logo.
 FILTER_REGEX_EXCLUDE: ".*/third_party/.*.hpp"
 
 # GIT_DIFF
-GIT_GIT_DIFF_ARGUMENTS: HEAD^
+REPOSITORY_GIT_DIFF_ARGUMENTS: HEAD^
 
 # GIT_COMMITLINT
 GIT_COMMITLINT_ARGUMENTS: --to HEAD
