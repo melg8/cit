@@ -62,6 +62,7 @@ COPY ./megalinter.sh /usr/bin/megalinter
 RUN chmod +x /usr/bin/megalinter
 
 COPY ./linters/bash_exec/bash-exec.sh /usr/bin/bash-exec
+COPY ./linters/git_spell/git-spell.sh /usr/bin/git-spell
 
 RUN apt-fast -y install --no-install-recommends \
     shellcheck=0.9.* \

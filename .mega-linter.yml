@@ -35,9 +35,8 @@ DISABLE_LINTERS:
     YAML_V8R,
     # To fix:
     GIT_GIT_LINT, # Needs ruby higher than default in ubuntu.
-    GIT_GIT_SPELL,
-    NIX_NIX_LINTER,
-    NIX_NIXPKGS_FMT_WRAPPER,
+    NIX_NIX_LINTER, # Deprecated in favor of pure docker.
+    NIX_NIXPKGS_FMT_WRAPPER, # Deprecated in favor of pure docker.
     SPELL_CSPELL,
     SPELL_CODESPELL,
     LICENSE_REUSE,
