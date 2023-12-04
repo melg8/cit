@@ -1,6 +1,6 @@
 {
-    "version": "0.1",
-    "language": "en",
+    "version": "0.2",
+    "language": "en,ru",
     "dictionaryDefinitions": [
         {
             "name": "workspace",

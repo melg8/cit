@@ -80,18 +80,20 @@ RUN apt-fast -y install --no-install-recommends \
 
 RUN apt-fast update \
  && apt-fast -y install --no-install-recommends \
+    gitlint \
+ && apt-fast -y autoremove \
+ && apt-fast clean
+
+RUN apt-fast update \
+ && apt-fast -y install --no-install-recommends \
     nodejs=18.13.* \
     npm=9.2.* \
  && apt-fast -y autoremove \
  && apt-fast clean
 
-RUN npm i -g @commitlint/cli
-
-RUN apt-fast update \
- && apt-fast -y install --no-install-recommends \
-    gitlint \
- && apt-fast -y autoremove \
- && apt-fast clean
+RUN npm i -g @commitlint/cli \
+ && npm i -g cspell \
+ && npm i -g @cspell/dict-ru_ru
 
 ENV LC_ALL C.UTF-8
 
@@ -100,5 +102,8 @@ RUN usermod -l user ubuntu
 
 USER user
 WORKDIR /home/user/work
+
+# Add ru locale to cspell as user
+RUN cspell link add @cspell/dict-ru_ru
 
 HEALTHCHECK NONE
