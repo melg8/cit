@@ -11,7 +11,7 @@ echo "command with args: " "${COMMAND}"
 
 # --privileged flag used for docker incompatibility with glibc-2.34 workaround.
 
-docker container run --rm --ulimit nofile=1024 \
+docker container run --rm --ulimit nofile=2048 \
 	-e REVIEWDOG_GITHUB_API_TOKEN \
 	-e GITHUB_REPOSITORY \
 	-e GITHUB_SHA \
@@ -24,4 +24,4 @@ docker container run --rm --ulimit nofile=1024 \
 	-v "/var/run/docker.sock:/var/run/docker.sock:rw" \
 	-v "${GITHUB_EVENT_PATH}":"/home/user/event.json" \
 	-v "$(pwd)":/home/user/work \
-	melg8/cit:0.0.7 bash -c "${COMMAND}"
+	melg8/cit:0.1.0 bash -c "${COMMAND}"
