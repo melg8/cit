@@ -40,7 +40,7 @@ class Rangev3Conan(ConanFile):
 
     def export_sources(self):
         export_conandata_patches(self)
-    
+
     def layout(self):
         basic_layout(self)
 

@@ -1,0 +1,36 @@
+# SPDX-FileCopyrightText: © 2022 Melg Eight <public.melg8@gmail.com>
+#
+# SPDX-License-Identifier: MIT
+
+---
+descriptor_id: GIT
+descriptor_type: other
+descriptor_flavors:
+  - cit
+file_extensions:
+  - "*"
+linters:
+  # WHITESPACE_FORMAT
+  - linter_name: whitespace-format
+    name: GIT_WHITESPACE_FORMAT
+    linter_text: Linter and formatter for source code files and text files
+    linter_url: https://github.com/DavidPal/whitespace-format
+    linter_repo: https://github.com/DavidPal/whitespace-format
+    linter_megalinter_ref_url: never
+    cli_config_arg_name: ""
+    cli_executable: whitespace-format
+    cli_lint_mode: list_of_files
+    cli_help_arg_name: "-h"
+    cli_lint_extra_args:
+      - "--check-only"
+    cli_lint_fix_remove_args:
+      - "--check-only"
+    cli_lint_fix_arg_name: "--normalize-new-line-markers"
+    cli_lint_errors_count: regex_count
+    cli_lint_errors_regex: "↳ "
+    linter_version_cache: "0.0.2"
+    help_command_return_code: 0
+    examples:
+      - "whitespace-format --normalize-new-line-markers CMakeLists.txt"
+    dockerfile:
+      - RUN echo "is not implemented"

@@ -113,7 +113,7 @@ SCENARIO("Conversion of display lines") {
     std::ranges::for_each(tests, [](auto test) {
       CHECK(SymbolsFrom(test.first) == test.second);
     });
-  } 
+  }
 }
 
 SCENARIO("Conversion of display buffer") {

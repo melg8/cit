@@ -104,7 +104,7 @@ diff --git a/megalinter/descriptors/all_flavors.json b/megalinter/descriptors/al
 index 650f2cf535..7ddcbb4884 100644
 --- a/megalinter/descriptors/all_flavors.json
 +++ b/megalinter/descriptors/all_flavors.json
-@@ -1,4 +1,40 @@
+@@ -1,4 +1,41 @@
  {
 +    "cit": {
 +        "descriptors": [
@@ -139,7 +139,8 @@ index 650f2cf535..7ddcbb4884 100644
 +            "YAML_YAMLLINT",
 +            "MARKDOWN_REMARK_LINT",
 +            "MARKDOWN_MDL",
-+            "MARKDOWN_TEXTLINT"
++            "MARKDOWN_TEXTLINT",
++            "GIT_WHITESPACE_FORMAT"
 +        ]
 +    },
      "ci_light": {

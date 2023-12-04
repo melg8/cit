@@ -22,8 +22,10 @@ linters:
     cli_config_arg_name: "--config-files="
     cli_version_arg_name: "--version"
     config_file_name: ".cmake_format.yml"
-    cli_lint_extra_args: "--check"
-    cli_lint_fix_remove_args: "--check"
+    cli_lint_extra_args:
+      - "--check"
+    cli_lint_fix_remove_args:
+      - "--check"
     cli_lint_fix_arg_name: "--in-place"
     examples:
       - "cmake-format --in-place -c=./.cmake_format.yml CMakeLists.txt"

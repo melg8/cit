@@ -34,9 +34,14 @@ DISABLE_LINTERS:
     SPELL_MISSPELL,
     YAML_V8R,
     # To fix:
+    GIT_WHITESPACE_FORMAT,
     GIT_GIT_LINT, # Needs ruby higher than default in ubuntu.
     NIX_NIX_LINTER, # Deprecated in favor of pure docker.
     NIX_NIXPKGS_FMT_WRAPPER, # Deprecated in favor of pure docker.
+
+    # Git diff adds false positives if empty lines are near changed line.
+    # Deprecated in favor of whitespace-format.
+    REPOSITORY_GIT_DIFF, 
     SPELL_CSPELL,
     SPELL_CODESPELL,
     LICENSE_REUSE,
@@ -66,7 +71,7 @@ PRINT_ALPACA: false # Don't print logo.
 FILTER_REGEX_EXCLUDE: ".*/third_party/.*.hpp"
 
 # GIT_DIFF
-REPOSITORY_GIT_DIFF_ARGUMENTS: HEAD
+REPOSITORY_GIT_DIFF_ARGUMENTS: HEAD^
 
 # GIT_COMMITLINT
 GIT_COMMITLINT_ARGUMENTS: --to HEAD
@@ -102,6 +107,16 @@ SPELL_CODESPELL_ARGUMENTS: >
   -D=-
   -D=ci/checks/dictionaries/spelling_corrections.txt
   --skip="sources/example_glassy/third_party/sources"
+
+# WHITESPACE_FORMAT
+GIT_WHITESPACE_FORMAT_ARGUMENTS:  >
+  --new-line-marker=auto
+  --add-new-line-marker-at-end-of-file
+  --normalize-new-line-markers
+  --remove-trailing-empty-lines
+  --replace-tabs-with-spaces=2
+  --remove-trailing-whitespace
+  --normalize-empty-files=one-line
 
 # CMAKE_FORMAT
 CMAKE_CMAKE_FORMAT_DISABLE_ERRORS: false

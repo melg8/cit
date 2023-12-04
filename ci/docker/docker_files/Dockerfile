@@ -44,26 +44,6 @@ RUN apt-fast -y install --no-install-recommends \
  && pip install conan \
  && pip install -U setuptools
 
-COPY ./megalinter/patches/megalinter.patch /tmp/megalinter.patch
-
-RUN mkdir /tmp/build \
- && cd /tmp/build \
- && git clone --branch v7.3.0 --depth 1 \
-    https://github.com/oxsecurity/megalinter.git \
- && cd megalinter \
- && mv /tmp/megalinter.patch ./megalinter.patch \
- && git apply ./megalinter.patch \
- && PYTHONDONTWRITEBYTECODE=1 python3 ./megalinter/setup.py install \
- && mkdir /megalinter-descriptors \
- && cp -r ./megalinter/descriptors/* /megalinter-descriptors
- 
-COPY ./megalinter/descriptors /megalinter-descriptors
-COPY ./megalinter.sh /usr/bin/megalinter
-RUN chmod +x /usr/bin/megalinter
-
-COPY ./linters/bash_exec/bash-exec.sh /usr/bin/bash-exec
-COPY ./linters/git_spell/git-spell.sh /usr/bin/git-spell
-
 RUN apt-fast -y install --no-install-recommends \
     shellcheck=0.9.* \
     shfmt=3.6.*
@@ -77,7 +57,6 @@ RUN apt-fast -y install --no-install-recommends \
 RUN apt-fast -y install --no-install-recommends \
     golang-go=2:1.* \
  && go install github.com/siderolabs/conform/cmd/conform@latest \
- && go install github.com/fernandrone/linelint@latest \
  && mv ~/go/bin/* /usr/local/bin/
 
 RUN apt-fast update \
@@ -96,6 +75,28 @@ RUN apt-fast update \
 RUN npm i -g @commitlint/cli \
  && npm i -g cspell \
  && npm i -g @cspell/dict-ru_ru
+
+RUN pip install whitespace-format
+
+COPY ./megalinter/patches/megalinter.patch /tmp/megalinter.patch
+
+RUN mkdir /tmp/build \
+ && cd /tmp/build \
+ && git clone --branch v7.3.0 --depth 1 \
+    https://github.com/oxsecurity/megalinter.git \
+ && cd megalinter \
+ && mv /tmp/megalinter.patch ./megalinter.patch \
+ && git apply ./megalinter.patch \
+ && PYTHONDONTWRITEBYTECODE=1 python3 ./megalinter/setup.py install \
+ && mkdir /megalinter-descriptors \
+ && cp -r ./megalinter/descriptors/* /megalinter-descriptors
+
+COPY ./megalinter.sh /usr/bin/megalinter
+RUN chmod +x /usr/bin/megalinter
+COPY ./megalinter/descriptors /megalinter-descriptors
+
+COPY ./linters/bash_exec/bash-exec.sh /usr/bin/bash-exec
+COPY ./linters/git_spell/git-spell.sh /usr/bin/git-spell
 
 ENV LC_ALL C.UTF-8
 
