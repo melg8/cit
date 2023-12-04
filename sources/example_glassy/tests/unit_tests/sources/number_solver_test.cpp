@@ -105,7 +105,7 @@ SCENARIO("Conversion of values") {
   }
 }
 
-SCENARIO("Convertion of display lines") {
+SCENARIO("Conversion of display lines") {
   SECTION("get proper symbols from display line") {
     using Tests = std::vector<std::pair<DisplayLine, Symbols>>;
     auto tests = Tests{{{}, ""}, {{0}, "-"}, {{0, 0, 1, 0, 0}, "--#--"}};
@@ -113,10 +113,10 @@ SCENARIO("Convertion of display lines") {
     std::ranges::for_each(tests, [](auto test) {
       CHECK(SymbolsFrom(test.first) == test.second);
     });
-  }
+  } 
 }
 
-SCENARIO("Convertion of display buffer") {
+SCENARIO("Conversion of display buffer") {
   SECTION("get proper symbols from display buffer") {
     using Tests = std::vector<std::pair<DisplayBuffer, Symbols>>;
     auto tests = Tests{

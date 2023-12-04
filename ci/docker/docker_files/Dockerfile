@@ -77,6 +77,7 @@ RUN apt-fast -y install --no-install-recommends \
 RUN apt-fast -y install --no-install-recommends \
     golang-go=2:1.* \
  && go install github.com/siderolabs/conform/cmd/conform@latest \
+ && go install github.com/fernandrone/linelint@latest \
  && mv ~/go/bin/* /usr/local/bin/
 
 RUN apt-fast update \
