@@ -11,7 +11,7 @@ APPLY_FIXES: all # all, none, or list of linter keys.
 # DEBUG - verbose output of command calls with respective arguments.
 # INFO - moderate output with linting statistics.
 # ERROR - minimum output only in case of error.
-LOG_LEVEL: INFO
+LOG_LEVEL: DEBUG
 
 # Dont check for linters that are not supported by cit but suggested by megalinter.
 FLAVOR_SUGGESTIONS: false

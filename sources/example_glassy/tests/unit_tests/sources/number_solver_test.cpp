@@ -96,7 +96,7 @@ SymbolsFromBuffer(const DisplayBuffer& display_buffer) noexcept {
 
 namespace glassy::test {
 
-SCENARIO("Convertion of values") {
+SCENARIO("Conversion of values") {
   SECTION("get proper symbol from single value") {
     using Tests = std::vector<std::pair<SingleValue, Symbol>>;
     auto tests = Tests{{0, '-'}, {1, '#'}, {127, ' '}};

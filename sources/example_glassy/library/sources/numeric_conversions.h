@@ -2,8 +2,8 @@
 //
 // SPDX-License-Identifier: MIT
 
-#ifndef NUMERIC_COVERSIONS_H
-#define NUMERIC_COVERSIONS_H
+#ifndef NUMERIC_CONVERSIONS_H
+#define NUMERIC_CONVERSIONS_H
 
 #include <asn_1_integer.h>
 #include <big_num.h>
@@ -51,4 +51,4 @@ FORCEINLINE Result<void> FromBigNum(
 
 }  // namespace glassy::convert
 
-#endif  // NUMERIC_COVERSIONS_H
+#endif  // NUMERIC_CONVERSIONS_H
