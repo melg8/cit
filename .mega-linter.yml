@@ -21,6 +21,7 @@ FLAVOR_SUGGESTIONS: false
 ENABLE_LINTERS: [
   #GIT_WHITESPACE_FORMAT
   #SPELL_CSPELL
+  #SPELL_CODESPELL
 ]
 
 # Linters that are not supported by cit but enabled for all megalinter images.
@@ -41,7 +42,7 @@ DISABLE_LINTERS:
     SPELL_MISSPELL,
     YAML_V8R,
     # To fix:
-    
+
     GIT_GIT_LINT, # Needs ruby higher than default in ubuntu.
 
     # Deprecated section.
@@ -54,7 +55,7 @@ DISABLE_LINTERS:
     REPOSITORY_GIT_DIFF,
 
     # Deprecated section end.
-    SPELL_CODESPELL,
+
     LICENSE_REUSE,
     LS_LS_SPELL,
     LS_LS_LINT,

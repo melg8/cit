@@ -8,6 +8,4 @@ dockfmt
 longsleep
 noninteractive
 siderolabs
-sybol
-sybols
 usermod

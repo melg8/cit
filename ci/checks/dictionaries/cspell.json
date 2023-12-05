@@ -59,6 +59,7 @@
                     "**node-packages.nix",
                     "**package-lock.json",
                     "**python-packages.nix",
+                    "**spelling_corrections.txt",
                     "**yarn.lock",
                     "**yarn_deps.nix",
                     "**megalinter.patch"]

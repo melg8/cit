@@ -98,6 +98,8 @@ COPY ./megalinter/descriptors /megalinter-descriptors
 COPY ./linters/bash_exec/bash-exec.sh /usr/bin/bash-exec
 COPY ./linters/git_spell/git-spell.sh /usr/bin/git-spell
 
+RUN pip install codespell
+
 ENV LC_ALL C.UTF-8
 
 RUN usermod -l user ubuntu
