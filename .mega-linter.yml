@@ -13,8 +13,15 @@ APPLY_FIXES: all # all, none, or list of linter keys.
 # ERROR - minimum output only in case of error.
 LOG_LEVEL: DEBUG
 
-# Dont check for linters that are not supported by cit but suggested by megalinter.
+# Dont check for linters that are not supported by cit but suggested by
+# megalinter.
 FLAVOR_SUGGESTIONS: false
+
+# Linters that are supported by cit. Uncomment line to enabled single linter.
+ENABLE_LINTERS: [
+  #GIT_WHITESPACE_FORMAT
+  #SPELL_CSPELL
+]
 
 # Linters that are not supported by cit but enabled for all megalinter images.
 DISABLE_LINTERS:
@@ -34,15 +41,19 @@ DISABLE_LINTERS:
     SPELL_MISSPELL,
     YAML_V8R,
     # To fix:
-    #GIT_WHITESPACE_FORMAT,
+    
     GIT_GIT_LINT, # Needs ruby higher than default in ubuntu.
+
+    # Deprecated section.
+
     NIX_NIX_LINTER, # Deprecated in favor of pure docker.
     NIX_NIXPKGS_FMT_WRAPPER, # Deprecated in favor of pure docker.
 
     # Git diff adds false positives if empty lines are near changed line.
     # Deprecated in favor of whitespace-format.
     REPOSITORY_GIT_DIFF,
-    SPELL_CSPELL,
+
+    # Deprecated section end.
     SPELL_CODESPELL,
     LICENSE_REUSE,
     LS_LS_SPELL,
