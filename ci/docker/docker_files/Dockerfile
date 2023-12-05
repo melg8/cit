@@ -97,6 +97,7 @@ COPY ./megalinter/descriptors /megalinter-descriptors
 
 COPY ./linters/bash_exec/bash-exec.sh /usr/bin/bash-exec
 COPY ./linters/git_spell/git-spell.sh /usr/bin/git-spell
+COPY ./linters/ls_spell/ls-spell.sh /usr/bin/ls-spell
 
 RUN pip install codespell
 

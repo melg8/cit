@@ -22,6 +22,7 @@ ENABLE_LINTERS: [
   #GIT_WHITESPACE_FORMAT
   #SPELL_CSPELL
   #SPELL_CODESPELL
+  #LS_LS_SPELL
 ]
 
 # Linters that are not supported by cit but enabled for all megalinter images.
@@ -57,7 +58,7 @@ DISABLE_LINTERS:
     # Deprecated section end.
 
     LICENSE_REUSE,
-    LS_LS_SPELL,
+
     LS_LS_LINT,
     CPP_CLANG_TIDY,
     CPP_CPPCHECK,
