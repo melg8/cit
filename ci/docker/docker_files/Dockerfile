@@ -103,6 +103,11 @@ COPY ./linters/ls_spell/ls_spell.sh /usr/bin/ls-spell
 
 RUN pip install codespell
 
+RUN apt-fast update \
+ && apt-fast -y install --no-install-recommends \
+    ruby3.1 \
+ && gem install mdl -v 0.9.0
+
 ENV LC_ALL C.UTF-8
 
 RUN usermod -l user ubuntu
