@@ -10,4 +10,4 @@ ARGUMENTS="-c=./.cmake_format.yml CMakeLists.txt ./**/CMakeLists.txt ./**/*.cmak
 
 # shellcheck disable=SC2086
 cmake-format --in-place ${ARGUMENTS} &&
-	echo "cmake-format applied"
+  echo "cmake-format applied"

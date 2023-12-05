@@ -7,8 +7,8 @@
 set -e
 
 nix --extra-experimental-features nix-command \
-	build -f ./ci/nix/docker_build.nix \
-	--keep-failed
+  build -f ./ci/nix/docker_build.nix \
+  --keep-failed
 
 ls -la .
 sha256sum ./result

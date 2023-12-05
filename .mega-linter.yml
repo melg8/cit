@@ -34,14 +34,14 @@ DISABLE_LINTERS:
     SPELL_MISSPELL,
     YAML_V8R,
     # To fix:
-    GIT_WHITESPACE_FORMAT,
+    #GIT_WHITESPACE_FORMAT,
     GIT_GIT_LINT, # Needs ruby higher than default in ubuntu.
     NIX_NIX_LINTER, # Deprecated in favor of pure docker.
     NIX_NIXPKGS_FMT_WRAPPER, # Deprecated in favor of pure docker.
 
     # Git diff adds false positives if empty lines are near changed line.
     # Deprecated in favor of whitespace-format.
-    REPOSITORY_GIT_DIFF, 
+    REPOSITORY_GIT_DIFF,
     SPELL_CSPELL,
     SPELL_CODESPELL,
     LICENSE_REUSE,
@@ -92,6 +92,9 @@ MARKDOWN_TEXTLINT_FILTER_REGEX_EXCLUDE: "license.md"
 # BASH_EXEC.
 ERROR_ON_MISSING_EXEC_BIT: true
 
+# BASH_SHFMT
+BASH_SHFMT_ARGUMENTS: "--indent 2"
+
 # YAML_YAMLLINT.
 YAML_YAMLLINT_ARGUMENTS: "-s" # Strict.
 
@@ -110,6 +113,7 @@ SPELL_CODESPELL_ARGUMENTS: >
 
 # WHITESPACE_FORMAT
 GIT_WHITESPACE_FORMAT_ARGUMENTS:  >
+  --exclude ".git/|.idea/|.pyc$/|LICENSES/|docs/images"
   --new-line-marker=auto
   --add-new-line-marker-at-end-of-file
   --normalize-new-line-markers

@@ -20,7 +20,7 @@ conan profile detect -f
 conan create ../ci/conan_recipes/range-v3/conanfile.py
 
 conan install .. \
-	--build missing \
-	-of "${PWD}" \
-	-s compiler="${CONAN_COMPILER}" \
-	-s compiler.version="${CONAN_COMPILER_VERSION}"
+  --build missing \
+  -of "${PWD}" \
+  -s compiler="${CONAN_COMPILER}" \
+  -s compiler.version="${CONAN_COMPILER_VERSION}"

@@ -6,5 +6,5 @@
 
 set -e
 git log --pretty="%B" |
-	cspell -v --config=./ci/checks/dictionaries/cspell.json stdin://git_log_temp.md
+  cspell -v --config=./ci/checks/dictionaries/cspell.json stdin://git_log_temp.md
 echo "git-spell OK"

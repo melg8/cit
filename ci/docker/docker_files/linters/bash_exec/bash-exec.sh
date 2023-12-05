@@ -5,8 +5,8 @@
 # SPDX-License-Identifier: MIT
 
 if [[ -x "$1" ]]; then
-	exit 0
+  exit 0
 else
-	echo "Error: File:[$1] is not executable"
-	exit 1
+  echo "Error: File:[$1] is not executable"
+  exit 1
 fi

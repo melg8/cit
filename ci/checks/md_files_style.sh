@@ -13,4 +13,4 @@ mdl .
 ignore=license.md
 
 find "$(pwd)" -name "*.md" ! -iname "${ignore}" \
-	-exec textlint --experimental --parallel {} +
+  -exec textlint --experimental --parallel {} +

@@ -15,14 +15,14 @@ SKIP=".git,\
 *node-packages.nix"
 
 apply_to_files() {
-	find . -type d \
-		\( \
-		-path ./.git -o \
-		-path ./build -o \
-		-path ./build_gcc -o \
-		-path ./build_clang \) \
-		-prune -o -type f -print \
-		-exec "$@" {} +
+  find . -type d \
+    \( \
+    -path ./.git -o \
+    -path ./build -o \
+    -path ./build_gcc -o \
+    -path ./build_clang \) \
+    -prune -o -type f -print \
+    -exec "$@" {} +
 }
 
 apply_to_files cspell -v --config=./ci/checks/dictionaries/cspell.json

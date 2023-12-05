@@ -13,9 +13,9 @@ MEGALINTER_FLAVOR=cit
 export MEGALINTER_FLAVOR
 
 if megalinter --flavor; then
-	echo "All checks are passed."
+  echo "All checks are passed."
 else
-	echo "To view the results in a browser run:
+  echo "To view the results in a browser run:
     > firefox $(pwd)/report/errors/index.html"
-	exit 1
+  exit 1
 fi
