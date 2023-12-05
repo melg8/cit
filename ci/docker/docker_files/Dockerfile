@@ -95,9 +95,11 @@ COPY ./megalinter.sh /usr/bin/megalinter
 RUN chmod +x /usr/bin/megalinter
 COPY ./megalinter/descriptors /megalinter-descriptors
 
-COPY ./linters/bash_exec/bash-exec.sh /usr/bin/bash-exec
-COPY ./linters/git_spell/git-spell.sh /usr/bin/git-spell
-COPY ./linters/ls_spell/ls-spell.sh /usr/bin/ls-spell
+RUN npm i -g @ls-lint/ls-lint
+
+COPY ./linters/bash_exec/bash_exec.sh /usr/bin/bash-exec
+COPY ./linters/git_spell/git_spell.sh /usr/bin/git-spell
+COPY ./linters/ls_spell/ls_spell.sh /usr/bin/ls-spell
 
 RUN pip install codespell
 

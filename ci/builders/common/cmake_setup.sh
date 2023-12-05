@@ -17,7 +17,7 @@ mkdir -p "${DIRECTORY}"
 cd "${DIRECTORY}"
 
 conan profile detect -f
-conan create ../ci/conan_recipes/range-v3/conanfile.py
+conan create ../ci/conan_recipes/range_v3/conanfile.py
 
 conan install .. \
   --build missing \

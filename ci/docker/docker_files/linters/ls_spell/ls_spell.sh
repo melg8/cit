@@ -6,24 +6,23 @@
 
 set -e
 
-echo "ARGS: $@"
+echo "ARGS: $*"
 
 all_files=""
 config_file=
 config_arg="-c"
 
-POSITIONAL_ARGS=()
 while [[ $# -gt 0 ]]; do
   case $1 in
-    -c|--config)
-      config_arg="$1"
-      config_file="$2"
-      shift 2
-      ;;
-    *)
-      all_files+="$1 "
-      shift
-      ;;
+  -c | --config)
+    config_arg="$1"
+    config_file="$2"
+    shift 2
+    ;;
+  *)
+    all_files+="$1 "
+    shift
+    ;;
   esac
 done
 

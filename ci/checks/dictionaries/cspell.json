@@ -51,7 +51,7 @@
                     "**LICENSES**",
                     "sources/example_glassy/third_party/sources/**",
                     "**CMakeLists.txt.user",
-                    "**conan_recipes/range-v3/conanfile.py",
+                    "**conan_recipes/range_v3/conanfile.py",
                     "**deps.nix",
                     "**Gemfile.lock",
                     "**gemset.nix",

@@ -13,7 +13,7 @@ ls:
   .md: snake_case
   .sh: snake_case
   .patch: snake_case
-  .txt: regex:CMakeLists | snake_case
+  .txt: regex:CMakeLists | snake_case | regex:.*megalinter_file_names_cspell.*
   .nix: >
     regex:node-env | regex:node-packages | regex:python-packages | snake_case
 
@@ -30,3 +30,5 @@ ignore:
   - build_gcc
   - report
   - justfile
+  - megalinter-reports
+  - megalinter_file_names_cspell.txt
