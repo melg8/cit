@@ -1,8 +1,8 @@
 diff --git a/.automation/build.py b/.automation/build.py
-index 1111671729..25266539bf 100644
+index ec901a9..c1963cc 100644
 --- a/.automation/build.py
 +++ b/.automation/build.py
-@@ -2739,7 +2739,7 @@ def generate_documentation_all_linters():
+@@ -2767,7 +2767,7 @@ def generate_documentation_all_linters():
              if linter.linter_megalinter_ref_url not in ["no", "never"]:
                  md_url = f"[MegaLinter reference]({linter.linter_megalinter_ref_url}){{target=_blank}}"
              if linter.linter_megalinter_ref_url == "no":
@@ -12,7 +12,7 @@ index 1111671729..25266539bf 100644
              elif linter.linter_megalinter_ref_url == "never":
                  status = "Θ Not applicable"
 diff --git a/.automation/test/csharp/reports/ERROR-CSHARP_DOTNET_FORMAT.txt b/.automation/test/csharp/reports/ERROR-CSHARP_DOTNET_FORMAT.txt
-index 3a8bcab117..7d370c2e4c 100644
+index 3a8bcab..7d370c2 100644
 --- a/.automation/test/csharp/reports/ERROR-CSHARP_DOTNET_FORMAT.txt
 +++ b/.automation/test/csharp/reports/ERROR-CSHARP_DOTNET_FORMAT.txt
 @@ -2,12 +2,12 @@ Results of dotnet-format linter (version 000)
@@ -31,7 +31,7 @@ index 3a8bcab117..7d370c2e4c 100644
      .automation/test/csharp/csharp_bad_02.cs(7,25): error WHITESPACE: Fix whitespace formatting. Delete 1 characters. [.automation/test/csharp/csharp_project.csproj]
      .automation/test/csharp/csharp_bad_02.cs(9,30): error WHITESPACE: Fix whitespace formatting. Delete 1 characters. [.automation/test/csharp/csharp_project.csproj]
 diff --git a/.automation/test/spell_lychee/reports/ERROR-SPELL_LYCHEE.txt b/.automation/test/spell_lychee/reports/ERROR-SPELL_LYCHEE.txt
-index ee646b78a3..8ee1d7cf67 100644
+index ee646b7..8ee1d7c 100644
 --- a/.automation/test/spell_lychee/reports/ERROR-SPELL_LYCHEE.txt
 +++ b/.automation/test/spell_lychee/reports/ERROR-SPELL_LYCHEE.txt
 @@ -2,7 +2,7 @@ Results of lychee linter (version 0.0.0)
@@ -44,7 +44,7 @@ index ee646b78a3..8ee1d7cf67 100644
  📝 Summary
  ---------------------
 diff --git a/.automation/test/vbdotnet/reports/ERROR-VBDOTNET_DOTNET_FORMAT.txt b/.automation/test/vbdotnet/reports/ERROR-VBDOTNET_DOTNET_FORMAT.txt
-index 1fa4ea9693..97fb95b047 100644
+index 1fa4ea9..97fb95b 100644
 --- a/.automation/test/vbdotnet/reports/ERROR-VBDOTNET_DOTNET_FORMAT.txt
 +++ b/.automation/test/vbdotnet/reports/ERROR-VBDOTNET_DOTNET_FORMAT.txt
 @@ -2,7 +2,7 @@ Results of dotnet-format linter (version 000)
@@ -66,10 +66,10 @@ index 1fa4ea9693..97fb95b047 100644
      .automation/test/vbdotnet/vbdotnet_bad_1.vb(4,20): error WHITESPACE: Fix whitespace formatting. Delete 2 characters. [.automation/test/vbdotnet/vb_projecty.vbproj]
      .automation/test/vbdotnet/vbdotnet_bad_1.vb(5,7): error WHITESPACE: Fix whitespace formatting. Insert '\s\s'. [.automation/test/vbdotnet/vb_projecty.vbproj]
 diff --git a/CHANGELOG.md b/CHANGELOG.md
-index 6e2839e253..34afe433db 100644
+index 8ed4a05..bb315c6 100644
 --- a/CHANGELOG.md
 +++ b/CHANGELOG.md
-@@ -3251,7 +3251,7 @@ _Note: MegaLinter 6.9.0 release has been cancelled: it was fine but the docker i
+@@ -3501,7 +3501,7 @@ _Note: MegaLinter 6.9.0 release has been cancelled: it was fine but the docker i
    - Cleanup unused legacy from Super-Linter
  
  - Reports
@@ -79,7 +79,7 @@ index 6e2839e253..34afe433db 100644
  - Documentation
    - Add Install button for VSCode IDE extensions when available
 diff --git a/megalinter/MegaLinter.py b/megalinter/MegaLinter.py
-index 8bcb894d5e..f45148e8ee 100644
+index 2f374c6..944e059 100644
 --- a/megalinter/MegaLinter.py
 +++ b/megalinter/MegaLinter.py
 @@ -862,7 +862,7 @@ class Megalinter:
@@ -101,53 +101,53 @@ index 8bcb894d5e..f45148e8ee 100644
              )
              sys.exit(1)
 diff --git a/megalinter/descriptors/all_flavors.json b/megalinter/descriptors/all_flavors.json
-index 650f2cf535..7ddcbb4884 100644
+index 1f5bf8d..3a82ca3 100644
 --- a/megalinter/descriptors/all_flavors.json
 +++ b/megalinter/descriptors/all_flavors.json
 @@ -1,4 +1,41 @@
  {
-+    "cit": {
-+        "descriptors": [
-+            "GIT"
-+        ],
-+        "label": "Control it! Comprehensive solution for C++ projects",
-+        "linters": [
-+            "BASH_EXEC",
-+            "BASH_SHELLCHECK",
-+            "BASH_SHFMT",
-+            "CMAKE_CMAKE_FORMAT",
-+            "CMAKE_CMAKE_LINT",
-+            "REPOSITORY_GIT_DIFF",
-+            "GIT_GIT_SIZER",
-+            "GIT_CONFORM",
-+            "GIT_COMMITLINT",
-+            "GIT_GITLINT",
-+            "GIT_GIT_LINT",
-+            "GIT_GIT_SPELL",
-+            "NIX_NIX_LINTER",
-+            "NIX_NIXPKGS_FMT_WRAPPER",
-+            "SPELL_CSPELL",
-+            "SPELL_CODESPELL",
-+            "LICENSE_REUSE",
-+            "LS_LS_SPELL",
-+            "LS_LS_LINT",
-+            "CPP_CLANG_TIDY",
-+            "CPP_CPPCHECK",
-+            "CPP_CPPLINT",
-+            "CPP_CLANG_FORMAT",
-+            "YAML_PRETTIER",
-+            "YAML_YAMLLINT",
-+            "MARKDOWN_REMARK_LINT",
-+            "MARKDOWN_MDL",
-+            "MARKDOWN_TEXTLINT",
-+            "GIT_WHITESPACE_FORMAT"
-+        ]
-+    },
-     "ci_light": {
++  "cit": {
++      "descriptors": [
++          "GIT"
++      ],
++      "label": "Control it! Comprehensive solution for C++ projects",
++      "linters": [
++          "BASH_EXEC",
++          "BASH_SHELLCHECK",
++          "BASH_SHFMT",
++          "CMAKE_CMAKE_FORMAT",
++          "CMAKE_CMAKE_LINT",
++          "REPOSITORY_GIT_DIFF",
++          "GIT_GIT_SIZER",
++          "GIT_CONFORM",
++          "GIT_COMMITLINT",
++          "GIT_GITLINT",
++          "GIT_GIT_LINT",
++          "GIT_GIT_SPELL",
++          "NIX_NIX_LINTER",
++          "NIX_NIXPKGS_FMT_WRAPPER",
++          "SPELL_CSPELL",
++          "SPELL_CODESPELL",
++          "LICENSE_REUSE",
++          "LS_LS_SPELL",
++          "LS_LS_LINT",
++          "CPP_CLANG_TIDY",
++          "CPP_CPPCHECK",
++          "CPP_CPPLINT",
++          "CPP_CLANG_FORMAT",
++          "YAML_PRETTIER",
++          "YAML_YAMLLINT",
++          "MARKDOWN_REMARK_LINT",
++          "MARKDOWN_MDL",
++          "MARKDOWN_TEXTLINT",
++          "GIT_WHITESPACE_FORMAT"
++      ]
++  },
+     "c_cpp": {
          "descriptors": [
-             "BASH"
+             "BASH",
 diff --git a/megalinter/descriptors/schemas/megalinter-descriptor.jsonschema.json b/megalinter/descriptors/schemas/megalinter-descriptor.jsonschema.json
-index 06f6f8ade8..8c352de8e3 100644
+index c62ff23..6387a0c 100644
 --- a/megalinter/descriptors/schemas/megalinter-descriptor.jsonschema.json
 +++ b/megalinter/descriptors/schemas/megalinter-descriptor.jsonschema.json
 @@ -41,6 +41,7 @@
@@ -157,9 +157,9 @@ index 06f6f8ade8..8c352de8e3 100644
 +        "cit",
          "ci_light",
          "cupcake",
-         "documentation",
+         "c_cpp",
 diff --git a/megalinter/flavor_factory.py b/megalinter/flavor_factory.py
-index 7d4b943b1a..07502bdf1b 100644
+index fbef15e..09fe73e 100644
 --- a/megalinter/flavor_factory.py
 +++ b/megalinter/flavor_factory.py
 @@ -41,6 +41,7 @@ def list_flavor_linters(flavor_id):
@@ -171,7 +171,7 @@ index 7d4b943b1a..07502bdf1b 100644
              "label": "Optimized for CI items (Dockerfile, Jenkinsfile, JSON/YAML schemas, XML)"
          },
 diff --git a/megalinter/reporters/ConsoleLinterReporter.py b/megalinter/reporters/ConsoleLinterReporter.py
-index e1b56ae7e1..d0da07c780 100644
+index e1b56ae..d0da07c 100644
 --- a/megalinter/reporters/ConsoleLinterReporter.py
 +++ b/megalinter/reporters/ConsoleLinterReporter.py
 @@ -67,7 +67,7 @@ class ConsoleLinterReporter(Reporter):
@@ -193,7 +193,7 @@ index e1b56ae7e1..d0da07c780 100644
                  )
              )
 diff --git a/megalinter/reporters/ConsoleReporter.py b/megalinter/reporters/ConsoleReporter.py
-index 3b91311b8c..418cd7fa81 100644
+index 3b91311..418cd7f 100644
 --- a/megalinter/reporters/ConsoleReporter.py
 +++ b/megalinter/reporters/ConsoleReporter.py
 @@ -72,7 +72,7 @@ class ConsoleReporter(Reporter):
@@ -206,7 +206,7 @@ index 3b91311b8c..418cd7fa81 100644
                  errors = str(linter.total_number_errors)
                  if linter.cli_lint_mode == "project":
 diff --git a/megalinter/reporters/TextReporter.py b/megalinter/reporters/TextReporter.py
-index 984982353f..e464b9a3da 100644
+index 9849823..e464b9a 100644
 --- a/megalinter/reporters/TextReporter.py
 +++ b/megalinter/reporters/TextReporter.py
 @@ -59,7 +59,7 @@ class TextReporter(Reporter):
@@ -228,7 +228,7 @@ index 984982353f..e464b9a3da 100644
              if self.report_type == "detailed" or self.master.status != "success":
                  stdout = utils.normalize_log_string(
 diff --git a/megalinter/utils_reporter.py b/megalinter/utils_reporter.py
-index a0caed7e76..afcacf517b 100644
+index a0caed7..afcacf5 100644
 --- a/megalinter/utils_reporter.py
 +++ b/megalinter/utils_reporter.py
 @@ -29,7 +29,7 @@ def build_markdown_summary(reporter_self, action_run_url):

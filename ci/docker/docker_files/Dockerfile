@@ -82,7 +82,7 @@ COPY ./megalinter/patches/megalinter.patch /tmp/megalinter.patch
 
 RUN mkdir /tmp/build \
  && cd /tmp/build \
- && git clone --branch v7.3.0 --depth 1 \
+ && git clone --branch v7.6.0 --depth 1 \
     https://github.com/oxsecurity/megalinter.git \
  && cd megalinter \
  && mv /tmp/megalinter.patch ./megalinter.patch \
