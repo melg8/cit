@@ -139,6 +139,8 @@ RUN npm i -g --no-cache --ignore-scripts \
 RUN npm i -g --no-cache --ignore-scripts \
   prettier
 
+RUN pip install yamllint
+
 ENV LC_ALL C.UTF-8
 
 RUN usermod -l user ubuntu
