@@ -108,6 +108,10 @@ RUN apt-fast update \
     ruby3.1 \
  && gem install mdl -v 0.9.0
 
+
+RUN npm i -g --no-cache --ignore-scripts \
+    remark-cli
+
 ENV LC_ALL C.UTF-8
 
 RUN usermod -l user ubuntu

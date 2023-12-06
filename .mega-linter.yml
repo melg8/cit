@@ -17,15 +17,23 @@ LOG_LEVEL: DEBUG
 # megalinter.
 FLAVOR_SUGGESTIONS: false
 
-# Linters that are supported by cit. Uncomment line to enabled single linter.
+# Linters that are supported by cit. Uncomment line to enable only one linter.
 ENABLE_LINTERS: [
+  #BASH_BASH_EXEC
+  #BASH_SHELLCHECK
+  #CMAKE_CMAKE_FORMAT
+  #CMAKE_CMAKE_LINT
+  #GIT_COMMITLINT
+  #GIT_CONFORM
+  #GIT_GIT_SIZER
+  #GIT_GIT_SPELL
   #GIT_WHITESPACE_FORMAT
-  #SPELL_CSPELL
-  #SPELL_CODESPELL
-  #LS_LS_SPELL
   #LS_LS_LINT
-
+  #LS_LS_SPELL
   #MARKDOWN_MDL
+  #MARKDOWN_REMARK_LINT
+  #SPELL_CODESPELL
+  #SPELL_CSPELL
 ]
 
 # Linters that are not supported by cit but enabled for all megalinter images.
@@ -69,8 +77,6 @@ DISABLE_LINTERS:
     CPP_CLANG_FORMAT,
     YAML_PRETTIER,
     YAML_YAMLLINT,
-    MARKDOWN_REMARK_LINT,
-
     MARKDOWN_TEXTLINT,
   ]
 

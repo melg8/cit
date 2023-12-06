@@ -291,7 +291,7 @@ bash scripts for each action. Check
   - [doxygen](https://github.com/doxygen/doxygen) - GPLv2.0
   - [standardese](https://github.com/standardese/standardese) - MIT
   - [mull](https://github.com/mull-project/mull) - Apache-2.0
-  - [mutate_cpp](https://github.com/nlohmann/mutate_cpp) - MIT
+  - [mutate\_cpp](https://github.com/nlohmann/mutate_cpp) - MIT
   - [rapidcheck](https://github.com/emil-e/rapidcheck) - BSD-2-Clause
   - [clazy](https://github.com/KDE/clazy) - LGPLv2
   - [infer](https://github.com/facebook/infer) - MIT

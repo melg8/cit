@@ -146,6 +146,18 @@ index 1f5bf8d..3a82ca3 100644
      "c_cpp": {
          "descriptors": [
              "BASH",
+diff --git a/megalinter/descriptors/markdown.megalinter-descriptor.yml b/megalinter/descriptors/markdown.megalinter-descriptor.yml
+index 31518b7..2247e3e 100644
+--- a/megalinter/descriptors/markdown.megalinter-descriptor.yml
++++ b/megalinter/descriptors/markdown.megalinter-descriptor.yml
+@@ -55,7 +55,6 @@ linters:
+           url: https://marketplace.visualstudio.com/items/DavidAnson.vscode-markdownlint
+   # remark-lint
+   - linter_name: remark-lint
+-    disabled: true
+     is_formatter: true
+     activation_rules:
+       - type: variable
 diff --git a/megalinter/descriptors/schemas/megalinter-descriptor.jsonschema.json b/megalinter/descriptors/schemas/megalinter-descriptor.jsonschema.json
 index c62ff23..6387a0c 100644
 --- a/megalinter/descriptors/schemas/megalinter-descriptor.jsonschema.json
