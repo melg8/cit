@@ -34,6 +34,7 @@ ENABLE_LINTERS: [
   #MARKDOWN_REMARK_LINT
   #SPELL_CODESPELL
   #SPELL_CSPELL
+  #MARKDOWN_TEXTLINT,
 ]
 
 # Linters that are not supported by cit but enabled for all megalinter images.
@@ -77,7 +78,6 @@ DISABLE_LINTERS:
     CPP_CLANG_FORMAT,
     YAML_PRETTIER,
     YAML_YAMLLINT,
-    MARKDOWN_TEXTLINT,
   ]
 
 # Policies.

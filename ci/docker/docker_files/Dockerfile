@@ -73,8 +73,8 @@ RUN apt-fast update \
  && apt-fast clean
 
 RUN npm i -g @commitlint/cli \
- && npm i -g cspell \
- && npm i -g @cspell/dict-ru_ru
+  -g cspell \
+  -g @cspell/dict-ru_ru
 
 RUN pip install whitespace-format
 
@@ -111,6 +111,30 @@ RUN apt-fast update \
 
 RUN npm i -g --no-cache --ignore-scripts \
     remark-cli
+
+RUN npm i -g --no-cache --ignore-scripts \
+  textlint \
+  textlint-rule-no-dead-link \
+  textlint-rule-no-start-duplicated-conjunction \
+  textlint-rule-max-comma \
+  textlint-rule-no-exclamation-question-mark \
+  textlint-rule-no-empty-section \
+  textlint-rule-date-weekday-mismatch \
+  textlint-rule-terminology \
+  textlint-rule-period-in-list-item \
+  @textlint-rule/textlint-rule-no-invalid-control-character \
+  @textlint-rule/textlint-rule-no-unmatched-pair \
+  textlint-rule-footnote-order \
+  textlint-rule-max-doc-width \
+  textlint-rule-abbr-within-parentheses \
+  textlint-rule-alex \
+  textlint-rule-ginger \
+  textlint-rule-write-good \
+  textlint-rule-en-max-word-count \
+  textlint-rule-apostrophe \
+  textlint-rule-diacritics \
+  textlint-rule-stop-words \
+  textlint-rule-en-capitalization
 
 ENV LC_ALL C.UTF-8
 

@@ -94,7 +94,7 @@ ready to use template.
 
 ## Current status
 
-This project is under development, expect changes in api, setup and tools.
+This project is under development, expect changes in API, setup and tools.
 It uses opinionated set of rules and conventions for project,
 feel free to change configuration files to best fit your personal needs.
 You can fork and play with it, contributions to the source code,
