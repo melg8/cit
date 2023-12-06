@@ -51,7 +51,7 @@ int AlwaysFailAdd(BIGNUM*, const BIGNUM*, const BIGNUM*) { return 0; }
 
 int AlwaysFailBnToBin(const BIGNUM*, unsigned char*) { return -1; }
 
-} // namespace
+}  // namespace
 }
 
 #define BN_new MockBnNew

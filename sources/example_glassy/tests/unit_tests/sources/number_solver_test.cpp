@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: © 2022 Melg Eight <public.melg8@gmail.com>
+//
+// SPDX-License-Identifier: MIT
+
 #include <iostream>
 #include <string>
 #include <vector>
@@ -101,7 +105,8 @@ SCENARIO("Conversion of values") {
     using Tests = std::vector<std::pair<SingleValue, Symbol>>;
     auto tests = Tests{{0, '-'}, {1, '#'}, {127, ' '}};
     std::ranges::for_each(
-        tests, [&](auto test) { CHECK(SymbolFrom(test.first) == test.second); });
+        tests,
+        [&](auto test) { CHECK(SymbolFrom(test.first) == test.second); });
   }
 }
 

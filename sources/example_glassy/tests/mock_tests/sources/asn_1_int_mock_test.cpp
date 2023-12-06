@@ -32,7 +32,7 @@ ASN1_INTEGER* MockAsn1IntegerDup(const ASN1_INTEGER*) noexcept {
   return nullptr;
 }
 
-} // namespace
+}  // namespace
 }
 
 #define ASN1_INTEGER_new MockAsn1IntegerNew

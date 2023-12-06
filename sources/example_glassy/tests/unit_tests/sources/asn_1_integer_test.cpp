@@ -237,7 +237,7 @@ void TestFunction(
   CHECK(pointer != nullptr);
 }
 
-} // namespace
+}  // namespace
 
 SCENARIO("Asn1IntegerConstView") {
   SECTION("create Asn1IntegerConstView from owners") {
