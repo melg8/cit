@@ -40,6 +40,7 @@ RUN apt-get -y update \
 RUN apt-fast -y install --no-install-recommends \
     python3-full \
     python3-pip \
+    python3-dev \
  && rm /usr/lib/python3.11/EXTERNALLY-MANAGED \
  && pip install conan \
  && pip install -U setuptools
@@ -144,6 +145,12 @@ RUN pip install yamllint
 RUN apt-fast update \
  && apt-fast -y install --no-install-recommends \
     clang-tidy-16
+
+RUN apt-get -y update \
+ && apt-get -y install --no-install-recommends \
+    cppcheck
+
+RUN pip3 install codechecker
 
 ENV LC_ALL C.UTF-8
 
