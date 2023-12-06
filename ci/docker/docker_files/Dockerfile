@@ -136,6 +136,9 @@ RUN npm i -g --no-cache --ignore-scripts \
   textlint-rule-stop-words \
   textlint-rule-en-capitalization
 
+RUN npm i -g --no-cache --ignore-scripts \
+  prettier
+
 ENV LC_ALL C.UTF-8
 
 RUN usermod -l user ubuntu

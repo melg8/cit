@@ -17,29 +17,28 @@ LOG_LEVEL: DEBUG
 # megalinter.
 FLAVOR_SUGGESTIONS: false
 
-# Linters that are supported by cit. Uncomment line to enable only one linter.
-ENABLE_LINTERS: [
-  #BASH_BASH_EXEC
-  #BASH_SHELLCHECK
-  #CMAKE_CMAKE_FORMAT
-  #CMAKE_CMAKE_LINT
-  #GIT_COMMITLINT
-  #GIT_CONFORM
-  #GIT_GIT_SIZER
-  #GIT_GIT_SPELL
-  #GIT_WHITESPACE_FORMAT
-  #LS_LS_LINT
-  #LS_LS_SPELL
-  #MARKDOWN_MDL
-  #MARKDOWN_REMARK_LINT
-  #SPELL_CODESPELL
-  #SPELL_CSPELL
-  #MARKDOWN_TEXTLINT,
-]
+# Linters that are supported by cit. Can enable to run single linter.
+#BASH_BASH_EXEC
+#BASH_SHELLCHECK
+#CMAKE_CMAKE_FORMAT
+#CMAKE_CMAKE_LINT
+#GIT_COMMITLINT
+#GIT_CONFORM
+#GIT_GIT_SIZER
+#GIT_GIT_SPELL
+#GIT_WHITESPACE_FORMAT
+#LS_LS_LINT
+#LS_LS_SPELL
+#MARKDOWN_MDL
+#MARKDOWN_REMARK_LINT
+#MARKDOWN_TEXTLINT
+#SPELL_CODESPELL
+#SPELL_CSPELL
+#YAML_PRETTIER
+ENABLE_LINTERS: []
 
 # Linters that are not supported by cit but enabled for all megalinter images.
-DISABLE_LINTERS:
-  [
+DISABLE_LINTERS: [
     ACTION_ACTIONLINT,
     C_CPPLINT,
     COPYPASTE_JSCPD,
@@ -55,28 +54,19 @@ DISABLE_LINTERS:
     SPELL_MISSPELL,
     YAML_V8R,
     # To fix:
-
     GIT_GIT_LINT, # Needs ruby higher than default in ubuntu.
-
     # Deprecated section.
-
     NIX_NIX_LINTER, # Deprecated in favor of pure docker.
     NIX_NIXPKGS_FMT_WRAPPER, # Deprecated in favor of pure docker.
-
     # Git diff adds false positives if empty lines are near changed line.
     # Deprecated in favor of whitespace-format.
     REPOSITORY_GIT_DIFF,
-
     # Deprecated section end.
-
     LICENSE_REUSE,
-
-
     CPP_CLANG_TIDY,
     CPP_CPPCHECK,
     CPP_CPPLINT,
     CPP_CLANG_FORMAT,
-    YAML_PRETTIER,
     YAML_YAMLLINT,
   ]
 
@@ -134,7 +124,7 @@ SPELL_CODESPELL_ARGUMENTS: >
   --skip="sources/example_glassy/third_party/sources"
 
 # WHITESPACE_FORMAT
-GIT_WHITESPACE_FORMAT_ARGUMENTS:  >
+GIT_WHITESPACE_FORMAT_ARGUMENTS: >
   --exclude ".git/|.idea/|.pyc$/|LICENSES/|docs/images"
   --new-line-marker=auto
   --add-new-line-marker-at-end-of-file
