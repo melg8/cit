@@ -23,7 +23,7 @@ cpplint \
   --root=./sources \
   ./sources
 
-./ci/builders/common/cmake_setup.sh g++ gcc 12
+./ci/builders/common/cmake_setup.sh g++ gcc 13
 
 DIRECTORY="./build_gcc"
 
@@ -47,7 +47,7 @@ cppcheck \
   --suppress=unmatchedSuppression \
   --suppress=missingIncludeSystem
 
-./ci/builders/common/cmake_setup.sh clang++ clang 14
+./ci/builders/common/cmake_setup.sh clang++ clang 16
 
 DIRECTORY="./build_clang"
 

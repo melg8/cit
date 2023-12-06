@@ -42,8 +42,8 @@ RUN apt-fast -y install --no-install-recommends \
     python3-pip \
     python3-dev \
  && rm /usr/lib/python3.11/EXTERNALLY-MANAGED \
- && pip install conan \
- && pip install -U setuptools
+ && pip install --no-cache-dir conan \
+ && pip install --no-cache-dir -U setuptools
 
 RUN apt-fast -y install --no-install-recommends \
     shellcheck=0.9.* \
@@ -77,7 +77,7 @@ RUN npm i -g @commitlint/cli \
   -g cspell \
   -g @cspell/dict-ru_ru
 
-RUN pip install whitespace-format
+RUN pip install --no-cache-dir whitespace-format
 
 COPY ./megalinter/patches/megalinter.patch /tmp/megalinter.patch
 
@@ -102,7 +102,7 @@ COPY ./linters/bash_exec/bash_exec.sh /usr/bin/bash-exec
 COPY ./linters/git_spell/git_spell.sh /usr/bin/git-spell
 COPY ./linters/ls_spell/ls_spell.sh /usr/bin/ls-spell
 
-RUN pip install codespell
+RUN pip install --no-cache-dir codespell
 
 RUN apt-fast update \
  && apt-fast -y install --no-install-recommends \
@@ -140,7 +140,7 @@ RUN npm i -g --no-cache --ignore-scripts \
 RUN npm i -g --no-cache --ignore-scripts \
   prettier
 
-RUN pip install yamllint
+RUN pip install --no-cache-dir yamllint
 
 RUN apt-fast update \
  && apt-fast -y install --no-install-recommends \
@@ -148,9 +148,12 @@ RUN apt-fast update \
 
 RUN apt-get -y update \
  && apt-get -y install --no-install-recommends \
-    cppcheck
+    cppcheck \
+    ninja-build
 
-RUN pip3 install codechecker
+RUN pip3 install --no-cache-dir codechecker
+
+RUN pip3 install --no-cache-dir cpplint
 
 ENV LC_ALL C.UTF-8
 

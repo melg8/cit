@@ -25,6 +25,7 @@ FLAVOR_SUGGESTIONS: false
 # CMAKE_CMAKE_LINT,
 # CPP_CLANG_TIDY,
 # CPP_CPPCHECK,
+# CPP_CPPLINT,
 # GIT_COMMITLINT,
 # GIT_CONFORM,
 # GIT_GIT_SIZER,
@@ -53,7 +54,6 @@ DISABLE_LINTERS: [
     REPOSITORY_GIT_DIFF,
     # Deprecated section end.
     LICENSE_REUSE,
-    CPP_CPPLINT,
     CPP_CLANG_FORMAT,
   ]
 
@@ -137,7 +137,7 @@ CPP_CPPCHECK_PRE_COMMANDS:
   - command: >
       rm -rf ./build_gcc/*;
       mkdir -p report/linters_logs/cppcheck_raw;
-      ./ci/builders/common/cmake_setup.sh g++ gcc 12;
+      ./ci/builders/common/cmake_setup.sh g++ gcc 13;
       cmake -B build_gcc -G Ninja
       -DCMAKE_BUILD_TYPE=Release
       -DCMAKE_CXX_COMPILER=g++
@@ -171,7 +171,7 @@ CPP_CPPCHECK_ARGUMENTS: >
 CPP_CLANG_TIDY_PRE_COMMANDS:
   - command: >
       rm -rf ./build_clang/*;
-      ./ci/builders/common/cmake_setup.sh clang++ clang 14;
+      ./ci/builders/common/cmake_setup.sh clang++ clang 16;
       cmake -B build_clang -G Ninja
       -DCMAKE_BUILD_TYPE=Release
       -DCMAKE_CXX_COMPILER=clang++
