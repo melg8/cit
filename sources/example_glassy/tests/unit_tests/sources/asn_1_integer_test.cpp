@@ -34,7 +34,7 @@ SCENARIO("Asn1Integer creation and conversions") {
       {"number 32", CALL(Asn1IntegerFrom(32)), 32},
   };
 
-  std::ranges::for_each(tests, [](auto test) -> Result<void> {
+  std::ranges::for_each(tests, [&](auto test) -> Result<void> {
     SECTION(test.subcase_name) {
       OUTCOME_TRY(const auto number, test.create());
       CHECK(Asn1IntegerGet(number).value() == test.value);
@@ -46,7 +46,7 @@ SCENARIO("Asn1Integer creation and conversions") {
 
 SCENARIO("Asn1Integer comparison") {
   SECTION("compare two Asn1Integer values") {
-    []() -> Result<void> {
+    [&]() -> Result<void> {
       OUTCOME_TRY(const auto one, Asn1IntegerFrom(1));
       OUTCOME_TRY(const auto zero, Asn1IntegerFrom(0));
       SECTION("compare") {
@@ -214,7 +214,7 @@ SCENARIO("Asn1Integer creation from pointer") {
 
 SCENARIO("Asn1Integer copy") {
   SECTION("create Asn1Integer copy from original value") {
-    []() -> Result<void> {
+    [&]() -> Result<void> {
       OUTCOME_TRY(const auto original, Asn1IntegerFrom(32));
       OUTCOME_TRY(const auto copy, Asn1IntegerDup(original));
 
@@ -230,15 +230,18 @@ SCENARIO("Asn1Integer copy") {
   }
 }
 
-static void TestFunction(
+namespace {
+void TestFunction(
     not_null_provider_of<const ASN1_INTEGER*> auto&& view) noexcept {
   const ASN1_INTEGER* pointer = GetPtr(view);
   CHECK(pointer != nullptr);
 }
 
+} // namespace
+
 SCENARIO("Asn1IntegerConstView") {
   SECTION("create Asn1IntegerConstView from owners") {
-    []() -> Result<void> {
+    [&]() -> Result<void> {
       OUTCOME_TRY(const auto const_owner, Asn1IntegerFrom(32));
       OUTCOME_TRY(auto mutable_owner, Asn1IntegerFrom(32));
       CHECK(std::is_eq(Asn1IntegerCmp(const_owner, mutable_owner)));
@@ -254,7 +257,7 @@ SCENARIO("Asn1IntegerConstView") {
     SECTION(
         "can use owned and pointers in function taking  Asn1IntegerConstView "
         "as arguments") {
-      []() -> Result<void> {
+      [&]() -> Result<void> {
         OUTCOME_TRY(const auto const_owner, Asn1IntegerFrom(32));
         TestFunction(const_owner);
 

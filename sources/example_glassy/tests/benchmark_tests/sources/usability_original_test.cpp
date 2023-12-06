@@ -8,7 +8,7 @@
 
 namespace glassy::test {
 
-static ASN1_INTEGER* ProvideAsn1Pointer() noexcept {
+inline ASN1_INTEGER* ProvideAsn1Pointer() noexcept {
   ASN1_INTEGER* result = ASN1_INTEGER_new();
   if (result == nullptr) {
     return nullptr;

@@ -14,7 +14,7 @@
 
 namespace glassy::test {
 
-static Result<Asn1Integer> ProvideAsn1Value() noexcept {
+FORCEINLINE Result<Asn1Integer> ProvideAsn1Value() noexcept {
   O_TRY(auto asn_1_integer, Asn1IntegerFrom(32));
   O_TRY(auto bignum, convert::FromAsn1Int(asn_1_integer));
   O_TRY(bignum += BigNum::New(1));

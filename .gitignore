@@ -51,6 +51,7 @@ CMakeUserPresets.json
 
 # Ide
 *.ide*
+*.vscode
 
 # Coverage
 *coverage

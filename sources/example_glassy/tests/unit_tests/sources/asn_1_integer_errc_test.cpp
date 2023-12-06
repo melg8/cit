@@ -34,7 +34,7 @@ SCENARIO("Asn1IntegerErrc names and messages") {
       {Asn1IntegerErrc::kCopyFailure, "copy failed"},
   };
 
-  std::ranges::for_each(tests, [](auto test) -> Result<void> {
+  std::ranges::for_each(tests, [&](auto test) -> Result<void> {
     Result<void> result{test.error_code};
     CHECK(result.has_failure());
 

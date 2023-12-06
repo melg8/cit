@@ -24,7 +24,7 @@ struct BignumDeleter {
 
 using Asn1BigNum = std::unique_ptr<BIGNUM, BignumDeleter>;
 
-static Asn1Integer ProvideAsn1SmartPointer() noexcept {
+inline Asn1Integer ProvideAsn1SmartPointer() noexcept {
   Asn1Integer result{ASN1_INTEGER_new()};
   if (result == nullptr) {
     return nullptr;
@@ -32,7 +32,7 @@ static Asn1Integer ProvideAsn1SmartPointer() noexcept {
   if (ASN1_INTEGER_set(result.get(), 32) == 0) {
     return nullptr;
   }
-  Asn1BigNum bignum{ASN1_INTEGER_to_BN(result.get(), nullptr)};
+  const Asn1BigNum bignum{ASN1_INTEGER_to_BN(result.get(), nullptr)};
   if (bignum == nullptr) {
     return nullptr;
   }
@@ -61,7 +61,7 @@ SCENARIO("openssl usability with smart pointers") {
     Asn1Integer result = ProvideAsn1SmartPointerWithValue();
     CHECK(result != nullptr);
 
-    Asn1Integer expected{ASN1_INTEGER_new()};
+    const Asn1Integer expected{ASN1_INTEGER_new()};
 
     CHECK(ASN1_INTEGER_set(expected.get(), 31) != 0);
     CHECK(ASN1_INTEGER_cmp(result.get(), expected.get()) == 0);
@@ -73,7 +73,7 @@ SCENARIO("openssl isolated usability with smart pointers") {
     Asn1Integer result = ProvideAsn1SmartPointer();
     CHECK(result != nullptr);
 
-    Asn1Integer expected{ASN1_INTEGER_new()};
+    const Asn1Integer expected{ASN1_INTEGER_new()};
 
     CHECK(ASN1_INTEGER_set(expected.get(), 33) != 0);
     CHECK(ASN1_INTEGER_cmp(result.get(), expected.get()) == 0);

@@ -101,7 +101,7 @@ SCENARIO("Conversion of values") {
     using Tests = std::vector<std::pair<SingleValue, Symbol>>;
     auto tests = Tests{{0, '-'}, {1, '#'}, {127, ' '}};
     std::ranges::for_each(
-        tests, [](auto test) { CHECK(SymbolFrom(test.first) == test.second); });
+        tests, [&](auto test) { CHECK(SymbolFrom(test.first) == test.second); });
   }
 }
 
@@ -110,7 +110,7 @@ SCENARIO("Conversion of display lines") {
     using Tests = std::vector<std::pair<DisplayLine, Symbols>>;
     auto tests = Tests{{{}, ""}, {{0}, "-"}, {{0, 0, 1, 0, 0}, "--#--"}};
 
-    std::ranges::for_each(tests, [](auto test) {
+    std::ranges::for_each(tests, [&](auto test) {
       CHECK(SymbolsFrom(test.first) == test.second);
     });
   }
@@ -123,7 +123,7 @@ SCENARIO("Conversion of display buffer") {
         {{{1, 0, 1, 0, 1}, {0, 1, 0, 1, 0}}, "#-#-#\n-#-#-"},
         {{{1}, {0}, {1}, {0}, {1}, {0}}, "#\n-\n#\n-\n#\n-"},
     };
-    std::ranges::for_each(tests, [](auto test) {
+    std::ranges::for_each(tests, [&](auto test) {
       CHECK(SymbolsFromBuffer(test.first) == test.second);
     });
   }

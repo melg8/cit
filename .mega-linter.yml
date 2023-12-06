@@ -38,9 +38,9 @@ FLAVOR_SUGGESTIONS: false
 # SPELL_CSPELL,
 # YAML_PRETTIER,
 # YAML_YAMLLINT,
-ENABLE_LINTERS: [LS_LS_LINT]
+ENABLE_LINTERS: []
 
-# Linters that are not supported by cit but enabled for all megalinter images.
+# Linters that are not supported by cit right now for various reasons.
 DISABLE_LINTERS: [
     # To fix:
     GIT_GIT_LINT, # Needs ruby higher than default in ubuntu.

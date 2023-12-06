@@ -9,15 +9,21 @@
 #include <openssl/bn.h>
 
 extern "C" {
-static bool should_fail_alloc = true;
-static bool should_fail_one_time_set_word = false;
-static BIGNUM* MockBnNew() noexcept {
-  return should_fail_alloc ? nullptr : BN_new();
+
+namespace {
+extern bool big_num_should_fail_alloc;
+bool big_num_should_fail_alloc = true;
+
+extern bool big_num_should_fail_one_time_set_word;
+bool big_num_should_fail_one_time_set_word = false;
+
+BIGNUM* MockBnNew() noexcept {
+  return big_num_should_fail_alloc ? nullptr : BN_new();
 }
 
-static int BnSetWord(BIGNUM* big_num, BN_ULONG word) noexcept {
-  if (should_fail_one_time_set_word) {
-    should_fail_one_time_set_word = false;
+int BnSetWord(BIGNUM* big_num, BN_ULONG word) noexcept {
+  if (big_num_should_fail_one_time_set_word) {
+    big_num_should_fail_one_time_set_word = false;
     return 0;
   }
   return BN_set_word(big_num, word);
@@ -25,24 +31,27 @@ static int BnSetWord(BIGNUM* big_num, BN_ULONG word) noexcept {
 
 // For this function fail condition is represented by all 0xFF bytes
 // in result. Search for BN_MASK2 in openssl source code for reference.
-static auto BnGetWordFailConditionReturnValue() noexcept {
+BN_ULONG BnGetWordFailConditionReturnValue() noexcept {
   return std::numeric_limits<decltype(BN_get_word(nullptr))>::max();
 }
 
-static BN_ULONG AlwaysFailBnGetWord(const BIGNUM*) noexcept {
+BN_ULONG AlwaysFailBnGetWord(const BIGNUM*) noexcept {
   return BnGetWordFailConditionReturnValue();
 }
 
-static char* AlwaysFailBnTo(const BIGNUM*) noexcept { return nullptr; }
+char* AlwaysFailBnTo(const BIGNUM*) noexcept { return nullptr; }
 
-static int AlwaysFailToBn(BIGNUM**, const char*) noexcept { return 0; }
+int AlwaysFailToBn(BIGNUM**, const char*) noexcept { return 0; }
 
-static BIGNUM* AlwaysFailBinToBn(const unsigned char*, int, BIGNUM*) {
+BIGNUM* AlwaysFailBinToBn(const unsigned char*, int, BIGNUM*) {
   return nullptr;
 }
-static int AlwaysFailAdd(BIGNUM*, const BIGNUM*, const BIGNUM*) { return 0; }
 
-static int AlwaysFailBnToBin(const BIGNUM*, unsigned char*) { return -1; }
+int AlwaysFailAdd(BIGNUM*, const BIGNUM*, const BIGNUM*) { return 0; }
+
+int AlwaysFailBnToBin(const BIGNUM*, unsigned char*) { return -1; }
+
+} // namespace
 }
 
 #define BN_new MockBnNew
@@ -61,7 +70,7 @@ static int AlwaysFailBnToBin(const BIGNUM*, unsigned char*) { return -1; }
 namespace glassy::test {
 
 SCENARIO("BigNum failures") {
-  should_fail_alloc = true;
+  big_num_should_fail_alloc = true;
   GIVEN("creating new BigNum") {
     const auto result = BigNum::New();
     WHEN("failed to create BigNum because of internal error") {
@@ -80,11 +89,11 @@ SCENARIO("BigNum failures") {
   }
 
   GIVEN("any BnUlong value") {
-    should_fail_alloc = false;
+    big_num_should_fail_alloc = false;
     const BnUlong value = 1;
 
     WHEN("failed to create Bignum from it because of expansion error") {
-      should_fail_one_time_set_word = true;
+      big_num_should_fail_one_time_set_word = true;
       const auto result = BigNum::New(value);
 
       THEN("result doesn't have value") { CHECK(!result.has_value()); }
@@ -92,7 +101,7 @@ SCENARIO("BigNum failures") {
   }
 
   GIVEN("default created BigNum") {
-    should_fail_alloc = false;
+    big_num_should_fail_alloc = false;
     const auto result = BigNum::New();
 
     WHEN("failed to convert to BnUlong because of internal error") {
@@ -109,7 +118,7 @@ SCENARIO("BigNum failures") {
   }
 
   GIVEN("char pointer with number value") {
-    should_fail_alloc = false;
+    big_num_should_fail_alloc = false;
     WHEN("failed to convert BigNum from it") {
       const auto result = BigNum::New(Dec{"4"});
 
@@ -118,7 +127,7 @@ SCENARIO("BigNum failures") {
   }
 
   GIVEN("BigNum created from BnUlongValue") {
-    should_fail_alloc = false;
+    big_num_should_fail_alloc = false;
     const auto value = BigNum::New(15);
 
     WHEN("converting it to dec") {
@@ -129,7 +138,7 @@ SCENARIO("BigNum failures") {
   }
 
   GIVEN("BigNum created from BnUlongValue") {
-    should_fail_alloc = false;
+    big_num_should_fail_alloc = false;
     const auto value = BigNum::New(15);
 
     WHEN("converting it to bin") {
@@ -140,7 +149,7 @@ SCENARIO("BigNum failures") {
   }
 
   GIVEN("char pointer with number value") {
-    should_fail_alloc = false;
+    big_num_should_fail_alloc = false;
     WHEN("failed to convert BigNum from it") {
       const auto result = BigNum::New(Hex{"0F"});
 
@@ -149,7 +158,7 @@ SCENARIO("BigNum failures") {
   }
 
   GIVEN("bin value of BigNum") {
-    should_fail_alloc = false;
+    big_num_should_fail_alloc = false;
     SslData value{10};
 
     WHEN("failed to create BigNum from it") {
@@ -159,9 +168,9 @@ SCENARIO("BigNum failures") {
     }
   }
 
-  []() -> Result<void> {
+  [&]() -> Result<void> {
     SECTION("add two BigNum failing") {
-      should_fail_alloc = false;
+      big_num_should_fail_alloc = false;
       OUTCOME_TRY(const auto first, BigNum::New(2));
       OUTCOME_TRY(const auto second, BigNum::New(3));
       const auto result = BigNum::Add(first, second);
@@ -169,7 +178,7 @@ SCENARIO("BigNum failures") {
     }
 
     SECTION("BigNum += BigNum failing") {
-      should_fail_alloc = false;
+      big_num_should_fail_alloc = false;
 
       OUTCOME_TRY(auto value, BigNum::New(2));
       OUTCOME_TRY(const auto second_value, BigNum::New(3));
@@ -179,7 +188,7 @@ SCENARIO("BigNum failures") {
     }
 
     SECTION("BigNum += Result<BigNum> failing") {
-      should_fail_alloc = false;
+      big_num_should_fail_alloc = false;
 
       OUTCOME_TRY(auto value, BigNum::New(2));
       CHECK(!(value += BigNum::New(3)).has_value());
@@ -188,7 +197,7 @@ SCENARIO("BigNum failures") {
     }
 
     SECTION("Result<BigNum> += BigNum") {
-      should_fail_alloc = false;
+      big_num_should_fail_alloc = false;
 
       auto value = BigNum::New(2);
       OUTCOME_TRY(const auto second_value, BigNum::New(3));
@@ -198,7 +207,7 @@ SCENARIO("BigNum failures") {
     }
 
     SECTION("Result<BigNum> += Result<BigNum>") {
-      should_fail_alloc = false;
+      big_num_should_fail_alloc = false;
 
       auto value = BigNum::New(2);
       CHECK(!(value += BigNum::New(3)).has_value());
@@ -207,7 +216,7 @@ SCENARIO("BigNum failures") {
     }
 
     SECTION("!Result<BigNum> += Result<BigNum>") {
-      should_fail_alloc = false;
+      big_num_should_fail_alloc = false;
 
       Result<BigNum> value = BigNumErrc::kAllocationFailure;
       CHECK(!(value += BigNum::New(3)).has_value());
@@ -215,10 +224,10 @@ SCENARIO("BigNum failures") {
     }
 
     SECTION("Result<BigNum> += !Result<BigNum>") {
-      should_fail_alloc = false;
+      big_num_should_fail_alloc = false;
 
       auto value = BigNum::New(2);
-      Result<BigNum> second_value = BigNumErrc::kAllocationFailure;
+      const Result<BigNum> second_value = BigNumErrc::kAllocationFailure;
       CHECK(!(value += second_value).has_value());
       OUTCOME_TRY(const auto result, BigNum::New(2));
       CHECK(value.value() == result);

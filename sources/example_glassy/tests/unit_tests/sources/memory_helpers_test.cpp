@@ -8,14 +8,15 @@
 
 #include <testing_framework.h>
 
-static void DeleterFunctionMock(gsl::owner<const int*> resource) noexcept {
+namespace glassy::test {
+
+void DeleterFunctionMock(gsl::owner<const int*> resource) noexcept;
+void DeleterFunctionMock(gsl::owner<const int*> resource) noexcept {
   delete resource;
 }
 
-namespace glassy::test {
-
 SCENARIO("DeleterFromFunction can be used with std::unique_ptr without leaks") {
-  std::unique_ptr<int, DeleterFromFunction<DeleterFunctionMock>> ptr{
+  const std::unique_ptr<int, DeleterFromFunction<DeleterFunctionMock>> ptr{
       new int{32}};
 
   CHECK(*ptr == 32);

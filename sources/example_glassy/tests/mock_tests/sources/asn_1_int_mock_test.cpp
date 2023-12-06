@@ -7,26 +7,32 @@
 #include <openssl/asn1.h>
 
 extern "C" {
-static bool should_fail_alloc = true;
-static bool should_fail_to_set_value = true;
+namespace {
+extern bool int_should_fail_alloc;
+bool int_should_fail_alloc = true;
 
-static ASN1_INTEGER* MockAsn1IntegerNew() noexcept {
-  return should_fail_alloc ? nullptr : ASN1_INTEGER_new();
+extern bool int_should_fail_to_set_value;
+bool int_should_fail_to_set_value = true;
+
+ASN1_INTEGER* MockAsn1IntegerNew() noexcept {
+  return int_should_fail_alloc ? nullptr : ASN1_INTEGER_new();
 }
 
 // NOLINTNEXTLINE
-static int MockAsn1IntegerSet(ASN1_INTEGER* a, long v) noexcept {
-  return should_fail_to_set_value ? 0 : ASN1_INTEGER_set(a, v);
+int MockAsn1IntegerSet(ASN1_INTEGER* a, long v) noexcept {
+  return int_should_fail_to_set_value ? 0 : ASN1_INTEGER_set(a, v);
 }
 
 // NOLINTNEXTLINE
-static long AlwaysFailAsn1IntegerGet(const ASN1_INTEGER*) noexcept {
+long AlwaysFailAsn1IntegerGet(const ASN1_INTEGER*) noexcept {
   return -1;
 }
 
-static ASN1_INTEGER* MockAsn1IntegerDup(const ASN1_INTEGER*) noexcept {
+ASN1_INTEGER* MockAsn1IntegerDup(const ASN1_INTEGER*) noexcept {
   return nullptr;
 }
+
+} // namespace
 }
 
 #define ASN1_INTEGER_new MockAsn1IntegerNew
@@ -40,7 +46,7 @@ namespace glassy::test {
 
 SCENARIO("Asn1Integer failures") {
   SECTION("failing to create Asn1Integer due to allocation failure") {
-    should_fail_alloc = true;
+    int_should_fail_alloc = true;
     {
       const auto result = Asn1IntegerFrom(0);
       CHECK(!result.has_value());
@@ -52,16 +58,16 @@ SCENARIO("Asn1Integer failures") {
   }
 
   SECTION("failing to create Asn1Integer due to set value failure") {
-    should_fail_alloc = false;
-    should_fail_to_set_value = true;
+    int_should_fail_alloc = false;
+    int_should_fail_to_set_value = true;
     {
       const auto result = Asn1IntegerFrom(0);
       CHECK(!result.has_value());
     }
   }
   SECTION("failing to convert Asn1Integer to long") {
-    should_fail_alloc = false;
-    should_fail_to_set_value = false;
+    int_should_fail_alloc = false;
+    int_should_fail_to_set_value = false;
     {
       const auto value = Asn1IntegerFrom(0).value();
       const auto result = Asn1IntegerGet(value);
@@ -69,8 +75,8 @@ SCENARIO("Asn1Integer failures") {
     }
   }
   SECTION("failing to copy Asn1Integer value") {
-    should_fail_alloc = false;
-    should_fail_to_set_value = false;
+    int_should_fail_alloc = false;
+    int_should_fail_to_set_value = false;
     {
       const auto value = Asn1IntegerFrom(32).value();
       const auto result = Asn1IntegerDup(value);

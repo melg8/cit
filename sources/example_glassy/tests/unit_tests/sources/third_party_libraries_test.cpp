@@ -13,7 +13,9 @@ namespace outcome = OUTCOME_V2_NAMESPACE;
 
 SCENARIO("openssl") { BN_CTX_free(BN_CTX_new()); }
 
-static outcome::result<int> operator+(outcome::result<int> lhs,
+outcome::result<int> operator+(outcome::result<int> lhs, int rhs) noexcept;
+
+outcome::result<int> operator+(outcome::result<int> lhs,
                                       int rhs) noexcept {
   OUTCOME_TRY(auto result, lhs);
   return result + rhs;
@@ -21,7 +23,7 @@ static outcome::result<int> operator+(outcome::result<int> lhs,
 
 SCENARIO("outcome") {
   GIVEN("some outcome with value") {
-    outcome::result<int> test{1};
+    const outcome::result<int> test{1};
 
     WHEN("add outcome value to integer values") {
       const auto result = test + 5 + 10;

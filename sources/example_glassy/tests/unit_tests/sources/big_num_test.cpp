@@ -28,7 +28,7 @@ struct BigNumTestData {
   SslData bin_data{};
 };
 
-#define CALL(X) []() noexcept { return BigNum::X; }
+#define CALL(X) [&]() noexcept { return BigNum::X; }
 
 SCENARIO("BigNum creation and conversions") {
   auto tests = std::vector<BigNumTestData>{
@@ -42,7 +42,7 @@ SCENARIO("BigNum creation and conversions") {
       {"from bin", CALL(New(SslData{10})), 1, 4, 10, "10", "0A", SslData{10}},
       {"from 2 byte bin", CALL(New(SslData{255, 10})), 2, 16, 65290, "65290",
        "FF0A", SslData{255, 10}}};
-  std::ranges::for_each(tests, [](auto test) -> Result<void> {
+  std::ranges::for_each(tests, [&](auto test) -> Result<void> {
     SECTION(test.subcase_name) {
       OUTCOME_TRY(const auto number, test.create());
       CHECK(number.NumberOfBytes() == test.number_of_bytes);
@@ -57,7 +57,7 @@ SCENARIO("BigNum creation and conversions") {
 }
 
 SCENARIO("BigNum operations") {
-  []() -> Result<void> {
+  [&]() -> Result<void> {
     SECTION("add two BigNum together") {
       OUTCOME_TRY(const auto first, BigNum::New(2));
       OUTCOME_TRY(const auto second, BigNum::New(3));
@@ -141,7 +141,7 @@ SCENARIO("BigNum operations") {
 
 SCENARIO("BigNum comparison") {
   SECTION("compare two BigNum values") {
-    []() -> Result<void> {
+    [&]() -> Result<void> {
       OUTCOME_TRY(const auto zero, BigNum::New(0));
       OUTCOME_TRY(const auto one, BigNum::New(1));
       SECTION("compare") {
