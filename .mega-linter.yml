@@ -41,20 +41,6 @@ ENABLE_LINTERS: []
 
 # Linters that are not supported by cit but enabled for all megalinter images.
 DISABLE_LINTERS: [
-    ACTION_ACTIONLINT,
-    C_CPPLINT,
-    COPYPASTE_JSCPD,
-    CREDENTIALS_SECRETLINT,
-    JAVASCRIPT_STANDARD,
-    JSON_JSONLINT,
-    JSON_ESLINT_PLUGIN_JSONC,
-    JSON_V8R,
-    JSON_PRETTIER,
-    MARKDOWN_MARKDOWNLINT,
-    MARKDOWN_MARKDOWN_LINK_CHECK,
-    MARKDOWN_MARKDOWN_TABLE_FORMATTER,
-    SPELL_MISSPELL,
-    YAML_V8R,
     # To fix:
     GIT_GIT_LINT, # Needs ruby higher than default in ubuntu.
     # Deprecated section.
