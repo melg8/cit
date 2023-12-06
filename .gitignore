@@ -47,6 +47,7 @@
 
 # Cmake
 CMakeLists.txt.user
+CMakeUserPresets.json
 
 # Ide
 *.ide*

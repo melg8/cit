@@ -9,7 +9,7 @@ ls:
   .cpp: snake_case
   .dir: regex:.github | snake_case
   .h: snake_case
-  .json: regex:package-lock | snake_case
+  .json: regex:package-lock | snake_case | regex:CMakeUserPresets
   .md: snake_case
   .sh: snake_case
   .patch: snake_case

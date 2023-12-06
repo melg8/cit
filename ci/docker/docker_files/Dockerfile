@@ -141,6 +141,10 @@ RUN npm i -g --no-cache --ignore-scripts \
 
 RUN pip install yamllint
 
+RUN apt-fast update \
+ && apt-fast -y install --no-install-recommends \
+    clang-tidy-16
+
 ENV LC_ALL C.UTF-8
 
 RUN usermod -l user ubuntu
