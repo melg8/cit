@@ -124,6 +124,22 @@ SCENARIO("BigNum operations") {
                                 BigNum::New(SslData{11});
       CHECK(maybe_result.value().ToBnUlong().value() == 42);
 
+      // const auto maybe_result_1 = NewBn(1) + NewBn(Dec{"15"}) +
+      // NewBn(Hex{"0F"}) + NewBn(SslData{11}); Target syntax 1. Inspiration
+      // from std::string - like std::string{"First"} + "second" + third.c_str()
+      // + fourth; const auto maybe_result_2 = NewBn(1) + Dec{"15"} + Hex{"0F"}
+      // + SslData{11}; CHECK(ToBnUlong(maybe_result_2) == 42);
+
+      // Target syntax 2.
+      // Remove explicit ToBnUlong part, and implicitly convert to proper type
+      // and compare.
+
+      // Main Question - what is return type of this operation? Is it also
+      // outcome? CHECK(BigNum::New(1) + Dec{"15"} + Hex{"0F"} + SslData{11} ==
+      // 42);
+
+      // Any  resemblance with ranges and lazy computation?
+
       CHECK((BigNum::New(1).value() + BigNum::New(Dec{"15"}))
                 .value()
                 .ToBnUlong()

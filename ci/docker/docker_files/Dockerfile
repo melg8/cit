@@ -19,7 +19,7 @@ RUN apt-get -y update \
     gpg-agent \
  && add-apt-repository ppa:apt-fast/stable \
  && apt-get -y install --no-install-recommends \
-    apt-fast=1.9.* \
+    apt-fast \
  && apt-fast update \
  && apt-fast -y install --no-install-recommends \
     build-essential=12.9* \
@@ -60,10 +60,10 @@ RUN apt-fast -y install --no-install-recommends \
 RUN apt-fast -y install --no-install-recommends \
     git-sizer=1.5.*
 
-RUN apt-fast -y install --no-install-recommends \
-    golang-go=2:1.* \
- && go install github.com/siderolabs/conform/cmd/conform@latest \
- && mv ~/go/bin/* /usr/local/bin/
+# RUN apt-fast -y install --no-install-recommends \
+#     golang-go=2:1.* \
+#  && go install github.com/siderolabs/conform/cmd/conform@latest \
+#  && mv ~/go/bin/* /usr/local/bin/
 
 RUN apt-fast update \
  && apt-fast -y install --no-install-recommends \
@@ -173,6 +173,6 @@ WORKDIR /home/user/work
 
 # Add ru locale to cspell as user
 RUN cspell link add @cspell/dict-ru_ru
-RUN just --completions bash > ~/.bashrc 
+RUN just --completions bash > ~/.bashrc
 
 HEALTHCHECK NONE

@@ -13,10 +13,6 @@ namespace glassy::test {
 
 namespace outcome = OUTCOME_V2_NAMESPACE;
 
-FORCEINLINE Asn1IntegerNotNull ViewExtractor(Asn1Integer& owner) noexcept {
-  return GetPtr(owner);
-}
-
 SCENARIO("Asn1Integer conversions to/from BigNum") {
   [&]() -> Result<void> {
     {
@@ -30,14 +26,18 @@ SCENARIO("Asn1Integer conversions to/from BigNum") {
       CHECK(Asn1IntegerGet(converted).value() == 32);
     }
     {
-      OUTCOME_TRY(const auto bignum, BigNum::New(32));
+      OUTCOME_TRY(const auto bignum_1, BigNum::New(32));
 
       OUTCOME_TRY(auto asn_1_int, Asn1IntegerFrom(10));
-      OUTCOME_TRY(convert::FromBigNum(bignum, asn_1_int));
+      OUTCOME_TRY(convert::FromBigNum(bignum_1, asn_1_int));
+      OUTCOME_TRY(auto result_1, Asn1IntegerGet(asn_1_int));
+      CHECK(result_1 == 32);
 
-      auto view = ViewExtractor(asn_1_int);
-      OUTCOME_TRY(convert::FromBigNum(bignum, view));
-      CHECK(Asn1IntegerGet(asn_1_int).value() == 32);
+      OUTCOME_TRY(const auto bignum_2, BigNum::New(15));
+      auto ptr = GetPtr(asn_1_int);
+      OUTCOME_TRY(convert::FromBigNum(bignum_2, ptr));
+      OUTCOME_TRY(auto result_2, Asn1IntegerGet(asn_1_int));
+      CHECK(result_2 == 15);
     }
 
     return outcome::success();
