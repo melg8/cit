@@ -234,7 +234,7 @@ SCENARIO("BigNum failures") {
     }
     return outcome_v2::success();
   }()
-              .value();
+               .value();
 }
 
 }  // namespace glassy::test

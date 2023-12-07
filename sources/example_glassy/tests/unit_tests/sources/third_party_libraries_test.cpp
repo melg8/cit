@@ -15,8 +15,7 @@ SCENARIO("openssl") { BN_CTX_free(BN_CTX_new()); }
 
 outcome::result<int> operator+(outcome::result<int> lhs, int rhs) noexcept;
 
-outcome::result<int> operator+(outcome::result<int> lhs,
-                                      int rhs) noexcept {
+outcome::result<int> operator+(outcome::result<int> lhs, int rhs) noexcept {
   OUTCOME_TRY(auto result, lhs);
   return result + rhs;
 }

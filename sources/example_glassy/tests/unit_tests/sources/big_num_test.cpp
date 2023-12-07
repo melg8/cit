@@ -136,7 +136,7 @@ SCENARIO("BigNum operations") {
 
     return outcome::success();
   }()
-              .value();
+               .value();
 }
 
 SCENARIO("BigNum comparison") {
@@ -176,7 +176,7 @@ SCENARIO("BigNum comparison") {
       }
       return outcome::success();
     }()
-                .value();
+                 .value();
   }
 }
 

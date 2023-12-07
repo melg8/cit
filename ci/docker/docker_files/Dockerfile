@@ -144,7 +144,8 @@ RUN pip install --no-cache-dir yamllint
 
 RUN apt-fast update \
  && apt-fast -y install --no-install-recommends \
-    clang-tidy-16
+    clang-tidy-16 \
+    clang-format-16
 
 RUN apt-get -y update \
  && apt-get -y install --no-install-recommends \

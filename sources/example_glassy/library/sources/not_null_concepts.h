@@ -51,9 +51,9 @@ concept is_not_null_of_raw_pointer =
     is_not_null<T> && is_not_null_of_concrete_raw_pointer<T, ElementPointer<T>>;
 
 template <class T, typename Target>
-concept not_null_provider_of = is_not_null<T> &&
-    (is_not_null_of_concrete_raw_pointer<T, Target> ||
-     is_not_null_owner_of_concrete_raw_pointer<T, Target>);
+concept not_null_provider_of =
+    is_not_null<T> && (is_not_null_of_concrete_raw_pointer<T, Target> ||
+                       is_not_null_owner_of_concrete_raw_pointer<T, Target>);
 
 constexpr FORCEINLINE decltype(auto) GetPtr(
     is_not_null_of_raw_pointer auto&& lhs) noexcept {

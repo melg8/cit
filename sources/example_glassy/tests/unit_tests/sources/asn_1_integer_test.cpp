@@ -198,7 +198,7 @@ SCENARIO("Asn1Integer comparison") {
       }
       return outcome::success();
     }()
-                .value();
+                 .value();
   }
 }
 
@@ -226,7 +226,7 @@ SCENARIO("Asn1Integer copy") {
 
       return outcome::success();
     }()
-                .value();
+                 .value();
   }
 }
 
@@ -252,7 +252,7 @@ SCENARIO("Asn1IntegerConstView") {
           Asn1IntegerCmp(view_from_const_owner, view_from_mutable_owner)));
       return outcome::success();
     }()
-                .value();
+                 .value();
 
     SECTION(
         "can use owned and pointers in function taking  Asn1IntegerConstView "
@@ -272,7 +272,7 @@ SCENARIO("Asn1IntegerConstView") {
 
         return outcome::success();
       }()
-                  .value();
+                   .value();
     }
 
     SECTION("can set new value to already created Asn1Integer") {

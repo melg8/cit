@@ -42,7 +42,7 @@ SCENARIO("Asn1Integer conversions to/from BigNum") {
 
     return outcome::success();
   }()
-              .value();
+               .value();
 }
 
 }  // namespace glassy::test

@@ -104,9 +104,9 @@ SCENARIO("Conversion of values") {
   SECTION("get proper symbol from single value") {
     using Tests = std::vector<std::pair<SingleValue, Symbol>>;
     auto tests = Tests{{0, '-'}, {1, '#'}, {127, ' '}};
-    std::ranges::for_each(
-        tests,
-        [&](auto test) { CHECK(SymbolFrom(test.first) == test.second); });
+    std::ranges::for_each(tests, [&](auto test) {
+      CHECK(SymbolFrom(test.first) == test.second);
+    });
   }
 }
 

@@ -24,9 +24,7 @@ int MockAsn1IntegerSet(ASN1_INTEGER* a, long v) noexcept {
 }
 
 // NOLINTNEXTLINE
-long AlwaysFailAsn1IntegerGet(const ASN1_INTEGER*) noexcept {
-  return -1;
-}
+long AlwaysFailAsn1IntegerGet(const ASN1_INTEGER*) noexcept { return -1; }
 
 ASN1_INTEGER* MockAsn1IntegerDup(const ASN1_INTEGER*) noexcept {
   return nullptr;

@@ -134,7 +134,7 @@ index 1f5bf8d..3a82ca3 100644
 +          "CPP_CLANG_TIDY",
 +          "CPP_CPPCHECK",
 +          "CPP_CPPLINT",
-+          "CPP_CLANG_FORMAT",
++          "CPP_CLANG_FORMAT_16",
 +          "YAML_PRETTIER",
 +          "YAML_YAMLLINT",
 +          "MARKDOWN_REMARK_LINT",
