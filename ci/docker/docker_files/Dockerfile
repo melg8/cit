@@ -173,6 +173,6 @@ WORKDIR /home/user/work
 
 # Add ru locale to cspell as user
 RUN cspell link add @cspell/dict-ru_ru
-RUN just --completions bash > ~/.bashrc 
+RUN just --completions bash > ~/.bashrc
 
 HEALTHCHECK NONE
