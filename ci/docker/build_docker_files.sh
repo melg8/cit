@@ -4,7 +4,7 @@ set -e
 
 USER="melg8"
 VERSION="0.1.0"
-TARGETS=('cit')
+TARGETS=('cit' 'just_builder')
 DOCKER_PATH="./ci/docker/docker_files"
 DOCKER_FILE=${DOCKER_PATH}/"Dockerfile"
 

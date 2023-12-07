@@ -2,6 +2,9 @@
 #
 # SPDX-License-Identifier: MIT
 
+FROM rust as just_builder
+RUN cargo install just
+
 FROM ubuntu:23.04 AS cit
 
 LABEL name=cit version=0.1.0
@@ -30,6 +33,8 @@ RUN apt-get -y update \
     cmake=3.25.* \
     ninja-build=1.11.* \
     grcov=0.8.* \
+    wget=1.21.* \
+    sudo=1.9.* \
  && update-alternatives --install \
     /usr/bin/gcc gcc /usr/bin/gcc-13 60 --slave \
     /usr/bin/g++ g++ /usr/bin/g++-13 \
@@ -156,6 +161,8 @@ RUN pip3 install --no-cache-dir codechecker
 
 RUN pip3 install --no-cache-dir cpplint
 
+COPY --from=just_builder /usr/local/cargo/bin/just /usr/local/bin/just
+
 ENV LC_ALL C.UTF-8
 
 RUN usermod -l user ubuntu
@@ -166,5 +173,6 @@ WORKDIR /home/user/work
 
 # Add ru locale to cspell as user
 RUN cspell link add @cspell/dict-ru_ru
+RUN just --completions bash > ~/.bashrc 
 
 HEALTHCHECK NONE
