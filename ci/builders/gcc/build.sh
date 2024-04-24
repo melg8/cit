@@ -6,4 +6,4 @@
 
 set -e
 
-./ci/builders/common/build.sh g++ gcc 13
+./ci/builders/common/build.sh g++ gcc 13 gnu20

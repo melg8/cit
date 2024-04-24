@@ -28,7 +28,9 @@ RUN apt-get -y update \
     clang-16=1:16* \
     libclang-16-dev=1:16.* \
     libclang-rt-16-dev=1:16.* \
+    libc++-dev \
     llvm-16-dev=1:16.* \
+    mold \
     git=1:2.39.* \
     cmake=3.25.* \
     ninja-build=1.11.* \
@@ -162,6 +164,17 @@ RUN pip3 install --no-cache-dir codechecker
 RUN pip3 install --no-cache-dir cpplint
 
 COPY --from=just_builder /usr/local/cargo/bin/just /usr/local/bin/just
+COPY ./resolv.conf /etc/resolv.conf
+
+RUN mkdir -p /etc/network \
+   && touch /etc/network/interfaces \
+   && echo  "dns-nameservers 8.8.8.8" >>  /etc/network/interfaces
+
+RUN apt-get -y update \
+ && apt-get -y install --no-install-recommends \
+    dnsutils \
+    whois \
+    netbase
 
 ENV LC_ALL C.UTF-8
 
@@ -174,5 +187,9 @@ WORKDIR /home/user/work
 # Add ru locale to cspell as user
 RUN cspell link add @cspell/dict-ru_ru
 RUN just --completions bash > ~/.bashrc
+
+EXPOSE 8080
+EXPOSE 8000
+EXPOSE 80
 
 HEALTHCHECK NONE

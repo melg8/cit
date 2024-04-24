@@ -9,9 +9,10 @@ set -e
 COMPILER=$1
 CONAN_COMPILER=$2
 CONAN_COMPILER_VERSION=$3
+CONAN_CPPSTD=$4
 
 ./ci/builders/common/cmake_setup.sh \
-  "${COMPILER}" "${CONAN_COMPILER}" "${CONAN_COMPILER_VERSION}"
+  "${COMPILER}" "${CONAN_COMPILER}" "${CONAN_COMPILER_VERSION}" "${CONAN_CPPSTD}"
 
 DIRECTORY=build_"${CONAN_COMPILER}"
 cd "${DIRECTORY}"
@@ -19,7 +20,9 @@ cd "${DIRECTORY}"
 cmake .. -G Ninja \
   -DCMAKE_BUILD_TYPE=Release \
   -DCMAKE_CXX_COMPILER="${COMPILER}" \
-  -DCMAKE_TOOLCHAIN_FILE="conan_toolchain.cmake"
+  -DCMAKE_TOOLCHAIN_FILE="conan_toolchain.cmake" \
+  -DCMAKE_EXE_LINKER_FLAGS="-fuse-ld=mold" \
+  -DCMAKE_SHARED_LINKER_FLAGS="-fuse-ld=mold"
 
 cmake --build . -j "$(nproc)"
 

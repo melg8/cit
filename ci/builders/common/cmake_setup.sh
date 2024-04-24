@@ -9,6 +9,7 @@ set -e
 COMPILER=$1
 CONAN_COMPILER=$2
 CONAN_COMPILER_VERSION=$3
+CONAN_CPPSTD=$4
 echo "compiler: " "${COMPILER}"
 DIRECTORY=build_"${CONAN_COMPILER}"
 
@@ -23,4 +24,7 @@ conan install .. \
   --build missing \
   -of "${PWD}" \
   -s compiler="${CONAN_COMPILER}" \
-  -s compiler.version="${CONAN_COMPILER_VERSION}"
+  -s compiler.version="${CONAN_COMPILER_VERSION}" \
+  -s compiler.cppstd="${CONAN_CPPSTD}" \
+  -s compiler.libcxx=libstdc++11
+

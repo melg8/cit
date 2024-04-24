@@ -18,7 +18,11 @@ docker container run --rm -it --ulimit nofile=2048 \
   -e GITHUB_EVENT_PATH="/home/user/event.json" \
   -e PAT \
   --privileged \
-  -v "/var/run/docker.sock:/var/run/docker.sock:rw" \
+  --network="host" \
+  --dns="8.8.4.4" \
+  --dns-opt="nameserver 8.8.8.8" \
   -v "${GITHUB_EVENT_PATH}":"/home/user/event.json" \
-  -v "$(pwd)":/home/user/work melg8/cit:0.1.0
+  -v "$(pwd)":"/home/user/work" \
+  -v "/home/user/.conan2":"/home/ubuntu/.conan2" \
+     melg8/cit:0.1.0
 bash
