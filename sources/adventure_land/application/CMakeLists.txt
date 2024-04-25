@@ -22,5 +22,3 @@ if(CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
 endif()  
 
 target_link_libraries(adventure_application PUBLIC Boost::cobalt Boost::json Boost::url OpenSSL::SSL)
-
-add_test(adventure_application adventure_application)

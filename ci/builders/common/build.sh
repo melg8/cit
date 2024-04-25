@@ -24,17 +24,22 @@ cmake .. -G Ninja \
   -DCMAKE_EXE_LINKER_FLAGS="-fuse-ld=mold" \
   -DCMAKE_SHARED_LINKER_FLAGS="-fuse-ld=mold"
 
+echo "Building..."
 cmake --build . -j "$(nproc)"
 
 mkdir -p ../report
 
+echo "Running tests..."
 ctest --verbose |
   sed 's/[0-9]\+\: //g' >../report/ctest_logs_"${COMPILER}".txt
 
 export GCOV=gcov-13
 
+echo "Creating coverage report..."
 grcov . \
   -s .. \
   --ignore "/nix/store/*" \
   --ignore "*/.conan/*" \
   -t lcov >cit_"${CONAN_COMPILER}"_test_coverage.info
+
+echo "All done."
