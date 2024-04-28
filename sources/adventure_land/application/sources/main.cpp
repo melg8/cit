@@ -15,6 +15,8 @@
 #include <boost/cobalt/this_coro.hpp>
 #include <boost/cobalt/main.hpp>
 
+#include <boost/asio/steady_timer.hpp>
+
 #include <map>
 #include <vector>
 #include <coroutine>
@@ -41,6 +43,21 @@ struct HandlesRegistry {
   void RegisterHandle(std::coroutine_handle<> h, int value_of_interest) {
     handles[value_of_interest].push_back(h);
   }
+
+  ~HandlesRegistry() {
+    for (auto &handle: handles) {
+      for (auto &subscibed : handle.second) {
+        if (!subscibed.done()) {
+          subscibed.destroy();
+        }
+      }
+    }
+  }
+};
+
+struct SubscribableSocket {
+  cobalt::generator<int> socket;
+  HandlesRegistry registry;
 };
 
 static auto OnValue(HandlesRegistry &registry, int value) {
@@ -65,12 +82,14 @@ static cobalt::promise<void> HandleValue(HandlesRegistry &registry,
 }
 
 static auto HandleIncomingMessages(HandlesRegistry &registry) {
-  return cobalt::race(HandleValue(registry, 5), HandleValue(registry, 1),
-                      HandleValue(registry, 1), HandleValue(registry, 3));
+  return cobalt::race(HandleValue(registry, 5), 
+                      HandleValue(registry, 1),
+                      HandleValue(registry, 1),
+                      HandleValue(registry, 3));
 }
 
-static cobalt::task<void> DistributeIncomingMessages(HandlesRegistry &registry,
-                                              cobalt::generator<int> &socket) {
+static cobalt::task<void> DistributeIncomingMessages(
+  HandlesRegistry &registry, cobalt::generator<int> &socket) {
   for (auto value = co_await socket; value != -1; value = co_await socket) {
     if (auto search = registry.handles.find(value); 
              search != registry.handles.end()) {
@@ -83,12 +102,20 @@ static cobalt::task<void> DistributeIncomingMessages(HandlesRegistry &registry,
   }
 }
 
+static cobalt::task<void> SpeakWithDelay() {
+   std::cout << "SpeakWithDelay started\n";
+  asio::steady_timer tim{co_await asio::this_coro::executor, 
+                         std::chrono::milliseconds(1000)}; 
+  co_await tim.async_wait(cobalt::use_op);
+   std::cout << "SpeakWithDelay after 3 seconds!\n";
+}
+
 cobalt::main co_main(int , char **) {
-  auto socket = FromSocket();
-  HandlesRegistry registry;
+  SubscribableSocket socket{FromSocket(), {}};
   std::cout << "Before distributing messages\n";
-  co_await cobalt::race(DistributeIncomingMessages(registry, socket), 
-                        HandleIncomingMessages(registry));
+  co_await cobalt::race(SpeakWithDelay(), 
+      DistributeIncomingMessages(socket.registry, socket.socket),
+      HandleIncomingMessages(socket.registry));
   std::cout << "After distributing messages\n";
   co_return 0;
 }
