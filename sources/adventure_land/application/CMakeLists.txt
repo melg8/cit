@@ -9,11 +9,19 @@ find_package(OpenSSL 3.0.2 REQUIRED)
 file(GLOB_RECURSE ALL_ADVENTURE_LAND_APPLICATION_HEADERS
      "${CMAKE_CURRENT_SOURCE_DIR}/*.h")
 
+message("adventure land headers:" "${ALL_ADVENTURE_LAND_APPLICATION_HEADERS}")
+
 file(GLOB_RECURSE ALL_ADVENTURE_LAND_APPLICATION_SOURCES
      "${CMAKE_CURRENT_SOURCE_DIR}/*.cpp")
 
 add_executable(adventure_application "${ALL_ADVENTURE_LAND_APPLICATION_HEADERS}"
                                      "${ALL_ADVENTURE_LAND_APPLICATION_SOURCES}")
+
+header_directories(ALL_ADVENTURE_APPLICATION_INCLUDE_DIRECTORIES)
+
+target_include_directories(adventure_application PUBLIC 
+                           "${ALL_ADVENTURE_APPLICATION_INCLUDE_DIRECTORIES}")
+
 
 if(CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
   add_compiler_flags(-frtti)

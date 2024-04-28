@@ -2,12 +2,6 @@
 //
 // SPDX-License-Identifier: MIT
 
-// Copyright (c) 2023 Matthijs Möhlmann
-//
-// Distributed under the Boost Software License, Version 1.0. (See accompanying
-// file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
-
-
 #include <boost/cobalt.hpp>
 #include <boost/cobalt/promise.hpp>
 #include <boost/cobalt/race.hpp>
@@ -16,6 +10,8 @@
 #include <boost/cobalt/main.hpp>
 
 #include <boost/asio/steady_timer.hpp>
+#include <boost/asio/co_spawn.hpp>
+#include <boost/asio/detached.hpp>
 
 #include <map>
 #include <vector>
@@ -23,8 +19,9 @@
 #include <stdexcept>
 #include <iostream>
 
-using namespace boost;
+#include <http_requests.h>
 
+using namespace boost;
 
 static cobalt::generator<int> test(int max) {
   int i = max;
@@ -46,36 +43,42 @@ struct HandlesRegistry {
 
   ~HandlesRegistry() {
     for (auto &handle: handles) {
-      for (auto &subscibed : handle.second) {
+      for (auto& subscibed : handle.second) {
         if (!subscibed.done()) {
           subscibed.destroy();
         }
       }
+      handle.second.clear();
     }
   }
 };
 
 struct SubscribableSocket {
   cobalt::generator<int> socket;
-  HandlesRegistry registry;
+  HandlesRegistry registry; // TODO(melg): split to repeatable and single shot registry.
 };
 
 static auto OnValue(HandlesRegistry &registry, int value) {
-  struct awaitable {
+
+  struct Awaitable {
     HandlesRegistry &registry;
     int value = 0;
+
     bool await_ready() { return false; }
+
     void await_suspend(std::coroutine_handle<> h) {
         std::cout << "Suspended with value: " << value << "\n";
         registry.RegisterHandle(h, value);
     }
-    void await_resume() {}
+
+    void await_resume() {
+    }
   };
-  return awaitable{registry, value};
+  return Awaitable{registry, value};
 }
 
 static cobalt::promise<void> HandleValue(HandlesRegistry &registry,
-                                                int value) {
+                                         int value) {
   std::cout << "Before waiting for value: " << value << '\n';
   co_await OnValue(registry, value);
   std::cout << "After waiting for value: " << value << '\n';
@@ -102,51 +105,29 @@ static cobalt::task<void> DistributeIncomingMessages(
   }
 }
 
-static cobalt::task<void> SpeakWithDelay() {
-   std::cout << "SpeakWithDelay started\n";
-  asio::steady_timer tim{co_await asio::this_coro::executor, 
-                         std::chrono::milliseconds(1000)}; 
-  co_await tim.async_wait(cobalt::use_op);
-   std::cout << "SpeakWithDelay after 3 seconds!\n";
+static cobalt::task<void>  DelayMs(size_t ms) {
+  asio::steady_timer timer{co_await cobalt::this_coro::executor, 
+                           std::chrono::milliseconds(ms)}; 
+  co_await timer.async_wait(cobalt::use_op);
+}
+
+static cobalt::detached SpeakWithDelay() {
+  std::cout << "SpeakWithDelay started\n";
+  co_await DelayMs(3000);
+  std::cout << "SpeakWithDelay after 3 seconds!\n";
 }
 
 cobalt::main co_main(int , char **) {
   SubscribableSocket socket{FromSocket(), {}};
   std::cout << "Before distributing messages\n";
-  co_await cobalt::race(SpeakWithDelay(), 
+  SpeakWithDelay();
+  co_await HttpResponce();
+  co_await cobalt::race(
       DistributeIncomingMessages(socket.registry, socket.socket),
       HandleIncomingMessages(socket.registry));
   std::cout << "After distributing messages\n";
   co_return 0;
 }
-
-// extern cobalt::generator<int> test();
-// cobalt::generator<int> test() {
-//   printf("test-1\n");
-//   co_yield 1;
-//   printf("test-2\n");
-//   co_yield 2;
-//   printf("test-3\n");
-//   co_return 3;
-// }
-
-// static cobalt::generator<int> test(int max) {
-//   int i = 0;
-//   while (i < max)
-//     co_yield i++;
-
-//   co_return i;
-// }
-
-// cobalt::main co_main(int , char ** ) {
-//     std::cout << "Main-1\n";
-//     auto tt = test(10);
-//     std::cout << "Main-2\n";
-//     std::cout << "Main-3 " << co_await tt << "\n";
-//     std::cout << "Main-4 " << co_await tt << "\n";
-//     std::cout << "Main-5 " << co_await tt << "\n";
-//     co_return 0;
-// }
 
 // cobalt::promise<something> ImagineHandling() {
 
