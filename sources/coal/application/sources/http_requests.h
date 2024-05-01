@@ -22,7 +22,7 @@ struct ServerEndpoint {
     std::string_view port;
 };
 
-cobalt::task<Result<void>> SendHttpRequestTo(
+cobalt::promise<Result<void>> SendHttpRequestTo(
     ServerEndpoint server_endpoint,
     std::string_view target);
 

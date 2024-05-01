@@ -32,8 +32,6 @@ namespace coal {
 namespace cobalt = boost::cobalt;
 namespace beast = boost::beast;
 
-
-
 using executor_type = cobalt::use_op_t::executor_with_default<cobalt::executor>;
 using socket_type = typename boost::asio::ip::tcp::socket::rebind_executor<
     executor_type>::other;
@@ -42,14 +40,20 @@ using acceptor_type = typename boost::asio::ip::tcp::acceptor::rebind_executor<
     executor_type>::other;
 using websocket_type = beast::websocket::stream<ssl_socket_type>;
 
+static void ReportError(boost::system::error_code err, 
+  std::string_view action, ServerEndpoint server_endpoint) noexcept {
+  DEBUG_ASSERT(err, "should not report errors with empty error code");
+  spdlog::error("Error: {} while {}: {} port: {}", 
+  err.message(), action, server_endpoint.host, server_endpoint.port);
+}
+
 static cobalt::promise<Result<ssl_socket_type>> Connect(ServerEndpoint server_endpoint,
                                                         boost::asio::ssl::context &ctx) {
   boost::asio::ip::tcp::resolver resolve{cobalt::this_thread::get_executor()};
    const auto[err, endpoints] = co_await resolve.async_resolve(
     server_endpoint.host, server_endpoint.port, boost::asio::as_tuple(cobalt::use_op));
   if (err) {
-    spdlog::error("Error: {} while resolving host: {} port: {}", err.message(),
-                  server_endpoint.host, server_endpoint.port);
+    ReportError(err, "resolving host", server_endpoint);
     co_return err;
   }
 
@@ -65,7 +69,11 @@ static cobalt::promise<Result<ssl_socket_type>> Connect(ServerEndpoint server_en
 
   spdlog::info("Connecting");
   DEBUG_ASSERT(!endpoints.empty(), "endpoints must not be empty");
-  co_await sock.next_layer().async_connect(*endpoints.begin());
+  const auto [connect_err] = co_await sock.next_layer()
+      .async_connect(*endpoints.begin(), boost::asio::as_tuple(cobalt::use_op));
+  if (connect_err) {
+    ReportError(connect_err, "establishing connection to", server_endpoint);
+  }
   spdlog::info("Connection success");
 
   spdlog::info("Handshaking");
@@ -83,13 +91,12 @@ static void LogResponce(const
   spdlog::info("Responce body size: {} bytes", response.body().size());
 }
 
-static cobalt::task<Result<void>> SendHttpsRequestTo(ServerEndpoint server_endpoint,
+static cobalt::promise<Result<void>> SendHttpsRequestTo(ServerEndpoint server_endpoint,
                                              std::string_view target) {
   boost::asio::ssl::context ctx{boost::asio::ssl::context::tls_client};
   auto conn = co_await Connect(server_endpoint, ctx);
   if (conn.has_error()) {
-    spdlog::error("Error: {}, while connecting to endpoint host: {} port: {}",
-    conn.error().message(), server_endpoint.host, server_endpoint.port);
+    ReportError(conn.error(), "connecting to endpoint host", server_endpoint);
     co_return conn.error();
   }
 
@@ -117,8 +124,7 @@ static cobalt::promise<Result<beast::tcp_stream>>
   const auto[err, endpoints] = co_await resolve.async_resolve(
       server_endpoint.host, port, boost::asio::as_tuple(cobalt::use_op));
   if (err) {
-    spdlog::error("Error: {} while resolving host: {} port: {}", err.message(),
-                  server_endpoint.host, server_endpoint.port);
+    ReportError(err, "resolving host", server_endpoint);
     co_return err;
   }
   spdlog::info("Connecting");
@@ -127,12 +133,11 @@ static cobalt::promise<Result<beast::tcp_stream>>
   co_return Result<beast::tcp_stream>{std::move(stream)};
 }
 
-static cobalt::task<Result<void>> SendWithTcpHttpRequestTo(ServerEndpoint server_endpoint,
+static cobalt::promise<Result<void>> SendWithTcpHttpRequestTo(ServerEndpoint server_endpoint,
                                                    std::string_view target) {
   auto conn = co_await ConnectTcpStream(server_endpoint);
   if (conn.has_error()) {
-    spdlog::error("Error: {}, while connecting to endpoint host: {} port: {}",
-    conn.error().message(), server_endpoint.host, server_endpoint.port);
+    ReportError(conn.error(), "connecting to endpoint host", server_endpoint);
     co_return conn.error();
   }
 
@@ -151,7 +156,7 @@ static cobalt::task<Result<void>> SendWithTcpHttpRequestTo(ServerEndpoint server
   co_return {};
 }
 
-cobalt::task<Result<void>> SendHttpRequestTo(
+cobalt::promise<Result<void>> SendHttpRequestTo(
     ServerEndpoint server_endpoint, std::string_view target) {
   spdlog::info("Sending request to host {} using \"{}\"", server_endpoint.host,
                server_endpoint.port);
