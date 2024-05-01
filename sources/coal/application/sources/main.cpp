@@ -132,7 +132,12 @@ boost::cobalt::main co_main(int, char**) {
   SubscribableSocket socket{FromSocket(), {}};
   spdlog::info("Before distributing messages");
   SpeakWithDelay();
-  co_await SendHttpRequestTo({"adventure.land", "https"}, "/data.js");
+  auto result = co_await SendHttpRequestTo({"adventure.land", "https"}, "/data.js");
+  if (result.has_error()) {
+    spdlog::error("Error occured while sending http request: {} bailing out",
+                  result.error().message());
+    co_return result.error().value();
+  }
   co_await cobalt::race(
       DistributeIncomingMessages(socket.registry, socket.socket),
       HandleIncomingMessages(socket.registry));
