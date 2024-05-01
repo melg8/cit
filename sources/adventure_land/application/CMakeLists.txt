@@ -6,6 +6,8 @@
 find_package(Boost "1.84" COMPONENTS cobalt json url REQUIRED)
 find_package(OpenSSL 3.0.2 REQUIRED)
 find_package(spdlog REQUIRED)
+find_package(libassert REQUIRED)
+
 
 option(SPDLOG_NO_EXCEPTIONS "Compile with -fno-exceptions. Call abort() on any spdlog exceptions" ON)
 
@@ -35,5 +37,6 @@ endif()
 target_link_libraries(adventure_application PUBLIC Boost::cobalt 
                                                    Boost::json
                                                    Boost::url
+                                                   libassert::assert
                                                    OpenSSL::SSL
                                                    spdlog::spdlog)

@@ -23,9 +23,9 @@
 #include <boost/beast/websocket/stream.hpp>
 
 #include <spdlog/spdlog.h>
+#include <libassert/assert.hpp>
 
 #include <stdexcept>
-#include <cassert>
 
 namespace al {
 
@@ -54,7 +54,7 @@ static cobalt::promise<ssl_socket_type> Connect(ServerEndpoint server_endpoint,
   }
 
   spdlog::info("Connecting");
-  assert(!endpoints.empty()); // TODO(melg): find lib alternative to assert.
+  DEBUG_ASSERT(!endpoints.empty(), "endpoints must not be empty");
   co_await sock.next_layer().async_connect(*endpoints.begin());
   spdlog::info("Connection success");
   spdlog::info("Handshaking");
