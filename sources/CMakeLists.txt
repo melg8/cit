@@ -3,4 +3,4 @@
 # SPDX-License-Identifier: MIT
 
 add_subdirectory(example_glassy)
-add_subdirectory(adventure_land)
+add_subdirectory(coal)

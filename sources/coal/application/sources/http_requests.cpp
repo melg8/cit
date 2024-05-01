@@ -27,7 +27,7 @@
 
 #include <stdexcept>
 
-namespace al {
+namespace coal {
 
 namespace cobalt = boost::cobalt;
 namespace beast = boost::beast;
@@ -128,4 +128,4 @@ cobalt::task<void> SendHttpRequestTo(
   }
 }
 
-} // namespace al
+} // namespace coal

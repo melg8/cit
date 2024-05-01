@@ -9,7 +9,7 @@
 
 #include <string_view>
 
-namespace al {
+namespace coal {
 
 struct ServerEndpoint {
     std::string_view host;
@@ -19,6 +19,6 @@ struct ServerEndpoint {
 boost::cobalt::task<void> SendHttpRequestTo(
     ServerEndpoint server_endpoint);
 
-} // namespace al;
+} // namespace coal
 
 #endif // HTTP_REQUESTS_H

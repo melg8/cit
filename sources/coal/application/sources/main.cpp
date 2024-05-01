@@ -22,7 +22,7 @@
 
 #include <http_requests.h>
 
-namespace al {
+namespace coal {
 
 using namespace boost;
 
@@ -124,10 +124,10 @@ static void SetupSpdLog() noexcept {
   spdlog::set_pattern("[%X.%f] [%7i] [%^%L%$] %v");
 }
 
-} // namespace al
+} // namespace coal
 
 boost::cobalt::main co_main(int, char**) {
-  using namespace al;
+  using namespace coal;
   SetupSpdLog();
   SubscribableSocket socket{FromSocket(), {}};
   spdlog::info("Before distributing messages");
