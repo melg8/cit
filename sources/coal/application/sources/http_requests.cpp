@@ -31,12 +31,14 @@ namespace coal {
 
 namespace cobalt = boost::cobalt;
 namespace beast = boost::beast;
+namespace http = beast::http;
+namespace ip = boost::asio::ip;
 
 using executor_type = cobalt::use_op_t::executor_with_default<cobalt::executor>;
-using socket_type = typename boost::asio::ip::tcp::socket::rebind_executor<
+using socket_type = typename ip::tcp::socket::rebind_executor<
     executor_type>::other;
 using ssl_socket_type = boost::asio::ssl::stream<socket_type>;
-using acceptor_type = typename boost::asio::ip::tcp::acceptor::rebind_executor<
+using acceptor_type = typename ip::tcp::acceptor::rebind_executor<
     executor_type>::other;
 using websocket_type = beast::websocket::stream<ssl_socket_type>;
 
@@ -47,9 +49,20 @@ static void ReportError(boost::system::error_code err,
   err.message(), action, server_endpoint.host, server_endpoint.port);
 }
 
+static http::request<http::empty_body> FormGetRequestFor(
+  ServerEndpoint server_endpoint, std::string_view target) {
+  http::request<http::empty_body> req{http::verb::get,
+                                                    target, 11};
+  req.set(http::field::user_agent, BOOST_BEAST_VERSION_STRING);
+  req.set("Accept-Encoding", "identity");
+  req.set("Connection", "keep-alive");
+  req.set(http::field::host, server_endpoint.host);
+  return req;
+}
+
 static cobalt::promise<Result<ssl_socket_type>> Connect(ServerEndpoint server_endpoint,
                                                         boost::asio::ssl::context &ctx) {
-  boost::asio::ip::tcp::resolver resolve{cobalt::this_thread::get_executor()};
+  ip::tcp::resolver resolve{cobalt::this_thread::get_executor()};
    const auto[err, endpoints] = co_await resolve.async_resolve(
     server_endpoint.host, server_endpoint.port, boost::asio::as_tuple(cobalt::use_op));
   if (err) {
@@ -84,11 +97,13 @@ static cobalt::promise<Result<ssl_socket_type>> Connect(ServerEndpoint server_en
 }
 
 static void LogResponce(const 
-  beast::http::response<beast::http::string_body> &response) noexcept {
+  http::response<http::string_body> &response,
+  ServerEndpoint server_endpoint, std::string_view target) noexcept {
   const auto result = static_cast<int>(response.result());
   std::string reason{response.reason()};
-  spdlog::info("Responce result: {} reason: {}", result, reason);
-  spdlog::info("Responce body size: {} bytes", response.body().size());
+  spdlog::info("Got http responce {} reason: {} body size {} from {}:{}{}",
+  reason, result,response.body().size(),
+  server_endpoint.host, server_endpoint.port, target);
 }
 
 static cobalt::promise<Result<void>> SendHttpsRequestTo(ServerEndpoint server_endpoint,
@@ -101,25 +116,20 @@ static cobalt::promise<Result<void>> SendHttpsRequestTo(ServerEndpoint server_en
   }
 
   spdlog::info("Sending \"get\" request");
-  beast::http::request<beast::http::empty_body> req{beast::http::verb::get,
-                                                    target, 11};
-  req.set(beast::http::field::user_agent, BOOST_BEAST_VERSION_STRING);
-  req.set("Accept-Encoding", "identity");
-  req.set("Connection", "keep-alive");
-  req.set(beast::http::field::host, server_endpoint.host);
-  co_await beast::http::async_write(*conn, req, cobalt::use_op);
+  const auto request = FormGetRequestFor(server_endpoint, target);
+  co_await http::async_write(*conn, request, cobalt::use_op);
 
   beast::flat_buffer b;
-  beast::http::response<beast::http::string_body> response;
-  co_await beast::http::async_read(*conn, b, response, cobalt::use_op);
-  LogResponce(response);
+  http::response<http::string_body> response;
+  co_await http::async_read(*conn, b, response, cobalt::use_op);
+  LogResponce(response, server_endpoint, target);
   co_return {};
 }
 
 static cobalt::promise<Result<beast::tcp_stream>>
   ConnectTcpStream(ServerEndpoint server_endpoint) {
   beast::tcp_stream stream(cobalt::this_thread::get_executor());
-  boost::asio::ip::tcp::resolver resolve{cobalt::this_thread::get_executor()};
+  ip::tcp::resolver resolve{cobalt::this_thread::get_executor()};
   const auto port = server_endpoint.port.empty() ? "https" : server_endpoint.port;
   const auto[err, endpoints] = co_await resolve.async_resolve(
       server_endpoint.host, port, boost::asio::as_tuple(cobalt::use_op));
@@ -142,17 +152,13 @@ static cobalt::promise<Result<void>> SendWithTcpHttpRequestTo(ServerEndpoint ser
   }
 
   spdlog::info("Sending \"get\" request");
-  beast::http::request<beast::http::empty_body> req{beast::http::verb::get, target, 11};
-  req.set(beast::http::field::user_agent, BOOST_BEAST_VERSION_STRING);
-  req.set("Accept-Encoding", "identity");
-  req.set("Connection", "keep-alive");
-  req.set(beast::http::field::host, server_endpoint.host);
-  co_await beast::http::async_write(*conn, req, cobalt::use_op);
+  const auto request = FormGetRequestFor(server_endpoint, target);
+  co_await http::async_write(*conn, request, cobalt::use_op);
 
   beast::flat_buffer b;
-  beast::http::response<beast::http::string_body> response;
-  co_await beast::http::async_read(*conn, b, response, cobalt::use_op);
-  LogResponce(response);
+  http::response<http::string_body> response;
+  co_await http::async_read(*conn, b, response, cobalt::use_op);
+  LogResponce(response, server_endpoint, target);
   co_return {};
 }
 
