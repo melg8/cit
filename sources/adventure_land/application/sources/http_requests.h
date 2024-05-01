@@ -7,6 +7,18 @@
 
 #include <boost/cobalt.hpp>
 
-boost::cobalt::task<void> HttpResponce();
+#include <string_view>
+
+namespace al {
+
+struct ServerEndpoint {
+    std::string_view host;
+    std::string_view port;
+};
+
+boost::cobalt::task<void> SendHttpRequestTo(
+    ServerEndpoint server_endpoint);
+
+} // namespace al;
 
 #endif // HTTP_REQUESTS_H

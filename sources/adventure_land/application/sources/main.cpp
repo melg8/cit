@@ -21,6 +21,8 @@
 
 #include <http_requests.h>
 
+namespace al {
+
 using namespace boost;
 
 static cobalt::generator<int> test(int max) {
@@ -117,11 +119,15 @@ static cobalt::detached SpeakWithDelay() {
   std::cout << "SpeakWithDelay after 3 seconds!\n";
 }
 
-cobalt::main co_main(int , char **) {
+} // namespace al
+
+boost::cobalt::main co_main(int, char**) {
+  using namespace al;
+
   SubscribableSocket socket{FromSocket(), {}};
   std::cout << "Before distributing messages\n";
   SpeakWithDelay();
-  co_await HttpResponce();
+  co_await SendHttpRequestTo({"adventure.land", "https"});
   co_await cobalt::race(
       DistributeIncomingMessages(socket.registry, socket.socket),
       HandleIncomingMessages(socket.registry));
@@ -157,5 +163,3 @@ cobalt::main co_main(int , char **) {
 // Socket is actually a generator of Events, on which i can iterate untill it is runout of events, meaning connection is
 // lost.
 // Probably i need to co_await on values then.
-
-

@@ -21,7 +21,12 @@
 #include <boost/beast/http/string_body.hpp>
 #include <boost/beast/http/verb.hpp>
 #include <boost/beast/websocket/stream.hpp>
+
 #include <stdexcept>
+#include <cassert>
+#include <iostream>
+
+namespace al {
 
 namespace cobalt = boost::cobalt;
 namespace beast = boost::beast;
@@ -34,40 +39,85 @@ using acceptor_type = typename boost::asio::ip::tcp::acceptor::rebind_executor<
     executor_type>::other;
 using websocket_type = beast::websocket::stream<ssl_socket_type>;
 
-
-static cobalt::promise<ssl_socket_type> connect(std::string_view host,
+static cobalt::promise<ssl_socket_type> Connect(ServerEndpoint server_endpoint,
                                         boost::asio::ssl::context &ctx) {
   boost::asio::ip::tcp::resolver resolve{cobalt::this_thread::get_executor()};
-  auto endpoints = co_await resolve.async_resolve(host, "https", cobalt::use_op);
-
-  // Timer for timeouts
-
+  auto endpoints = co_await resolve.async_resolve(
+    server_endpoint.host, server_endpoint.port, cobalt::use_op);
   ssl_socket_type sock{cobalt::this_thread::get_executor(), ctx};
-  printf("connecting\n");
 
+  if(!SSL_set_tlsext_host_name(sock.native_handle(), 
+                               server_endpoint.host.data())) {
+    std::cout << "SSL_set_tlsext_host_name failed, error code: "
+              << ::ERR_get_error();
+  }
+
+  std::cout << "Connecting\n";
+  assert(!endpoints.empty()); // TODO(melg): find lib alternative to assert.
   co_await sock.next_layer().async_connect(*endpoints.begin());
-  printf("connected\n");
-
-  // Connected, now do the handshake
-  printf("handshaking\n");
+  std::cout << "Connected\n";
+  std::cout << "Handshaking\n";
   co_await sock.async_handshake(boost::asio::ssl::stream_base::client);
-  printf("hand shook\n");
+  std::cout << "Hand shook\n";
   co_return sock;
 }
 
-cobalt::task<void> HttpResponce() {
+static cobalt::task<void> SendHttpsRequestTo(ServerEndpoint server_endpoint) {
   boost::asio::ssl::context ctx{boost::asio::ssl::context::tls_client};
-  auto conn = co_await connect("boost.org", ctx);
-  printf("connected\n");
-  beast::http::request<beast::http::empty_body> req{beast::http::verb::get, "/index.html", 11};
-  req.set(beast::http::field::host, "boost.org");
+  auto conn = co_await Connect(server_endpoint, ctx);
+  std::cout << "connected\n";
+  beast::http::request<beast::http::empty_body> req{beast::http::verb::get, "/data.js", 11};
+  req.set(beast::http::field::user_agent, BOOST_BEAST_VERSION_STRING);
+  req.set("Accept-Encoding", "identity");
+  req.set("Connection", "keep-alive");
+  req.set(beast::http::field::host, server_endpoint.host);
   co_await beast::http::async_write(conn, req, cobalt::use_op);
 
-  // read the response
   beast::flat_buffer b;
   beast::http::response<beast::http::string_body> response;
   co_await beast::http::async_read(conn, b, response, cobalt::use_op);
-
-  // write the response
-  printf("%s\n", response.body().c_str());
+  std::cout << "Responce result: " << response.result()
+            << " reason: " << response.reason();
+  std::cout << "Responce body: " << response.body();
 }
+
+static cobalt::promise<beast::tcp_stream> ConnectTcpStream(ServerEndpoint server_endpoint) {
+  beast::tcp_stream stream(cobalt::this_thread::get_executor());
+  boost::asio::ip::tcp::resolver resolve{cobalt::this_thread::get_executor()};
+  const auto port = server_endpoint.port.empty() ? "https" : server_endpoint.port;
+  const auto endpoints = co_await resolve.async_resolve(
+      server_endpoint.host, port, cobalt::use_op);
+  std::cout << "Connecting\n";
+  co_await stream.async_connect(endpoints, cobalt::use_op);
+  std::cout << "Connected\n";
+  co_return stream;
+}
+
+static cobalt::task<void> SendWithTcpHttpRequestTo(ServerEndpoint server_endpoint) {
+  auto conn = co_await ConnectTcpStream(server_endpoint);
+  std::cout << "Sending request\n";
+  beast::http::request<beast::http::empty_body> req{beast::http::verb::get, "/data.js", 11};
+  req.set(beast::http::field::user_agent, BOOST_BEAST_VERSION_STRING);
+  req.set("Accept-Encoding", "identity");
+  req.set("Connection", "keep-alive");
+  req.set(beast::http::field::host, server_endpoint.host);
+  co_await beast::http::async_write(conn, req, cobalt::use_op);
+
+  beast::flat_buffer b;
+  beast::http::response<beast::http::string_body> response;
+  co_await beast::http::async_read(conn, b, response, cobalt::use_op);
+  std::cout << "Responce result: " << response.result()
+            << " reason: " << response.reason();
+  std::cout << "Responce body: " << response.body();
+}
+
+cobalt::task<void> SendHttpRequestTo(
+    ServerEndpoint server_endpoint) {
+  if (server_endpoint.port == "https") {
+    return SendHttpsRequestTo(server_endpoint);
+  } else {
+    return SendWithTcpHttpRequestTo(server_endpoint);
+  }
+}
+
+} // namespace al
