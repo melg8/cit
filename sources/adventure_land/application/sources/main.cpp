@@ -13,11 +13,12 @@
 #include <boost/asio/co_spawn.hpp>
 #include <boost/asio/detached.hpp>
 
+#include <spdlog/spdlog.h>
+
 #include <map>
 #include <vector>
 #include <coroutine>
 #include <stdexcept>
-#include <iostream>
 
 #include <http_requests.h>
 
@@ -69,8 +70,8 @@ static auto OnValue(HandlesRegistry &registry, int value) {
     bool await_ready() { return false; }
 
     void await_suspend(std::coroutine_handle<> h) {
-        std::cout << "Suspended with value: " << value << "\n";
-        registry.RegisterHandle(h, value);
+      spdlog::info("Suspended with value: {}", value);
+      registry.RegisterHandle(h, value);
     }
 
     void await_resume() {
@@ -81,9 +82,9 @@ static auto OnValue(HandlesRegistry &registry, int value) {
 
 static cobalt::promise<void> HandleValue(HandlesRegistry &registry,
                                          int value) {
-  std::cout << "Before waiting for value: " << value << '\n';
+  spdlog::info("Before waiting for value: {}", value);
   co_await OnValue(registry, value);
-  std::cout << "After waiting for value: " << value << '\n';
+  spdlog::info("After waiting for value: {}", value);
 }
 
 static auto HandleIncomingMessages(HandlesRegistry &registry) {
@@ -99,8 +100,8 @@ static cobalt::task<void> DistributeIncomingMessages(
     if (auto search = registry.handles.find(value); 
              search != registry.handles.end()) {
       for (auto handle: search->second) {
-        std::cout << "Found handle waiting for value: " << value
-                  << " resuming it\n";
+        spdlog::info("Found handle waiting for value: {} resuming it", 
+                     value);
         handle.resume();
       }
     }
@@ -114,24 +115,28 @@ static cobalt::task<void>  DelayMs(size_t ms) {
 }
 
 static cobalt::detached SpeakWithDelay() {
-  std::cout << "SpeakWithDelay started\n";
+  spdlog::info("SpeakWithDelay started");
   co_await DelayMs(3000);
-  std::cout << "SpeakWithDelay after 3 seconds!\n";
+  spdlog::info("SpeakWithDelay after 3 seconds");
+}
+
+static void SetupSpdLog() noexcept {
+  spdlog::set_pattern("[%X.%f] [%7i] [%^%L%$] %v");
 }
 
 } // namespace al
 
 boost::cobalt::main co_main(int, char**) {
   using namespace al;
-
+  SetupSpdLog();
   SubscribableSocket socket{FromSocket(), {}};
-  std::cout << "Before distributing messages\n";
+  spdlog::info("Before distributing messages");
   SpeakWithDelay();
   co_await SendHttpRequestTo({"adventure.land", "https"});
   co_await cobalt::race(
       DistributeIncomingMessages(socket.registry, socket.socket),
       HandleIncomingMessages(socket.registry));
-  std::cout << "After distributing messages\n";
+  spdlog::info("After distributing messages");
   co_return 0;
 }
 

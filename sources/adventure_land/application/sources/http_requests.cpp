@@ -22,9 +22,10 @@
 #include <boost/beast/http/verb.hpp>
 #include <boost/beast/websocket/stream.hpp>
 
+#include <spdlog/spdlog.h>
+
 #include <stdexcept>
 #include <cassert>
-#include <iostream>
 
 namespace al {
 
@@ -48,25 +49,34 @@ static cobalt::promise<ssl_socket_type> Connect(ServerEndpoint server_endpoint,
 
   if(!SSL_set_tlsext_host_name(sock.native_handle(), 
                                server_endpoint.host.data())) {
-    std::cout << "SSL_set_tlsext_host_name failed, error code: "
-              << ::ERR_get_error();
+    spdlog::error("SSL_set_tlsext_host_name failed, error code: {}",
+                  ::ERR_get_error());
   }
 
-  std::cout << "Connecting\n";
+  spdlog::info("Connecting");
   assert(!endpoints.empty()); // TODO(melg): find lib alternative to assert.
   co_await sock.next_layer().async_connect(*endpoints.begin());
-  std::cout << "Connected\n";
-  std::cout << "Handshaking\n";
+  spdlog::info("Connection success");
+  spdlog::info("Handshaking");
   co_await sock.async_handshake(boost::asio::ssl::stream_base::client);
-  std::cout << "Hand shook\n";
+  spdlog::info("Handshake success");
   co_return sock;
+}
+
+static void LogResponce(const 
+  beast::http::response<beast::http::string_body> &response) noexcept {
+  const auto result = static_cast<int>(response.result());
+  std::string reason{response.reason()};
+  spdlog::info("Responce result: {} reason: {}", result, reason);
+  spdlog::info("Responce body size: {}", response.body().size());
 }
 
 static cobalt::task<void> SendHttpsRequestTo(ServerEndpoint server_endpoint) {
   boost::asio::ssl::context ctx{boost::asio::ssl::context::tls_client};
   auto conn = co_await Connect(server_endpoint, ctx);
-  std::cout << "connected\n";
-  beast::http::request<beast::http::empty_body> req{beast::http::verb::get, "/data.js", 11};
+  spdlog::info("Sending \"get\" request");
+  beast::http::request<beast::http::empty_body> req{beast::http::verb::get,
+                                                    "/data.js", 11};
   req.set(beast::http::field::user_agent, BOOST_BEAST_VERSION_STRING);
   req.set("Accept-Encoding", "identity");
   req.set("Connection", "keep-alive");
@@ -76,9 +86,7 @@ static cobalt::task<void> SendHttpsRequestTo(ServerEndpoint server_endpoint) {
   beast::flat_buffer b;
   beast::http::response<beast::http::string_body> response;
   co_await beast::http::async_read(conn, b, response, cobalt::use_op);
-  std::cout << "Responce result: " << response.result()
-            << " reason: " << response.reason();
-  std::cout << "Responce body: " << response.body();
+  LogResponce(response);
 }
 
 static cobalt::promise<beast::tcp_stream> ConnectTcpStream(ServerEndpoint server_endpoint) {
@@ -87,15 +95,15 @@ static cobalt::promise<beast::tcp_stream> ConnectTcpStream(ServerEndpoint server
   const auto port = server_endpoint.port.empty() ? "https" : server_endpoint.port;
   const auto endpoints = co_await resolve.async_resolve(
       server_endpoint.host, port, cobalt::use_op);
-  std::cout << "Connecting\n";
+  spdlog::info("Connecting");
   co_await stream.async_connect(endpoints, cobalt::use_op);
-  std::cout << "Connected\n";
+  spdlog::info("Connection success");
   co_return stream;
 }
 
 static cobalt::task<void> SendWithTcpHttpRequestTo(ServerEndpoint server_endpoint) {
   auto conn = co_await ConnectTcpStream(server_endpoint);
-  std::cout << "Sending request\n";
+  spdlog::info("Sending \"get\" request");
   beast::http::request<beast::http::empty_body> req{beast::http::verb::get, "/data.js", 11};
   req.set(beast::http::field::user_agent, BOOST_BEAST_VERSION_STRING);
   req.set("Accept-Encoding", "identity");
@@ -106,13 +114,13 @@ static cobalt::task<void> SendWithTcpHttpRequestTo(ServerEndpoint server_endpoin
   beast::flat_buffer b;
   beast::http::response<beast::http::string_body> response;
   co_await beast::http::async_read(conn, b, response, cobalt::use_op);
-  std::cout << "Responce result: " << response.result()
-            << " reason: " << response.reason();
-  std::cout << "Responce body: " << response.body();
+  LogResponce(response);
 }
 
 cobalt::task<void> SendHttpRequestTo(
     ServerEndpoint server_endpoint) {
+  spdlog::info("Sending request to host {} using \"{}\"", server_endpoint.host,
+               server_endpoint.port);
   if (server_endpoint.port == "https") {
     return SendHttpsRequestTo(server_endpoint);
   } else {

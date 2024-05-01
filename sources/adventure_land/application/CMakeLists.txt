@@ -4,7 +4,10 @@
 
 
 find_package(Boost "1.84" COMPONENTS cobalt json url REQUIRED)
-find_package(OpenSSL 3.0.2 REQUIRED)    
+find_package(OpenSSL 3.0.2 REQUIRED)
+find_package(spdlog REQUIRED)
+
+option(SPDLOG_NO_EXCEPTIONS "Compile with -fno-exceptions. Call abort() on any spdlog exceptions" ON)
 
 file(GLOB_RECURSE ALL_ADVENTURE_LAND_APPLICATION_HEADERS
      "${CMAKE_CURRENT_SOURCE_DIR}/*.h")
@@ -29,4 +32,8 @@ if(CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
   add_compiler_flags(-Wno-zero-as-null-pointer-constant) # TODO(melg): fix this.
 endif()  
 
-target_link_libraries(adventure_application PUBLIC Boost::cobalt Boost::json Boost::url OpenSSL::SSL)
+target_link_libraries(adventure_application PUBLIC Boost::cobalt 
+                                                   Boost::json
+                                                   Boost::url
+                                                   OpenSSL::SSL
+                                                   spdlog::spdlog)

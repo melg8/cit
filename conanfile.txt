@@ -9,6 +9,7 @@ outcome/2.2.3
 openssl/3.1.2
 catch2/3.4.0
 range-v3/0.12.0
+spdlog/1.14.0
 
 
 [generators]
