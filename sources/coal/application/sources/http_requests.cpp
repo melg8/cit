@@ -71,12 +71,13 @@ static void LogResponce(const
   spdlog::info("Responce body size: {}", response.body().size());
 }
 
-static cobalt::task<void> SendHttpsRequestTo(ServerEndpoint server_endpoint) {
+static cobalt::task<void> SendHttpsRequestTo(ServerEndpoint server_endpoint,
+                                             std::string_view target) {
   boost::asio::ssl::context ctx{boost::asio::ssl::context::tls_client};
   auto conn = co_await Connect(server_endpoint, ctx);
   spdlog::info("Sending \"get\" request");
   beast::http::request<beast::http::empty_body> req{beast::http::verb::get,
-                                                    "/data.js", 11};
+                                                    target, 11};
   req.set(beast::http::field::user_agent, BOOST_BEAST_VERSION_STRING);
   req.set("Accept-Encoding", "identity");
   req.set("Connection", "keep-alive");
@@ -101,10 +102,11 @@ static cobalt::promise<beast::tcp_stream> ConnectTcpStream(ServerEndpoint server
   co_return stream;
 }
 
-static cobalt::task<void> SendWithTcpHttpRequestTo(ServerEndpoint server_endpoint) {
+static cobalt::task<void> SendWithTcpHttpRequestTo(ServerEndpoint server_endpoint,
+                                                   std::string_view target) {
   auto conn = co_await ConnectTcpStream(server_endpoint);
   spdlog::info("Sending \"get\" request");
-  beast::http::request<beast::http::empty_body> req{beast::http::verb::get, "/data.js", 11};
+  beast::http::request<beast::http::empty_body> req{beast::http::verb::get, target, 11};
   req.set(beast::http::field::user_agent, BOOST_BEAST_VERSION_STRING);
   req.set("Accept-Encoding", "identity");
   req.set("Connection", "keep-alive");
@@ -118,13 +120,13 @@ static cobalt::task<void> SendWithTcpHttpRequestTo(ServerEndpoint server_endpoin
 }
 
 cobalt::task<void> SendHttpRequestTo(
-    ServerEndpoint server_endpoint) {
+    ServerEndpoint server_endpoint, std::string_view target) {
   spdlog::info("Sending request to host {} using \"{}\"", server_endpoint.host,
                server_endpoint.port);
   if (server_endpoint.port == "https") {
-    return SendHttpsRequestTo(server_endpoint);
+    return SendHttpsRequestTo(server_endpoint, target);
   } else {
-    return SendWithTcpHttpRequestTo(server_endpoint);
+    return SendWithTcpHttpRequestTo(server_endpoint, target);
   }
 }
 

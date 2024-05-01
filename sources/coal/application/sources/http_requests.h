@@ -17,7 +17,8 @@ struct ServerEndpoint {
 };
 
 boost::cobalt::task<void> SendHttpRequestTo(
-    ServerEndpoint server_endpoint);
+    ServerEndpoint server_endpoint,
+    std::string_view target);
 
 } // namespace coal
 

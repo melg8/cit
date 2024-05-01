@@ -132,7 +132,7 @@ boost::cobalt::main co_main(int, char**) {
   SubscribableSocket socket{FromSocket(), {}};
   spdlog::info("Before distributing messages");
   SpeakWithDelay();
-  co_await SendHttpRequestTo({"adventure.land", "https"});
+  co_await SendHttpRequestTo({"adventure.land", "https"}, "/data.js");
   co_await cobalt::race(
       DistributeIncomingMessages(socket.registry, socket.socket),
       HandleIncomingMessages(socket.registry));
