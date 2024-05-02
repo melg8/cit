@@ -10,7 +10,6 @@
 #include <boost/asio/system_timer.hpp>
 #include <boost/cobalt.hpp>
 #include <boost/cobalt/promise.hpp>
-#include <boost/cobalt/race.hpp>
 #include <boost/cobalt/this_thread.hpp>
 #include <boost/beast.hpp>
 
@@ -26,8 +25,6 @@
 #include <libassert/assert.hpp>
 #include <fmt/format.h>
 #include <fmt/color.h>
-
-#include <stdexcept>
 
 namespace coal {
 
@@ -76,11 +73,12 @@ static std::string Formatted(
              : fmt::format(fg_blue, "{}:{}{}", host, port, target);
 }
 
-static cobalt::promise<Result<ssl_socket_type>> Connect(ServerEndpoint server_endpoint,
-                                                        ssl::context &ctx) {
+static cobalt::promise<Result<ssl_socket_type>> Connect(
+  ServerEndpoint server_endpoint, ssl::context &ctx) {
   ip::tcp::resolver resolve{cobalt::this_thread::get_executor()};
-   const auto[err, endpoints] = co_await resolve.async_resolve(
-    server_endpoint.host, server_endpoint.port, nothrow_use_op);
+  const auto port = server_endpoint.port.empty() ? "https" : server_endpoint.port;
+  const auto[err, endpoints] = co_await resolve.async_resolve(
+    server_endpoint.host, port, nothrow_use_op);
   if (err) {
     ReportError(err, "resolving host", server_endpoint);
     co_return err;
@@ -112,8 +110,8 @@ static cobalt::promise<Result<ssl_socket_type>> Connect(ServerEndpoint server_en
   co_return Result<ssl_socket_type>{std::move(sock)};
 }
 
-static void LogResponse(const 
-  http::response<http::string_body> &response,
+static void LogResponse(
+  const http::response<http::string_body> &response,
   ServerEndpoint server_endpoint, std::string_view target) noexcept {
   const auto result = static_cast<int>(response.result());
   std::string reason{response.reason()};
@@ -121,18 +119,12 @@ static void LogResponse(const
   reason, result,response.body().size(), Formatted(server_endpoint, target));
 }
 
-static cobalt::promise<Result<std::string>> SendHttpsRequestTo(ServerEndpoint server_endpoint,
-                                             std::string_view target) {
-  ssl::context ctx{ssl::context::tls_client};
-  auto conn = co_await Connect(server_endpoint, ctx);
-  if (conn.has_error()) {
-    ReportError(conn.error(), "connecting to endpoint host", server_endpoint);
-    co_return conn.error();
-  }
-
-  spdlog::info("Sending \"get\" request");
+template <typename T>
+static cobalt::promise<Result<std::string>> SendUnifiedRequestTo(
+  T &conn, ServerEndpoint server_endpoint, std::string_view target) noexcept {
+  spdlog::info("Sending \"GET\" request");
   const auto request = FormGetRequestFor(server_endpoint, target);
-  const auto [write_err, _1] = co_await http::async_write(*conn, request,
+  const auto [write_err, _1] = co_await http::async_write(conn, request,
     nothrow_use_op);
   if (write_err) {
     ReportError(write_err, "writing to", server_endpoint);
@@ -141,7 +133,7 @@ static cobalt::promise<Result<std::string>> SendHttpsRequestTo(ServerEndpoint se
 
   beast::flat_buffer b;
   http::response<http::string_body> response;
-  const auto [read_err, _2] = co_await http::async_read(*conn, b, response,
+  const auto [read_err, _2] = co_await http::async_read(conn, b, response,
    nothrow_use_op);
   if (read_err) {
     ReportError(read_err, "reading data from", server_endpoint);
@@ -149,6 +141,17 @@ static cobalt::promise<Result<std::string>> SendHttpsRequestTo(ServerEndpoint se
   }
   LogResponse(response, server_endpoint, target);
   co_return response.body();
+}
+
+static cobalt::promise<Result<std::string>> SendHttpsRequestTo(
+  ServerEndpoint server_endpoint, std::string_view target) {
+  ssl::context ctx{ssl::context::tls_client};
+  auto conn = co_await Connect(server_endpoint, ctx);
+  if (conn.has_error()) {
+    ReportError(conn.error(), "connecting to endpoint host", server_endpoint);
+    co_return conn.error();
+  }
+  co_return co_await SendUnifiedRequestTo(*conn, server_endpoint, target);
 }
 
 static cobalt::promise<Result<beast::tcp_stream>>
@@ -173,33 +176,14 @@ static cobalt::promise<Result<beast::tcp_stream>>
   co_return Result<beast::tcp_stream>{std::move(stream)};
 }
 
-static cobalt::promise<Result<std::string>> SendWithTcpHttpRequestTo(ServerEndpoint server_endpoint,
-                                                   std::string_view target) {
+static cobalt::promise<Result<std::string>> SendWithTcpHttpRequestTo(
+  ServerEndpoint server_endpoint, std::string_view target) {
   auto conn = co_await ConnectTcpStream(server_endpoint);
   if (conn.has_error()) {
     ReportError(conn.error(), "connecting to endpoint host", server_endpoint);
     co_return conn.error();
   }
-
-  spdlog::info("Sending \"get\" request");
-  const auto request = FormGetRequestFor(server_endpoint, target);
-  const auto [write_err, _1] = co_await http::async_write(*conn, request, 
-    nothrow_use_op);
-  if (write_err) {
-    ReportError(write_err, "writing to", server_endpoint);
-    co_return write_err;
-  }
-
-  beast::flat_buffer b;
-  http::response<http::string_body> response;
-  const auto [read_err, _2] = co_await http::async_read(*conn, b, response, 
-    nothrow_use_op);
-  if (read_err) {
-    ReportError(read_err, "reading from", server_endpoint);
-    co_return read_err;
-  }
-  LogResponse(response, server_endpoint, target);
-  co_return response.body();
+  co_return co_await SendUnifiedRequestTo(*conn, server_endpoint, target);
 }
 
 cobalt::promise<Result<std::string>> SendHttpRequestTo(
