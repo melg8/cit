@@ -88,3 +88,6 @@ docker-run-shell:
 # Run clang-format on h/cpp files.
 format-all:
   @ci/formatters/clang_format.sh
+
+coal:
+  find {{invocation_directory()}} -type f -executable -name "coal" -exec {} \;

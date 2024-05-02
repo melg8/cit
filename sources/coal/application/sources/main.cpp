@@ -2,6 +2,9 @@
 //
 // SPDX-License-Identifier: MIT
 
+#include <fmt_custom_types.h>
+#include <http_requests.h>
+
 #include <boost/cobalt.hpp>
 #include <boost/cobalt/main.hpp>
 #include <boost/cobalt/promise.hpp>
@@ -12,15 +15,17 @@
 #include <boost/asio/co_spawn.hpp>
 #include <boost/asio/detached.hpp>
 #include <boost/asio/steady_timer.hpp>
+#include <boost/url.hpp>
 
 #include <spdlog/spdlog.h>
 
 #include <coroutine>
+#include <iostream>
 #include <map>
 #include <stdexcept>
+#include <string>
+#include <string_view>
 #include <vector>
-
-#include <http_requests.h>
 
 namespace coal {
 
@@ -114,8 +119,8 @@ static cobalt::detached SpeakWithDelay() {
 
 static cobalt::task<void> TestHttpRequests() {
   const auto [result_1, result_2] = co_await cobalt::join(
-      SendHttpRequestTo({"adventure.land", "https"}, "/data.js"),
-      SendHttpRequestTo({"127.0.0.1", "8083"}, "/data.js"));
+      SendHttpGetRequestTo("https://adventure.land/data.js"),
+      SendHttpGetRequestTo("htpp://127.0.0.1:8083/data.js"));
   if (result_1.has_error()) {
     spdlog::error("Error occured while sending http request: {} bailing out",
                   result_1.error().message());
@@ -146,11 +151,30 @@ static cobalt::task<void> Test() {
   spdlog::info("After distributing messages");
 }
 
+static void DebugParseUrl(std::string_view url_text) noexcept {
+  const auto url_parsed = boost::urls::parse_uri(url_text);
+  if (url_parsed.has_error()) {
+    spdlog::error("Error while parsing url string: {}",
+                  url_parsed.error().message());
+    return;
+  }
+  const auto url = url_parsed.value();
+  spdlog::info("For url text {}\n scheme: {}\n host: {}\n port: {}\n path: {}",
+               url_text, url.scheme(), url.host(), url.port(), url.path());
+}
+
+static void TestUrlParsing() noexcept {
+  DebugParseUrl("https://adventure.land/data.js");
+  DebugParseUrl("http://127.0.0.1:8083/data.js");
+}
+
 }  // namespace coal
 
 boost::cobalt::main co_main(int, char**) {
   using namespace coal;
   SetupSpdLog();
+
+  TestUrlParsing();
   SpeakWithDelay();
   co_await TestHttpRequests();
   co_await Test();
