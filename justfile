@@ -84,3 +84,7 @@ docker-run-nix-shell +commands:
 # Run shell from docker.
 docker-run-shell:
   @ci/docker/run_shell.sh
+
+# Run clang-format on h/cpp files.
+format-all:
+  @ci/formatters/clang_format.sh

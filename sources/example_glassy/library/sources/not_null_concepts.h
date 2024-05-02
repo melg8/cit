@@ -29,9 +29,10 @@ concept is_not_null_of_concrete_raw_pointer =
     std::same_as<RawTypeOf<T>, gsl::not_null<Target>>;
 
 template <class T, typename Target>
-concept is_not_null_owner_of_concrete_raw_pointer = requires(T provider) {
-  { provider.get() } -> std::convertible_to<Target>;
-};  // NOLINT
+concept is_not_null_owner_of_concrete_raw_pointer =
+    requires(T provider) {
+      { provider.get() } -> std::convertible_to<Target>;
+    };  // NOLINT
 
 template <typename T>
 struct IsNotNull {

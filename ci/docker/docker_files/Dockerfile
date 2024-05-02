@@ -30,6 +30,7 @@ RUN apt-get -y update \
     libclang-rt-16-dev=1:16.* \
     libc++-dev \
     llvm-16-dev=1:16.* \
+    clang-format \
     mold \
     git=1:2.39.* \
     cmake=3.25.* \
