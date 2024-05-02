@@ -6,6 +6,7 @@ find_package(Boost "1.84" COMPONENTS cobalt json url REQUIRED)
 find_package(OpenSSL 3.0.2 REQUIRED)
 find_package(spdlog REQUIRED)
 find_package(libassert REQUIRED)
+find_package(fmt REQUIRED)
 
 option(SPDLOG_NO_EXCEPTIONS "Compile with -fno-exceptions. Call abort() on any spdlog exceptions" ON)
 
@@ -30,11 +31,15 @@ if(CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
   add_compiler_flags(-frtti)
   add_compiler_flags(-fexceptions)
   add_compiler_flags(-Wno-zero-as-null-pointer-constant) # TODO(melg): fix this.
+
+  # Due to https://github.com/boostorg/cobalt/issues/7
+  add_compiler_flags(-Wno-mismatched-new-delete) 
 endif()  
 
 target_link_libraries(coal PUBLIC Boost::cobalt 
                                   Boost::json
                                   Boost::url
+                                  fmt::fmt
                                   libassert::assert
                                   OpenSSL::SSL
                                   spdlog::spdlog)

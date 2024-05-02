@@ -115,13 +115,43 @@ static cobalt::task<void>  DelayMs(size_t ms) {
 }
 
 static cobalt::detached SpeakWithDelay() {
-  spdlog::info("SpeakWithDelay started");
+  spdlog::info("Speak with delay started");
   co_await DelayMs(3000);
-  spdlog::info("SpeakWithDelay after 3 seconds");
+  spdlog::info("Speak with delay finished after 3 sec.");
+}
+
+static cobalt::task<void> TestHttpRequests() {
+  const auto [result_1, result_2] = co_await cobalt::join(
+      SendHttpRequestTo({"adventure.land", "https"}, "/data.js"),
+      SendHttpRequestTo({"127.0.0.1", "8083"}, "/data.js"));
+  if (result_1.has_error()) {
+    spdlog::error("Error occured while sending http request: {} bailing out",
+                  result_1.error().message());
+    co_return;
+  }
+  if (result_2.has_error()) {
+    spdlog::error("Error occured while sending http request: {} bailing out",
+                  result_2.error().message());
+    co_return;
+  }
+  spdlog::info("Returned responses are {} and {} bytes long",
+               result_1.value().size(), result_2.value().size());
+  co_return;
 }
 
 static void SetupSpdLog() noexcept {
   spdlog::set_pattern("[%X.%f] [%7i] [%^%L%$] %v");
+}
+
+static cobalt::task<void> Test() {
+  spdlog::info("Before distributing messages");
+
+  SubscribableSocket socket1{FromSocket(), {}};
+  co_await cobalt::race(
+    DistributeIncomingMessages(socket1.registry, socket1.socket),
+    HandleIncomingMessages(socket1.registry));
+    
+  spdlog::info("After distributing messages");
 }
 
 } // namespace coal
@@ -129,26 +159,9 @@ static void SetupSpdLog() noexcept {
 boost::cobalt::main co_main(int, char**) {
   using namespace coal;
   SetupSpdLog();
-  SubscribableSocket socket{FromSocket(), {}};
-  spdlog::info("Before distributing messages");
   SpeakWithDelay();
-  const auto [result, result_2] = co_await cobalt::join(
-      SendHttpRequestTo({"adventure.land", "https"}, "/data.js"),
-      SendHttpRequestTo({"127.0.0.1", "8083"}, "/data.js"));
-  if (result.has_error()) {
-    spdlog::error("Error occured while sending http request: {} bailing out",
-                  result.error().message());
-    co_return result.error().value();
-  }
-  if (result_2.has_error()) {
-    spdlog::error("Error occured while sending http request: {} bailing out",
-                  result_2.error().message());
-    co_return result_2.error().value();
-  }
-  co_await cobalt::race(
-      DistributeIncomingMessages(socket.registry, socket.socket),
-      HandleIncomingMessages(socket.registry));
-  spdlog::info("After distributing messages");
+  co_await TestHttpRequests();
+  co_await Test();
   co_return 0;
 }
 
