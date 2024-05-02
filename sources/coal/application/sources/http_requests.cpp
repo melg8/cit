@@ -49,18 +49,11 @@ using websocket_type = beast::websocket::stream<ssl_socket_type>;
 
 constexpr auto nothrow_use_op = net::as_tuple(cobalt::use_op);
 
-static std::string Formatted(boost::urls::url url) noexcept {
-  static constexpr auto kBlueLinkColorValue = 0x0645AD;
-  const auto fg_blue = fg(fmt::rgb(kBlueLinkColorValue));
-  return fmt::format(fg_blue, "{}", static_cast<boost::core::string_view>(url));
-}
-
 static void ReportError(boost::system::error_code err,
                         std::string_view action,
                         boost::urls::url url) noexcept {
   DEBUG_ASSERT(err, "should not report errors with empty error code");
-  spdlog::error("Error: {} while {}: {}", err.message(), action,
-                Formatted(url));
+  spdlog::error("Error: {} while {}: {}", err.message(), action, url);
 }
 
 static http::request<http::empty_body> FormGetRequestFor(boost::urls::url url) {
@@ -113,7 +106,7 @@ static void LogResponse(const http::response<http::string_body>& response,
   const auto result = static_cast<int>(response.result());
   std::string reason{response.reason()};
   spdlog::info("Got http response {} reason: {} body size {} from {}", reason,
-               result, response.body().size(), Formatted(url));
+               result, response.body().size(), url);
 }
 
 template <typename T>
@@ -193,7 +186,7 @@ cobalt::promise<Result<std::string>> SendHttpGetRequestTo(
   }
   const boost::urls::url url = parsed_url.value();
 
-  spdlog::info("Sending request to {}", Formatted(url));
+  spdlog::info("Sending request to {}", url);
   if (url.scheme() == "https") {
     co_return co_await SendHttpsGetRequestTo(url);
   } else {
