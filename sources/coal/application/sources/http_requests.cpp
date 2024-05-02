@@ -47,6 +47,8 @@ using acceptor_type =
     typename ip::tcp::acceptor::rebind_executor<executor_type>::other;
 using websocket_type = beast::websocket::stream<ssl_socket_type>;
 
+using HttpResponse = http::response<http::string_body>;
+
 constexpr auto nothrow_use_op = net::as_tuple(cobalt::use_op);
 
 static void ReportError(boost::system::error_code err,
@@ -101,7 +103,7 @@ static cobalt::promise<Result<ssl_socket_type>> Connect(boost::urls::url url,
   co_return Result<ssl_socket_type>{std::move(sock)};
 }
 
-static void LogResponse(const http::response<http::string_body>& response,
+static void LogResponse(const HttpResponse& response,
                         boost::urls::url url) noexcept {
   const auto result = static_cast<int>(response.result());
   std::string reason{response.reason()};
@@ -110,7 +112,7 @@ static void LogResponse(const http::response<http::string_body>& response,
 }
 
 template <typename T>
-static cobalt::promise<Result<std::string>> SendUnifiedGetRequestTo(
+static cobalt::promise<Result<HttpResponse>> SendUnifiedGetRequestTo(
     T& conn, boost::urls::url url) noexcept {
   spdlog::info("Sending \"GET\" request");
   const auto request = FormGetRequestFor(url);
@@ -122,7 +124,7 @@ static cobalt::promise<Result<std::string>> SendUnifiedGetRequestTo(
   }
 
   beast::flat_buffer b;
-  http::response<http::string_body> response;
+  HttpResponse response;
   const auto [read_err, _2] =
       co_await http::async_read(conn, b, response, nothrow_use_op);
   if (read_err) {
@@ -130,10 +132,10 @@ static cobalt::promise<Result<std::string>> SendUnifiedGetRequestTo(
     co_return read_err;
   }
   LogResponse(response, url);
-  co_return response.body();
+  co_return response;
 }
 
-static cobalt::promise<Result<std::string>> SendHttpsGetRequestTo(
+static cobalt::promise<Result<HttpResponse>> SendHttpsGetRequestTo(
     boost::urls::url url) {
   ssl::context ctx{ssl::context::tls_client};
   auto conn = co_await Connect(url, ctx);
@@ -166,7 +168,7 @@ static cobalt::promise<Result<beast::tcp_stream>> ConnectTcpStream(
   co_return Result<beast::tcp_stream>{std::move(stream)};
 }
 
-static cobalt::promise<Result<std::string>> SendWithTcpHttpGetRequestTo(
+static cobalt::promise<Result<HttpResponse>> SendWithTcpHttpGetRequestTo(
     boost::urls::url url) {
   auto conn = co_await ConnectTcpStream(url);
   if (conn.has_error()) {
@@ -176,13 +178,13 @@ static cobalt::promise<Result<std::string>> SendWithTcpHttpGetRequestTo(
   co_return co_await SendUnifiedGetRequestTo(*conn, url);
 }
 
-cobalt::promise<Result<std::string>> SendHttpGetRequestTo(
+cobalt::promise<Result<HttpResponse>> SendHttpGetRequestTo(
     std::string_view url_text) {
   const auto parsed_url = boost::urls::parse_uri(url_text);
   if (parsed_url.has_error()) {
     spdlog::error("Error while parsing url {}: error text: {}", url_text,
                   parsed_url.error().message());
-    co_return Result<std::string>{parsed_url.error()};
+    co_return Result<HttpResponse>{parsed_url.error()};
   }
   const boost::urls::url url = parsed_url.value();
 

@@ -132,7 +132,7 @@ static cobalt::task<void> TestHttpRequests() {
     co_return;
   }
   spdlog::info("Returned responses are {} and {} bytes long",
-               result_1.value().size(), result_2.value().size());
+               result_1.value().body().size(), result_2.value().body().size());
   co_return;
 }
 
