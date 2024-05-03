@@ -2,27 +2,24 @@
 //
 // SPDX-License-Identifier: MIT
 
+#include <auth_client.h>
 #include <fmt_custom_types.h>
 #include <http_requests.h>
 
+#include <spdlog/spdlog.h>
+#include <boost/asio/co_spawn.hpp>
+#include <boost/asio/detached.hpp>
+#include <boost/asio/steady_timer.hpp>
 #include <boost/cobalt.hpp>
 #include <boost/cobalt/main.hpp>
 #include <boost/cobalt/promise.hpp>
 #include <boost/cobalt/race.hpp>
 #include <boost/cobalt/this_coro.hpp>
 #include <boost/cobalt/this_thread.hpp>
-
-#include <boost/asio/co_spawn.hpp>
-#include <boost/asio/detached.hpp>
-#include <boost/asio/steady_timer.hpp>
 #include <boost/url.hpp>
 
-#include <spdlog/spdlog.h>
-
 #include <coroutine>
-#include <iostream>
 #include <map>
-#include <stdexcept>
 #include <string>
 #include <string_view>
 #include <vector>
@@ -136,6 +133,18 @@ static cobalt::task<void> TestHttpRequests() {
   co_return;
 }
 
+static cobalt::task<void> TestLoginToRequest() {
+  const auto result = co_await LoginTo("https://adventure.land",
+                                       {"unknown@gmail.com", "wrongpassword"});
+  if (result.has_error()) {
+    spdlog::error("Error occured while login attempt: {} bailing out",
+                  result.error().message());
+  }
+  const auto body = result.value().body();
+  spdlog::info("Got login response answer, body size: {}, body: {}",
+               body.size(), body);
+}
+
 static void SetupSpdLog() noexcept {
   spdlog::set_pattern("[%X.%f] [%7i] [%^%L%$] %v");
 }
@@ -157,6 +166,7 @@ boost::cobalt::main co_main(int, char**) {
   using namespace coal;
   SetupSpdLog();
   SpeakWithDelay();
+  co_await TestLoginToRequest();
   co_await TestHttpRequests();
   co_await Test();
   co_return 0;
