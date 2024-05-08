@@ -7,6 +7,7 @@ find_package(OpenSSL 3.0.2 REQUIRED)
 find_package(spdlog REQUIRED)
 find_package(libassert REQUIRED)
 find_package(fmt REQUIRED)
+find_package(ctre REQUIRED)
 
 option(SPDLOG_NO_EXCEPTIONS "Compile with -fno-exceptions. Call abort() on any spdlog exceptions" ON)
 
@@ -39,6 +40,7 @@ endif()
 target_link_libraries(coal PUBLIC Boost::cobalt 
                                   Boost::json
                                   Boost::url
+                                  ctre::ctre
                                   fmt::fmt
                                   libassert::assert
                                   OpenSSL::SSL

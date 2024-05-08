@@ -15,8 +15,13 @@ namespace coal {
 namespace cobalt = boost::cobalt;
 
 struct Credentials {
-  std::string email;
-  std::string password;
+  std::string email = {};
+  std::string password = {};
+};
+
+struct UserAuthData {
+  std::string id = {};
+  std::string token = {};
 };
 
 cobalt::promise<Result<HttpResponse>> CallApiMethod(std::string_view url_text,
@@ -26,6 +31,9 @@ cobalt::promise<Result<HttpResponse>> CallApiMethod(std::string_view url_text,
 
 cobalt::promise<Result<HttpResponse>> LoginTo(std::string_view url_text,
                                               const Credentials& credentials);
+
+cobalt::promise<Result<UserAuthData>> AuthTo(std::string_view server_url,
+                                             const Credentials& credentials);
 
 }  // namespace coal
 

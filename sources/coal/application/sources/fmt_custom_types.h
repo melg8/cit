@@ -8,6 +8,8 @@
 #include <fmt/color.h>
 #include <fmt/core.h>
 #include <fmt/format.h>
+#include <boost/beast/http.hpp>
+#include <boost/beast/http/fields.hpp>
 #include <boost/url.hpp>
 
 template <>
@@ -29,6 +31,28 @@ struct fmt::formatter<boost::urls::url> : fmt::formatter<std::string> {
 
   auto format(const boost::urls::url& url, fmt::format_context& ctx) {
     return fmt::formatter<std::string>::format(Formatted(url), ctx);
+  }
+};
+
+template <>
+struct fmt::formatter<
+    boost::beast::http::header<false, boost::beast::http::fields>>
+    : fmt::formatter<std::string> {
+  [[nodiscard]] static std::string Formatted(
+      const boost::beast::http::header<false, boost::beast::http::fields>&
+          header) {
+    std::string result = "HTTP Header:\n";
+    for (const auto& field : header) {
+      result += fmt::format("{}: {}", field.name_string(), field.value());
+    }
+    return result;
+  }
+
+  auto format(
+      const boost::beast::http::header<false, boost::beast::http::fields>&
+          header,
+      fmt::format_context& ctx) {
+    return fmt::formatter<std::string>::format(Formatted(header), ctx);
   }
 };
 

@@ -18,6 +18,7 @@
 #include <boost/cobalt/this_thread.hpp>
 #include <boost/url.hpp>
 
+#include <chrono>
 #include <coroutine>
 #include <map>
 #include <string>
@@ -134,8 +135,14 @@ static cobalt::task<void> TestHttpRequests() {
 }
 
 static cobalt::task<void> TestLoginToRequest() {
+  auto start = std::chrono::high_resolution_clock::now();
   const auto result = co_await LoginTo("https://adventure.land",
                                        {"unknown@gmail.com", "wrongpassword"});
+
+  auto end = std::chrono::high_resolution_clock::now();
+  std::chrono::duration<double> duration = end - start;
+  spdlog::info("LoginTo took: {} seconds", duration.count());
+
   if (result.has_error()) {
     spdlog::error("Error occured while login attempt: {} bailing out",
                   result.error().message());
@@ -143,6 +150,21 @@ static cobalt::task<void> TestLoginToRequest() {
   const auto body = result.value().body();
   spdlog::info("Got login response answer, body size: {}, body: {}",
                body.size(), body);
+
+  const auto header = result.value().base();
+  spdlog::info("{}", header);
+}
+
+static cobalt::task<void> TestAuthTo() {
+  const auto result = co_await AuthTo("https://adventure.land",
+                                      {"unknown@gmail.com", "wrongpassword"});
+  if (result.has_error()) {
+    spdlog::error("Error occured while login attempt: {} bailing out",
+                  result.error().message());
+    co_return;
+  }
+  spdlog::info("Got UserAuthData id: {} token: {}", result.value().id,
+               result.value().token);
 }
 
 static void SetupSpdLog() noexcept {
@@ -166,6 +188,7 @@ boost::cobalt::main co_main(int, char**) {
   using namespace coal;
   SetupSpdLog();
   SpeakWithDelay();
+  co_await TestAuthTo();
   co_await TestLoginToRequest();
   co_await TestHttpRequests();
   co_await Test();
