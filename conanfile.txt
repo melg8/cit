@@ -7,6 +7,7 @@ boost/1.84.0
 catch2/3.4.0
 ctre/3.8.1
 fmt/10.2.1
+glaze/2.6.1
 gsl-lite/0.40.0
 libassert/2.0.2
 openssl/3.1.2
