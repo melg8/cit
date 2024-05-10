@@ -12,21 +12,21 @@ find_package(glaze REQUIRED)
 
 option(SPDLOG_NO_EXCEPTIONS "Compile with -fno-exceptions. Call abort() on any spdlog exceptions" ON)
 
-file(GLOB_RECURSE ALL_COAL_APPLICATION_HEADERS
+file(GLOB_RECURSE ALL_COALA_APPLICATION_HEADERS
      "${CMAKE_CURRENT_SOURCE_DIR}/*.h")
 
-message("adventure land headers:" "${ALL_COAL_APPLICATION_HEADERS}")
+message("adventure land headers:" "${ALL_COALA_APPLICATION_HEADERS}")
 
-file(GLOB_RECURSE ALL_COAL_APPLICATION_SOURCES
+file(GLOB_RECURSE ALL_COALA_APPLICATION_SOURCES
      "${CMAKE_CURRENT_SOURCE_DIR}/*.cpp")
 
-add_executable(coal "${ALL_COAL_APPLICATION_HEADERS}"
-                                     "${ALL_COAL_APPLICATION_SOURCES}")
+add_executable(coala "${ALL_COALA_APPLICATION_HEADERS}"
+                                     "${ALL_COALA_APPLICATION_SOURCES}")
 
-header_directories(ALL_COAL_INCLUDE_DIRECTORIES)
+header_directories(ALL_COALA_INCLUDE_DIRECTORIES)
 
-target_include_directories(coal PUBLIC 
-                           "${ALL_COAL_INCLUDE_DIRECTORIES}")
+target_include_directories(coala PUBLIC 
+                           "${ALL_COALA_INCLUDE_DIRECTORIES}")
 
 
 if(CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
@@ -38,12 +38,13 @@ if(CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
   add_compiler_flags(-Wno-mismatched-new-delete) 
 endif()  
 
-target_link_libraries(coal PRIVATE Boost::cobalt 
-                                  Boost::json
-                                  Boost::url
-                                  ctre::ctre
-                                  fmt::fmt
-                                  glaze::glaze
-                                  libassert::assert
-                                  OpenSSL::SSL
-                                  spdlog::spdlog)
+target_link_libraries(coala PRIVATE Boost::cobalt 
+                                    Boost::json
+                                    Boost::url
+                                    ctre::ctre
+                                    fmt::fmt
+                                    glaze::glaze
+                                    libassert::assert
+                                    OpenSSL::SSL
+                                    spdlog::spdlog
+                                    coal)

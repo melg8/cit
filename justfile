@@ -89,5 +89,5 @@ docker-run-shell:
 format-all:
   @ci/formatters/clang_format.sh
 
-coal:
-  find {{invocation_directory()}} -type f -executable -name "coal" -exec {} \;
+coala:
+  find {{invocation_directory()}} -type f -executable -name "coala" -exec {} \;

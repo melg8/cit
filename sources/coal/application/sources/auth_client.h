@@ -5,8 +5,8 @@
 #ifndef AUTH_CLIENT_H
 #define AUTH_CLIENT_H
 
+#include <servers_and_characters_response_from_json.h>
 #include <universal_declarations.h>
-#include <servers_and_characters_response_parser.h>
 
 #include <boost/cobalt.hpp>
 
