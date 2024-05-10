@@ -134,30 +134,9 @@ static cobalt::task<void> TestHttpRequests() {
   co_return;
 }
 
-static cobalt::task<void> TestLoginToRequest() {
-  auto start = std::chrono::high_resolution_clock::now();
-  const auto result = co_await LoginTo("https://adventure.land",
-                                       {"unknown@gmail.com", "wrongpassword"});
-
-  auto end = std::chrono::high_resolution_clock::now();
-  std::chrono::duration<double> duration = end - start;
-  spdlog::info("LoginTo took: {} seconds", duration.count());
-
-  if (result.has_error()) {
-    spdlog::error("Error occured while login attempt: {} bailing out",
-                  result.error().message());
-  }
-  const auto body = result.value().body();
-  spdlog::info("Got login response answer, body size: {}, body: {}",
-               body.size(), body);
-
-  const auto header = result.value().base();
-  spdlog::info("{}", header);
-}
-
-static cobalt::task<void> TestAuthTo() {
-  const auto result = co_await AuthTo("https://adventure.land",
-                                      {"unknown@gmail.com", "wrongpassword"});
+static cobalt::task<void> TestAuthTo(std::string_view url,
+                                     const Credentials& credentials) {
+  const auto result = co_await AuthTo(url, credentials);
   if (result.has_error()) {
     spdlog::error("Error occured while login attempt: {} bailing out",
                   result.error().message());
@@ -165,6 +144,15 @@ static cobalt::task<void> TestAuthTo() {
   }
   spdlog::info("Got UserAuthData id: {} token: {}", result.value().id,
                result.value().token);
+
+  const auto servers_result =
+      co_await GetServersAndCharacters(url, result.value());
+  if (servers_result.has_error()) {
+    spdlog::error("Error occured while getting servers and characters: {}",
+                  servers_result.error().message());
+    co_return;
+  }
+  spdlog::info("Got servers and characters information");
 }
 
 static void SetupSpdLog() noexcept {
@@ -182,14 +170,19 @@ static cobalt::task<void> Test() {
   spdlog::info("After distributing messages");
 }
 
+static cobalt::task<void> TestAuthConnectivity() {
+  const auto url = "http://127.0.0.1:8083";
+  Credentials credentials = {"test@test.com", "123456789"};
+  co_await TestAuthTo(url, credentials);
+}
+
 }  // namespace coal
 
 boost::cobalt::main co_main(int, char**) {
   using namespace coal;
   SetupSpdLog();
   SpeakWithDelay();
-  co_await TestAuthTo();
-  co_await TestLoginToRequest();
+  co_await TestAuthConnectivity();
   co_await TestHttpRequests();
   co_await Test();
   co_return 0;

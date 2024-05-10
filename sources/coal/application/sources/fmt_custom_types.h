@@ -43,7 +43,7 @@ struct fmt::formatter<
           header) {
     std::string result = "HTTP Header:\n";
     for (const auto& field : header) {
-      result += fmt::format("{}: {}", field.name_string(), field.value());
+      result += fmt::format("{}: {}\n", field.name_string(), field.value());
     }
     return result;
   }

@@ -10,6 +10,10 @@
 #include <fmt/format.h>
 #include <spdlog/spdlog.h>
 #include <ctre.hpp>
+#include <glaze/glaze.hpp>
+
+#include <algorithm>
+#include <cctype>
 
 namespace coal {
 
@@ -28,12 +32,6 @@ cobalt::promise<Result<HttpResponse>> CallApiMethod(std::string_view url_text,
       credentials.email, credentials.password);
 }
 
-cobalt::promise<Result<HttpResponse>> LoginTo(std::string_view url_text,
-                                              const Credentials& credentials) {
-  return CallApiMethod(url_text, "signup_or_login",
-                       FormatOnlyLoginData(credentials));
-}
-
 [[nodiscard]] static Result<UserAuthData> FromCookie(std::string_view cookie) {
   const auto m = ctre::match<R"(.*auth=(.*?)-(.*?);.*)">(cookie);
   if (m) {
@@ -50,7 +48,7 @@ cobalt::promise<Result<HttpResponse>> LoginTo(std::string_view url_text,
   const auto header = repsonse.base();
   for (const auto& field : header) {
     const auto& field_name = field.name_string();
-    if (field_name == "set-cookie") {
+    if (field_name == "Set-Cookie" || field_name == "set-cookie") {
       const auto& cookie = field.value();
       spdlog::info("Got set-cookie: {}", cookie);
       return FromCookie(cookie);
@@ -82,21 +80,36 @@ cobalt::promise<Result<UserAuthData>> AuthTo(std::string_view server_url,
   return fmt::format("auth={}-{}", user_auth_data.id, user_auth_data.token);
 }
 
-[[nodiscard]] static Result<ServersAndCharacters> ServersAndCharactersFrom(
-    [[maybe_unused]] const std::string json_body) {
+static inline void Prettify(const auto& in, auto& out) noexcept {
+  glz::context ctx{};
+  glz::detail::prettify_json<glz::opts{}>(ctx, in, out);
+  spdlog::info("After prettify ctx error?: {}, code: {}", ctx.includer_error,
+               static_cast<int>(ctx.error));
+}
+
+static std::string RemoveSpaces(std::string str) {
+  str.erase(std::remove_if(str.begin(), str.end(), ::isspace), str.end());
+  return str;
+}
+
+[[nodiscard]] static Result<ServersAndCharactersResponse>
+ServersAndCharactersFrom(std::string json_body) {
+  std::string beautiful;
+  Prettify(RemoveSpaces(json_body), beautiful);
+  spdlog::info("Got servers and characters json:{}", beautiful);
   if (json_body.empty()) {
     spdlog::error("Got empty json body for servers and characters parsing");
     return {};  // TODO(melg): add proper error code.
   }
-
   return {};
 }
 
-cobalt::promise<Result<ServersAndCharacters>> GetServersAndCharacters(
+cobalt::promise<Result<ServersAndCharactersResponse>> GetServersAndCharacters(
     std::string_view url_text, UserAuthData user_auth_data) {
   const auto auth_cookie = AuthCookieFrom(user_auth_data);
-  const auto maybe_answer = co_await CallApiMethod(
-      url_text, "servers_and_characters", "{}", {auth_cookie});
+  Cookies cookies = {auth_cookie};
+  const auto maybe_answer =
+      co_await CallApiMethod(url_text, "servers_and_characters", "{}", cookies);
   if (maybe_answer.has_error()) {
     spdlog::error("Can't obtains servers and characters: {}",
                   maybe_answer.error().message());
