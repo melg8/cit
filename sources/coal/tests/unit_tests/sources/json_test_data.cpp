@@ -146,76 +146,6 @@ const char* kServersAndCharactersResponse = R"([
         "x": -8.928375622597855,
         "y": -1907.9885273894286,
         "home": "EUII"
-      },
-      {
-        "id": "6513169006067712",
-        "name": "Melira",
-        "level": 67,
-        "type": "warrior",
-        "online": 0,
-        "skin": "sarmor2d",
-        "cx": {
-          "hair": "hairdo105",
-          "head": "fmakeup01"
-        },
-        "in": "goobrawl",
-        "map": "goobrawl",
-        "x": 28.931406480513523,
-        "y": 0.5371930448197872,
-        "home": "EUII"
-      },
-      {
-        "id": "5841468299673600",
-        "name": "Mequ",
-        "level": 68,
-        "type": "ranger",
-        "online": 0,
-        "skin": "marmor5a",
-        "cx": {
-          "hair": "hairdo106",
-          "head": "mmakeup00",
-          "makeup": "facemakeup02",
-          "upper": "marmor5a"
-        },
-        "in": "desertland",
-        "map": "desertland",
-        "x": 80.0000001,
-        "y": -1205.5875204928566,
-        "home": "EUPVP"
-      },
-      {
-        "id": "5383673741836288",
-        "name": "Combi",
-        "level": 40,
-        "type": "merchant",
-        "online": 0,
-        "skin": "marmor12b",
-        "cx": {
-          "hair": "hairdo520",
-          "head": "fmakeup01"
-        },
-        "in": "bank",
-        "map": "bank",
-        "x": 0,
-        "y": -37,
-        "home": "EUII"
-      },
-      {
-        "id": "6141058542469120",
-        "name": "Collect",
-        "level": 40,
-        "type": "merchant",
-        "online": 0,
-        "skin": "marmor12b",
-        "cx": {
-          "hair": "hairdo520",
-          "head": "fmakeup01"
-        },
-        "in": "main",
-        "map": "main",
-        "x": 168,
-        "y": -134,
-        "home": "EUII"
       }
     ],
     "tutorial": {
@@ -271,5 +201,143 @@ const char* kServersAndCharactersResponse = R"([
     "rewards": []
   }
 ])";
+
+const char* kLocalServersAndCharactersResponse = R"(
+   {
+      "tutorial": {
+         "completed": [],
+         "progress": 100,
+         "step": 0,
+         "task": false
+      },
+      "code_list": {
+         "6195934853595136": [
+            "Hold",
+            83
+         ],
+         "1": [
+            "Hold",
+            94
+         ],
+         "2": [
+            "Lucky",
+            221
+         ],
+         "3": [
+            "Melok",
+            129
+         ],
+         "4": [
+            "Orca",
+            155
+         ],
+         "4929297458397184": [
+            "Orca",
+            187
+         ],
+         "5351509923463168": [
+            "Lucky",
+            301
+         ],
+         "5773722388529152": [
+            "Melok",
+            225
+         ]
+      },
+      "type": "servers_and_characters",
+      "mail": 0,
+      "characters": [
+         {
+            "home": "EUI",
+            "secret": "G6pHWhxVwkkmNxelpxnVtg6T",
+            "server": "EUI",
+            "in": "desertland",
+            "name": "Orca",
+            "cx": {
+               "hair": "hairdo106",
+               "head": "makeup117"
+            },
+            "id": "4929297458397184",
+            "skin": "marmor5a",
+            "type": "ranger",
+            "online": 202707.848,
+            "level": 77,
+            "map": "desertland",
+            "y": 119.10026085158528,
+            "x": -818.5618815881277
+         },
+         {
+            "home": "EUI",
+            "secret": "T0gLopJzAfvAWlTBuxWdso2q",
+            "server": "EUI",
+            "in": "desertland",
+            "name": "Lucky",
+            "cx": {
+               "hair": "hairdo106",
+               "head": "makeup117"
+            },
+            "id": "5351509923463168",
+            "skin": "marmor5a",
+            "type": "ranger",
+            "online": 202685.56100000002,
+            "level": 77,
+            "map": "desertland",
+            "y": 156.51512233625692,
+            "x": -808.3772770917886
+         },
+         {
+            "home": "EUI",
+            "secret": "pHFX34liBFzRvTyTbZozTnDN",
+            "server": "EUI",
+            "in": "desertland",
+            "name": "Melok",
+            "cx": {
+               "hair": "hairdo106",
+               "head": "makeup117"
+            },
+            "id": "5773722388529152",
+            "skin": "marmor5a",
+            "type": "ranger",
+            "online": 154724.986,
+            "level": 77,
+            "map": "desertland",
+            "y": 173.69869051045737,
+            "x": -836.7974770928782
+         },
+         {
+            "home": "EUI",
+            "secret": "RQ1ody4o8ptnppT3KnJ57XnV",
+            "server": "EUI",
+            "in": "bank",
+            "name": "Hold",
+            "cx": {
+               "hair": "hairdo520",
+               "hat": "hat407",
+               "head": "fmakeup01"
+            },
+            "id": "6195934853595136",
+            "skin": "marmor12b",
+            "type": "merchant",
+            "online": 2768.357,
+            "level": 60,
+            "map": "bank",
+            "y": -26.0000001,
+            "x": -2.4444444444444446
+         }
+      ],
+      "servers": [
+         {
+            "region": "EU",
+            "players": 4,
+            "addr": "127.0.0.1",
+            "name": "I",
+            "port": 8022,
+            "key": "EUI"
+         }
+      ],
+      "rewards": []
+   }
+]
+)";
 
 }  // namespace coal::test

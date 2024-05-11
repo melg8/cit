@@ -8,6 +8,7 @@
 namespace coal::test {
 
 extern const char* kServersAndCharactersResponse;
+extern const char* kLocalServersAndCharactersResponse;
 
 }  // namespace coal::test
 

@@ -3,6 +3,7 @@
 # SPDX-License-Identifier: MIT
 
 find_package(glaze REQUIRED)
+find_package(spdlog REQUIRED)
 
 file(GLOB_RECURSE ALL_COAL_TESTS_APPLICATION_HEADERS
      "${CMAKE_CURRENT_SOURCE_DIR}/*.h")
@@ -14,7 +15,7 @@ add_executable(coal_tests "${ALL_COAL_TESTS_APPLICATION_HEADERS}"
                            "${ALL_COAL_TESTS_APPLICATION_SOURCES}")
 
 target_link_libraries(
-  coal_tests PUBLIC coal testing_framework glaze::glaze)
+  coal_tests PUBLIC coal testing_framework glaze::glaze spdlog::spdlog)
 
 add_test(coal_tests coal_tests)
 

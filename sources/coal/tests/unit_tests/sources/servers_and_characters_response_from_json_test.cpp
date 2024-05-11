@@ -7,17 +7,34 @@
 #include <json_test_data.h>
 #include <servers_and_characters_response_from_json.h>
 
+#include <spdlog/spdlog.h>
 #include <glaze/glaze.hpp>
 
+#include <algorithm>
+
+
 namespace coal::test {
+
+inline void Prettify(const auto& in, auto& out) noexcept {
+  glz::context ctx{};
+  glz::detail::prettify_json<glz::opts{}>(ctx, in, out);
+  spdlog::info("After prettify ctx error?: {}, code: {}", ctx.includer_error,
+               static_cast<int>(ctx.error));
+}
+
+inline std::string RemoveSpaces(std::string str) {
+  str.erase(std::remove_if(str.begin(), str.end(), ::isspace), str.end());
+  return str;
+}
+
+struct CustomLayout {
+  std::string region = {};
+  int players = 0;
+};
 
 [[nodiscard]] static auto AreEqual(double x_1, double x_2) noexcept {
   static const auto kEps = 1e-5;
   return std::abs(x_1 - x_2) < kEps;
-}
-
-[[nodiscard]] static std::string ReducedFrom(std::string_view json_data) {
-  return std::string{json_data.substr(1, json_data.size() - 2)};
 }
 
 SCENARIO("json parsing") {
@@ -71,7 +88,7 @@ SCENARIO("json parsing") {
     CHECK(character.name == "This");
     CHECK(character.level == 86);
     CHECK(character.type == "rogue");
-    CHECK(character.online == 0);
+    CHECK(AreEqual(character.online, 0));
     CHECK(character.skin == "sarmor1h");
     CHECK(character.cx["hair"] == "hairdo522");
     CHECK(character.cx["head"] == "fmakeup02");
@@ -81,6 +98,63 @@ SCENARIO("json parsing") {
     CHECK(AreEqual(character.x, 69.95957619408078));
     CHECK(AreEqual(character.y, -96.0977505564107));
     CHECK(character.home == "EUII");
+  }
+
+  SECTION("local server character from json") {
+    static const auto kJsonLocalServereCharacterText = R"(
+         {
+            "home": "EUI",
+            "in": "bank",
+            "name": "Hold",
+            "cx": {
+               "hair": "hairdo520",
+               "hat": "hat407",
+               "head": "fmakeup01"
+            },
+            "id": "6195934853595136",
+            "skin": "marmor12b",
+            "type": "merchant",
+            "online": 0,
+            "level": 60,
+            "map": "bank",
+            "y": -37,
+            "x": 0
+         })";
+    const auto s = glz::read_json<Character>(kJsonLocalServereCharacterText);
+    CHECK(s);
+    Character character = s.value();
+    CHECK(character.id == "6195934853595136");
+  }
+
+  SECTION("online server character from json") {
+    static const auto kJsonOnlineCharacterText = R"(
+          {
+            "id": "6223051783405568",
+            "name": "This",
+            "level": 86,
+            "type": "rogue",
+            "online": 20676.759000000002,
+            "server": "EUII",
+            "secret": "Or8EfmvFlKW0aQPGEHNptocM",
+            "skin": "sarmor1h",
+            "cx": {
+               "hair": "hairdo522",
+               "head": "fmakeup02",
+               "chin": "beard112"
+            },
+            "in": "main",
+            "map": "main",
+            "x": 69.95957619408078,
+            "y": -96.0977505564107,
+            "home": "EUII"
+         }
+      )";
+    const auto s = glz::read_json<Character>(kJsonOnlineCharacterText);
+    CHECK(s);
+    Character character = s.value();
+    CHECK(character.id == "6223051783405568");
+    CHECK(character.server.value() == "EUII");
+    CHECK(character.secret.value() == "Or8EfmvFlKW0aQPGEHNptocM");
   }
 
   SECTION("tutorial status from json") {
@@ -103,7 +177,7 @@ SCENARIO("json parsing") {
   }
 
   SECTION("code element from json") {
-    [[maybe_unused]] static const auto kJsonCodeText = R"(
+    static const auto kJsonCodeText = R"(
     [
         "Abuse",
         3220
@@ -123,10 +197,42 @@ SCENARIO("json parsing") {
     const auto servers_and_characters = s.value();
     CHECK(servers_and_characters.type == "servers_and_characters");
     CHECK(servers_and_characters.servers.size() == 8);
-    CHECK(servers_and_characters.characters.size() == 8);
+    CHECK(servers_and_characters.characters.size() == 4);
     CHECK(servers_and_characters.code_list.size() == 10);
     CHECK(servers_and_characters.mail == 0);
     CHECK(servers_and_characters.rewards.size() == 0);
+  }
+  SECTION("local servers and characters response from json") {
+    const auto s = glz::read_json<ServersAndCharactersResponse>(
+        ReducedFrom(kLocalServersAndCharactersResponse));
+    CHECK(s);
+    const auto servers_and_characters = s.value();
+    CHECK(servers_and_characters.type == "servers_and_characters");
+    CHECK(servers_and_characters.servers.size() == 1);
+    CHECK(servers_and_characters.characters.size() == 4);
+    CHECK(servers_and_characters.code_list.size() == 8);
+    CHECK(servers_and_characters.mail == 0);
+    CHECK(servers_and_characters.rewards.size() == 0);
+  }
+
+  SECTION("different layout from json") {
+    static const auto kJsonLayoutText1 = R"(
+      {
+        "region": "EU",
+        "players": 4
+      }
+    )";
+    const auto s1 = glz::read_json<CustomLayout>(kJsonLayoutText1);
+    CHECK(s1);
+
+    static const auto kJsonLayoutText2 = R"(
+      {
+        "players": 4,
+        "region": "EU"
+      }
+    )";
+    const auto s2 = glz::read_json<CustomLayout>(kJsonLayoutText2);
+    CHECK(s2);
   }
 }
 

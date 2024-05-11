@@ -12,7 +12,6 @@
 #include <ctre.hpp>
 #include <glaze/glaze.hpp>
 
-#include <algorithm>
 #include <cctype>
 
 namespace coal {
@@ -50,7 +49,6 @@ cobalt::promise<Result<HttpResponse>> CallApiMethod(std::string_view url_text,
     const auto& field_name = field.name_string();
     if (field_name == "Set-Cookie" || field_name == "set-cookie") {
       const auto& cookie = field.value();
-      spdlog::info("Got set-cookie: {}", cookie);
       return FromCookie(cookie);
     }
   }
@@ -80,28 +78,21 @@ cobalt::promise<Result<UserAuthData>> AuthTo(std::string_view server_url,
   return fmt::format("auth={}-{}", user_auth_data.id, user_auth_data.token);
 }
 
-static inline void Prettify(const auto& in, auto& out) noexcept {
-  glz::context ctx{};
-  glz::detail::prettify_json<glz::opts{}>(ctx, in, out);
-  spdlog::info("After prettify ctx error?: {}, code: {}", ctx.includer_error,
-               static_cast<int>(ctx.error));
-}
-
-static std::string RemoveSpaces(std::string str) {
-  str.erase(std::remove_if(str.begin(), str.end(), ::isspace), str.end());
-  return str;
-}
-
 [[nodiscard]] static Result<ServersAndCharactersResponse>
-ServersAndCharactersFrom(std::string json_body) {
-  std::string beautiful;
-  Prettify(RemoveSpaces(json_body), beautiful);
-  spdlog::info("Got servers and characters json:{}", beautiful);
+ServersAndCharactersFrom(std::string_view json_body) {
   if (json_body.empty()) {
     spdlog::error("Got empty json body for servers and characters parsing");
-    return {};  // TODO(melg): add proper error code.
+    return std::make_error_code(std::errc::invalid_argument);
   }
-  return {};
+  const auto s =
+      glz::read_json<ServersAndCharactersResponse>(ReducedFrom(json_body));
+  if (!s) {
+    spdlog::error("Failed to parse servers and charactersjson: {}",
+                  ReducedFrom(json_body));
+    return std::make_error_code(std::errc::bad_message);
+  }
+  spdlog::info("Servers and characters json parse succeeded");
+  return s.value();
 }
 
 cobalt::promise<Result<ServersAndCharactersResponse>> GetServersAndCharacters(

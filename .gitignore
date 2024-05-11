@@ -56,3 +56,4 @@ CMakeUserPresets.json
 # Coverage
 *coverage
 *.info
+.config.json

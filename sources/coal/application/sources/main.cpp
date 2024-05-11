@@ -17,6 +17,7 @@
 #include <boost/cobalt/this_coro.hpp>
 #include <boost/cobalt/this_thread.hpp>
 #include <boost/url.hpp>
+#include <glaze/glaze.hpp>
 
 #include <chrono>
 #include <coroutine>
@@ -58,8 +59,14 @@ struct HandlesRegistry {
 
 struct SubscribableSocket {
   cobalt::generator<int> socket;
-  HandlesRegistry
-      registry;  // TODO(melg): split to repeatable and single shot registry.
+
+  // TODO(melg): split to repeatable and single shot registry.
+  HandlesRegistry registry;
+};
+
+struct Configuration {
+  std::string url = {};
+  Credentials credentials = {};
 };
 
 static auto OnValue(HandlesRegistry& registry, int value) {
@@ -134,9 +141,8 @@ static cobalt::task<void> TestHttpRequests() {
   co_return;
 }
 
-static cobalt::task<void> TestAuthTo(std::string_view url,
-                                     const Credentials& credentials) {
-  const auto result = co_await AuthTo(url, credentials);
+static cobalt::task<void> TestAuthTo(Configuration config) {
+  const auto result = co_await AuthTo(config.url, config.credentials);
   if (result.has_error()) {
     spdlog::error("Error occured while login attempt: {} bailing out",
                   result.error().message());
@@ -146,13 +152,15 @@ static cobalt::task<void> TestAuthTo(std::string_view url,
                result.value().token);
 
   const auto servers_result =
-      co_await GetServersAndCharacters(url, result.value());
+      co_await GetServersAndCharacters(config.url, result.value());
   if (servers_result.has_error()) {
     spdlog::error("Error occured while getting servers and characters: {}",
                   servers_result.error().message());
     co_return;
   }
-  spdlog::info("Got servers and characters information");
+  spdlog::info("Got {} servers and {} characters information",
+               servers_result.value().servers.size(),
+               servers_result.value().characters.size());
 }
 
 static void SetupSpdLog() noexcept {
@@ -170,10 +178,25 @@ static cobalt::task<void> Test() {
   spdlog::info("After distributing messages");
 }
 
+[[nodiscard]] static Configuration ConfigurationFromFile(
+    const std::string& path) {
+  Configuration config = {"http://127.0.0.1:8083",
+                          {"test@test.com", "123456789"}};
+
+  const auto read_error = glz::read_file_json(config, path, std::string{});
+  if (read_error) {
+    spdlog::warn("Can't get configuration file, will use default values");
+    const auto write_error = glz::write_file_json(config, path, std::string{});
+    if (write_error) {
+      spdlog::warn("Can't write default configuration file");
+    }
+  }
+  return config;
+}
+
 static cobalt::task<void> TestAuthConnectivity() {
-  const auto url = "http://127.0.0.1:8083";
-  Credentials credentials = {"test@test.com", "123456789"};
-  co_await TestAuthTo(url, credentials);
+  const auto config = ConfigurationFromFile("./.config.json");
+  co_await TestAuthTo(config);
 }
 
 }  // namespace coal

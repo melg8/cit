@@ -6,7 +6,9 @@
 #define SERVERS_AND_CHARACTERS_RESPONSE_FROM_JSON_H
 
 #include <cstdint>
+#include <optional>
 #include <string>
+#include <string_view>
 #include <unordered_map>
 #include <variant>
 #include <vector>
@@ -18,7 +20,7 @@ struct Character {
   std::string name = {};
   size_t level = {};
   std::string type = {};
-  int online = {};
+  double online = {};
   std::string skin = {};
   std::unordered_map<std::string, std::string> cx = {};
   std::string in = {};
@@ -26,6 +28,8 @@ struct Character {
   double x = 0.0;
   double y = 0.0;
   std::string home = {};
+  std::optional<std::string> server = {};
+  std::optional<std::string> secret = {};
 };
 
 using Characters = std::vector<Character>;
@@ -67,6 +71,10 @@ struct ServersAndCharactersResponse {
   int mail = 0;
   Rewards rewards = {};
 };
+
+[[nodiscard]] inline auto ReducedFrom(std::string_view json_data) {
+  return json_data.substr(1, json_data.size() - 2);
+}
 
 }  // namespace coal
 
