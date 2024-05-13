@@ -84,6 +84,7 @@ ServersAndCharactersFrom(std::string_view json_body) {
     spdlog::error("Got empty json body for servers and characters parsing");
     return std::make_error_code(std::errc::invalid_argument);
   }
+  spdlog::info("Got json_body anwer: {}", json_body);
   const auto s =
       glz::read_json<ServersAndCharactersResponse>(ReducedFrom(json_body));
   if (!s) {

@@ -4,6 +4,8 @@
 
 #include <http_requests.h>
 
+#include <universal_declarations.h>
+
 #include <fmt_custom_types.h>
 
 #include <boost/asio.hpp>
@@ -49,7 +51,8 @@ using websocket_type = beast::websocket::stream<ssl_socket_type>;
 
 using HttpRequest = http::request<http::string_body>;
 
-constexpr auto nothrow_use_op = net::as_tuple(cobalt::use_op);
+static constexpr auto nothrow_use_op =
+    boost::asio::as_tuple(boost::cobalt::use_op);
 
 static void ReportError(boost::system::error_code err,
                         std::string_view action,
@@ -89,7 +92,7 @@ static HttpRequest FormRequestFor(boost::urls::url url,
 
 static cobalt::promise<Result<ssl_socket_type>> Connect(boost::urls::url url,
                                                         ssl::context& ctx) {
-  ip::tcp::resolver resolve{cobalt::this_thread::get_executor()};
+  ip::tcp::resolver resolve{co_await cobalt::this_coro::executor};
   const auto port = url.port().empty() ? url.scheme() : url.port();
   const auto [err, endpoints] =
       co_await resolve.async_resolve(url.host(), port, nothrow_use_op);
@@ -98,7 +101,7 @@ static cobalt::promise<Result<ssl_socket_type>> Connect(boost::urls::url url,
     co_return err;
   }
 
-  ssl_socket_type sock{cobalt::this_thread::get_executor(), ctx};
+  ssl_socket_type sock{co_await cobalt::this_coro::executor, ctx};
   if (!SSL_set_tlsext_host_name(sock.native_handle(), url.host().data())) {
     const auto error_code = ::ERR_get_error();
     spdlog::error("SSL_set_tlsext_host_name failed, error code: {}",
@@ -167,8 +170,8 @@ static cobalt::promise<Result<HttpResponse>> SendHttpsRequestTo(
 
 static cobalt::promise<Result<beast::tcp_stream>> ConnectTcpStream(
     boost::urls::url url) {
-  beast::tcp_stream stream(cobalt::this_thread::get_executor());
-  ip::tcp::resolver resolve{cobalt::this_thread::get_executor()};
+  beast::tcp_stream stream(co_await cobalt::this_coro::executor);
+  ip::tcp::resolver resolve{co_await cobalt::this_coro::executor};
   const auto port = url.port().empty() ? url.scheme() : url.port();
   const auto [err, endpoints] =
       co_await resolve.async_resolve(url.host(), port, nothrow_use_op);

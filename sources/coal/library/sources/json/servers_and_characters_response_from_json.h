@@ -40,7 +40,7 @@ struct Server {
   size_t players = 0u;
   std::string key = {};
   std::string addr = {};
-  int port = {};
+  size_t port = {};
 };
 using Servers = std::vector<Server>;
 

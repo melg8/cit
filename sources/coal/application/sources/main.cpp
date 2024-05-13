@@ -5,6 +5,7 @@
 #include <auth_client.h>
 #include <fmt_custom_types.h>
 #include <http_requests.h>
+#include <websocket_client.h>
 
 #include <spdlog/spdlog.h>
 #include <boost/asio/co_spawn.hpp>
@@ -199,12 +200,18 @@ static cobalt::task<void> TestAuthConnectivity() {
   co_await TestAuthTo(config);
 }
 
+static cobalt::task<void> TestWebsocketConnectivity() {
+  spdlog::info("Testing websockets");
+  co_await DoSession("echo.websocket.org", "80", "Hello, world!\n");
+}
+
 }  // namespace coal
 
 boost::cobalt::main co_main(int, char**) {
   using namespace coal;
   SetupSpdLog();
   SpeakWithDelay();
+  co_await TestWebsocketConnectivity();
   co_await TestAuthConnectivity();
   co_await TestHttpRequests();
   co_await Test();

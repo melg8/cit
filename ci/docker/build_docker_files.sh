@@ -8,7 +8,7 @@ TARGETS=('cit' 'just_builder')
 DOCKER_PATH="./ci/docker/docker_files"
 DOCKER_FILE=${DOCKER_PATH}/"Dockerfile"
 
-export DOCKER_BUILDKIT=0
+export DOCKER_BUILDKIT=1
 
 # Change to 1 if you want to set up signing of your docker images.
 export DOCKER_CONTENT_TRUST=0

@@ -16,6 +16,7 @@ if(${ENABLE_COVERAGE})
 endif()
 
 if(CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
+  add_compiler_flags(-fdiagnostics-color=always)
   add_compiler_flags(-fno-rtti)
   add_compiler_flags(-fno-exceptions)
 
