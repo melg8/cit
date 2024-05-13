@@ -66,7 +66,8 @@ cobalt::promise<Result<UserAuthData>> AuthTo(std::string_view server_url,
   const auto response = maybe_response.value();
   const auto body = response.body();
   if (!body.contains("Logged In!")) {
-    spdlog::error("Can't login, server response: {}", body);
+    spdlog::error("Can't login, with credentials: {} server response: {}",
+                  credentials, body);
     co_return Result<UserAuthData>{
         std::make_error_code(std::errc::permission_denied)};
   }

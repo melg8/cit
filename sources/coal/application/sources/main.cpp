@@ -65,9 +65,16 @@ struct SubscribableSocket {
   HandlesRegistry registry;
 };
 
+struct WebsocketRequest {
+  std::string websocket_url = {};
+  std::string port = {};
+  std::string message = {};
+};
+
 struct Configuration {
   std::string url = {};
   Credentials credentials = {};
+  WebsocketRequest ws_request = {};
 };
 
 static auto OnValue(HandlesRegistry& registry, int value) {
@@ -181,13 +188,18 @@ static cobalt::task<void> Test() {
 
 [[nodiscard]] static Configuration ConfigurationFromFile(
     const std::string& path) {
-  Configuration config = {"http://127.0.0.1:8083",
-                          {"test@test.com", "123456789"}};
+  Configuration config = {
+      .url = "http://127.0.0.1:8083",
+      .credentials = {.email = "test@test.com", .password = "123456789"},
+      .ws_request = {.websocket_url = "websocket-echo.com",
+                     .port = "80",
+                     .message = "Hello world!"}};
 
   const auto read_error = glz::read_file_json(config, path, std::string{});
   if (read_error) {
     spdlog::warn("Can't get configuration file, will use default values");
-    const auto write_error = glz::write_file_json(config, path, std::string{});
+    const auto write_error = glz::write_file_json<glz::opts{.prettify = true}>(
+        config, path, std::string{});
     if (write_error) {
       spdlog::warn("Can't write default configuration file");
     }
@@ -202,7 +214,9 @@ static cobalt::task<void> TestAuthConnectivity() {
 
 static cobalt::task<void> TestWebsocketConnectivity() {
   spdlog::info("Testing websockets");
-  co_await DoSession("echo.websocket.org", "80", "Hello, world!\n");
+  const auto config = ConfigurationFromFile("./.config.json");
+  const auto& ws = config.ws_request;
+  co_await DoSession(ws.websocket_url, ws.port, ws.message);
 }
 
 }  // namespace coal

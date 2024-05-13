@@ -7,7 +7,9 @@
 
 #include <servers_and_characters_response_from_json.h>
 #include <universal_declarations.h>
+#include <pretty_json_from_any_struct.h>
 
+#include <fmt/format.h>
 #include <boost/cobalt.hpp>
 
 #include <string>
@@ -38,5 +40,15 @@ cobalt::promise<Result<ServersAndCharactersResponse>> GetServersAndCharacters(
     std::string_view url_text, UserAuthData user_auth_data);
 
 }  // namespace coal
+
+namespace fmt {
+template <>
+struct formatter<coal::Credentials> : formatter<std::string> {
+  auto format(const coal::Credentials& c, format_context& ctx) {
+    return formatter<std::string>::format(JsonFrom(c), ctx);
+  }
+};
+
+}  // namespace fmt
 
 #endif  // AUTH_CLIENT_H
