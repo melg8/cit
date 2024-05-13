@@ -185,6 +185,14 @@ RUN usermod -l user ubuntu
 USER user
 WORKDIR /home/user/work
 
+RUN git clone --branch master --depth 1 \
+    https://github.com/vittorioromeo/camomilla.git \
+ && cd camomilla \
+ && rm -rf ./example_errors \
+ && pip3 install . \
+ && cd ../ \
+ && rm -rf ./camomilla
+
 # Add ru locale to cspell as user
 RUN cspell link add @cspell/dict-ru_ru
 RUN just --completions bash > ~/.bashrc

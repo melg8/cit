@@ -1,10 +1,11 @@
-#!/usr/bin/env sh
+#!/usr/bin/env bash
 
 # SPDX-FileCopyrightText: © 2022 Melg Eight <public.melg8@gmail.com>
 #
 # SPDX-License-Identifier: MIT
 
 set -e
+set -o pipefail
 
 COMPILER=$1
 CONAN_COMPILER=$2
@@ -25,7 +26,7 @@ cmake .. -G Ninja \
   -DCMAKE_SHARED_LINKER_FLAGS="-fuse-ld=mold"
 
 echo "Building..."
-cmake --build . -j "$(nproc)"
+cmake --build . -j "$(nproc)" | camomilla -c"../.camomilla.json"
 
 mkdir -p ../report
 
