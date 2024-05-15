@@ -18,6 +18,7 @@ add_definitions(-Dgsl_CONFIG_TRANSPARENT_NOT_NULL=1)
 option(ENABLE_TESTING "Enable the tests" ON)
 option(USE_CCACHE "Enable use of ccache" ON)
 option(ENABLE_COVERAGE "Enable profiling and coverage report analysis" ON)
+option(FULL_COMPILER_CHECKS "Enable full compiler checks" ON)
 
 include("${CMAKE_CURRENT_SOURCE_DIR}/cmake/ccache.cmake")
 include("${CMAKE_CURRENT_SOURCE_DIR}/cmake/compiler_flags.cmake")

@@ -171,6 +171,11 @@ RUN mkdir -p /etc/network \
    && touch /etc/network/interfaces \
    && echo  "dns-nameservers 8.8.8.8" >>  /etc/network/interfaces
 
+
+RUN apt-get -y update \
+ && apt-get -y install --no-install-recommends \
+    ccache
+
 RUN apt-get -y update \
  && apt-get -y install --no-install-recommends \
     dnsutils \

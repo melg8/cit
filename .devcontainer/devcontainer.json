@@ -13,7 +13,8 @@
 		"--dns=8.8.4.4",
 		"--dns-opt=nameserver 8.8.8.8"
 	],
-	"mounts": [{ "source": "/home/user/.conan2", "target": "/home/ubuntu/.conan2", "type": "bind" }],
+	"mounts": [{ "source": "/home/user/.conan2", "target": "/home/ubuntu/.conan2", "type": "bind" },
+			   { "source": "/home/user/.cache", "target": "/home/ubuntu/.cache", "type": "bind" }],
 	"customizations": {
 		"vscode": {
 			"extensions": [
