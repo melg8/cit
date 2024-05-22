@@ -8,6 +8,7 @@
         "boost::spirit": "bs",
         "boost::beast": "bst",
         "boost::asio": "net",
+        "boost::cobalt": "co",
         "impl": "_",
         "implementation": "_",
         "detail": "_"

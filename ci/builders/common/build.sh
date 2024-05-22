@@ -18,12 +18,7 @@ CONAN_CPPSTD=$4
 DIRECTORY=build_"${CONAN_COMPILER}"
 cd "${DIRECTORY}"
 
-cmake .. -G Ninja \
-  -DCMAKE_BUILD_TYPE=Release \
-  -DCMAKE_CXX_COMPILER="${COMPILER}" \
-  -DCMAKE_TOOLCHAIN_FILE="conan_toolchain.cmake" \
-  -DCMAKE_EXE_LINKER_FLAGS="-fuse-ld=mold" \
-  -DCMAKE_SHARED_LINKER_FLAGS="-fuse-ld=mold"
+cmake .. --preset "cit_"${CONAN_COMPILER}"_release"
 
 echo "Building..."
 cmake --build . -j "$(nproc)" | camomilla -c"../.camomilla.json"

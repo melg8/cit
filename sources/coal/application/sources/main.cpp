@@ -8,23 +8,18 @@
 #include <websocket_client.h>
 
 #include <spdlog/spdlog.h>
-#include <boost/asio/co_spawn.hpp>
-#include <boost/asio/detached.hpp>
 #include <boost/asio/steady_timer.hpp>
 #include <boost/cobalt.hpp>
 #include <boost/cobalt/main.hpp>
 #include <boost/cobalt/promise.hpp>
 #include <boost/cobalt/race.hpp>
 #include <boost/cobalt/this_coro.hpp>
-#include <boost/cobalt/this_thread.hpp>
-#include <boost/url.hpp>
 #include <glaze/glaze.hpp>
 
 #include <chrono>
 #include <coroutine>
 #include <map>
 #include <string>
-#include <string_view>
 #include <vector>
 
 namespace coal {

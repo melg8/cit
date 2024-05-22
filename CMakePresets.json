@@ -1,17 +1,106 @@
 {
-    "version": 2,
+    "version": 3,
+    "cmakeMinimumRequired": {
+        "major": 3,
+        "minor": 25,
+        "patch": 0
+    },
     "configurePresets": [
         {
-            "name": "cit",
-            "displayName": "Configure preset using toolchain file",
-            "description": "Sets Ninja generator, build and install directory",
-            "generator": "Ninja",
-            "binaryDir": "${sourceDir}/out/build/${presetName}",
+            "name": "generator_ninja",
+            "description": "Configure preset using Ninja generator",
+            "hidden": true,
+            "generator": "Ninja"
+        },
+        {   
+            "name": "toolchain_conan_gcc",
+            "description": "Configure gcc preset using conan toolchain",
+            "hidden": true,
             "cacheVariables": {
-                "CMAKE_BUILD_TYPE": "Debug",
-                "CMAKE_TOOLCHAIN_FILE": "",
-                "CMAKE_INSTALL_PREFIX": "${sourceDir}/out/install/${presetName}"
+                "CMAKE_TOOLCHAIN_FILE": "./build_gcc/conan_toolchain.cmake"
             }
+        },
+        {   
+            "name": "toolchain_conan_clang",
+            "description": "Configure clang preset using conan toolchain",
+            "hidden": true,
+            "cacheVariables": {
+                "CMAKE_TOOLCHAIN_FILE": "./build_clang/conan_toolchain.cmake"
+            }
+        },
+        {
+            "name": "linker_mold",
+            "description": "Configure preset using mold linker",
+            "hidden": true,
+            "cacheVariables": {
+                "CMAKE_EXE_LINKER_FLAGS": "-fuse-ld=mold",
+                "CMAKE_SHARED_LINKER_FLAGS": "-fuse-ld=mold"
+            }
+        },
+        {
+            "name": "mode_release",
+            "hidden": true,
+            "description": "Configure preset in release mode",
+            "cacheVariables": {
+                "CMAKE_BUILD_TYPE": "Release"
+            }
+        },
+        {
+            "name": "mode_debug",
+            "hidden": true,
+            "description": "Configure preset in debug mode",
+            "cacheVariables": {
+                "CMAKE_BUILD_TYPE": "Debug"
+            }
+        },
+        {
+            "name": "compiler_gcc",
+            "hidden": true,
+            "description": "Configure preset in GCC mode",
+            "cacheVariables": {
+                "CMAKE_C_COMPILER": "gcc",
+                "CMAKE_CXX_COMPILER": "g++"
+            }
+        },
+        {
+            "name": "compiler_clang",
+            "hidden": true,
+            "description": "Configure preset in Clang mode",
+            "cacheVariables": {
+                "CMAKE_C_COMPILER": "clang",
+                "CMAKE_CXX_COMPILER": "clang++"
+            }
+        },
+        {
+            "name": "cit_default_linux_release",
+            "description": "Configure default linux release mode preset",
+            "hidden": true,
+            "inherits": [
+                "generator_ninja",
+                "toolchain_conan_gcc",
+                "linker_mold", 
+                "mode_release"
+            ]
+        },
+        {
+            "name": "cit_gcc_release",
+            "description": "Configure gcc release mode for CMake integration tests",
+            "displayName": "Configure gcc release mode for CMake integration tests",
+            "hidden": false,
+            "inherits": [
+                "cit_default_linux_release",
+                "compiler_gcc"
+            ]
+        },
+        {
+            "name": "cit_clang_release",
+            "description": "Configure clang release mode for CMake integration tests",
+            "displayName": "Configure clang release mode for CMake integration tests",
+            "hidden": false,
+            "inherits": [
+                "cit_default_linux_release",
+                "compiler_clang"
+            ]
         }
     ]
 }
