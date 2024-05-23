@@ -32,10 +32,10 @@ cobalt::promise<Result<HttpResponse>> CallApiMethod(std::string_view url_text,
 }
 
 [[nodiscard]] static Result<UserAuthData> FromCookie(std::string_view cookie) {
-  const auto m = ctre::match<R"(.*auth=(.*?)-(.*?);.*)">(cookie);
-  if (m) {
-    return UserAuthData{.id = m.get<1>().to_string(),
-                        .token = m.get<2>().to_string()};
+  const auto match = ctre::match<R"(.*auth=(.*?)-(.*?);.*)">(cookie);
+  if (match) {
+    return UserAuthData{.id = match.get<1>().to_string(),
+                        .token = match.get<2>().to_string()};
   } else {
     spdlog::error("Can't find auth cookie in test: {}", cookie);
     return std::make_error_code(std::errc::protocol_error);
@@ -86,15 +86,15 @@ ServersAndCharactersFrom(std::string_view json_body) {
     return std::make_error_code(std::errc::invalid_argument);
   }
   spdlog::info("Got json_body anwer: {}", json_body);
-  const auto s =
+  const auto response =
       glz::read_json<ServersAndCharactersResponse>(ReducedFrom(json_body));
-  if (!s) {
-    spdlog::error("Failed to parse servers and charactersjson: {}",
+  if (!response) {
+    spdlog::error("Failed to parse servers and characters json: {}",
                   ReducedFrom(json_body));
     return std::make_error_code(std::errc::bad_message);
   }
   spdlog::info("Servers and characters json parse succeeded");
-  return s.value();
+  return response.value();
 }
 
 cobalt::promise<Result<ServersAndCharactersResponse>> GetServersAndCharacters(
