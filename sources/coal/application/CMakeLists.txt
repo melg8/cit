@@ -9,6 +9,7 @@ find_package(libassert REQUIRED)
 find_package(fmt REQUIRED)
 find_package(ctre REQUIRED)
 find_package(glaze REQUIRED)
+find_package(magic_enum REQUIRED)
 
 option(SPDLOG_NO_EXCEPTIONS "Compile with -fno-exceptions. Call abort() on any spdlog exceptions" ON)
 
@@ -45,6 +46,7 @@ target_link_libraries(coala PRIVATE Boost::cobalt
                                     fmt::fmt
                                     glaze::glaze
                                     libassert::assert
+                                    magic_enum::magic_enum
                                     OpenSSL::SSL
                                     spdlog::spdlog
                                     coal)

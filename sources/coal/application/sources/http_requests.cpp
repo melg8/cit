@@ -29,6 +29,7 @@
 #include <fmt/format.h>
 #include <spdlog/spdlog.h>
 #include <libassert/assert.hpp>
+#include <magic_enum/magic_enum.hpp>
 
 namespace coal {
 
@@ -213,8 +214,9 @@ static cobalt::promise<Result<HttpResponse>> SendHttpRequestTo(
   }
   const boost::urls::url url = parsed_url.value();
   const auto request = FormRequestFor(url, verb, body, cookies);
-  spdlog::info("Sending get request to {}",
-               url);  // TODO(melg: fix get wording.
+
+  spdlog::info("Sending {} request to {}", magic_enum::enum_name(verb),
+               url_text);
   if (url.scheme() == "https") {
     co_return co_await SendHttpsRequestTo(url, request);
   } else {
