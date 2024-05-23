@@ -64,33 +64,33 @@ class WebsocketOverTcpStream : public Stream {
   websocket::stream<beast::tcp_stream> stream_;
 };
 
-[[nodiscard]] static cobalt::task<void> UseStream(Stream&& stream,
+using OwnStream = std::unique_ptr<Stream>;
+
+[[nodiscard]] static cobalt::task<void> UseStream(OwnStream&& stream,
                                                   std::string host,
                                                   std::string text) {
   spdlog::info("Sending message to websocket: {}", text);
-  if (!co_await stream.AsyncWrite(net::buffer(text))) {
+  if (!co_await stream->AsyncWrite(net::buffer(text))) {
     spdlog::error("Error writing into web socket {}", host);
     co_return;
   }
 
   beast::flat_buffer buffer;
-  if (!co_await stream.AsyncRead(buffer)) {
+  if (!co_await stream->AsyncRead(buffer)) {
     spdlog::error("Error reading from web socket {}", host);
     co_return;
   }
   spdlog::info("Got response from websocket size: {}", buffer.data().size());
 
-  if (!co_await stream.AsyncClose()) {
+  if (!co_await stream->AsyncClose()) {
     spdlog::error("Can't close gracefully connection to {}", host);
     co_return;
   }
   spdlog::info("Websocket connection closed gracefuly with {}", host);
 }
 
-// Sends a WebSocket message and prints the response
-cobalt::task<void> DoSession(std::string host,
-                             std::string port,
-                             std::string text) {
+static cobalt::task<Result<OwnStream>> WebsocketConnect(std::string host,
+                                                        std::string port) {
   // These objects perform our I/O
   auto resolver = tcp::resolver(co_await net::this_coro::executor);
   auto ws =
@@ -101,7 +101,8 @@ cobalt::task<void> DoSession(std::string host,
       co_await resolver.async_resolve(host, port, nothrow_use_op);
   if (err_1) {
     spdlog::error("Can't resolve host {}:{}", host, port);
-    co_return;
+    co_return Result<OwnStream>{
+        std::make_error_code(std::errc::invalid_argument)};
   }
 
   // Set a timeout on the operation
@@ -113,7 +114,7 @@ cobalt::task<void> DoSession(std::string host,
 
   if (err_2) {
     spdlog::error("Can't connect to {}:{}", host, port);
-    co_return;
+    co_return Result<OwnStream>{std::make_error_code(std::errc::not_connected)};
   }
 
   host += ':' + port;
@@ -135,10 +136,22 @@ cobalt::task<void> DoSession(std::string host,
   if (handshake_err) {
     spdlog::error("Handshake error with {} reason: {}", host,
                   handshake_err.message());
+    co_return Result<OwnStream>{std::make_error_code(std::errc::not_connected)};
+  }
+  co_return std::make_unique<WebsocketOverTcpStream>(std::move(ws));
+}
+
+// Sends a WebSocket message and prints the response
+cobalt::task<void> DoSession(std::string host,
+                             std::string port,
+                             std::string text) {
+  auto stream = co_await WebsocketConnect(host, port);
+  if (stream.has_error()) {
+    spdlog::error("Can't connect to {}:{}", host, port);
     co_return;
   }
-
-  co_await UseStream(WebsocketOverTcpStream(std::move(ws)), host, text);
+  auto&& own_stream = stream.value();
+  co_await UseStream(std::move(own_stream), host, text);
 }
 
 }  // namespace coal

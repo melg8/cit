@@ -15,6 +15,8 @@
 #include <boost/cobalt/race.hpp>
 #include <boost/cobalt/this_coro.hpp>
 #include <glaze/glaze.hpp>
+#include <range/v3/algorithm/for_each.hpp>
+#include <range/v3/view/filter.hpp>
 
 #include <chrono>
 #include <coroutine>
@@ -26,37 +28,38 @@ namespace coal {
 
 using namespace boost;
 
-static cobalt::generator<int> test(int max) {
+static cobalt::generator<int> GenerateUntilZero(int max) {
   int i = max;
   while (i > 0) co_yield i--;
   co_return i;
 }
 
-static cobalt::generator<int> FromSocket() { return test(10); }
+static cobalt::generator<int> FromSocket() { return GenerateUntilZero(10); }
+
+static void DestoryAndClearHandles(
+    std::vector<std::coroutine_handle<>>& handles) {
+  auto not_done = [](auto& h) noexcept { return !h.done(); };
+  auto not_done_handles = handles | ranges::v3::views::filter(not_done);
+  ranges::v3::for_each(not_done_handles, [](auto& h) { h.destroy(); });
+  handles.clear();
+}
 
 struct HandlesRegistry {
   std::map<int, std::vector<std::coroutine_handle<>>> handles;
 
   void RegisterHandle(std::coroutine_handle<> h, int value_of_interest) {
-    handles[value_of_interest].push_back(h);
+    handles[value_of_interest].emplace_back(std::move(h));
   }
 
   ~HandlesRegistry() {
     for (auto& handle : handles) {
-      for (auto& subscibed : handle.second) {
-        if (!subscibed.done()) {
-          subscibed.destroy();
-        }
-      }
-      handle.second.clear();
+      DestoryAndClearHandles(handle.second);
     }
   }
 };
 
 struct SubscribableSocket {
   cobalt::generator<int> socket;
-
-  // TODO(melg): split to repeatable and single shot registry.
   HandlesRegistry registry;
 };
 
@@ -109,6 +112,7 @@ static cobalt::task<void> DistributeIncomingMessages(
         spdlog::info("Found handle waiting for value: {} resuming it", value);
         handle.resume();
       }
+      DestoryAndClearHandles(search->second);
     }
   }
 }

@@ -35,7 +35,9 @@
 				"Codeium.codeium",
 				"ms-azuretools.vscode-docker",
 				"disroop.conan",
-				"Gruntfuggly.todo-tree"
+				"Gruntfuggly.todo-tree",
+				// TODO(melg): add integration with code coverage reports.
+				"ryanluker.vscode-coverage-gutters"
 			]
 		}
 	}
