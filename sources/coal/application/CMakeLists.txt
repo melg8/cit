@@ -10,6 +10,7 @@ find_package(fmt REQUIRED)
 find_package(ctre REQUIRED)
 find_package(glaze REQUIRED)
 find_package(magic_enum REQUIRED)
+find_package(range-v3 0.12.0 REQUIRED)
 
 option(SPDLOG_NO_EXCEPTIONS "Compile with -fno-exceptions. Call abort() on any spdlog exceptions" ON)
 
@@ -48,5 +49,6 @@ target_link_libraries(coala PRIVATE Boost::cobalt
                                     libassert::assert
                                     magic_enum::magic_enum
                                     OpenSSL::SSL
+                                    range-v3::range-v3
                                     spdlog::spdlog
                                     coal)

@@ -8,6 +8,9 @@
 
 #include <fmt_custom_types.h>
 
+#include <fmt/color.h>
+#include <fmt/format.h>
+#include <spdlog/spdlog.h>
 #include <boost/asio.hpp>
 #include <boost/asio/ssl.hpp>
 #include <boost/asio/ssl/stream_base.hpp>
@@ -24,12 +27,10 @@
 #include <boost/cobalt/promise.hpp>
 #include <boost/cobalt/this_thread.hpp>
 #include <boost/url.hpp>
-
-#include <fmt/color.h>
-#include <fmt/format.h>
-#include <spdlog/spdlog.h>
 #include <libassert/assert.hpp>
 #include <magic_enum/magic_enum.hpp>
+#include <range/v3/range/conversion.hpp>
+#include <range/v3/view/join.hpp>
 
 namespace coal {
 
@@ -63,12 +64,7 @@ static void ReportError(boost::system::error_code err,
 }
 
 [[nodiscard]] static std::string StringFrom(const Cookies& cookies) noexcept {
-  std::string result{};
-  for (const auto& cookie : cookies) {
-    // TODO(melg): check if final cookie okay with ";" at the end.
-    result += cookie + "; ";
-  }
-  return result;
+  return cookies | ranges::v3::views::join("; ") | ranges::to<std::string>();
 }
 
 static HttpRequest FormRequestFor(boost::urls::url url,
