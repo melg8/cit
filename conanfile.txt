@@ -3,7 +3,7 @@
 # SPDX-License-Identifier: MIT
 
 [requires]
-boost/1.84.0
+boost/1.85.0
 catch2/3.4.0
 ctre/3.8.1
 fmt/10.2.1
