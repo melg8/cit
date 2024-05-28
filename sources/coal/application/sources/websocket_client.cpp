@@ -45,17 +45,18 @@ class WebsocketOverTcpStream : public Stream {
   WebsocketOverTcpStream(websocket::stream<beast::tcp_stream>&& stream)
       : stream_(std::move(stream)) {}
 
-  virtual cobalt::task<bool> AsyncRead(beast::flat_buffer& buffer) {
+  virtual cobalt::task<bool> AsyncRead(beast::flat_buffer& buffer) override {
     const auto [err, _1] = co_await stream_.async_read(buffer, nothrow_use_op);
     co_return !err;
   }
 
-  virtual cobalt::task<bool> AsyncWrite(const net::const_buffer& buffer) {
+  virtual cobalt::task<bool> AsyncWrite(
+      const net::const_buffer& buffer) override {
     const auto [err, _1] = co_await stream_.async_write(buffer, nothrow_use_op);
     co_return !err;
   }
 
-  virtual cobalt::task<bool> AsyncClose() {
+  virtual cobalt::task<bool> AsyncClose() override {
     const auto [err] = co_await stream_.async_close(
         websocket::close_code::normal, nothrow_use_op);
     co_return !err;
@@ -150,8 +151,7 @@ cobalt::task<void> DoSession(std::string host,
     spdlog::error("Can't connect to {}:{}", host, port);
     co_return;
   }
-  auto&& own_stream = stream.value();
-  co_await UseStream(std::move(own_stream), host, text);
+  co_await UseStream(std::move(stream.value()), host, text);
 }
 
 }  // namespace coal

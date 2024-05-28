@@ -26,5 +26,5 @@ SCENARIO("pretty json creation from struct") {
     CHECK(json == expected);
   }
 }
-//
+
 }  // namespace coal::test

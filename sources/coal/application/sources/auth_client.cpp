@@ -39,7 +39,7 @@ cobalt::promise<Result<HttpResponse>> CallApiMethod(std::string_view url_text,
   } else {
     spdlog::error("Can't find auth cookie in test: {}", cookie);
     return std::make_error_code(std::errc::protocol_error);
-  };
+  }
 }
 
 [[nodiscard]] static Result<UserAuthData> FromResponse(
@@ -65,7 +65,7 @@ cobalt::promise<Result<UserAuthData>> AuthTo(std::string_view server_url,
   }
   const auto response = maybe_response.value();
   const auto body = response.body();
-  if (!body.contains("Logged In!")) {
+  if (body.find("Logged In!") != std::string::npos) {
     spdlog::error("Can't login, with credentials: {} server response: {}",
                   credentials, body);
     co_return Result<UserAuthData>{
