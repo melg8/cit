@@ -65,7 +65,7 @@ cobalt::promise<Result<UserAuthData>> AuthTo(std::string_view server_url,
   }
   const auto response = maybe_response.value();
   const auto body = response.body();
-  if (body.find("Logged In!") != std::string::npos) {
+  if (body.find("Logged In!") == std::string::npos) {
     spdlog::error("Can't login, with credentials: {} server response: {}",
                   credentials, body);
     co_return Result<UserAuthData>{

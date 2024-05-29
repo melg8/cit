@@ -5,7 +5,7 @@
 FROM rust as just_builder
 RUN cargo install just
 
-FROM ubuntu:23.04 AS cit
+FROM ubuntu:24.04 AS cit
 
 LABEL name=cit version=0.1.0
 
@@ -14,7 +14,7 @@ SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 
 RUN apt-get -y update \
  && apt-get -y install --no-install-recommends \
-    software-properties-common=0.99.35 \
+    software-properties-common=0.99.* \
     gpg \
     gpg-agent \
  && add-apt-repository ppa:apt-fast/stable \
@@ -22,40 +22,40 @@ RUN apt-get -y update \
     apt-fast \
  && apt-fast update \
  && apt-fast -y install --no-install-recommends \
-    build-essential=12.9* \
-    gcc-13=13.* \
-    g++-13=13.* \
-    clang-16=1:16* \
-    libclang-16-dev=1:16.* \
-    libclang-rt-16-dev=1:16.* \
+    build-essential=12.10* \
+    gcc-14=14-* \
+    g++-14=14-* \
+    clang-18=1:18* \
+    libclang-18-dev=1:18.* \
+    libclang-rt-18-dev=1:18.* \
     libc++-dev \
-    llvm-16-dev=1:16.* \
+    llvm-18-dev=1:18.* \
     clang-format \
     mold \
-    git=1:2.39.* \
-    cmake=3.25.* \
+    git=1:2.43.* \
+    cmake=3.28.* \
     ninja-build=1.11.* \
     grcov=0.8.* \
     wget=1.21.* \
     sudo=1.9.* \
  && update-alternatives --install \
-    /usr/bin/gcc gcc /usr/bin/gcc-13 60 --slave \
-    /usr/bin/g++ g++ /usr/bin/g++-13 \
+    /usr/bin/gcc gcc /usr/bin/gcc-14 60 --slave \
+    /usr/bin/g++ g++ /usr/bin/g++-14 \
  && update-alternatives --install \
-    /usr/bin/clang clang /usr/bin/clang-16 60 --slave \
-    /usr/bin/clang++ clang++ /usr/bin/clang++-16
+    /usr/bin/clang clang /usr/bin/clang-18 60 --slave \
+    /usr/bin/clang++ clang++ /usr/bin/clang++-18
 
 RUN apt-fast -y install --no-install-recommends \
     python3-full \
     python3-pip \
     python3-dev \
- && rm /usr/lib/python3.11/EXTERNALLY-MANAGED \
- && pip install --no-cache-dir conan \
- && pip install --no-cache-dir -U setuptools
+ && rm /usr/lib/python3.12/EXTERNALLY-MANAGED \
+ && pip install --no-cache-dir --ignore-installed conan \
+ && pip install --no-cache-dir -U --ignore-installed setuptools
 
 RUN apt-fast -y install --no-install-recommends \
     shellcheck=0.9.* \
-    shfmt=3.6.*
+    shfmt=3.8.*
 
 RUN apt-fast -y install --no-install-recommends \
     cmake-format=0.6.*
@@ -76,7 +76,7 @@ RUN apt-fast update \
 
 RUN apt-fast update \
  && apt-fast -y install --no-install-recommends \
-    nodejs=18.13.* \
+    nodejs=18.19.* \
     npm=9.2.* \
  && apt-fast -y autoremove \
  && apt-fast clean
@@ -114,7 +114,7 @@ RUN pip install --no-cache-dir codespell
 
 RUN apt-fast update \
  && apt-fast -y install --no-install-recommends \
-    ruby3.1 \
+    ruby=1:3.2* \
  && gem install mdl -v 0.9.0
 
 
@@ -152,8 +152,8 @@ RUN pip install --no-cache-dir yamllint
 
 RUN apt-fast update \
  && apt-fast -y install --no-install-recommends \
-    clang-tidy-16 \
-    clang-format-16
+    clang-tidy-18 \
+    clang-format-18
 
 RUN apt-get -y update \
  && apt-get -y install --no-install-recommends \

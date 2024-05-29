@@ -64,7 +64,7 @@ static void ReportError(boost::system::error_code err,
 }
 
 [[nodiscard]] static std::string StringFrom(const Cookies& cookies) noexcept {
-  return cookies | ranges::v3::views::join("; ") | ranges::to<std::string>();
+  return cookies | ranges::views::join("; ") | ranges::to<std::string>();
 }
 
 static HttpRequest FormRequestFor(boost::urls::url url,

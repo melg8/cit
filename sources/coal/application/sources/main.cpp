@@ -39,8 +39,8 @@ static cobalt::generator<int> FromSocket() { return GenerateUntilZero(10); }
 static void DestoryAndClearHandles(
     std::vector<std::coroutine_handle<>>& handles) {
   auto not_done = [](auto& h) noexcept { return !h.done(); };
-  auto not_done_handles = handles | ranges::v3::views::filter(not_done);
-  ranges::v3::for_each(not_done_handles, [](auto& h) { h.destroy(); });
+  auto not_done_handles = handles | ranges::views::filter(not_done);
+  ranges::for_each(not_done_handles, [](auto& h) { h.destroy(); });
   handles.clear();
 }
 
