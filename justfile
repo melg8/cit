@@ -42,6 +42,7 @@ clean-all:
   @rm -rf build_gcc
   @rm -rf build_clang
   @rm -rf build
+  @rm -rf out
   @rm -rf coverage
   @rm -rf report
   @echo "all cleaned"

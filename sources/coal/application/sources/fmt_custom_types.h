@@ -22,7 +22,8 @@ struct fmt::formatter<boost::core::string_view>
 
 template <>
 struct fmt::formatter<boost::urls::url> : fmt::formatter<std::string> {
-  [[nodiscard]] static std::string Formatted(const boost::urls::url& url) {
+  [[nodiscard]] static auto Formatted(const boost::urls::url& url)
+      -> std::string {
     static constexpr auto kBlueLinkColorValue = 0x0645AD;
     const auto fg_blue = fg(fmt::rgb(kBlueLinkColorValue));
     return fmt::format(fg_blue, "{}",
@@ -38,9 +39,9 @@ template <>
 struct fmt::formatter<
     boost::beast::http::header<false, boost::beast::http::fields>>
     : fmt::formatter<std::string> {
-  [[nodiscard]] static std::string Formatted(
+  [[nodiscard]] static auto Formatted(
       const boost::beast::http::header<false, boost::beast::http::fields>&
-          header) {
+          header) -> std::string {
     std::string result = "HTTP Header:\n";
     for (const auto& field : header) {
       result += fmt::format("{}: {}\n", field.name_string(), field.value());

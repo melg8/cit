@@ -13,9 +13,11 @@ namespace outcome = OUTCOME_V2_NAMESPACE;
 
 SCENARIO("openssl") { BN_CTX_free(BN_CTX_new()); }
 
-outcome::result<int> operator+(outcome::result<int> lhs, int rhs) noexcept;
+auto operator+(outcome::result<int> lhs,
+               int rhs) noexcept -> outcome::result<int>;
 
-outcome::result<int> operator+(outcome::result<int> lhs, int rhs) noexcept {
+auto operator+(outcome::result<int> lhs,
+               int rhs) noexcept -> outcome::result<int> {
   OUTCOME_TRY(auto result, lhs);
   return result + rhs;
 }

@@ -10,11 +10,12 @@
 extern "C" {
 
 namespace {
-BIGNUM* AlwaysFailAsn1IntegerToBn(const ASN1_INTEGER*, BIGNUM*) noexcept {
+auto AlwaysFailAsn1IntegerToBn(const ASN1_INTEGER*,
+                               BIGNUM*) noexcept -> BIGNUM* {
   return nullptr;
 }
 
-ASN1_INTEGER* AlwaysFailBnToAsn1Integer(const BIGNUM*, ASN1_INTEGER*) {
+auto AlwaysFailBnToAsn1Integer(const BIGNUM*, ASN1_INTEGER*) -> ASN1_INTEGER* {
   return nullptr;
 }
 

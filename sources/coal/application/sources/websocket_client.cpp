@@ -35,9 +35,9 @@ class Stream {
  public:
   virtual ~Stream() = default;
 
-  virtual cobalt::task<bool> AsyncRead(beast::flat_buffer&) = 0;
-  virtual cobalt::task<bool> AsyncWrite(const net::const_buffer&) = 0;
-  virtual cobalt::task<bool> AsyncClose() = 0;
+  virtual auto AsyncRead(beast::flat_buffer&) -> cobalt::task<bool> = 0;
+  virtual auto AsyncWrite(const net::const_buffer&) -> cobalt::task<bool> = 0;
+  virtual auto AsyncClose() -> cobalt::task<bool> = 0;
 };
 
 class WebsocketOverTcpStream : public Stream {
@@ -45,18 +45,19 @@ class WebsocketOverTcpStream : public Stream {
   WebsocketOverTcpStream(websocket::stream<beast::tcp_stream>&& stream)
       : stream_(std::move(stream)) {}
 
-  virtual cobalt::task<bool> AsyncRead(beast::flat_buffer& buffer) override {
+  virtual auto AsyncRead(beast::flat_buffer& buffer)
+      -> cobalt::task<bool> override {
     const auto [err, _1] = co_await stream_.async_read(buffer, nothrow_use_op);
     co_return !err;
   }
 
-  virtual cobalt::task<bool> AsyncWrite(
-      const net::const_buffer& buffer) override {
+  virtual auto AsyncWrite(const net::const_buffer& buffer)
+      -> cobalt::task<bool> override {
     const auto [err, _1] = co_await stream_.async_write(buffer, nothrow_use_op);
     co_return !err;
   }
 
-  virtual cobalt::task<bool> AsyncClose() override {
+  virtual auto AsyncClose() -> cobalt::task<bool> override {
     const auto [err] = co_await stream_.async_close(
         websocket::close_code::normal, nothrow_use_op);
     co_return !err;
@@ -67,9 +68,9 @@ class WebsocketOverTcpStream : public Stream {
 
 using OwnStream = std::unique_ptr<Stream>;
 
-[[nodiscard]] static cobalt::task<void> UseStream(OwnStream&& stream,
-                                                  std::string host,
-                                                  std::string text) {
+[[nodiscard]] static auto UseStream(OwnStream&& stream,
+                                    std::string host,
+                                    std::string text) -> cobalt::task<void> {
   spdlog::info("Sending message to websocket: {}", text);
   if (!co_await stream->AsyncWrite(net::buffer(text))) {
     spdlog::error("Error writing into web socket {}", host);
@@ -90,8 +91,8 @@ using OwnStream = std::unique_ptr<Stream>;
   spdlog::info("Websocket connection closed gracefuly with {}", host);
 }
 
-static cobalt::task<Result<OwnStream>> WebsocketConnect(std::string host,
-                                                        std::string port) {
+static auto WebsocketConnect(std::string host, std::string port)
+    -> cobalt::task<Result<OwnStream>> {
   // These objects perform our I/O
   auto resolver = tcp::resolver(co_await net::this_coro::executor);
   auto ws =
@@ -143,9 +144,9 @@ static cobalt::task<Result<OwnStream>> WebsocketConnect(std::string host,
 }
 
 // Sends a WebSocket message and prints the response
-cobalt::task<void> DoSession(std::string host,
-                             std::string port,
-                             std::string text) {
+auto DoSession(std::string host,
+               std::string port,
+               std::string text) -> cobalt::task<void> {
   auto stream = co_await WebsocketConnect(host, port);
   if (stream.has_error()) {
     spdlog::error("Can't connect to {}:{}", host, port);

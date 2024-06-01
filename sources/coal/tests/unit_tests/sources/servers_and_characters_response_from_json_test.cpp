@@ -12,17 +12,16 @@
 
 #include <algorithm>
 
-
 namespace coal::test {
 
-inline void Prettify(const auto& in, auto& out) noexcept {
+inline auto Prettify(const auto& in, auto& out) noexcept -> void {
   glz::context ctx{};
   glz::detail::prettify_json<glz::opts{}>(ctx, in, out);
   spdlog::info("After prettify ctx error?: {}, code: {}", ctx.includer_error,
                static_cast<int>(ctx.error));
 }
 
-inline std::string RemoveSpaces(std::string str) {
+inline auto RemoveSpaces(std::string str) {
   str.erase(std::remove_if(str.begin(), str.end(), ::isspace), str.end());
   return str;
 }

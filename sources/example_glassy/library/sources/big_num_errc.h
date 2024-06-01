@@ -34,15 +34,16 @@ enum class BigNumErrc {
 
 namespace detail {
 struct BigNumErrorCategory : std::error_category {
-  [[nodiscard]] const char* name() const noexcept override;
-  [[nodiscard]] std::string message(int error_value) const override;
+  [[nodiscard]] auto name() const noexcept -> const char* override;
+  [[nodiscard]] auto message(int error_value) const -> std::string override;
 };
 
-FORCEINLINE const char* BigNumErrorCategory::name() const noexcept {
+FORCEINLINE auto BigNumErrorCategory::name() const noexcept -> const char* {
   return "BigNum";
 }
 
-FORCEINLINE std::string BigNumErrorCategory::message(int error_value) const {
+FORCEINLINE auto BigNumErrorCategory::message(int error_value) const
+    -> std::string {
   switch (static_cast<BigNumErrc>(error_value)) {
     case BigNumErrc::kAllocationFailure:
       return "allocation failed";
@@ -67,7 +68,7 @@ const BigNumErrorCategory big_num_error_category{};
 }  // namespace detail
 
 // NOLINTNEXTLINE
-FORCEINLINE std::error_code make_error_code(glassy::BigNumErrc e) {
+FORCEINLINE auto make_error_code(glassy::BigNumErrc e) -> std::error_code {
   return std::error_code{static_cast<int>(e), detail::big_num_error_category};
 }
 

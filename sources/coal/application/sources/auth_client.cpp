@@ -16,22 +16,23 @@
 
 namespace coal {
 
-cobalt::promise<Result<HttpResponse>> CallApiMethod(std::string_view url_text,
-                                                    std::string_view method,
-                                                    std::string_view args,
-                                                    Cookies cookies) {
+auto CallApiMethod(std::string_view url_text,
+                   std::string_view method,
+                   std::string_view args,
+                   Cookies cookies) -> cobalt::promise<Result<HttpResponse>> {
   const auto api_url = fmt::format("{}/api/{}", url_text, method);
   return SendHttpPostRequestTo(api_url, method, args, cookies);
 }
 
-[[nodiscard]] static std::string FormatOnlyLoginData(
-    const Credentials& credentials) {
+[[nodiscard]] static auto FormatOnlyLoginData(const Credentials& credentials)
+    -> std::string {
   return fmt::format(
       "{{\"email\":\"{}\",\"password\":\"{}\",\"only_login\":true}}",
       credentials.email, credentials.password);
 }
 
-[[nodiscard]] static Result<UserAuthData> FromCookie(std::string_view cookie) {
+[[nodiscard]] static auto FromCookie(std::string_view cookie)
+    -> Result<UserAuthData> {
   const auto match = ctre::match<R"(.*auth=(.*?)-(.*?);.*)">(cookie);
   if (match) {
     return UserAuthData{.id = match.get<1>().to_string(),
@@ -42,8 +43,8 @@ cobalt::promise<Result<HttpResponse>> CallApiMethod(std::string_view url_text,
   }
 }
 
-[[nodiscard]] static Result<UserAuthData> FromResponse(
-    const HttpResponse& repsonse) noexcept {
+[[nodiscard]] static auto FromResponse(const HttpResponse& repsonse) noexcept
+    -> Result<UserAuthData> {
   const auto header = repsonse.base();
   for (const auto& field : header) {
     const auto& field_name = field.name_string();
@@ -56,8 +57,8 @@ cobalt::promise<Result<HttpResponse>> CallApiMethod(std::string_view url_text,
   return std::make_error_code(std::errc::protocol_error);
 }
 
-cobalt::promise<Result<UserAuthData>> AuthTo(std::string_view server_url,
-                                             const Credentials& credentials) {
+auto AuthTo(std::string_view server_url, const Credentials& credentials)
+    -> cobalt::promise<Result<UserAuthData>> {
   const auto maybe_response = co_await CallApiMethod(
       server_url, "signup_or_login", FormatOnlyLoginData(credentials));
   if (maybe_response.has_error()) {
@@ -74,13 +75,13 @@ cobalt::promise<Result<UserAuthData>> AuthTo(std::string_view server_url,
   co_return FromResponse(response);
 }
 
-[[nodiscard]] static std::string AuthCookieFrom(
-    const UserAuthData& user_auth_data) {
+[[nodiscard]] static auto AuthCookieFrom(const UserAuthData& user_auth_data)
+    -> std::string {
   return fmt::format("auth={}-{}", user_auth_data.id, user_auth_data.token);
 }
 
-[[nodiscard]] static Result<ServersAndCharactersResponse>
-ServersAndCharactersFrom(std::string_view json_body) {
+[[nodiscard]] static auto ServersAndCharactersFrom(std::string_view json_body)
+    -> Result<ServersAndCharactersResponse> {
   if (json_body.empty()) {
     spdlog::error("Got empty json body for servers and characters parsing");
     return std::make_error_code(std::errc::invalid_argument);
@@ -97,8 +98,9 @@ ServersAndCharactersFrom(std::string_view json_body) {
   return response.value();
 }
 
-cobalt::promise<Result<ServersAndCharactersResponse>> GetServersAndCharacters(
-    std::string_view url_text, UserAuthData user_auth_data) {
+auto GetServersAndCharacters(std::string_view url_text,
+                             UserAuthData user_auth_data)
+    -> cobalt::promise<Result<ServersAndCharactersResponse>> {
   const auto auth_cookie = AuthCookieFrom(user_auth_data);
   Cookies cookies = {auth_cookie};
   const auto maybe_answer =

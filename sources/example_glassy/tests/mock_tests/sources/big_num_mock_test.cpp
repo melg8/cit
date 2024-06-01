@@ -17,11 +17,11 @@ bool big_num_should_fail_alloc = true;
 extern bool big_num_should_fail_one_time_set_word;
 bool big_num_should_fail_one_time_set_word = false;
 
-BIGNUM* MockBnNew() noexcept {
+auto MockBnNew() noexcept -> BIGNUM* {
   return big_num_should_fail_alloc ? nullptr : BN_new();
 }
 
-int BnSetWord(BIGNUM* big_num, BN_ULONG word) noexcept {
+auto BnSetWord(BIGNUM* big_num, BN_ULONG word) noexcept -> int {
   if (big_num_should_fail_one_time_set_word) {
     big_num_should_fail_one_time_set_word = false;
     return 0;
@@ -31,25 +31,25 @@ int BnSetWord(BIGNUM* big_num, BN_ULONG word) noexcept {
 
 // For this function fail condition is represented by all 0xFF bytes
 // in result. Search for BN_MASK2 in openssl source code for reference.
-BN_ULONG BnGetWordFailConditionReturnValue() noexcept {
+auto BnGetWordFailConditionReturnValue() noexcept -> BN_ULONG {
   return std::numeric_limits<decltype(BN_get_word(nullptr))>::max();
 }
 
-BN_ULONG AlwaysFailBnGetWord(const BIGNUM*) noexcept {
+auto AlwaysFailBnGetWord(const BIGNUM*) noexcept -> BN_ULONG {
   return BnGetWordFailConditionReturnValue();
 }
 
-char* AlwaysFailBnTo(const BIGNUM*) noexcept { return nullptr; }
+auto AlwaysFailBnTo(const BIGNUM*) noexcept -> char* { return nullptr; }
 
-int AlwaysFailToBn(BIGNUM**, const char*) noexcept { return 0; }
+auto AlwaysFailToBn(BIGNUM**, const char*) noexcept -> int { return 0; }
 
-BIGNUM* AlwaysFailBinToBn(const unsigned char*, int, BIGNUM*) {
+auto AlwaysFailBinToBn(const unsigned char*, int, BIGNUM*) -> BIGNUM* {
   return nullptr;
 }
 
-int AlwaysFailAdd(BIGNUM*, const BIGNUM*, const BIGNUM*) { return 0; }
+auto AlwaysFailAdd(BIGNUM*, const BIGNUM*, const BIGNUM*) -> int { return 0; }
 
-int AlwaysFailBnToBin(const BIGNUM*, unsigned char*) { return -1; }
+auto AlwaysFailBnToBin(const BIGNUM*, unsigned char*) -> int { return -1; }
 
 }  // namespace
 }

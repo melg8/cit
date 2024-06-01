@@ -24,9 +24,9 @@ struct WebsocketServer {
 using tcp = boost::asio::ip::tcp;
 namespace cobalt = boost::cobalt;
 
-cobalt::task<void> DoSession(std::string host,
-                             std::string port,
-                             std::string text);
+auto DoSession(std::string host,
+               std::string port,
+               std::string text) -> cobalt::task<void>;
 
 }  // namespace coal
 

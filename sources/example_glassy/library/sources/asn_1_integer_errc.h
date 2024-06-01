@@ -33,15 +33,16 @@ enum class Asn1IntegerErrc {
 
 namespace detail {
 struct Asn1IntErrorCategory : std::error_category {
-  [[nodiscard]] const char* name() const noexcept override;
-  [[nodiscard]] std::string message(int error_value) const override;
+  [[nodiscard]] auto name() const noexcept -> const char* override;
+  [[nodiscard]] auto message(int error_value) const -> std::string override;
 };
 
-FORCEINLINE const char* Asn1IntErrorCategory::name() const noexcept {
+FORCEINLINE auto Asn1IntErrorCategory::name() const noexcept -> const char* {
   return "BigNum";
 }
 
-FORCEINLINE std::string Asn1IntErrorCategory::message(int error_value) const {
+FORCEINLINE auto Asn1IntErrorCategory::message(int error_value) const
+    -> std::string {
   switch (static_cast<Asn1IntegerErrc>(error_value)) {
     case Asn1IntegerErrc::kAllocationFailure:
       return "allocation failed";
@@ -62,7 +63,7 @@ const Asn1IntErrorCategory asn_1_int_error_category{};
 }  // namespace detail
 
 // NOLINTNEXTLINE
-FORCEINLINE std::error_code make_error_code(glassy::Asn1IntegerErrc e) {
+FORCEINLINE auto make_error_code(glassy::Asn1IntegerErrc e) -> std::error_code {
   return std::error_code{static_cast<int>(e), detail::asn_1_int_error_category};
 }
 

@@ -12,7 +12,7 @@ namespace glassy {
 template <auto func>
 struct DeleterFromFunction {
   template <typename T>
-  constexpr void operator()(gsl::owner<T*> arg) const noexcept {
+  constexpr auto operator()(gsl::owner<T*> arg) const noexcept -> void {
     func(arg);
   }
 };

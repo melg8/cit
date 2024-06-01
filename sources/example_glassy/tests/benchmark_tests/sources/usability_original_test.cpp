@@ -8,7 +8,7 @@
 
 namespace glassy::test {
 
-inline ASN1_INTEGER* ProvideAsn1Pointer() noexcept {
+inline auto ProvideAsn1Pointer() noexcept -> ASN1_INTEGER* {
   ASN1_INTEGER* result = ASN1_INTEGER_new();
   if (result == nullptr) {
     return nullptr;
@@ -36,7 +36,7 @@ inline ASN1_INTEGER* ProvideAsn1Pointer() noexcept {
   return result;
 }
 
-inline ASN1_INTEGER* ProvideWithValue() noexcept {
+inline auto ProvideWithValue() noexcept -> ASN1_INTEGER* {
   ASN1_INTEGER* result = ASN1_INTEGER_new();
   if (result == nullptr) {
     return nullptr;
@@ -55,7 +55,8 @@ SCENARIO("openssl usability") {
 
     ASN1_INTEGER* expected = ASN1_INTEGER_new();
 
-    // Mistake 1: used result instead of expected.
+    // Initially had mistake 1: used result instead of expected.
+    // Potential leak if check fails.
     CHECK(ASN1_INTEGER_set(expected, 31) != 0);
     CHECK(ASN1_INTEGER_cmp(result, expected) == 0);
 
@@ -71,7 +72,8 @@ SCENARIO("openssl isolated") {
 
     ASN1_INTEGER* expected = ASN1_INTEGER_new();
 
-    // Mistake 1: used result instead of expected.
+    // Initially had mistake 1: used result instead of expected.
+    // Potential leak if check fails.
     CHECK(ASN1_INTEGER_set(expected, 33) != 0);
     CHECK(ASN1_INTEGER_cmp(result, expected) == 0);
 

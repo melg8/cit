@@ -16,15 +16,15 @@ namespace outcome = OUTCOME_V2_NAMESPACE;
 template <typename T>
 using Result = outcome::result<T>;
 
-static Result<BigNum> FromAsn1Int(
-    not_null_provider_of<const ASN1_INTEGER*> auto&& value) noexcept;
-static Result<Asn1Integer> FromBigNum(const BigNum& value) noexcept;
-static Result<void> FromBigNum(
-    const BigNum& value,
-    not_null_provider_of<const ASN1_INTEGER*> auto&& target) noexcept;
+static auto FromAsn1Int(not_null_provider_of<const ASN1_INTEGER*> auto&&
+                            value) noexcept -> Result<BigNum>;
+static auto FromBigNum(const BigNum& value) noexcept -> Result<Asn1Integer>;
+static auto FromBigNum(const BigNum& value,
+                       not_null_provider_of<const ASN1_INTEGER*> auto&&
+                           target) noexcept -> Result<void>;
 
-FORCEINLINE Result<BigNum> FromAsn1Int(
-    not_null_provider_of<const ASN1_INTEGER*> auto&& value) noexcept {
+FORCEINLINE auto FromAsn1Int(not_null_provider_of<const ASN1_INTEGER*> auto&&
+                                 value) noexcept -> Result<BigNum> {
   auto result = BigNum::Own(ASN1_INTEGER_to_BN(GetPtr(value), nullptr));
   if (result.has_error()) {
     return BigNumErrc::kConversionFailure;
@@ -32,7 +32,8 @@ FORCEINLINE Result<BigNum> FromAsn1Int(
   return result;
 }
 
-FORCEINLINE Result<Asn1Integer> FromBigNum(const BigNum& value) noexcept {
+FORCEINLINE auto FromBigNum(const BigNum& value) noexcept
+    -> Result<Asn1Integer> {
   auto result = Own(BN_to_ASN1_INTEGER(value.Ptr(), nullptr));
   if (result.has_error()) {
     return Asn1IntegerErrc::kConversionFailure;
@@ -40,9 +41,9 @@ FORCEINLINE Result<Asn1Integer> FromBigNum(const BigNum& value) noexcept {
   return result;
 }
 
-FORCEINLINE Result<void> FromBigNum(
-    const BigNum& value,
-    not_null_provider_of<const ASN1_INTEGER*> auto&& target) noexcept {
+FORCEINLINE auto FromBigNum(const BigNum& value,
+                            not_null_provider_of<const ASN1_INTEGER*> auto&&
+                                target) noexcept -> Result<void> {
   if (BN_to_ASN1_INTEGER(value.Ptr(), GetPtr(target)) == nullptr) {
     return Asn1IntegerErrc::kConversionFailure;
   }

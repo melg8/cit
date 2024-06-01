@@ -39,7 +39,7 @@ struct Line {
   Direction direction = Direction::kHorizontal;
 };
 
-[[nodiscard]] FORCEINLINE Line LineFrom(LineIndex line_index) noexcept {
+[[nodiscard]] FORCEINLINE auto LineFrom(LineIndex line_index) noexcept -> Line {
   switch (line_index) {
     default:
     case 0:
@@ -57,13 +57,14 @@ struct Line {
   }
 }
 
-[[nodiscard]] FORCEINLINE DisplayBuffer SingleSymbolBuffer(uint8_t width,
-                                                           uint8_t height) {
+[[nodiscard]] FORCEINLINE auto SingleSymbolBuffer(uint8_t width, uint8_t height)
+    -> DisplayBuffer {
   return DisplayBuffer{height, DisplayLine(width, SingleValue{0})};
 }
 
 /// Precondition DisplayBuffer must be already proper size.
-FORCEINLINE void DrawLineToBuffer(Line line, DisplayBuffer& buffer) noexcept {
+FORCEINLINE auto DrawLineToBuffer(Line line,
+                                  DisplayBuffer& buffer) noexcept -> void {
   const auto head_pos = line.head_pos;
   for (uint8_t i = 0; i < 5; ++i) {
     if (line.direction == Direction::kHorizontal) {
@@ -74,7 +75,8 @@ FORCEINLINE void DrawLineToBuffer(Line line, DisplayBuffer& buffer) noexcept {
   }
 }
 
-[[nodiscard]] FORCEINLINE Symbol SymbolFrom(SingleValue value) noexcept {
+[[nodiscard]] FORCEINLINE auto SymbolFrom(SingleValue value) noexcept
+    -> Symbol {
   switch (value) {
     case 0:
       return '-';
@@ -85,14 +87,14 @@ FORCEINLINE void DrawLineToBuffer(Line line, DisplayBuffer& buffer) noexcept {
   }
 }
 
-[[nodiscard]] FORCEINLINE Symbols
-SymbolsFrom(const DisplayLine& display_line) noexcept {
+[[nodiscard]] FORCEINLINE auto SymbolsFrom(
+    const DisplayLine& display_line) noexcept -> Symbols {
   return display_line | ranges::views::transform(SymbolFrom) |
          ranges::to<std::string>();
 }
 
-[[nodiscard]] FORCEINLINE Symbols
-SymbolsFromBuffer(const DisplayBuffer& display_buffer) noexcept {
+[[nodiscard]] FORCEINLINE auto SymbolsFromBuffer(
+    const DisplayBuffer& display_buffer) noexcept -> Symbols {
   return display_buffer | ranges::views::transform(SymbolsFrom) |
          ranges::views::join('\n') | ranges::to<std::string>();
 }

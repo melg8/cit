@@ -10,8 +10,8 @@
 
 namespace glassy::test {
 
-void DeleterFunctionMock(gsl::owner<const int*> resource) noexcept;
-void DeleterFunctionMock(gsl::owner<const int*> resource) noexcept {
+auto DeleterFunctionMock(gsl::owner<const int*> resource) noexcept -> void;
+auto DeleterFunctionMock(gsl::owner<const int*> resource) noexcept -> void {
   delete resource;
 }
 

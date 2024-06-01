@@ -12,7 +12,7 @@
 namespace coal {
 
 template <typename T>
-[[nodiscard]] std::string JsonFrom(const T& any_struct) {
+[[nodiscard]] auto JsonFrom(const T& any_struct) -> std::string {
   std::string result{};
   glz::write<glz::opts{.prettify = true}>(any_struct, result);
   return result;

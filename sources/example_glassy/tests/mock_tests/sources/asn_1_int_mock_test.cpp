@@ -14,19 +14,21 @@ bool int_should_fail_alloc = true;
 extern bool int_should_fail_to_set_value;
 bool int_should_fail_to_set_value = true;
 
-ASN1_INTEGER* MockAsn1IntegerNew() noexcept {
+auto MockAsn1IntegerNew() noexcept -> ASN1_INTEGER* {
   return int_should_fail_alloc ? nullptr : ASN1_INTEGER_new();
 }
 
 // NOLINTNEXTLINE
-int MockAsn1IntegerSet(ASN1_INTEGER* a, long v) noexcept {
+auto MockAsn1IntegerSet(ASN1_INTEGER* a, long v) noexcept -> int {
   return int_should_fail_to_set_value ? 0 : ASN1_INTEGER_set(a, v);
 }
 
 // NOLINTNEXTLINE
-long AlwaysFailAsn1IntegerGet(const ASN1_INTEGER*) noexcept { return -1; }
+auto AlwaysFailAsn1IntegerGet(const ASN1_INTEGER*) noexcept -> long {
+  return -1;
+}
 
-ASN1_INTEGER* MockAsn1IntegerDup(const ASN1_INTEGER*) noexcept {
+auto MockAsn1IntegerDup(const ASN1_INTEGER*) noexcept -> ASN1_INTEGER* {
   return nullptr;
 }
 

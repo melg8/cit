@@ -37,9 +37,10 @@ using Asn1IntegerMaybeNull =
 
 using Asn1Integer = gsl::not_null<Asn1IntegerMaybeNull>;
 
-constexpr FORCEINLINE std::strong_ordering Asn1IntegerCmp(
+constexpr FORCEINLINE auto Asn1IntegerCmp(
     not_null_provider_of<const ASN1_INTEGER*> auto&& lhs,
-    not_null_provider_of<const ASN1_INTEGER*> auto&& rhs) noexcept {
+    not_null_provider_of<const ASN1_INTEGER*> auto&& rhs) noexcept
+    -> std::strong_ordering {
   return ASN1_INTEGER_cmp(GetPtr(lhs), GetPtr(rhs)) <=> 0;
 }
 
@@ -54,7 +55,7 @@ struct ComparisonValueHolder {
   }
 
   template <typename F>
-  FORCEINLINE constexpr bool operator==(
+  FORCEINLINE constexpr auto operator==(
       const ComparisonValueHolder<F>& rhs) const noexcept {
     return std::is_eq(*this <=> rhs);
   }
@@ -65,14 +66,14 @@ FORCEINLINE decltype(auto) ValueOf(T&& provider) noexcept {
   return ComparisonValueHolder<T>{std::forward<T>(provider)};
 }
 
-FORCEINLINE Result<Asn1Integer> Asn1IntegerNew() noexcept {
+FORCEINLINE auto Asn1IntegerNew() noexcept -> Result<Asn1Integer> {
   Asn1IntegerMaybeNull ptr{ASN1_INTEGER_new()};
   return ptr ? Result<Asn1Integer>{std::move(ptr)}
              : Asn1IntegerErrc::kAllocationFailure;
 }
 
-FORCEINLINE Result<Asn1Integer> Asn1IntegerDup(
-    not_null_provider_of<const ASN1_INTEGER*> auto&& view) noexcept {
+FORCEINLINE auto Asn1IntegerDup(not_null_provider_of<const ASN1_INTEGER*> auto&&
+                                    view) noexcept -> Result<Asn1Integer> {
   Asn1IntegerMaybeNull ptr{ASN1_INTEGER_dup(GetPtr(view))};
   return ptr ? Result<Asn1Integer>{std::move(ptr)}
              : Asn1IntegerErrc::kCopyFailure;
@@ -80,27 +81,27 @@ FORCEINLINE Result<Asn1Integer> Asn1IntegerDup(
 
 // TODO(melg): mark as deprecated, implement ASN1_INTEGER_get_int64 to be used
 // instead.
-FORCEINLINE Result<Long> Asn1IntegerGet(
-    not_null_provider_of<const ASN1_INTEGER*> auto&& view) noexcept {
+FORCEINLINE auto Asn1IntegerGet(not_null_provider_of<const ASN1_INTEGER*> auto&&
+                                    view) noexcept -> Result<Long> {
   const auto result = ASN1_INTEGER_get(GetPtr(view));
   return result != -1 ? Result<Long>{result}
                       : Asn1IntegerErrc::kConversionFailure;
 }
 
-FORCEINLINE Result<void> Asn1IntegerSet(
-    not_null_provider_of<ASN1_INTEGER*> auto&& view, Long value) noexcept {
+FORCEINLINE auto Asn1IntegerSet(not_null_provider_of<ASN1_INTEGER*> auto&& view,
+                                Long value) noexcept -> Result<void> {
   return ASN1_INTEGER_set(GetPtr(view), value) != 0
              ? Result<void>{outcome::success()}
              : Asn1IntegerErrc::kAllocationFailure;
 }
 
-FORCEINLINE Result<Asn1Integer> Asn1IntegerFrom(Long value) noexcept {
+FORCEINLINE auto Asn1IntegerFrom(Long value) noexcept -> Result<Asn1Integer> {
   OUTCOME_TRY(auto result, Asn1IntegerNew());
   OUTCOME_TRY(Asn1IntegerSet(result, value));
   return Result<Asn1Integer>{std::move(result)};
 }
 
-FORCEINLINE Result<Asn1Integer> Own(Asn1IntegerOwnerPtr ptr) noexcept {
+FORCEINLINE auto Own(Asn1IntegerOwnerPtr ptr) noexcept -> Result<Asn1Integer> {
   return ptr ? Result<Asn1Integer>{Asn1IntegerMaybeNull{ptr}}
              : Asn1IntegerErrc::kNullPointerFailure;
 }

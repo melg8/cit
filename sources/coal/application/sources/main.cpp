@@ -28,16 +28,18 @@ namespace coal {
 
 using namespace boost;
 
-static cobalt::generator<int> GenerateUntilZero(int max) {
+static auto GenerateUntilZero(int max) -> cobalt::generator<int> {
   int i = max;
   while (i > 0) co_yield i--;
   co_return i;
 }
 
-static cobalt::generator<int> FromSocket() { return GenerateUntilZero(10); }
+static auto FromSocket() -> cobalt::generator<int> {
+  return GenerateUntilZero(10);
+}
 
-static void DestoryAndClearHandles(
-    std::vector<std::coroutine_handle<>>& handles) {
+static auto DestoryAndClearHandles(
+    std::vector<std::coroutine_handle<>>& handles) -> void {
   auto not_done = [](auto& h) noexcept { return !h.done(); };
   auto not_done_handles = handles | ranges::views::filter(not_done);
   ranges::for_each(not_done_handles, [](auto& h) { h.destroy(); });
@@ -47,7 +49,8 @@ static void DestoryAndClearHandles(
 struct HandlesRegistry {
   std::map<int, std::vector<std::coroutine_handle<>>> handles;
 
-  void RegisterHandle(std::coroutine_handle<> h, int value_of_interest) {
+  auto RegisterHandle(std::coroutine_handle<> h,
+                      int value_of_interest) -> void {
     handles[value_of_interest].emplace_back(std::move(h));
   }
 
@@ -80,19 +83,20 @@ static auto OnValue(HandlesRegistry& registry, int value) {
     HandlesRegistry& registry;
     int value = 0;
 
-    bool await_ready() { return false; }
+    auto await_ready() -> bool { return false; }
 
-    void await_suspend(std::coroutine_handle<> h) {
+    auto await_suspend(std::coroutine_handle<> h) -> void {
       spdlog::info("Suspended with value: {}", value);
       registry.RegisterHandle(h, value);
     }
 
-    void await_resume() {}
+    auto await_resume() -> void {}
   };
   return Awaitable{registry, value};
 }
 
-static cobalt::promise<void> HandleValue(HandlesRegistry& registry, int value) {
+static auto HandleValue(HandlesRegistry& registry,
+                        int value) -> cobalt::promise<void> {
   spdlog::info("Before waiting for value: {}", value);
   co_await OnValue(registry, value);
   spdlog::info("After waiting for value: {}", value);
@@ -103,8 +107,9 @@ static auto HandleIncomingMessages(HandlesRegistry& registry) {
                       HandleValue(registry, 1), HandleValue(registry, 3));
 }
 
-static cobalt::task<void> DistributeIncomingMessages(
-    HandlesRegistry& registry, cobalt::generator<int>& socket) {
+static auto DistributeIncomingMessages(HandlesRegistry& registry,
+                                       cobalt::generator<int>& socket)
+    -> cobalt::task<void> {
   for (auto value = co_await socket; value != -1; value = co_await socket) {
     if (auto search = registry.handles.find(value);
         search != registry.handles.end()) {
@@ -117,19 +122,19 @@ static cobalt::task<void> DistributeIncomingMessages(
   }
 }
 
-static cobalt::task<void> DelayMs(size_t ms) {
+static auto DelayMs(size_t ms) -> cobalt::task<void> {
   asio::steady_timer timer{co_await cobalt::this_coro::executor,
                            std::chrono::milliseconds(ms)};
   co_await timer.async_wait(cobalt::use_op);
 }
 
-static cobalt::detached SpeakWithDelay() {
+static auto SpeakWithDelay() -> cobalt::detached {
   spdlog::info("Speak with delay started");
   co_await DelayMs(3000);
   spdlog::info("Speak with delay finished after 3 sec.");
 }
 
-static cobalt::task<void> TestHttpRequests() {
+static auto TestHttpRequests() -> cobalt::task<void> {
   const auto [result_1, result_2] = co_await cobalt::join(
       SendHttpGetRequestTo("https://adventure.land/data.js"),
       SendHttpGetRequestTo("http://127.0.0.1:8083/data.js"));
@@ -148,7 +153,7 @@ static cobalt::task<void> TestHttpRequests() {
   co_return;
 }
 
-static cobalt::task<void> TestAuthTo(Configuration config) {
+static auto TestAuthTo(Configuration config) -> cobalt::task<void> {
   const auto result = co_await AuthTo(config.url, config.credentials);
   if (result.has_error()) {
     spdlog::error("Error occured while login attempt: {} bailing out",
@@ -170,11 +175,11 @@ static cobalt::task<void> TestAuthTo(Configuration config) {
                servers_result.value().characters.size());
 }
 
-static void SetupSpdLog() noexcept {
+static auto SetupSpdLog() noexcept -> void {
   spdlog::set_pattern("[%X.%f] [%7i] [%^%L%$] %v");
 }
 
-static cobalt::task<void> Test() {
+static auto Test() -> cobalt::task<void> {
   spdlog::info("Before distributing messages");
 
   SubscribableSocket socket1{FromSocket(), {}};
@@ -185,8 +190,8 @@ static cobalt::task<void> Test() {
   spdlog::info("After distributing messages");
 }
 
-[[nodiscard]] static Configuration ConfigurationFromFile(
-    const std::string& path) {
+[[nodiscard]] static auto ConfigurationFromFile(const std::string& path)
+    -> Configuration {
   Configuration config = {
       .url = "http://127.0.0.1:8083",
       .credentials = {.email = "test@test.com", .password = "123456789"},
@@ -206,12 +211,12 @@ static cobalt::task<void> Test() {
   return config;
 }
 
-static cobalt::task<void> TestAuthConnectivity() {
+static auto TestAuthConnectivity() -> cobalt::task<void> {
   const auto config = ConfigurationFromFile("./.config.json");
   co_await TestAuthTo(config);
 }
 
-static cobalt::task<void> TestWebsocketConnectivity() {
+static auto TestWebsocketConnectivity() -> cobalt::task<void> {
   spdlog::info("Testing websockets");
   const auto config = ConfigurationFromFile("./.config.json");
   const auto& ws = config.ws_request;
@@ -220,7 +225,7 @@ static cobalt::task<void> TestWebsocketConnectivity() {
 
 }  // namespace coal
 
-boost::cobalt::main co_main(int, char**) {
+auto co_main(int, char**) -> boost::cobalt::main {
   using namespace coal;
   SetupSpdLog();
   SpeakWithDelay();
@@ -231,7 +236,7 @@ boost::cobalt::main co_main(int, char**) {
   co_return 0;
 }
 
-// cobalt::promise<something> ImagineHandling() {
+// auto ImagineHandling() -> cobalt::promise<something> {
 
 // co_await async_write(socket, boost::asio::buffer(data, n));
 //  co_await async_write(socket, SomeCommand);
@@ -242,13 +247,13 @@ boost::cobalt::main co_main(int, char**) {
 // }
 
 // Example - teleport between maps
-// [[nodiscard]] cobalt::promise<bool?error?>  TransportTo(MapName map, SpawnId
-// spawn_id) nothrow {
+// [[nodiscard]] auto TransportTo(MapName map, SpawnId
+// spawn_id) nothrow -> cobalt::promise<bool?error?> {
 //
 // }
 
 // Usage
-// cobalt::promise<void> TestTransportTo() {
+// auto TestTransportTo() -> cobalt::promise<void>{
 // auto player = co_await ConnectPlayer(...);
 // if (!co_await player.TransportTo("main", 1)) {
 // handle error

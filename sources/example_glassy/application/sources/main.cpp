@@ -6,4 +6,7 @@
 
 #include <big_num.h>
 
-int main() { std::cout << glassy::Sum(2, 2); }
+auto main(int, char**) -> int {
+  std::cout << glassy::Sum(2, 2);
+  return 0;
+}

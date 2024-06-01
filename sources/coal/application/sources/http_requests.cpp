@@ -56,21 +56,22 @@ using HttpRequest = http::request<http::string_body>;
 static constexpr auto nothrow_use_op =
     boost::asio::as_tuple(boost::cobalt::use_op);
 
-static void ReportError(boost::system::error_code err,
+static auto ReportError(boost::system::error_code err,
                         std::string_view action,
-                        boost::urls::url url) noexcept {
+                        boost::urls::url url) noexcept -> void {
   DEBUG_ASSERT(err, "should not report errors with empty error code");
   spdlog::error("Error: {} while {}: {}", err.message(), action, url);
 }
 
-[[nodiscard]] static std::string StringFrom(const Cookies& cookies) noexcept {
+[[nodiscard]] static auto StringFrom(const Cookies& cookies) noexcept
+    -> std::string {
   return cookies | ranges::views::join("; ") | ranges::to<std::string>();
 }
 
-static HttpRequest FormRequestFor(boost::urls::url url,
-                                  http::verb verb,
-                                  std::string_view body,
-                                  Cookies cookies) {
+static auto FormRequestFor(boost::urls::url url,
+                           http::verb verb,
+                           std::string_view body,
+                           Cookies cookies) -> HttpRequest {
   http::request<http::string_body> req{verb, url.path(), 11};
   req.set(http::field::user_agent, BOOST_BEAST_VERSION_STRING);
   req.set("Accept-Encoding", "identity");
@@ -87,8 +88,8 @@ static HttpRequest FormRequestFor(boost::urls::url url,
   return req;
 }
 
-static cobalt::promise<Result<ssl_socket_type>> Connect(boost::urls::url url,
-                                                        ssl::context& ctx) {
+static auto Connect(boost::urls::url url, ssl::context& ctx)
+    -> cobalt::promise<Result<ssl_socket_type>> {
   ip::tcp::resolver resolve{co_await cobalt::this_coro::executor};
   const auto port = url.port().empty() ? url.scheme() : url.port();
   const auto [err, endpoints] =
@@ -123,8 +124,8 @@ static cobalt::promise<Result<ssl_socket_type>> Connect(boost::urls::url url,
   co_return Result<ssl_socket_type>{std::move(sock)};
 }
 
-static void LogResponse(const HttpResponse& response,
-                        boost::urls::url url) noexcept {
+static auto LogResponse(const HttpResponse& response,
+                        boost::urls::url url) noexcept -> void {
   const auto result = static_cast<int>(response.result());
   std::string reason{response.reason()};
   spdlog::info("Got http response {} reason: {} body size: {} from {}", reason,
@@ -132,8 +133,10 @@ static void LogResponse(const HttpResponse& response,
 }
 
 template <typename T>
-static cobalt::promise<Result<HttpResponse>> SendUnifiedRequestTo(
-    T& conn, boost::urls::url url, const HttpRequest& request) noexcept {
+static auto SendUnifiedRequestTo(T& conn,
+                                 boost::urls::url url,
+                                 const HttpRequest& request) noexcept
+    -> cobalt::promise<Result<HttpResponse>> {
   spdlog::info("Sending request");
   const auto [write_err, _1] =
       co_await http::async_write(conn, request, nothrow_use_op);
@@ -154,8 +157,8 @@ static cobalt::promise<Result<HttpResponse>> SendUnifiedRequestTo(
   co_return response;
 }
 
-static cobalt::promise<Result<HttpResponse>> SendHttpsRequestTo(
-    boost::urls::url url, const HttpRequest& request) {
+static auto SendHttpsRequestTo(boost::urls::url url, const HttpRequest& request)
+    -> cobalt::promise<Result<HttpResponse>> {
   ssl::context ctx{ssl::context::tls_client};
   auto conn = co_await Connect(url, ctx);
   if (conn.has_error()) {
@@ -165,11 +168,15 @@ static cobalt::promise<Result<HttpResponse>> SendHttpsRequestTo(
   co_return co_await SendUnifiedRequestTo(*conn, url, request);
 }
 
-static cobalt::promise<Result<beast::tcp_stream>> ConnectTcpStream(
-    boost::urls::url url) {
+[[nodiscard]] static auto PortFrom(boost::urls::url url) noexcept {
+  return url.port().empty() ? url.scheme() : url.port();
+}
+
+static auto ConnectTcpStream(boost::urls::url url)
+    -> cobalt::promise<Result<beast::tcp_stream>> {
   beast::tcp_stream stream(co_await cobalt::this_coro::executor);
   ip::tcp::resolver resolve{co_await cobalt::this_coro::executor};
-  const auto port = url.port().empty() ? url.scheme() : url.port();
+  const auto port = PortFrom(url);
   const auto [err, endpoints] =
       co_await resolve.async_resolve(url.host(), port, nothrow_use_op);
   if (err) {
@@ -187,8 +194,9 @@ static cobalt::promise<Result<beast::tcp_stream>> ConnectTcpStream(
   co_return Result<beast::tcp_stream>{std::move(stream)};
 }
 
-static cobalt::promise<Result<HttpResponse>> SendWithTcpHttpRequestTo(
-    boost::urls::url url, const HttpRequest& request) {
+static auto SendWithTcpHttpRequestTo(boost::urls::url url,
+                                     const HttpRequest& request)
+    -> cobalt::promise<Result<HttpResponse>> {
   auto conn = co_await ConnectTcpStream(url);
   if (conn.has_error()) {
     ReportError(conn.error(), "connecting to endpoint host", url);
@@ -197,18 +205,18 @@ static cobalt::promise<Result<HttpResponse>> SendWithTcpHttpRequestTo(
   co_return co_await SendUnifiedRequestTo(*conn, url, request);
 }
 
-static cobalt::promise<Result<HttpResponse>> SendHttpRequestTo(
-    std::string_view url_text,
-    http::verb verb,
-    std::string_view body = {},
-    const Cookies& cookies = {}) {
+static auto SendHttpRequestTo(std::string_view url_text,
+                              http::verb verb,
+                              std::string_view body = {},
+                              const Cookies& cookies = {})
+    -> cobalt::promise<Result<HttpResponse>> {
   const auto parsed_url = boost::urls::parse_uri(url_text);
   if (parsed_url.has_error()) {
     spdlog::error("Error while parsing url {}: error text: {}", url_text,
                   parsed_url.error().message());
     co_return Result<HttpResponse>{parsed_url.error()};
   }
-  const boost::urls::url url = parsed_url.value();
+  const auto url = parsed_url.value();
   const auto request = FormRequestFor(url, verb, body, cookies);
 
   spdlog::info("Sending {} request to {}", magic_enum::enum_name(verb),
@@ -220,21 +228,21 @@ static cobalt::promise<Result<HttpResponse>> SendHttpRequestTo(
   }
 }
 
-cobalt::promise<Result<HttpResponse>> SendHttpGetRequestTo(
-    std::string_view url_text) {
+auto SendHttpGetRequestTo(std::string_view url_text)
+    -> cobalt::promise<Result<HttpResponse>> {
   return SendHttpRequestTo(url_text, http::verb::get);
 }
 
-[[nodiscard]] static std::string FormatBodyOfRequest(std::string_view method,
-                                                     std::string_view args) {
+[[nodiscard]] static auto FormatBodyOfRequest(
+    std::string_view method, std::string_view args) -> std::string {
   return fmt::format("method={}&arguments={}", method, args);
 }
 
-cobalt::promise<Result<HttpResponse>> SendHttpPostRequestTo(
-    std::string_view url_text,
-    std::string_view method,
-    std::string_view args,
-    const Cookies& cookies) {
+auto SendHttpPostRequestTo(std::string_view url_text,
+                           std::string_view method,
+                           std::string_view args,
+                           const Cookies& cookies)
+    -> cobalt::promise<Result<HttpResponse>> {
   return SendHttpRequestTo(url_text, http::verb::post,
                            FormatBodyOfRequest(method, args), cookies);
 }

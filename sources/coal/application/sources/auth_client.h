@@ -5,9 +5,9 @@
 #ifndef AUTH_CLIENT_H
 #define AUTH_CLIENT_H
 
+#include <pretty_json_from_any_struct.h>
 #include <servers_and_characters_response_from_json.h>
 #include <universal_declarations.h>
-#include <pretty_json_from_any_struct.h>
 
 #include <fmt/format.h>
 #include <boost/cobalt.hpp>
@@ -28,16 +28,18 @@ struct UserAuthData {
   std::string token = {};
 };
 
-cobalt::promise<Result<HttpResponse>> CallApiMethod(std::string_view url_text,
-                                                    std::string_view method,
-                                                    std::string_view args,
-                                                    Cookies cookies = {});
+auto CallApiMethod(std::string_view url_text,
+                   std::string_view method,
+                   std::string_view args,
+                   Cookies cookies = {})
+    -> cobalt::promise<Result<HttpResponse>>;
 
-cobalt::promise<Result<UserAuthData>> AuthTo(std::string_view server_url,
-                                             const Credentials& credentials);
+auto AuthTo(std::string_view server_url, const Credentials& credentials)
+    -> cobalt::promise<Result<UserAuthData>>;
 
-cobalt::promise<Result<ServersAndCharactersResponse>> GetServersAndCharacters(
-    std::string_view url_text, UserAuthData user_auth_data);
+auto GetServersAndCharacters(std::string_view url_text,
+                             UserAuthData user_auth_data)
+    -> cobalt::promise<Result<ServersAndCharactersResponse>>;
 
 }  // namespace coal
 

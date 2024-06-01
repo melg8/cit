@@ -21,14 +21,22 @@ namespace cobalt = boost::cobalt;
  * @param url_text text of server url that you want to send request.
  * @return result of request, system::error or HttpResponse with data.
  */
-cobalt::promise<Result<HttpResponse>> SendHttpGetRequestTo(
-    std::string_view url_text);
+auto SendHttpGetRequestTo(std::string_view url_text)
+    -> cobalt::promise<Result<HttpResponse>>;
 
-cobalt::promise<Result<HttpResponse>> SendHttpPostRequestTo(
-    std::string_view url_text,
-    std::string_view method,
-    std::string_view args,
-    const Cookies& cookies);
+/**
+ * @brief Send a POST request.
+ * @param url_text text of server url that you want to send request.
+ * @param method text of method that you want to call.
+ * @param args text of arguments that you want to send.
+ * @param cookies cookies that you want to send.
+ * @return result of request, system::error or HttpResponse with data.
+ */
+auto SendHttpPostRequestTo(std::string_view url_text,
+                           std::string_view method,
+                           std::string_view args,
+                           const Cookies& cookies)
+    -> cobalt::promise<Result<HttpResponse>>;
 
 }  // namespace coal
 

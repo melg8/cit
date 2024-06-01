@@ -231,8 +231,8 @@ SCENARIO("Asn1Integer copy") {
 }
 
 namespace {
-void TestFunction(
-    not_null_provider_of<const ASN1_INTEGER*> auto&& view) noexcept {
+auto TestFunction(
+    not_null_provider_of<const ASN1_INTEGER*> auto&& view) noexcept -> void {
   const ASN1_INTEGER* pointer = GetPtr(view);
   CHECK(pointer != nullptr);
 }

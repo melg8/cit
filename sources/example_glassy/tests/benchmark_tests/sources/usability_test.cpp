@@ -14,7 +14,7 @@
 
 namespace glassy::test {
 
-FORCEINLINE Result<Asn1Integer> ProvideAsn1Value() noexcept {
+FORCEINLINE auto ProvideAsn1Value() noexcept -> Result<Asn1Integer> {
   O_TRY(auto asn_1_integer, Asn1IntegerFrom(32));
   O_TRY(auto bignum, convert::FromAsn1Int(asn_1_integer));
   O_TRY(bignum += BigNum::New(1));
@@ -22,7 +22,7 @@ FORCEINLINE Result<Asn1Integer> ProvideAsn1Value() noexcept {
   return {std::move(asn_1_integer)};
 }
 
-FORCEINLINE Result<Asn1Integer> ProvideAsn1IntegerWithValue() noexcept {
+FORCEINLINE auto ProvideAsn1IntegerWithValue() noexcept -> Result<Asn1Integer> {
   O_TRY(auto asn_1_integer, Asn1IntegerFrom(31));
   return {std::move(asn_1_integer)};
 }

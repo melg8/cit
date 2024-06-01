@@ -5,7 +5,7 @@
 #ifndef SERVERS_AND_CHARACTERS_RESPONSE_FROM_JSON_H
 #define SERVERS_AND_CHARACTERS_RESPONSE_FROM_JSON_H
 
-#include <cstdint>
+#include <cstddef>
 #include <optional>
 #include <string>
 #include <string_view>

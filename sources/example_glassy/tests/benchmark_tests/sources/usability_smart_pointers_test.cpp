@@ -8,10 +8,12 @@
 
 #include <testing_framework.h>
 
+#include <common_macro.h>
+
 namespace glassy::test {
 
 struct Asn1IntegerDeleter {
-  void operator()(ASN1_INTEGER* number) const noexcept {
+  auto operator()(ASN1_INTEGER* number) const noexcept -> void {
     ASN1_INTEGER_free(number);
   }
 };
@@ -19,12 +21,14 @@ struct Asn1IntegerDeleter {
 using Asn1Integer = std::unique_ptr<ASN1_INTEGER, Asn1IntegerDeleter>;
 
 struct BignumDeleter {
-  void operator()(BIGNUM* number) const noexcept { BN_free(number); }
+  FORCEINLINE auto operator()(BIGNUM* number) const noexcept -> void {
+    BN_free(number);
+  }
 };
 
 using Asn1BigNum = std::unique_ptr<BIGNUM, BignumDeleter>;
 
-inline Asn1Integer ProvideAsn1SmartPointer() noexcept {
+FORCEINLINE auto ProvideAsn1SmartPointer() noexcept -> Asn1Integer {
   Asn1Integer result{ASN1_INTEGER_new()};
   if (result == nullptr) {
     return nullptr;
@@ -45,7 +49,7 @@ inline Asn1Integer ProvideAsn1SmartPointer() noexcept {
   return result;
 }
 
-inline Asn1Integer ProvideAsn1SmartPointerWithValue() noexcept {
+FORCEINLINE auto ProvideAsn1SmartPointerWithValue() noexcept -> Asn1Integer {
   Asn1Integer result{ASN1_INTEGER_new()};
   if (result == nullptr) {
     return nullptr;
