@@ -164,7 +164,7 @@ static auto TestAuthTo(Configuration config) -> cobalt::task<void> {
                result.value().token);
 
   const auto servers_result =
-      co_await GetServersAndCharacters(config.url, result.value());
+      co_await ServersAndCharactersFrom(config.url, result.value());
   if (servers_result.has_error()) {
     spdlog::error("Error occured while getting servers and characters: {}",
                   servers_result.error().message());

@@ -37,8 +37,8 @@ auto CallApiMethod(std::string_view url_text,
 auto AuthTo(std::string_view server_url, const Credentials& credentials)
     -> cobalt::promise<Result<UserAuthData>>;
 
-auto GetServersAndCharacters(std::string_view url_text,
-                             UserAuthData user_auth_data)
+auto ServersAndCharactersFrom(std::string_view url_text,
+                              UserAuthData user_auth_data)
     -> cobalt::promise<Result<ServersAndCharactersResponse>>;
 
 }  // namespace coal
