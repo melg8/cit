@@ -23,7 +23,9 @@ file(GLOB_RECURSE ALL_COALA_APPLICATION_SOURCES
      "${CMAKE_CURRENT_SOURCE_DIR}/*.cpp")
 
 add_executable(coala "${ALL_COALA_APPLICATION_HEADERS}"
-                                     "${ALL_COALA_APPLICATION_SOURCES}")
+                     "${ALL_COALA_APPLICATION_SOURCES}")
+
+target_precompile_headers(coala PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/sources/precompiled_headers.h)
 
 header_directories(ALL_COALA_INCLUDE_DIRECTORIES)
 

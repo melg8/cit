@@ -18,7 +18,7 @@ CONAN_CPPSTD=$4
 DIRECTORY=build_"${CONAN_COMPILER}"
 cd "${DIRECTORY}"
 
-cmake .. --preset "cit_"${CONAN_COMPILER}"_release"
+cmake .. --preset "cit_"${CONAN_COMPILER}"_debug"
 
 echo "Building..."
 cmake --build . -j "$(nproc)" | camomilla -c"../.camomilla.json"

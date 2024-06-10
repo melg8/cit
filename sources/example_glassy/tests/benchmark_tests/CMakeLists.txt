@@ -3,7 +3,7 @@
 # SPDX-License-Identifier: MIT
 
 find_package(OpenSSL 3.0.2 REQUIRED)
-find_package(outcome 2.2.3 REQUIRED)
+find_package(outcome 2.2.8 REQUIRED)
 find_package(gsl-lite 0.40 REQUIRED)
 
 file(GLOB_RECURSE ALL_GLASSY_TESTS_APPLICATION_HEADERS

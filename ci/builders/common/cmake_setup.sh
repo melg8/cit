@@ -23,4 +23,4 @@ conan create ../ci/conan_recipes/range_v3/conanfile.py
 conan install .. \
   --build missing \
   -of "${PWD}" \
-  -s compiler=gcc -s compiler.version=13 -s compiler.cppstd=20 -s compiler.libcxx=libstdc++11
+  -s compiler=gcc -s compiler.version=13 -s compiler.cppstd=20 -s compiler.libcxx=libstdc++11 -s build_type=Debug

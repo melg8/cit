@@ -47,6 +47,10 @@ clean-all:
   @rm -rf report
   @echo "all cleaned"
 
+# Remove ccache cache.
+clean-ccache:
+  @ccache -C
+
 # Build and load docker image.
 docker-update-locally:
   @just docker-build

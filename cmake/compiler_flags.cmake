@@ -86,10 +86,16 @@ if(CMAKE_CXX_COMPILER_ID MATCHES "GNU")
   endif()
 endif()
 
+if(CMAKE_CXX_COMPILER_ID MATCHES "Clang" AND CMAKE_BUILD_TYPE MATCHES "Release")
+  # In debug mode OUTCOME_TRY(a, b); is reported to have extra semi statement.
+  # So this check is enabled only in Release mode.
+  add_compiler_flags(-Wextra-semi-stmt)
+endif()
+
 if(CMAKE_CXX_COMPILER_ID MATCHES "Clang")
   add_compiler_flags(-Weverything)
-  add_compiler_flags(-Wextra-semi-stmt)
   add_compiler_flags(-Wmissing-noreturn)
+  add_compiler_flags(-Wno-extra-semi-stmt)
   add_compiler_flags(-Wcovered-switch-default)
   add_compiler_flags(-Wunreachable-code)
   add_compiler_flags(-Wcomma)

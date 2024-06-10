@@ -2,6 +2,8 @@
 #
 # SPDX-License-Identifier: MIT
 
+find_package(outcome 2.2.8 REQUIRED)
+
 file(GLOB_RECURSE ALL_GLASSY_APPLICATION_HEADERS
      "${CMAKE_CURRENT_SOURCE_DIR}/*.h")
 
@@ -13,4 +15,4 @@ add_executable(glassy_application "${ALL_GLASSY_APPLICATION_HEADERS}"
 
 target_link_libraries(glassy_application PUBLIC glassy)
 
-add_test(glassy_application glassy_application)
+add_test(glassy_application glassy_application outcome::outcome)

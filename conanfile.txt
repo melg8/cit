@@ -11,7 +11,7 @@ glaze/2.6.1
 gsl-lite/0.40.0
 libassert/2.0.2
 openssl/3.1.2
-outcome/2.2.3
+outcome/2.2.8
 range-v3/0.12.0
 spdlog/1.14.0
 magic_enum/0.9.5

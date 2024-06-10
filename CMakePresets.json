@@ -72,6 +72,16 @@
             }
         },
         {
+            "name": "cit_default_linux_debug",
+            "description": "Configure default linux release mode preset",
+            "hidden": true,
+            "inherits": [
+                "generator_ninja",
+                "linker_mold",
+                "mode_debug"
+            ]
+        },
+        {
             "name": "cit_default_linux_release",
             "description": "Configure default linux release mode preset",
             "hidden": true,
@@ -79,6 +89,17 @@
                 "generator_ninja",
                 "linker_mold",
                 "mode_release"
+            ]
+        },
+        {
+            "name": "cit_gcc_debug",
+            "description": "Configure gcc debug mode for CMake integration tests",
+            "displayName": "Configure gcc debug mode for CMake integration tests",
+            "hidden": false,
+            "inherits": [
+                "cit_default_linux_debug",
+                "toolchain_conan_gcc",
+                "compiler_gcc"
             ]
         },
         {
@@ -90,6 +111,17 @@
                 "cit_default_linux_release",
                 "toolchain_conan_gcc",
                 "compiler_gcc"
+            ]
+        },
+        {
+            "name": "cit_clang_debug",
+            "description": "Configure clang debug mode for CMake integration tests",
+            "displayName": "Configure clang debug mode for CMake integration tests",
+            "hidden": false,
+            "inherits": [
+                "cit_default_linux_debug",
+                "toolchain_conan_clang",
+                "compiler_clang"
             ]
         },
         {

@@ -22,11 +22,11 @@
 
 namespace coal {
 
-namespace beast = boost::beast;          // from <boost/beast.hpp>
-namespace http = beast::http;            // from <boost/beast/http.hpp>
-namespace websocket = beast::websocket;  // from <boost/beast/websocket.hpp>
-namespace net = boost::asio;             // from <boost/asio.hpp>
-using tcp = boost::asio::ip::tcp;        // from <boost/asio/ip/tcp.hpp>
+namespace beast = boost::beast;
+namespace http = beast::http;
+namespace websocket = beast::websocket;
+namespace net = boost::asio;
+using tcp = boost::asio::ip::tcp;
 
 static constexpr auto nothrow_use_op =
     boost::asio::as_tuple(boost::cobalt::use_op);
