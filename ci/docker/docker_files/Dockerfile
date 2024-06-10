@@ -98,7 +98,8 @@ RUN mkdir /tmp/build \
  && git apply ./megalinter.patch \
  && PYTHONDONTWRITEBYTECODE=1 python3 ./megalinter/setup.py install \
  && mkdir /megalinter-descriptors \
- && cp -r ./megalinter/descriptors/* /megalinter-descriptors
+ && cp -r ./megalinter/descriptors/* /megalinter-descriptors \
+ && rm -rf /tmp/build
 
 COPY ./megalinter.sh /usr/bin/megalinter
 RUN chmod +x /usr/bin/megalinter
@@ -181,6 +182,14 @@ RUN apt-get -y update \
     dnsutils \
     whois \
     netbase
+
+RUN mkdir /tmp/build \
+ && cd /tmp/build \
+ && git clone --branch main --depth 1 \
+    https://github.com/nico/ninjatracing.git \
+ && cd ninjatracing \
+ && mv ./ninjatracing /usr/local/bin/ninjatracing \
+ && rm -rf /tmp/build
 
 ENV LC_ALL C.UTF-8
 

@@ -25,6 +25,8 @@ cmake --build . -j "$(nproc)" | camomilla -c"../.camomilla.json"
 
 mkdir -p ../report
 
+ninjatracing ./.ninja_log > ../report/"${COMPILER}"_trace.json
+
 echo "Running tests..."
 ctest --verbose |
   sed 's/[0-9]\+\: //g' >../report/ctest_logs_"${COMPILER}".txt
