@@ -12,14 +12,39 @@ function(add_compiler_flags flags)
 endfunction()
 
 if(${ENABLE_COVERAGE})
-  add_compiler_flags(--coverage)
+  if(CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
+    add_compiler_flags(--coverage)
+  endif()
 endif()
 
 if(CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
   add_compiler_flags(-fdiagnostics-color=always)
-  add_compiler_flags(-fno-rtti)
-  add_compiler_flags(-fno-exceptions)
-  add_compiler_flags(-fsanitize=address,undefined)
+
+  if(CMAKE_SYSTEM_NAME STREQUAL "Linux")
+    add_compiler_flags(-fno-rtti)
+    add_compiler_flags(-fno-exceptions)
+    add_compiler_flags(-fsanitize=address,undefined)
+  endif()
+endif()
+
+if (${MSVC_SANITIZERS})
+if(CMAKE_CXX_COMPILER_ID MATCHES "MSVC")
+  if(CMAKE_SYSTEM_NAME STREQUAL "Windows")
+    message ("address sanitizer is enabled")
+    add_compiler_flags(/fsanitize=address)
+    add_compiler_flags(/fsanitize-address-use-after-return)
+  endif()
+
+
+
+  # Learn more about this error fix
+  # https://stackoverflow.com/questions/74186326
+  # /address-sanitizer-link-error-due-to-iterator-debug-level-mismatch
+  add_compile_definitions(_DISABLE_VECTOR_ANNOTATION=1)
+  add_compile_definitions(_DISABLE_STRING_ANNOTATION=1)
+
+  message(STATUS "CMAKE_CXX_FLAGS: ${CMAKE_CXX_FLAGS}\n")
+endif()
 endif()
 
 if (${FULL_COMPILER_CHECKS}) 

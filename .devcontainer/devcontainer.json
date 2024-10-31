@@ -15,18 +15,36 @@
 		"--dns=8.8.4.4",
 		"--dns-opt=nameserver 8.8.8.8"
 	],
+	"containerEnv": {
+    	"DISPLAY": "${localEnv:DISPLAY}"
+	},
+	// Use this mounts in windows host.
 	"mounts": [
 		{
-			"source": "/home/user/.conan2",
+			
+			"source": "E:/builds_temp_data/.conan2",
 			"target": "/home/ubuntu/.conan2",
 			"type": "bind"
 		},
 		{
-			"source": "/home/user/.cache",
+			"source": "E:/builds_temp_data/.cache",
 			"target": "/home/ubuntu/.cache",
 			"type": "bind"
 		}
 	],
+	// Use this mounts in linux host.
+	// "mounts": [
+	// 	{
+	// 		"source": "/home/user/.conan2",
+	// 		"target": "/home/ubuntu/.conan2",
+	// 		"type": "bind"
+	// 	},
+	// 	{
+	// 		"source": "/home/user/.cache",
+	// 		"target": "/home/ubuntu/.cache",
+	// 		"type": "bind"
+	// 	}
+	// ],
 	"customizations": {
 		"vscode": {
 			"extensions": [
@@ -41,11 +59,18 @@
 				"ryanluker.vscode-coverage-gutters"
 			]
 		}
-	}
+	},
 	// Features to add to the dev container. More info: https://containers.dev/features.
-	// "features": {},
+	"features": {
+    	"ghcr.io/devcontainers/features/desktop-lite:1": {}
+	},
 	// Use 'forwardPorts' to make a list of ports inside the container available locally.
-	// "forwardPorts": [],
+	"forwardPorts": [5901],
+	"portsAttributes": {
+	  "5901": {
+		"label": "vnc"
+	  }
+	}
 	// Use 'postCreateCommand' to run commands after the container is created.
 	// "postCreateCommand": "gcc -v",
 	// Configure tool-specific properties.

@@ -20,6 +20,9 @@ option(USE_CCACHE "Enable use of ccache" ON)
 option(ENABLE_COVERAGE "Enable profiling and coverage report analysis" ON)
 option(FULL_COMPILER_CHECKS "Enable full compiler checks" ON)
 
+# Seems to give false positives even on QT gui hello world, so its disabled now.
+option(MSVC_SANITIZERS "Enable address sanitizer on windows msvc compiler" OFF)
+
 include("${CMAKE_CURRENT_SOURCE_DIR}/cmake/ccache.cmake")
 include("${CMAKE_CURRENT_SOURCE_DIR}/cmake/compiler_flags.cmake")
 include("${CMAKE_CURRENT_SOURCE_DIR}/cmake/recursive_directories_macro.cmake")

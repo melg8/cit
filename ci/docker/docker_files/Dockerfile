@@ -2,7 +2,7 @@
 #
 # SPDX-License-Identifier: MIT
 
-FROM rust as just_builder
+FROM rust AS just_builder
 RUN cargo install just
 
 FROM ubuntu:24.04 AS cit
@@ -14,36 +14,41 @@ SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 
 RUN apt-get -y update \
  && apt-get -y install --no-install-recommends \
-    software-properties-common=0.99.* \
+    software-properties-common \
     gpg \
     gpg-agent \
+    wget \
  && add-apt-repository ppa:apt-fast/stable \
+ && wget -O - https://apt.llvm.org/llvm-snapshot.gpg.key | apt-key add - \
+ && add-apt-repository 'deb http://apt.llvm.org/noble/ llvm-toolchain-noble main' \
  && apt-get -y install --no-install-recommends \
     apt-fast \
  && apt-fast update \
  && apt-fast -y install --no-install-recommends \
-    build-essential=12.10* \
-    gcc-14=14-* \
-    g++-14=14-* \
-    clang-18=1:18* \
-    libclang-18-dev=1:18.* \
-    libclang-rt-18-dev=1:18.* \
+    build-essential \
+    gcc-14 \
+    g++-14 \
+    clang-20 \
+    libclang-20-dev \
+    libclang-rt-20-dev \
     libc++-dev \
-    llvm-18-dev=1:18.* \
+    llvm-20-dev \
     clang-format \
     mold \
-    git=1:2.43.* \
-    cmake=3.28.* \
-    ninja-build=1.11.* \
-    grcov=0.8.* \
-    wget=1.21.* \
-    sudo=1.9.* \
+    git \
+    cmake\
+    ninja-build \
+    grcov \
+    sudo \
  && update-alternatives --install \
     /usr/bin/gcc gcc /usr/bin/gcc-14 60 --slave \
     /usr/bin/g++ g++ /usr/bin/g++-14 \
  && update-alternatives --install \
-    /usr/bin/clang clang /usr/bin/clang-18 60 --slave \
-    /usr/bin/clang++ clang++ /usr/bin/clang++-18
+    /usr/bin/clang clang /usr/bin/clang-20 60 --slave \
+    /usr/bin/clang++ clang++ /usr/bin/clang++-20
+
+RUN apt-fast -y install --no-install-recommends \
+    qtcreator qt6-base-dev
 
 RUN apt-fast -y install --no-install-recommends \
     python3-full \
@@ -191,10 +196,16 @@ RUN mkdir /tmp/build \
  && mv ./ninjatracing /usr/local/bin/ninjatracing \
  && rm -rf /tmp/build
 
-ENV LC_ALL C.UTF-8
+ENV LC_ALL=C.UTF-8
+
+# Will use xserver started on host machine for displaying gui apps.
+ENV DISPLAY=DISPLAY=192.168.56.1:0.0
+
+RUN apt-fast update \
+ && apt-fast -y install --no-install-recommends \
+    pcmanfm
 
 RUN usermod -l user ubuntu
-# RUN useradd -ms /bin/bash user
 
 USER user
 WORKDIR /home/user/work

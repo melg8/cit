@@ -3,9 +3,12 @@
 # SPDX-License-Identifier: MIT
 
 if(${USE_CCACHE})
-  find_program(CCACHE_FOUND ccache)
+  find_program(CCACHE_FOUND NAMES ccache)
   if(CCACHE_FOUND)
+    message("ccache found")
     set_property(GLOBAL PROPERTY RULE_LAUNCH_COMPILE ccache)
     set_property(GLOBAL PROPERTY RULE_LAUNCH_LINK ccache)
+  else()
+    message("ccache were enabled but not found in system")
   endif()
 endif()
