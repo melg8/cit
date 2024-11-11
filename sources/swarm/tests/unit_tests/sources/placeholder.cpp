@@ -48,6 +48,7 @@ SCENARIO("placeholder") {
     HexAsciiViewFrom(data, result);
     const auto expected = ExpectedOuput();
     CHECK(result == expected);
+    CHECK(result.size() == 231);
   }
 }
 
