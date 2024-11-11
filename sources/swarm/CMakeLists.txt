@@ -2,4 +2,6 @@
 #
 # SPDX-License-Identifier: MIT
 
-add_subdirectory(unit_tests)
+add_subdirectory(application)
+add_subdirectory(library)
+add_subdirectory(tests)

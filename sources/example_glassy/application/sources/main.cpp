@@ -6,19 +6,7 @@
 
 #include <big_num.h>
 
-#include <QApplication>
-#include <QMainWindow>
-
-int main(int argc, char **argv) {
-  QApplication app (argc, argv);
-
-
-  QMainWindow main_window{};
-  auto x = new int{2};
-
-  std::cout << glassy::Sum(*x, 2) << '\n';
+int main(int, char **) {
+  std::cout << glassy::Sum(2, 2) << '\n';
   std::cout.flush();
-
-  main_window.show();
-  return app.exec();
 }
