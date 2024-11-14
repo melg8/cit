@@ -34,29 +34,28 @@ SCENARIO("Basic computaion") {
     return hex;
   };
 
-  std::string hex{};
-  hex.reserve(1000000);
+
   BENCHMARK("string push back value") {
+    std::string hex{};
     hex.push_back(' ');
     return hex;
   };
 
-  // BENCHMARK("string hex[0] = ' ' value") {
-  //   std::string hex{};
-  //   hex.reserve(47 * 5 + 20);
-  //   hex[0] = ' ';
-  //   hex[1] = ' ';
-  //   hex[2] = ' ';
-  //   return hex;
-  // };
+  BENCHMARK("string hex[0] = ' ' value") {
+    std::string hex{};
+    hex.reserve(47 * 5 + 20);
+    hex[0] = ' ';
+    hex[1] = ' ';
+    hex[2] = ' ';
+    return hex;
+  };
 
-  // BENCHMARK("string hex += \"   \" value") {
-  //   std::string hex{};
-  //   hex.reserve(47 * 5 + 20);
-  //   hex += "   ";
-  //   return hex;
-  // };
-
+  BENCHMARK("string hex += \"   \" value") {
+    std::string hex{};
+    hex.reserve(47 * 5 + 20);
+    hex += "   ";
+    return hex;
+  };
 
 }
 

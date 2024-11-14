@@ -47,6 +47,12 @@ if(CMAKE_CXX_COMPILER_ID MATCHES "MSVC")
 endif()
 endif()
 
+if(CMAKE_CXX_COMPILER_ID MATCHES "MSVC")
+    if(CMAKE_SYSTEM_NAME STREQUAL "Windows")
+        set(CMAKE_CXX_FLAGS_RELEASE "/Ox /Ob2 /Oi /Ot /Oy")
+    endif()
+endif()
+
 if (${FULL_COMPILER_CHECKS}) 
 if(CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
   add_compiler_flags(-Werror)
@@ -111,9 +117,16 @@ if(CMAKE_CXX_COMPILER_ID MATCHES "GNU")
   endif()
 endif()
 
+if(CMAKE_CXX_COMPILER_ID MATCHES "gcc" AND CMAKE_BUILD_TYPE MATCHES "Release")
+  # In debug mode OUTCOME_TRY(a, b); is reported to have extra semi statement.
+  # So this check is enabled only in Release mode.
+  add_compiler_flags(-O3)
+endif()
+
 if(CMAKE_CXX_COMPILER_ID MATCHES "Clang" AND CMAKE_BUILD_TYPE MATCHES "Release")
   # In debug mode OUTCOME_TRY(a, b); is reported to have extra semi statement.
   # So this check is enabled only in Release mode.
+  add_compiler_flags(-O3)
   add_compiler_flags(-Wextra-semi-stmt)
 endif()
 

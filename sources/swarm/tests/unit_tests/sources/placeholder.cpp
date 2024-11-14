@@ -45,7 +45,7 @@ SCENARIO("placeholder") {
   SECTION("hex to ascii view conversion") {
     const auto data = TestData();
     std::string result{};
-    HexAsciiViewFrom(data, result);
+    HexAsciiViewFrom(std::span{data}, result);
     const auto expected = ExpectedOuput();
     CHECK(result == expected);
     CHECK(result.size() == 231);

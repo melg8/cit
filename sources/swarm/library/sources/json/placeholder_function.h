@@ -7,6 +7,8 @@
 
 #include <span>
 #include <string>
+#include <array>
+
 
 namespace swarm {
 
@@ -15,7 +17,7 @@ template <typename T>
   return a + b;
 }
 
-void HexAsciiViewFrom(std::span<const std::byte>data, std::string &hex_view) noexcept;
+void HexAsciiViewFrom(std::span<const std::byte> data, std::string &hex_view) noexcept;
 
 }  // namespace swarm
 
