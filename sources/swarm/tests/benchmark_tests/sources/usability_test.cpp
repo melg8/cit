@@ -31,7 +31,9 @@ SCENARIO("Basic computaion") {
   BENCHMARK("hex and ascii view") {
     std::string hex{};
     HexAsciiViewFrom(test_data, hex);
-    return hex;
+    if (hex.empty()) {
+      exit(-1);
+    }
   };
 
 

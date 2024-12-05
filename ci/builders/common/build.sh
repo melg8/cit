@@ -19,7 +19,7 @@ DIRECTORY=build_"${CONAN_COMPILER}"
 cd "${DIRECTORY}"
 
 
-cmake .. --preset "conan-debug" -G Ninja 
+cmake .. --preset "conan-release" -G Ninja -DCMAKE_BUILD_TYPE=release
 
 echo "Building..."
 cmake --build . -j "$(nproc)" | camomilla -c"../.camomilla.json"
