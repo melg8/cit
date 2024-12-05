@@ -25,7 +25,6 @@ SCENARIO("Basic computaion") {
     return value;
   };
 
-
   const auto test_data = DataForBenchmark();
 
   BENCHMARK("hex and ascii view") {
@@ -35,7 +34,6 @@ SCENARIO("Basic computaion") {
       exit(-1);
     }
   };
-
 
   BENCHMARK("string push back value") {
     std::string hex{};
@@ -58,7 +56,6 @@ SCENARIO("Basic computaion") {
     hex += "   ";
     return hex;
   };
-
 }
 
 }  // namespace swarm::test

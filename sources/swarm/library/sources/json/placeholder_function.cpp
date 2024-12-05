@@ -10,24 +10,19 @@ namespace swarm {
 
 class StringAppend {
  public:
-  explicit StringAppend(std::string &string) : string_{string}, pos_{0} {}
+  explicit StringAppend(std::string& string) : string_{string}, pos_{0} {}
 
+  inline void Append(const char value) noexcept { string_[pos_++] = value; }
 
-  inline void Append(const char value) noexcept {
-    string_[pos_++] = value;
-  }
-
-  inline void FinalizeSize() noexcept {
-    string_.resize(pos_, '\0');
-  }
+  inline void FinalizeSize() noexcept { string_.resize(pos_, '\0'); }
 
  private:
-  std::string &string_;
+  std::string& string_;
   size_t pos_ = 0;
 };
 
-
-inline void WriteLineNumber(size_t line_number, StringAppend &hex_vew) noexcept {
+inline void WriteLineNumber(size_t line_number,
+                            StringAppend& hex_vew) noexcept {
   hex_vew.Append((line_number >> 12) + '0');
   hex_vew.Append(((line_number >> 8) & 0x0f) + '0');
   hex_vew.Append(((line_number >> 4) & 0x0f) + '0');
@@ -37,11 +32,12 @@ inline void WriteLineNumber(size_t line_number, StringAppend &hex_vew) noexcept 
 }
 
 template <typename T>
-[[nodiscard]] inline constexpr std::span<const char> SpanFrom(T &text) noexcept {
+[[nodiscard]] inline constexpr std::span<const char> SpanFrom(
+    T& text) noexcept {
   return std::span(text, strlen(text));
 }
 
-inline void WriteSizeOfData(size_t size, StringAppend &hex_view) noexcept {
+inline void WriteSizeOfData(size_t size, StringAppend& hex_view) noexcept {
   constexpr auto size_text = "Size: ";
   for (const auto c : SpanFrom(size_text)) {
     hex_view.Append(c);
@@ -58,10 +54,11 @@ inline void WriteSizeOfData(size_t size, StringAppend &hex_view) noexcept {
   return 32 <= static_cast<size_t>(byte) && static_cast<size_t>(byte) <= 126;
 }
 
-
-void HexAsciiViewFrom(std::span<const std::byte> data, std::string &hex_view) noexcept {
-  constexpr const std::array<char, 16> kHex = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
-                                               'a', 'b', 'c', 'd', 'e', 'f'};
+void HexAsciiViewFrom(std::span<const std::byte> data,
+                      std::string& hex_view) noexcept {
+  constexpr const std::array<char, 16> kHex = {'0', '1', '2', '3', '4', '5',
+                                               '6', '7', '8', '9', 'a', 'b',
+                                               'c', 'd', 'e', 'f'};
   const auto length = data.size();
   hex_view.reserve(length * 5 + 20);
   hex_view.resize(length * 5 + 20, '\0');
@@ -104,7 +101,7 @@ void HexAsciiViewFrom(std::span<const std::byte> data, std::string &hex_view) no
 
   // Fill hex with spaces at last row if it is not full.
   for (size_t j = 0; j < bytes_per_row - rest_of_bytes; ++j) {
-    for (const char c: SpanFrom("   ")) {
+    for (const char c : SpanFrom("   ")) {
       str.Append(c);
     }
   }
@@ -130,4 +127,4 @@ void HexAsciiViewFrom(std::span<const std::byte> data, std::string &hex_view) no
   str.FinalizeSize();
 }
 
-} // namespace swarm
+}  // namespace swarm

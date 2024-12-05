@@ -16,15 +16,18 @@ namespace outcome = OUTCOME_V2_NAMESPACE;
 template <typename T>
 using Result = outcome::result<T>;
 
-static auto FromAsn1Int(not_null_provider_of<const ASN1_INTEGER*> auto&&
-                            value) noexcept -> Result<BigNum>;
+static auto FromAsn1Int(
+    not_null_provider_of<const ASN1_INTEGER*> auto&& value) noexcept
+    -> Result<BigNum>;
 static auto FromBigNum(const BigNum& value) noexcept -> Result<Asn1Integer>;
-static auto FromBigNum(const BigNum& value,
-                       not_null_provider_of<const ASN1_INTEGER*> auto&&
-                           target) noexcept -> Result<void>;
+static auto FromBigNum(
+    const BigNum& value,
+    not_null_provider_of<const ASN1_INTEGER*> auto&& target) noexcept
+    -> Result<void>;
 
-FORCEINLINE auto FromAsn1Int(not_null_provider_of<const ASN1_INTEGER*> auto&&
-                                 value) noexcept -> Result<BigNum> {
+FORCEINLINE auto FromAsn1Int(
+    not_null_provider_of<const ASN1_INTEGER*> auto&& value) noexcept
+    -> Result<BigNum> {
   auto result = BigNum::Own(ASN1_INTEGER_to_BN(GetPtr(value), nullptr));
   if (result.has_error()) {
     return BigNumErrc::kConversionFailure;
@@ -41,9 +44,10 @@ FORCEINLINE auto FromBigNum(const BigNum& value) noexcept
   return result;
 }
 
-FORCEINLINE auto FromBigNum(const BigNum& value,
-                            not_null_provider_of<const ASN1_INTEGER*> auto&&
-                                target) noexcept -> Result<void> {
+FORCEINLINE auto FromBigNum(
+    const BigNum& value,
+    not_null_provider_of<const ASN1_INTEGER*> auto&& target) noexcept
+    -> Result<void> {
   if (BN_to_ASN1_INTEGER(value.Ptr(), GetPtr(target)) == nullptr) {
     return Asn1IntegerErrc::kConversionFailure;
   }

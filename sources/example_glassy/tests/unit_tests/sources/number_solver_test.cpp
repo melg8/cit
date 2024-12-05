@@ -63,8 +63,8 @@ struct Line {
 }
 
 /// Precondition DisplayBuffer must be already proper size.
-FORCEINLINE auto DrawLineToBuffer(Line line,
-                                  DisplayBuffer& buffer) noexcept -> void {
+FORCEINLINE auto DrawLineToBuffer(Line line, DisplayBuffer& buffer) noexcept
+    -> void {
   const auto head_pos = line.head_pos;
   for (uint8_t i = 0; i < 5; ++i) {
     if (line.direction == Direction::kHorizontal) {

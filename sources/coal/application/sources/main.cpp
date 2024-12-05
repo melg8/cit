@@ -49,8 +49,8 @@ static auto DestoryAndClearHandles(
 struct HandlesRegistry {
   std::map<int, std::vector<std::coroutine_handle<>>> handles;
 
-  auto RegisterHandle(std::coroutine_handle<> h,
-                      int value_of_interest) -> void {
+  auto RegisterHandle(std::coroutine_handle<> h, int value_of_interest)
+      -> void {
     handles[value_of_interest].emplace_back(std::move(h));
   }
 
@@ -95,8 +95,8 @@ static auto OnValue(HandlesRegistry& registry, int value) {
   return Awaitable{registry, value};
 }
 
-static auto HandleValue(HandlesRegistry& registry,
-                        int value) -> cobalt::promise<void> {
+static auto HandleValue(HandlesRegistry& registry, int value)
+    -> cobalt::promise<void> {
   spdlog::info("Before waiting for value: {}", value);
   co_await OnValue(registry, value);
   spdlog::info("After waiting for value: {}", value);

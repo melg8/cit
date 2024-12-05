@@ -72,8 +72,9 @@ FORCEINLINE auto Asn1IntegerNew() noexcept -> Result<Asn1Integer> {
              : Asn1IntegerErrc::kAllocationFailure;
 }
 
-FORCEINLINE auto Asn1IntegerDup(not_null_provider_of<const ASN1_INTEGER*> auto&&
-                                    view) noexcept -> Result<Asn1Integer> {
+FORCEINLINE auto Asn1IntegerDup(
+    not_null_provider_of<const ASN1_INTEGER*> auto&& view) noexcept
+    -> Result<Asn1Integer> {
   Asn1IntegerMaybeNull ptr{ASN1_INTEGER_dup(GetPtr(view))};
   return ptr ? Result<Asn1Integer>{std::move(ptr)}
              : Asn1IntegerErrc::kCopyFailure;
@@ -81,8 +82,9 @@ FORCEINLINE auto Asn1IntegerDup(not_null_provider_of<const ASN1_INTEGER*> auto&&
 
 // TODO(melg): mark as deprecated, implement ASN1_INTEGER_get_int64 to be used
 // instead.
-FORCEINLINE auto Asn1IntegerGet(not_null_provider_of<const ASN1_INTEGER*> auto&&
-                                    view) noexcept -> Result<Long> {
+FORCEINLINE auto Asn1IntegerGet(
+    not_null_provider_of<const ASN1_INTEGER*> auto&& view) noexcept
+    -> Result<Long> {
   const auto result = ASN1_INTEGER_get(GetPtr(view));
   return result != -1 ? Result<Long>{result}
                       : Asn1IntegerErrc::kConversionFailure;

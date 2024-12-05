@@ -233,8 +233,9 @@ auto SendHttpGetRequestTo(std::string_view url_text)
   return SendHttpRequestTo(url_text, http::verb::get);
 }
 
-[[nodiscard]] static auto FormatBodyOfRequest(
-    std::string_view method, std::string_view args) -> std::string {
+[[nodiscard]] static auto FormatBodyOfRequest(std::string_view method,
+                                              std::string_view args)
+    -> std::string {
   return fmt::format("method={}&arguments={}", method, args);
 }
 

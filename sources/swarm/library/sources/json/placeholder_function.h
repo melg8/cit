@@ -5,10 +5,9 @@
 #ifndef PLACEHOLDER_FUNCTION_H
 #define PLACEHOLDER_FUNCTION_H
 
+#include <array>
 #include <span>
 #include <string>
-#include <array>
-
 
 namespace swarm {
 
@@ -17,7 +16,8 @@ template <typename T>
   return a + b;
 }
 
-void HexAsciiViewFrom(std::span<const std::byte> data, std::string &hex_view) noexcept;
+void HexAsciiViewFrom(std::span<const std::byte> data,
+                      std::string& hex_view) noexcept;
 
 }  // namespace swarm
 

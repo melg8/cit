@@ -144,9 +144,8 @@ static auto WebsocketConnect(std::string host, std::string port)
 }
 
 // Sends a WebSocket message and prints the response
-auto DoSession(std::string host,
-               std::string port,
-               std::string text) -> cobalt::task<void> {
+auto DoSession(std::string host, std::string port, std::string text)
+    -> cobalt::task<void> {
   auto stream = co_await WebsocketConnect(host, port);
   if (stream.has_error()) {
     spdlog::error("Can't connect to {}:{}", host, port);

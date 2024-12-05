@@ -63,8 +63,8 @@ class BigNum {
   // noexcept interface.
   static auto Own(BigNumOwnerPtr ptr) noexcept -> Result<BigNum>;
 
-  static auto Add(const BigNum& lhs,
-                  const BigNum& rhs) noexcept -> Result<BigNum>;
+  static auto Add(const BigNum& lhs, const BigNum& rhs) noexcept
+      -> Result<BigNum>;
 
   [[nodiscard]] auto Ptr() const noexcept -> const BIGNUM*;
   [[nodiscard]] auto ToBnUlong() const noexcept -> Result<BnUlong>;
@@ -91,14 +91,14 @@ class BigNum {
 
 auto operator+(const BigNum& lhs, const BigNum& rhs) noexcept -> Result<BigNum>;
 
-auto operator+(Result<BigNum>&& maybe_lhs,
-               Result<BigNum>&& maybe_rhs) noexcept -> Result<BigNum>;
+auto operator+(Result<BigNum>&& maybe_lhs, Result<BigNum>&& maybe_rhs) noexcept
+    -> Result<BigNum>;
 
-auto operator+(const BigNum& lhs,
-               Result<BigNum>&& maybe_rhs) noexcept -> Result<BigNum>;
+auto operator+(const BigNum& lhs, Result<BigNum>&& maybe_rhs) noexcept
+    -> Result<BigNum>;
 
-auto operator+(Result<BigNum>&& maybe_lhs,
-               const BigNum& rhs) noexcept -> Result<BigNum>;
+auto operator+(Result<BigNum>&& maybe_lhs, const BigNum& rhs) noexcept
+    -> Result<BigNum>;
 
 auto operator+=(BigNum& lhs, const BigNum& rhs) noexcept -> Result<void>;
 
@@ -106,23 +106,23 @@ FORCEINLINE auto Compare(const BigNum& lhs, const BigNum& rhs) noexcept -> int {
   return BN_cmp(lhs.Ptr(), rhs.Ptr());
 }
 
-FORCEINLINE auto operator<(const BigNum& lhs,
-                           const BigNum& rhs) noexcept -> bool {
+FORCEINLINE auto operator<(const BigNum& lhs, const BigNum& rhs) noexcept
+    -> bool {
   return Compare(lhs, rhs) < 0;
 }
 
-FORCEINLINE auto operator>(const BigNum& lhs,
-                           const BigNum& rhs) noexcept -> bool {
+FORCEINLINE auto operator>(const BigNum& lhs, const BigNum& rhs) noexcept
+    -> bool {
   return Compare(lhs, rhs) > 0;
 }
 
-FORCEINLINE auto operator==(const BigNum& lhs,
-                            const BigNum& rhs) noexcept -> bool {
+FORCEINLINE auto operator==(const BigNum& lhs, const BigNum& rhs) noexcept
+    -> bool {
   return Compare(lhs, rhs) == 0;
 }
 
-FORCEINLINE auto operator!=(const BigNum& lhs,
-                            const BigNum& rhs) noexcept -> bool {
+FORCEINLINE auto operator!=(const BigNum& lhs, const BigNum& rhs) noexcept
+    -> bool {
   return Compare(lhs, rhs) != 0;
 }
 
@@ -198,8 +198,8 @@ FORCEINLINE auto BigNum::ToBin() const noexcept -> Result<SslData> {
   return result;
 }
 
-FORCEINLINE auto BigNum::Add(const BigNum& lhs,
-                             const BigNum& rhs) noexcept -> Result<BigNum> {
+FORCEINLINE auto BigNum::Add(const BigNum& lhs, const BigNum& rhs) noexcept
+    -> Result<BigNum> {
   OUTCOME_TRY(auto result, BigNum::New());
   if (BN_add(result.Ptr(), lhs.Ptr(), rhs.Ptr()) == 0) {
     return BigNumErrc::kAdditionFailure;
@@ -241,8 +241,8 @@ FORCEINLINE auto BigNum::New(const Hex& hex) noexcept -> Result<BigNum> {
   return result;
 }
 
-FORCEINLINE auto operator+(const BigNum& lhs,
-                           const BigNum& rhs) noexcept -> Result<BigNum> {
+FORCEINLINE auto operator+(const BigNum& lhs, const BigNum& rhs) noexcept
+    -> Result<BigNum> {
   return BigNum::Add(lhs, rhs);
 }
 
@@ -254,8 +254,9 @@ FORCEINLINE auto operator+(Result<BigNum>&& maybe_lhs,
   return lhs + rhs;
 }
 
-FORCEINLINE auto operator+(
-    const BigNum& lhs, Result<BigNum>&& maybe_rhs) noexcept -> Result<BigNum> {
+FORCEINLINE auto operator+(const BigNum& lhs,
+                           Result<BigNum>&& maybe_rhs) noexcept
+    -> Result<BigNum> {
   OUTCOME_TRY(auto&& rhs, std::move(maybe_rhs));
   return lhs + rhs;
 }
@@ -266,16 +267,17 @@ FORCEINLINE auto operator+(Result<BigNum>&& maybe_lhs,
   return lhs + rhs;
 }
 
-FORCEINLINE auto operator+=(BigNum& lhs,
-                            const BigNum& rhs) noexcept -> Result<void> {
+FORCEINLINE auto operator+=(BigNum& lhs, const BigNum& rhs) noexcept
+    -> Result<void> {
   if (BN_add(lhs.Ptr(), lhs.Ptr(), rhs.Ptr()) == 0) {
     return outcome::failure(BigNumErrc::kAdditionFailure);
   }
   return outcome::success();
 }
 
-FORCEINLINE auto operator+=(
-    BigNum& lhs, const Result<BigNum>& maybe_rhs) noexcept -> Result<void> {
+FORCEINLINE auto operator+=(BigNum& lhs,
+                            const Result<BigNum>& maybe_rhs) noexcept
+    -> Result<void> {
   if (maybe_rhs.has_error()) {
     return maybe_rhs.assume_error();
   }

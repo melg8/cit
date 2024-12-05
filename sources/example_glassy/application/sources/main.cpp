@@ -6,7 +6,7 @@
 
 #include <big_num.h>
 
-int main(int, char **) {
+int main(int, char**) {
   std::cout << glassy::Sum(2, 2) << '\n';
   std::cout.flush();
 }
