@@ -22,8 +22,9 @@ inline cobalt::promise<int> cpu_intense_work(int a, int b) { co_return a + b; }
 // this channel is used to send a response to completed work
 using response_channel = cchannel<void(std::exception_ptr, int)>;
 // this channel is used to send a request to a working thread
-using request_channel =
-    cchannel<void(error_code, int, int, response_channel* res)>;
+using function_handler = void(error_code, int, int, response_channel* res);
+
+using request_channel = cchannel<function_handler>;
 
 // the worker wrapper
 inline cobalt::thread worker(request_channel& work) {

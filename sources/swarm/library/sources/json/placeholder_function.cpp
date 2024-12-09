@@ -4,6 +4,7 @@
 
 #include <placeholder_function.h>
 
+#include <array>
 #include <cstring>
 
 namespace swarm {

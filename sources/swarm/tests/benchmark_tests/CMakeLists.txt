@@ -11,8 +11,10 @@ file(GLOB_RECURSE ALL_SWARM_TESTS_APPLICATION_SOURCES
 add_executable(swarm_bench_tests "${ALL_SWARM_TESTS_APPLICATION_HEADERS}"
                                "${ALL_SWARM_TESTS_APPLICATION_SOURCES}")
 
+find_package(OpenSSL REQUIRED)
+
 target_link_libraries(
-  swarm_bench_tests PUBLIC swarm testing_framework)
+  swarm_bench_tests PUBLIC swarm testing_framework OpenSSL::SSL)
 
 target_include_directories(swarm_bench_tests PUBLIC "${OUTCOME_INCLUDE_DIR}")
 

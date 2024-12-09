@@ -5,7 +5,6 @@
 #ifndef PLACEHOLDER_FUNCTION_H
 #define PLACEHOLDER_FUNCTION_H
 
-#include <array>
 #include <span>
 #include <string>
 
