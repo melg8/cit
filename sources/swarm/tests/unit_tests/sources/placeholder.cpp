@@ -24,16 +24,13 @@ namespace swarm::test {
 }
 
 [[nodiscard]] inline std::string ExpectedOuput() noexcept {
-  std::string e{};
-  e.reserve(231);
-  e += "0000: 00 01 02 03 04 05 06 07 08 09 0a 0b 0c 0d 0e 0f  "
-       "................\n";
-  e += "0010: 10 11 12 13 14 15 16 17 18 19 1a 1b 1c 1d 1e 1f  "
-       "................\n";
-  e += "0020: 20 21 22 23 24 25 26 27 28 29 2a 2b 2c 2d 2e     "
-       " !\"#$%&'()*+,-. \n";
-  e += "Size: 47 bytes\n";
-  return e;
+  // clang-format off
+  return
+  "0000: 00 01 02 03 04 05 06 07 08 09 0a 0b 0c 0d 0e 0f  ................\n"
+  "0010: 10 11 12 13 14 15 16 17 18 19 1a 1b 1c 1d 1e 1f  ................\n"
+  "0020: 20 21 22 23 24 25 26 27 28 29 2a 2b 2c 2d 2e     !\"#$%&'()*+,-. \n"
+  "Size: 47 bytes\n";
+  // clang-format on
 }
 
 SCENARIO("placeholder") {

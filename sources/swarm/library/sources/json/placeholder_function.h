@@ -10,11 +10,6 @@
 
 namespace swarm {
 
-template <typename T>
-[[nodiscard]] auto PlaceholderSumm(T a, T b) -> T {
-  return a + b;
-}
-
 void HexAsciiViewFrom(std::span<const std::byte> data,
                       std::string& hex_view) noexcept;
 
