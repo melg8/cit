@@ -17,7 +17,6 @@
 
 #include <openssl/asn1.h>
 #include <gsl/gsl-lite.hpp>
-#include <leaf.hpp>
 #include <outcome.hpp>
 
 namespace glassy {

@@ -4,7 +4,6 @@
 
 add_subdirectory(application)
 add_subdirectory(library)
-add_subdirectory(third_party)
 
 if(ENABLE_TESTING)
   add_subdirectory(tests)

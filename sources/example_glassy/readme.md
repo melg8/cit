@@ -9,8 +9,7 @@ An experiment of creating small library wrapper for OpenSSL functions using mode
 ├── application/     # Application code
 ├── library/         # Core library implementation
 │   └── sources/     # Library source files
-├── tests/           # Test suite
-└── third_party/     # External dependencies
+└── tests/           # Test suite
 ```
 
 ## Dependencies
