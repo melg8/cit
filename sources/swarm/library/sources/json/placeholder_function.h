@@ -18,6 +18,8 @@ template <typename T>
 void HexAsciiViewFrom(std::span<const std::byte> data,
                       std::string& hex_view) noexcept;
 
+auto HexAsciiViewFrom(std::span<const std::byte> data) noexcept -> std::string;
+
 }  // namespace swarm
 
 #endif  // PLACEHOLDER_FUNCTION_H

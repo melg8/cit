@@ -135,4 +135,10 @@ void HexAsciiViewFrom(std::span<const std::byte> data,
   str.FinalizeSize();
 }
 
+auto HexAsciiViewFrom(std::span<const std::byte> data) noexcept -> std::string {
+  std::string hex{};
+  HexAsciiViewFrom(data, hex);
+  return hex;
+}
+
 }  // namespace swarm
