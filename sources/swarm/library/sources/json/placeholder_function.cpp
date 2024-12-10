@@ -5,7 +5,9 @@
 #include <placeholder_function.h>
 
 #include <array>
+#include <cstdint>
 #include <cstring>
+#include <span>
 
 namespace swarm {
 
@@ -13,7 +15,19 @@ class StringAppend {
  public:
   explicit StringAppend(std::string& string) : string_{string}, pos_{0} {}
 
-  inline void Append(const char value) noexcept { string_[pos_++] = value; }
+  inline constexpr void Append(const char value) noexcept {
+    string_[pos_++] = value;
+  }
+
+  inline constexpr void AppendDigit(const uint8_t value) noexcept {
+    Append('0' + (value & 0x0f));
+  }
+
+  inline constexpr void Append(std::span<const char> chars) noexcept {
+    for (const auto c : chars) {
+      Append(c);
+    }
+  }
 
   inline void FinalizeSize() noexcept { string_.resize(pos_, '\0'); }
 
@@ -24,10 +38,10 @@ class StringAppend {
 
 inline void WriteLineNumber(size_t line_number,
                             StringAppend& hex_vew) noexcept {
-  hex_vew.Append((line_number >> 12) + '0');
-  hex_vew.Append(((line_number >> 8) & 0x0f) + '0');
-  hex_vew.Append(((line_number >> 4) & 0x0f) + '0');
-  hex_vew.Append((line_number & 0x0f) + '0');
+  hex_vew.AppendDigit(line_number >> 12);
+  hex_vew.AppendDigit(line_number >> 8);
+  hex_vew.AppendDigit(line_number >> 4);
+  hex_vew.AppendDigit(line_number);
   hex_vew.Append(':');
   hex_vew.Append(' ');
 }
@@ -39,16 +53,9 @@ template <typename T>
 }
 
 inline void WriteSizeOfData(size_t size, StringAppend& hex_view) noexcept {
-  constexpr auto size_text = "Size: ";
-  for (const auto c : SpanFrom(size_text)) {
-    hex_view.Append(c);
-  }
-  for (const auto c : std::to_string(size)) {
-    hex_view.Append(c);
-  }
-  for (const auto c : SpanFrom(" bytes\n")) {
-    hex_view.Append(c);
-  }
+  hex_view.Append(SpanFrom("Size: "));
+  hex_view.Append(std::to_string(size));
+  hex_view.Append(SpanFrom(" bytes\n"));
 }
 
 [[nodiscard]] inline bool IsPrintableAscii(std::byte byte) noexcept {
@@ -57,9 +64,9 @@ inline void WriteSizeOfData(size_t size, StringAppend& hex_view) noexcept {
 
 void HexAsciiViewFrom(std::span<const std::byte> data,
                       std::string& hex_view) noexcept {
-  constexpr const std::array<char, 16> kHex = {'0', '1', '2', '3', '4', '5',
-                                               '6', '7', '8', '9', 'a', 'b',
-                                               'c', 'd', 'e', 'f'};
+  using HexArray = const std::array<char, 16>;
+  constexpr HexArray kHex = {'0', '1', '2', '3', '4', '5', '6', '7',
+                             '8', '9', 'a', 'b', 'c', 'd', 'e', 'f'};
   const auto length = data.size();
   hex_view.reserve(length * 5 + 20);
   hex_view.resize(length * 5 + 20, '\0');
@@ -80,7 +87,7 @@ void HexAsciiViewFrom(std::span<const std::byte> data,
     str.Append(' ');
     for (size_t j = 0; j < bytes_per_row; ++j) {
       const auto byte = data[total_bytes + j];
-      if (IsPrintableAscii(byte)) {
+      if (IsPrintableAscii(byte)) [[unlikely]] {
         str.Append(static_cast<char>(byte));
       } else {
         str.Append('.');
@@ -112,7 +119,7 @@ void HexAsciiViewFrom(std::span<const std::byte> data,
   // Fill ascii last row values.
   for (size_t j = 0; j < rest_of_bytes; ++j) {
     const auto byte = data[rows * bytes_per_row + j];
-    if (IsPrintableAscii(byte)) {
+    if (IsPrintableAscii(byte)) [[unlikely]] {
       str.Append(static_cast<char>(byte));
     } else {
       str.Append('.');

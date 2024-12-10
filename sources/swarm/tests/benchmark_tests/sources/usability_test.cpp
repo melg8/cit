@@ -22,7 +22,7 @@ namespace swarm::test {
   return data;
 }
 
-[[nodiscard]] std::vector<unsigned char> GenerateTestData(
+[[nodiscard]] inline std::vector<unsigned char> GenerateTestData(
     size_t size) noexcept {
   std::vector<unsigned char> data(size);
   for (size_t i = 0; i < data.size(); ++i) {
@@ -31,7 +31,7 @@ namespace swarm::test {
   return data;
 }
 
-[[nodiscard]] std::array<unsigned char, 21> KeyForBenchmark() noexcept {
+[[nodiscard]] inline std::array<unsigned char, 21> KeyForBenchmark() noexcept {
   std::array<unsigned char, 21> key;
   for (size_t i = 0; i < 20; ++i) {
     key[i] = static_cast<unsigned char>(i);
@@ -85,24 +85,24 @@ SCENARIO("Basic computaion") {
   const auto key = KeyForBenchmark();
   std::vector<unsigned char> encrypted(data.size());
 
-  BENCHMARK("Blowfish encryption raw of 1MB data") {
-    BF_KEY bf_key;
-    BF_set_key(&bf_key, key.size(), key.data());
-    for (size_t i = 0; i < data.size(); i += 8) {
-      BF_ecb_encrypt(&data[i], &encrypted[i], &bf_key, BF_ENCRYPT);
-    }
-    return encrypted;
-  };
+  // BENCHMARK("Blowfish encryption raw of 1MB data") {
+  //   BF_KEY bf_key;
+  //   BF_set_key(&bf_key, key.size(), key.data());
+  //   for (size_t i = 0; i < data.size(); i += 8) {
+  //     BF_ecb_encrypt(&data[i], &encrypted[i], &bf_key, BF_ENCRYPT);
+  //   }
+  //   return encrypted;
+  // };
 
   BENCHMARK("Blowfish encryption with context of 1MB data") {
     EVP_CIPHER_CTX* ctx = EVP_CIPHER_CTX_new();
     EVP_EncryptInit_ex(ctx, EVP_bf_ecb(), NULL, key.data(), NULL);
-    std::vector<unsigned char> encrypted(data.size());
+    std::vector<unsigned char> enc(data.size());
     int outlen = 0;
-    EVP_EncryptUpdate(ctx, encrypted.data(), &outlen, data.data(), data.size());
-    EVP_EncryptFinal_ex(ctx, encrypted.data() + outlen, &outlen);
+    EVP_EncryptUpdate(ctx, enc.data(), &outlen, data.data(), data.size());
+    EVP_EncryptFinal_ex(ctx, enc.data() + outlen, &outlen);
     EVP_CIPHER_CTX_free(ctx);
-    return encrypted;
+    return enc;
   };
 }
 
