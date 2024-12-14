@@ -58,7 +58,8 @@ inline void WriteLineNumber(size_t line_number,
   hex_view.Append(' ');
 }
 
-[[nodiscard]] inline std::span<const char> SpanFrom(const char* text) noexcept {
+[[nodiscard]] inline std::span<const char> SpanFrom(
+    const char* const text) noexcept {
   return std::span(text, std::strlen(text));
 }
 
