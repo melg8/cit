@@ -2,8 +2,8 @@
 //
 // SPDX-License-Identifier: MIT
 
-#ifndef PLACEHOLDER_FUNCTION_H
-#define PLACEHOLDER_FUNCTION_H
+#ifndef HEX_VIEW_H
+#define HEX_VIEW_H
 
 #include <span>
 #include <string>
@@ -17,4 +17,4 @@ auto HexAsciiViewFrom(std::span<const std::byte> data) noexcept -> std::string;
 
 }  // namespace swarm
 
-#endif  // PLACEHOLDER_FUNCTION_H
+#endif  // HEX_VIEW_H

@@ -98,7 +98,7 @@ namespace swarm::test {
 }
 
 template <typename T>
-inline auto MyUnique(std::vector<T> &xs) noexcept -> size_t  {
+inline auto MyUnique(std::vector<T>& xs) noexcept -> size_t {
   auto n = xs.size();
   if (n == 0) {
     return 0;
@@ -278,7 +278,6 @@ SCENARIO("blowfish encryption") {
     }
     return result;
   };
-
 
   BENCHMARK("generate random values UniqRandN3") {
     const auto result = UniqRandN3(100'000);
