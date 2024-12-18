@@ -50,6 +50,7 @@ endif()
 if(CMAKE_CXX_COMPILER_ID MATCHES "MSVC")
     if(CMAKE_SYSTEM_NAME STREQUAL "Windows")
         set(CMAKE_CXX_FLAGS_RELEASE "/Ox /Ob2 /Oi /Ot /Oy")
+        add_compiler_flags(/std:c++latest)
     endif()
 endif()
 
