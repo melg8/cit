@@ -9,7 +9,7 @@
 
 namespace swarm::test {
 
-[[nodiscard]] inline std::vector<int> UniqRandN(int n) noexcept {
+[[nodiscard]] inline std::vector<int> UniqRandN(size_t n) noexcept {
   if (n <= 0) {
     return std::vector<int>{};
   }
@@ -21,7 +21,7 @@ namespace swarm::test {
   return std::vector<int>{unique.begin(), unique.end()};
 }
 
-[[nodiscard]] inline std::vector<int> UniqRandN1(int n) noexcept {
+[[nodiscard]] inline std::vector<int> UniqRandN1(size_t n) noexcept {
   if (n <= 0) {
     return std::vector<int>{};
   }
@@ -35,7 +35,7 @@ namespace swarm::test {
   return std::vector<int>{unique.begin(), unique.end()};
 }
 
-[[nodiscard]] inline std::vector<int> UniqRandN2(int n) noexcept {
+[[nodiscard]] inline std::vector<int> UniqRandN2(size_t n) noexcept {
   if (n <= 0) {
     return std::vector<int>{};
   }
@@ -55,7 +55,7 @@ namespace swarm::test {
   return unique;
 }
 
-[[nodiscard]] inline std::vector<int> UniqRandN21(int n) noexcept {
+[[nodiscard]] inline std::vector<int> UniqRandN21(size_t n) noexcept {
   if (n <= 0) {
     return std::vector<int>{};
   }
@@ -77,7 +77,7 @@ namespace swarm::test {
   return unique;
 }
 
-[[nodiscard]] inline std::vector<int> UniqRandN22(int n) noexcept {
+[[nodiscard]] inline std::vector<int> UniqRandN22(size_t n) noexcept {
   if (n <= 0) {
     return std::vector<int>{};
   }
@@ -103,13 +103,13 @@ inline auto MyUnique(std::vector<T>& xs) noexcept -> size_t {
   if (n == 0) {
     return 0;
   }
-  auto j = 0;
-  for (auto i = 1; i < n; ++i) {
+  size_t j = 0;
+  for (size_t i = 1; i < n; ++i) {
     if (xs[j] != xs[i]) {
       ++j;
       if (j < i) {
         xs[j] = xs[i];
-        for (auto k = i + 1; k < n; ++k) {
+        for (size_t k = i + 1; k < n; ++k) {
           if (xs[j] != xs[k]) {
             ++j;
             xs[j] = xs[k];
@@ -122,7 +122,7 @@ inline auto MyUnique(std::vector<T>& xs) noexcept -> size_t {
   return j + 1;
 }
 
-[[nodiscard]] inline std::vector<int> UniqRandN23(int n) noexcept {
+[[nodiscard]] inline std::vector<int> UniqRandN23(size_t n) noexcept {
   if (n <= 0) {
     return std::vector<int>{};
   }
@@ -142,14 +142,14 @@ inline auto MyUnique(std::vector<T>& xs) noexcept -> size_t {
   return unique;
 }
 
-[[nodiscard]] inline std::vector<int> UniqRandN3(int n) noexcept {
+[[nodiscard]] inline std::vector<int> UniqRandN3(size_t n) noexcept {
   std::set<int> unique_numbers;
 
   std::random_device rd;
   std::mt19937 gen(rd());
   std::uniform_int_distribution<int> distribution;
 
-  for (int i = 0; i < n; ++i) {
+  for (size_t i = 0; i < n; ++i) {
     int num = distribution(gen);
     while (unique_numbers.find(num) != unique_numbers.end()) {
       num = distribution(gen);
@@ -162,7 +162,7 @@ inline auto MyUnique(std::vector<T>& xs) noexcept -> size_t {
   return result;
 }
 
-[[nodiscard]] inline std::vector<int> UniqRandN4(int n) noexcept {
+[[nodiscard]] inline std::vector<int> UniqRandN4(size_t n) noexcept {
   std::set<int> unique_numbers;
 
   std::random_device rd;
@@ -203,19 +203,19 @@ class RandomSequenceOfUnique {
   }
 };
 
-[[nodiscard]] inline std::vector<int> UniqRandN5(int n) noexcept {
+[[nodiscard]] inline std::vector<int> UniqRandN5(size_t n) noexcept {
   std::vector<int> result;
   result.reserve(n);
   const auto seed = static_cast<unsigned int>(time(nullptr));
   RandomSequenceOfUnique rsu(seed, seed + 1);
-  for (auto i = 0; i < n; ++i) {
+  for (size_t i = 0; i < n; ++i) {
     result.push_back(rsu.next());
   }
 
   return result;
 }
 
-[[nodiscard]] inline std::vector<int> RandN(int n) noexcept {
+[[nodiscard]] inline std::vector<int> RandN(size_t n) noexcept {
   if (n <= 0) {
     return std::vector<int>{};
   }
@@ -224,7 +224,7 @@ class RandomSequenceOfUnique {
   std::uniform_int_distribution<int> distribution;
   std::vector<int> result;
   result.reserve(n);
-  for (int i = 0; i < n; ++i) {
+  for (size_t i = 0; i < n; ++i) {
     result.push_back(distribution(gen));
   }
   return result;

@@ -5,44 +5,40 @@
 #ifndef BLOWFISH_CIPHER_H
 #define BLOWFISH_CIPHER_H
 
-#include <openssl/blowfish.h>
+#include <openssl/evp.h>
 
 #include <cassert>
-#include <cstddef>
-#include <cstdint>
 #include <span>
 
 #include <common_macro.h>
-
-#if defined(_MSC_VER)
-#pragma warning(push)
-#pragma warning(disable : 4996)
-#elif defined(__clang__) && defined(__has_warning)
-#if __has_warning("-Wdeprecated-declarations")
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wdeprecated-declarations"
-#endif
-#endif
+#include <core_types.h>
 
 namespace swarm {
 
-using ConstBytesView = std::span<const uint8_t>;
-using BytesView = std::span<uint8_t>;
+using std::span;
+
+using ConstBytesView = span<const u8>;
+using BytesView = span<u8>;
 
 class BlowfishCipher {
  public:
   BlowfishCipher() = default;
 
-  explicit BlowfishCipher(BytesView key) noexcept {
-    BF_set_key(&bf_key_, key.size(), key.data());
+  explicit BlowfishCipher(BytesView key) noexcept : ctx_(EVP_CIPHER_CTX_new()) {
+    assert(ctx_);
+
+    EVP_EncryptInit_ex(ctx_, EVP_bf_ecb(), nullptr, key.data(), nullptr);
   }
+
+  ~BlowfishCipher() { EVP_CIPHER_CTX_free(ctx_); }
 
   F_INLINE auto Encrypt(ConstBytesView in, BytesView out) noexcept -> void {
     assert(out.size() >= in.size());
     assert(in.size() % 8 == 0);
-    for (size_t i = 0; i < in.size(); i += 8) {
-      BF_ecb_encrypt(&in[i], &out[i], &bf_key_, BF_ENCRYPT);
-    }
+
+    int outlen = 0;
+    EVP_EncryptUpdate(ctx_, out.data(), &outlen, in.data(), in.size());
+    EVP_EncryptFinal_ex(ctx_, &out[outlen], &outlen);
   }
 
   F_INLINE auto EncryptInplace(BytesView in_out) noexcept -> void {
@@ -52,27 +48,19 @@ class BlowfishCipher {
   F_INLINE auto Decrypt(ConstBytesView in, BytesView out) noexcept -> void {
     assert(out.size() >= in.size());
     assert(in.size() % 8 == 0);
-    for (size_t i = 0; i < in.size(); i += 8) {
-      BF_ecb_encrypt(&in[i], &out[i], &bf_key_, BF_DECRYPT);
-    }
+
+    int outlen = 0;
+    EVP_DecryptUpdate(ctx_, out.data(), &outlen, in.data(), in.size());
+    EVP_DecryptFinal_ex(ctx_, &out[outlen], &outlen);
   }
 
   F_INLINE auto DecryptInplace(BytesView in_out) noexcept -> void {
     Decrypt(in_out, in_out);
   }
 
- private:
-  BF_KEY bf_key_{};
+  EVP_CIPHER_CTX* ctx_ = nullptr;
 };
 
 }  // namespace swarm
-
-#if defined(_MSC_VER)
-#pragma warning(pop)
-#elif defined(__clang__) && defined(__has_warning)
-#if __has_warning("-Wdeprecated-declarations")
-#pragma clang diagnostic pop
-#endif
-#endif
 
 #endif  // BLOWFISH_CIPHER_H
