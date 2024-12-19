@@ -2,8 +2,8 @@
 //
 // SPDX-License-Identifier: MIT
 
-#ifndef CORE_TYPES_H
-#define CORE_TYPES_H
+#ifndef INTEGER_TYPES_H
+#define INTEGER_TYPES_H
 
 #include <cstdint>
 
@@ -24,4 +24,4 @@ using f64 = double;
 
 }  // namespace swarm
 
-#endif  // CORE_TYPES_H
+#endif  // INTEGER_TYPES_H
