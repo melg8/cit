@@ -4,7 +4,7 @@
 
 find_package(OpenSSL 3.0.2 REQUIRED)
 find_package(outcome 2.2.8 REQUIRED)
-find_package(gsl-lite 0.40 REQUIRED)
+find_package(gsl-lite 0.41 REQUIRED)
 find_package(range-v3 0.12.0 REQUIRED)
 
 file(GLOB_RECURSE ALL_GLASSY_TESTS_APPLICATION_HEADERS
